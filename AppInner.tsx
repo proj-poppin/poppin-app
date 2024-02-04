@@ -21,6 +21,9 @@ import SignInPasswordScreen from './src/screens/sign/SignInPasswordScreen.tsx';
 import SignUpScreen from './src/screens/sign/SignUpScreen.tsx';
 import SignUpSucceedScreen from './src/screens/sign/SignUpSucceedScreen.tsx';
 
+import CloseSvgIcon from './src/assets/icons/close.svg';
+import LeftSvgIcon from './src/assets/icons/left.svg';
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -58,8 +61,36 @@ function AppInner() {
     </Tab.Navigator>
   ) : (
     <Stack.Navigator>
-      <Stack.Screen name="SignInEmail" component={SignInEmailScreen} />
-      <Stack.Screen name="SignInPassword" component={SignInPasswordScreen} />
+      <Stack.Screen
+        name="SignInEmail"
+        component={SignInEmailScreen}
+        options={({navigation}) => ({
+          headerTitle: '',
+          headerLeft: () => (
+            <CloseSvgIcon onPress={() => navigation.navigate('Home')} />
+          ),
+          headerStyle: {
+            borderBottomWidth: 0, // Android와 iOS에서 헤더 경계선 제거
+          },
+          headerShadowVisible: false, // iOS에서 헤더 그림자 제거
+          headerShown: true,
+        })}
+      />
+      <Stack.Screen
+        name="SignInPassword"
+        component={SignInPasswordScreen}
+        options={({navigation}) => ({
+          headerTitle: '로그인',
+          headerLeft: () => (
+            <LeftSvgIcon onPress={() => navigation.navigate('SignInEmail')} />
+          ),
+          headerStyle: {
+            borderBottomWidth: 0, // Android와 iOS에서 헤더 경계선 제거
+          },
+          headerShadowVisible: false, // iOS에서 헤더 그림자 제거
+          headerShown: true,
+        })}
+      />
       <Stack.Screen name="SignUpSucceed" component={SignUpSucceedScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="NickName" component={NickNameScreen} />

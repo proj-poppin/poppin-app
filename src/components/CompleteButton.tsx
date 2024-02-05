@@ -3,16 +3,21 @@ import {Pressable, Text, ActivityIndicator, StyleSheet} from 'react-native';
 import primaryColors from '../style/primaryColors.ts';
 import {globalStyles} from '../style/textStyles.ts';
 
-// @ts-ignore
-const CompleteButton = ({
-  // @ts-ignore
-  onPress, // 버튼을 눌렀을 때 호출되는 함수
-  // @ts-ignore
+interface CompleteButtonProps {
+  onPress: () => void;
+  onDisabledPress?: () => void; // 옵셔널 프로퍼티로 변경
+  title: string;
+  loading: boolean;
+  disabled: boolean;
+  alwaysActive?: boolean;
+}
+
+const CompleteButton: React.FC<CompleteButtonProps> = ({
+  onPress,
+  onDisabledPress, // 옵셔널 프로퍼티
   title,
-  // @ts-ignore
-  loading, // 버튼이 로딩 중인지 여부
-  // @ts-ignore
-  disabled, // 버튼이 비활성화되었는지 여부
+  loading,
+  disabled,
   alwaysActive = false,
 }) => (
   <Pressable
@@ -24,23 +29,28 @@ const CompleteButton = ({
           : disabled && !alwaysActive
           ? primaryColors.component
           : primaryColors.blue,
-        // 다른 스타일 속성
       },
       disabled && !alwaysActive && styles.disabledButton,
     ]}
-    onPress={onPress}
-    disabled={disabled || loading}>
+    onPress={() => {
+      if (!disabled || alwaysActive) {
+        onPress();
+      } else {
+        // 옵셔널 체이닝을 사용하여 존재할 때만 onDisabledPress 호출
+        onDisabledPress?.();
+      }
+    }}>
     {loading ? (
       <ActivityIndicator color={primaryColors.white} />
     ) : (
       <Text
         style={[
-          globalStyles.bodyLargePrimary, // globalStyles.bodyLargePrimary 스타일 적용
+          globalStyles.bodyLargePrimary,
           {
             color:
               disabled && !alwaysActive
                 ? primaryColors.font
-                : primaryColors.white, // 조건부 색상 적용
+                : primaryColors.white,
           },
         ]}>
         {title}
@@ -51,14 +61,14 @@ const CompleteButton = ({
 
 const styles = StyleSheet.create({
   button: {
-    width: '85%', // 버튼의 너비를 200 픽셀로 설정
+    width: '85%',
     height: 57,
     borderRadius: 25,
     marginTop: 35,
     marginBottom: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    alignSelf: 'center', // 버튼을 부모 컨테이너의 중앙에 위치
+    alignSelf: 'center',
   },
   disabledButton: {
     backgroundColor: primaryColors.component,

@@ -11,7 +11,7 @@ import FindScreen from './src/screens/find/FindScreen.tsx';
 import HomeScreen from './src/screens/home/HomeScreen.tsx';
 import LikesScreen from './src/screens/likes/LikesScreen.tsx';
 import MyPageScreen from './src/screens/myPage/MyPageScreen.tsx';
-import NickNameScreen from './src/screens/sign/NicknameSettingScreen.tsx';
+import NickNameSettingScreen from './src/screens/sign/NicknameSettingScreen.tsx';
 import PasswordFindScreen from './src/screens/sign/PasswordFindScreen.tsx';
 import PreferenceCategoryScreen from './src/screens/preference/PreferenceCategoryScreen.tsx';
 import PreferenceInterestScreen from './src/screens/preference/PreferenceInterestScreen.tsx';
@@ -23,6 +23,8 @@ import SignUpSucceedScreen from './src/screens/sign/SignUpSucceedScreen.tsx';
 
 import CloseSvgIcon from './src/assets/icons/close.svg';
 import LeftSvgIcon from './src/assets/icons/left.svg';
+import ProtectInfoScreen from './src/screens/sign/ProtectInfoScreen.tsx';
+import ServiceInfoScreen from './src/screens/sign/ServiceInfoScreen.tsx';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -91,9 +93,73 @@ function AppInner() {
           headerShown: true,
         })}
       />
-      <Stack.Screen name="SignUpSucceed" component={SignUpSucceedScreen} />
-      <Stack.Screen name="SignUp" component={SignUpScreen} />
-      <Stack.Screen name="NickName" component={NickNameScreen} />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUpScreen}
+        options={({navigation}) => ({
+          headerTitle: '회원가입',
+          headerLeft: () => (
+            <LeftSvgIcon onPress={() => navigation.navigate('SignInEmail')} />
+          ),
+          headerStyle: {
+            borderBottomWidth: 0, // Android와 iOS에서 헤더 경계선 제거
+          },
+          headerShadowVisible: false, // iOS에서 헤더 그림자 제거
+          headerShown: true,
+        })}
+      />
+      <Stack.Screen
+        name="NicknameSetting"
+        component={NickNameSettingScreen}
+        options={({navigation}) => ({
+          headerTitle: '닉네임 설정',
+          headerLeft: () => (
+            <LeftSvgIcon onPress={() => navigation.navigate('SignUp')} />
+          ),
+          headerStyle: {
+            borderBottomWidth: 0, // Android와 iOS에서 헤더 경계선 제거
+          },
+          headerShadowVisible: false, // iOS에서 헤더 그림자 제거
+          headerShown: true,
+        })}
+      />
+      <Stack.Screen
+        name="SignUpSucceed"
+        component={SignUpSucceedScreen}
+        options={({navigation}) => ({
+          headerShown: false,
+        })}
+      />
+      <Stack.Screen
+        name="ServiceInfo"
+        component={ServiceInfoScreen}
+        options={({navigation}) => ({
+          headerTitle: '서비스 이용 약관',
+          headerLeft: () => (
+            <CloseSvgIcon onPress={() => navigation.navigate('SignUp')} />
+          ),
+          headerStyle: {
+            borderBottomWidth: 0, // Android와 iOS에서 헤더 경계선 제거
+          },
+          headerShadowVisible: false, // iOS에서 헤더 그림자 제거
+          headerShown: true,
+        })}
+      />
+      <Stack.Screen
+        name="ProtectInfo"
+        component={ProtectInfoScreen}
+        options={({navigation}) => ({
+          headerTitle: '개인 정보 보호 정책',
+          headerLeft: () => (
+            <CloseSvgIcon onPress={() => navigation.navigate('SignUp')} />
+          ),
+          headerStyle: {
+            borderBottomWidth: 0, // Android와 iOS에서 헤더 경계선 제거
+          },
+          headerShadowVisible: false, // iOS에서 헤더 그림자 제거
+          headerShown: true,
+        })}
+      />
       <Stack.Screen name="PasswordFind" component={PasswordFindScreen} />
       <Stack.Screen
         name="PreferenceCategory"

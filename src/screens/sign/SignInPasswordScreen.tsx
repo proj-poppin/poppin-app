@@ -9,17 +9,23 @@ import RoundRightSvg from '../../assets/icons/roundRight.svg';
 
 function SignInPasswordScreen({navigation}) {
   const [password, setPassword] = useState('');
-  const [passwordConfirm, setpasswordConfirm] = useState('');
+  const [isPasswordValid, setIsPasswordValid] = useState(false); // 비밀번호 유효성 상태
   const [touched, setTouched] = useState(false); // 사용자가 입력 필드를 수정했는지 추적
   const handleChangePassword = text => {
     setPassword(text);
+    const isValidPassword =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(
+        text,
+      );
+    setIsPasswordValid(isValidPassword); // 비밀번호 유효성 상태 업데이트
   };
   const handlePress = () => {
     setTouched(true);
-
-    // 에러가 없고, 입력이 유효한 경우 로그인 시도 로직 실행
-    console.log('로그인 시도부분');
-    navigation.navigate('Home'); // 여기로 이동
+    if (isPasswordValid) {
+      // 비밀번호 유효성이 확인되면 로그인 시도 로직 실행
+      console.log('로그인 시도부분2');
+      navigation.navigate('Home');
+    }
   };
   return (
     <View style={styles.container}>
@@ -27,14 +33,15 @@ function SignInPasswordScreen({navigation}) {
       <LabelAndInput
         onChangeText={handleChangePassword}
         placeholder="영문,숫자,특수문자 8자 이상"
-        keyboardType="email-address"
+        keyboardType="default"
         labelText={'비밀번호'}
+        isPassword={true}
       />
       <CompleteButton
         title="완료"
         onPress={handlePress}
         loading={false}
-        disabled={!password}
+        disabled={!isPasswordValid} // 버튼 활성화 조건 수정
         alwaysActive={false}
       />
       <View style={styles.memberInfoContainer}>

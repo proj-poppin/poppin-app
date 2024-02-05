@@ -15,24 +15,15 @@ import GoogleSvg from '../../assets/icons/google.svg';
 function SignInEmailScreen({navigation}) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
-  const [touched, setTouched] = useState(false); // 사용자가 입력 필드를 수정했는지 추적
+  const [touched, setTouched] = useState(true); // 사용자가 입력 필드를 수정했는지 추적
 
   // 이메일 입력 필드 변경 핸들러
   const handleChangeEmail = text => {
     setEmail(text);
-    setTouched(true);
-
-    // 입력이 변경될 때마다 에러 상태 업데이트
-    if (text === '') {
-      setError('✕ 아이디를 입력해주세요'); // 입력 필드가 비었을 때 메시지 설정
-    } else {
-      const isValidEmail = /\S+@\S+\.\S+/.test(text);
-      if (!isValidEmail) {
-        setError('잘못된 이메일 주소입니다');
-      } else {
-        setError(''); // 입력이 유효한 이메일 형식일 때 에러 메시지 초기화
-      }
-    }
+    setError(''); // 입력이 변경될 때마다 에러 메시지 초기화
+    console.log('input changed');
+    const isValidEmail = /\S+@\S+\.\S+/.test(text);
+    setError('');
   };
 
   // 이메일 유효성 검사 함수
@@ -54,21 +45,24 @@ function SignInEmailScreen({navigation}) {
   // 계속하기 버튼 클릭 핸들러
   const handlePress = () => {
     setTouched(true);
-    if (!email) {
-      setError('✕ 아이디를 입력해주세요');
-      return;
-    }
+    console.log('touched');
 
-    const isValidEmail = /\S+@\S+\.\S+/.test(email);
+    // 이메일 주소가 .com, .co.kr, .net으로 끝나는지 확인
+    const isValidEmail =
+      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@([0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.)+(com|co\.kr|net)$/i.test(
+        email,
+      );
     if (!isValidEmail) {
       setError('잘못된 이메일 주소입니다');
+      console.log('touched2');
       return;
     }
 
     // 에러가 없고, 입력이 유효한 경우 로그인 시도 로직 실행
-    console.log('로그인 시도부분');
+    console.log('로그인 시도 가능');
     navigation.navigate('SignInPassword'); // 여기로 이동
   };
+
   return (
     <View style={styles.container}>
       <MainTitle
@@ -88,6 +82,7 @@ function SignInEmailScreen({navigation}) {
         loading={false}
         disabled={!email}
         alwaysActive={false}
+        onDisabledPress={() => setError('✕ 아이디를 입력해주세요')} // 콜백 추가
       />
       <View style={styles.memberInfoContainer}>
         <Text style={[globalStyles.bodyMediumSub, styles.infoText]}>

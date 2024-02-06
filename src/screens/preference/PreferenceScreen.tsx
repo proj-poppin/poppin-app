@@ -17,6 +17,7 @@ import OptionButton from '../../components/optionButton';
 import {NavigationProp} from '@react-navigation/native';
 import SkipSvg from '../../assets/images/skip.svg';
 import SkipModal from '../../components/SkipModal.tsx';
+import CheckAnimationModal from '../../components/CheckAnimationModal.tsx';
 
 type Step = {
   text1: string;
@@ -218,6 +219,10 @@ const PreferenceScreen: React.FC<PreferenceScreenProps> = ({navigation}) => {
         onClose={() => setModalVisible(false)}
         onSetNow={handleSkip}
       />
+      {/*<CheckAnimationModal*/}
+      {/*  isVisible={modalVisible}*/}
+      {/*  onClose={() => setModalVisible(false)}*/}
+      {/*  // onSetNow={handleSkip}*/}
     </View>
   );
 };

@@ -20,13 +20,17 @@ const SkipModal = ({isVisible, onClose, onSetNow}) => {
           </Text>
           <View style={{flexDirection: 'row', marginTop: 20}}>
             <Pressable style={styles.buttonSkip} onPress={onClose}>
-              <Text
-                style={[
-                  globalStyles.bodyMediumSub,
-                  {color: primaryColors.font},
-                ]}>
-                건너뛰기
-              </Text>
+              {({pressed}) => (
+                <Text
+                  style={[
+                    globalStyles.bodyMediumSub,
+                    {
+                      color: pressed ? 'gray' : primaryColors.font,
+                    }, // 조건부 색상 적용
+                  ]}>
+                  건너뛰기
+                </Text>
+              )}
             </Pressable>
             <Text
               style={{
@@ -39,13 +43,19 @@ const SkipModal = ({isVisible, onClose, onSetNow}) => {
               |
             </Text>
             <Pressable onPress={onSetNow} style={styles.buttonSetNow}>
-              <Text
-                style={[
-                  globalStyles.bodyMediumSub,
-                  {color: primaryColors.blue},
-                ]}>
-                지금 설정하기
-              </Text>
+              {({pressed}) => (
+                <Text
+                  style={[
+                    globalStyles.bodyMediumSub,
+                    {
+                      color: pressed
+                        ? primaryColors.buttonPressed
+                        : primaryColors.blue,
+                    }, // 조건부 색상 적용
+                  ]}>
+                  지금 설정하기
+                </Text>
+              )}
             </Pressable>
           </View>
         </View>
@@ -73,7 +83,6 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
   },

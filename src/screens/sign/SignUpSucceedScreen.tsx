@@ -1,5 +1,5 @@
 // SignUpSucceedScreen.js
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {globalStyles} from '../../style/textStyles.ts';
 import WelcomeSvg from '../../assets/icons/welcome.svg';
@@ -8,11 +8,10 @@ import BlueDotsThreeSvg from '../../assets/icons/blueDotsThree.svg';
 import primaryColors from '../../style/primaryColors.ts';
 import NextButton from '../../components/NextButton.tsx';
 
-function SignUpSucceedScreen({route}) {
+function SignUpSucceedScreen({route, navigation}) {
   // route 파라미터 추가
   // route.params에서 nickname 추출
   const {nickname} = route.params;
-  // <Text style={[globalStyles.headline, {marginTop: 5, marginBottom: 46}]}>
   return (
     <View style={styles.container}>
       <WelcomeSvg />
@@ -21,7 +20,7 @@ function SignUpSucceedScreen({route}) {
       </Text>
       <Text style={[globalStyles.title, styles.welcomeText]}>환영해요!</Text>
       <CompleteButton
-        onPress={() => console.log('취향 설정하러 가기')}
+        onPress={() => navigation.navigate('Preference')}
         title="취향 설정하러 가기"
         loading={false}
         disabled={false}
@@ -36,7 +35,7 @@ function SignUpSucceedScreen({route}) {
         받아보세요.
       </Text>
       <NextButton
-        onPress={() => console.log('다음에 하기')}
+        onPress={() => navigation.navigate('Main')}
         title="다음에 하기"
       />
     </View>
@@ -45,6 +44,7 @@ function SignUpSucceedScreen({route}) {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'white',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 24,
     marginBottom: 20,
   },
   svgStyle: {

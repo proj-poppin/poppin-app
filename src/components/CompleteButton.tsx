@@ -7,8 +7,8 @@ interface CompleteButtonProps {
   onPress: () => void;
   onDisabledPress?: () => void; // 옵셔널 프로퍼티로 변경
   title: string;
-  loading: boolean;
-  disabled: boolean;
+  loading?: boolean;
+  disabled?: boolean;
   alwaysActive?: boolean;
 }
 

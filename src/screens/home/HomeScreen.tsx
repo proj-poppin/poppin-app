@@ -4,7 +4,7 @@ import React from 'react';
 function HomeScreen() {
   return (
     <View>
-      <Text>HomeScreen</Text>
+      <Text>HomeScreenSucceed!!!!</Text>
     </View>
   );
 }

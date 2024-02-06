@@ -1,6 +1,6 @@
 const primaryColors = {
   blue: '#0EB5F9',
-  buttonPressed: '#0D9FDA',
+  buttonPressed: '#0B8FCA',
   purple: '#C37CD2',
   main: '#14B4F9',
   black: '#000000',
@@ -13,6 +13,8 @@ const primaryColors = {
   red: '#EF4452',
   stroke: '#E5E5E5',
   white: '#FFFFFF',
+  // 여기에 그라데이션 색상 추가
+  blueToPurpleGradient: ['#0EB5F9', '#C37CD2'], // blue에서 purple로 변하는 그라데이션
 };
 
 export default primaryColors;

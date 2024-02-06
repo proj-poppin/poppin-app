@@ -47,7 +47,7 @@ export const globalStyles = StyleSheet.create({
   },
   labelSub: {
     fontFamily: 'Pretandard-Regular',
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '400',
     color: Colors.black,
   },

@@ -1,6 +1,13 @@
 // SignInEmailScreen.js
 import React, {useState} from 'react';
-import {View, Text, TextInput, StyleSheet, Pressable} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Pressable,
+  Alert,
+} from 'react-native';
 import CompleteButton from '../../components/CompleteButton.tsx';
 import {globalStyles} from '../../style/textStyles.ts';
 import primaryColors from '../../style/primaryColors.ts';
@@ -13,6 +20,39 @@ import NaverSvg from '../../assets/icons/naver.svg';
 import GoogleSvg from '../../assets/icons/google.svg';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
+import appleAuth, {
+  AppleButton,
+  AppleAuthRequestOperation,
+  AppleAuthRequestScope,
+  AppleAuthCredentialState,
+} from '@invertase/react-native-apple-authentication';
+
+async function onAppleButtonPress() {
+  // performs login request
+  const appleAuthRequestResponse = await appleAuth.performRequest({
+    requestedOperation: appleAuth.Operation.LOGIN,
+    // Note: it appears putting FULL_NAME first is important, see issue #293
+    requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+  });
+
+  console.log('appleAuthRequestResponse', appleAuthRequestResponse); // 토큰 확인 디버깅 코드
+  console.log('appleAuthUser', appleAuthRequestResponse.user);
+  console.log('appleAuthEmail', appleAuthRequestResponse.email);
+  console.log('appleAuthResponse', appleAuthRequestResponse.fullName);
+  // get current authentication state for user
+  // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
+  const credentialState = await appleAuth.getCredentialStateForUser(
+    appleAuthRequestResponse.user,
+  );
+
+  // use credentialState response to ensure the user is authenticated
+  if (credentialState === appleAuth.State.AUTHORIZED) {
+    // user is authenticated
+    console.log('user is authenticated!!!');
+  } else {
+    console.log('user is not authenticated :(');
+  }
+}
 
 import {
   login,
@@ -216,7 +256,9 @@ function SignInEmailScreen({navigation}) {
           }>
           <GoogleSvg style={styles.snsIcon} />
         </Pressable>
-        <AppleSvg style={styles.snsIcon} />
+        <Pressable onPress={onAppleButtonPress}>
+          <AppleSvg style={styles.snsIcon} />
+        </Pressable>
       </View>
     </View>
   );

@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">팝핀</string>
-    <string name="kakao_app_key">@string/REACT_APP_KAKAO_API_KEY</string>
+    <string name="kakao_app_key">@string/KAKAO_API_KEY</string>
 </resources>

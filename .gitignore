@@ -72,3 +72,4 @@ env/.env.production
 env/.env.stage
 env/
 .env
+android/app/google-services.json

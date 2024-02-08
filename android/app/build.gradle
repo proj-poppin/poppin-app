@@ -2,6 +2,7 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 apply plugin: "com.android.application"
+apply plugin: "com.google.gms.google-services"
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 /** 개발 환경에 따른 환경변수 config 파일 *, anothercustombuild는 상황에 맞게!*/
@@ -105,7 +106,7 @@ flavorDimensions "version"
         versionCode 1
         versionName "1.0"
         resValue "string", "build_config_package", "com.bubble.poppinproject"
-        manifestPlaceholders = [kakaoScheme: "kakao${project.env.get("REACT_APP_KAKAO_API_KEY")}"]
+        manifestPlaceholders = [kakaoScheme: "kakao${project.env.get("KAKAO_API_KEY")}"]
     }
     signingConfigs {
         debug {
@@ -133,6 +134,8 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
     implementation("com.facebook.react:flipper-integration")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    implementation("com.google.firebase:firebase-analytics")
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

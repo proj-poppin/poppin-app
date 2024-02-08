@@ -20,7 +20,7 @@
 
               <!-- Redirect URI: "kakao${각자 AIP KEY}://oauth“ -->
               <data android:host="oauth"
-                    android:scheme="kakaoa0f8d6197676141aec6b2d28f472704c" />
+                    android:scheme="@string/REACT_APP_KAKAO_API_KEY_WITH_KAKAO" />
           </intent-filter>
       </activity>
       <activity

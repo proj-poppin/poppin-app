@@ -6,6 +6,8 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnable
 import com.facebook.react.defaults.DefaultReactActivityDelegate
 import android.os.Bundle;
 
+import com.dooboolab.naverlogin.RNNaverLoginModule;
+
 class MainActivity : ReactActivity() {
 
   /**

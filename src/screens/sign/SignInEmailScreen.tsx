@@ -18,12 +18,75 @@ import {
   shippingAddresses as getKakaoShippingAddresses,
   unlink,
 } from '@react-native-seoul/kakao-login';
+import NaverLogin, {
+  NaverLoginResponse,
+  GetProfileResponse,
+} from '@react-native-seoul/naver-login';
 import Config from 'react-native-config';
+
+const consumerKey = Config.NAVER_CONSUMER_KEY;
+const consumerSecret = Config.NAVER_SECRECT_KEY;
+const appName = '팝핀';
+const serviceUrlScheme = Config.NAVER_URL;
+
 function SignInEmailScreen({navigation}) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [touched, setTouched] = useState(true); // 사용자가 입력 필드를 수정했는지 추적
   const [result, setResult] = useState<string>('');
+
+  //naver
+  const [success, setSuccessResponse] =
+    useState<NaverLoginResponse['successResponse']>();
+  const [failure, setFailureResponse] =
+    useState<NaverLoginResponse['failureResponse']>();
+  const [getProfileRes, setGetProfileRes] = useState<GetProfileResponse>();
+
+  const loginInNaver = async () => {
+    const {failureResponse, successResponse} = await NaverLogin.login({
+      appName,
+      consumerKey,
+      consumerSecret,
+      serviceUrlScheme,
+    });
+    // 토큰 확인 디버깅 코드
+    console.log('successResponse', successResponse);
+    console.log('failureResponse', failureResponse);
+    setSuccessResponse(successResponse);
+    setFailureResponse(failureResponse);
+  };
+
+  const logout = async () => {
+    try {
+      await NaverLogin.logout();
+      setSuccessResponse(undefined);
+      setFailureResponse(undefined);
+      setGetProfileRes(undefined);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const getProfile = async () => {
+    try {
+      const profileResult = await NaverLogin.getProfile(success!.accessToken);
+      setGetProfileRes(profileResult);
+    } catch (e) {
+      setGetProfileRes(undefined);
+    }
+  };
+
+  const deleteToken = async () => {
+    try {
+      await NaverLogin.deleteToken();
+      setSuccessResponse(undefined);
+      setFailureResponse(undefined);
+      setGetProfileRes(undefined);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   // 이메일 입력 필드 변경 핸들러
   const handleChangeEmail = text => {
     setEmail(text);
@@ -33,9 +96,11 @@ function SignInEmailScreen({navigation}) {
     setError('');
   };
   const signInWithKakao = async (): Promise<void> => {
+    console.log('signInWithKakao!!');
     try {
       const token = await login();
       setResult(JSON.stringify(token));
+      console.log('kakaoToken', token);
     } catch (err) {
       console.error('login err', err);
     }
@@ -110,7 +175,9 @@ function SignInEmailScreen({navigation}) {
         SNS계정으로 간편 로그인
       </Text>
       <View style={styles.snsIconsContainer}>
-        <NaverSvg style={styles.snsIcon} />
+        <Pressable onPress={loginInNaver}>
+          <NaverSvg style={styles.snsIcon} />
+        </Pressable>
         <Pressable onPress={signInWithKakao}>
           <KakaoSvg style={styles.snsIcon} />
         </Pressable>

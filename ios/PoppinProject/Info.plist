@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>팝핀</string>
+	<string>${APP_NAME}</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -27,19 +27,31 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>kakao${REACT_APP_KAKAO_API_KEY}</string>
+				<string>${REACT_APP_KAKAO_API_KEY_WITH_KAKAO}</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>naver</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>${NAVER_URL}</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>KAKAO_APP_KEY</key>
-	<string>kakao${REACT_APP_KAKAO_API_KEY}</string>
+	<string>${REACT_APP_KAKAO_API_KEY}</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>naversearchapp</string>
+		<string>naversearchthirdlogin</string>
+		<string>kakaolink</string>
 		<string>kakaokompassauth</string>
 		<string>storykompassauth</string>
-		<string>kakaolink</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

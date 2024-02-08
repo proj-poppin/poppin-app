@@ -4,6 +4,8 @@
 
 #import <RNKakaoLogins.h>
 
+#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -31,16 +33,19 @@
 }
 
 - (BOOL)application:(UIApplication *)app
-     openURL:(NSURL *)url
-     options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-  dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-      dispatch_async(dispatch_get_main_queue(), ^(void){
-        if ([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
-          [RNKakaoLogins handleOpenUrl: url];
-        }
-      });
-  });
-   return NO;
+            openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+  // Naver 로그인 처리
+  if ([url.scheme isEqualToString:@"navertest"]) {
+    return [[NaverThirdPartyLoginConnection getSharedInstance] application:app openURL:url options:options];
+  }
+
+  // Kakao 로그인 처리
+  if ([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
+    return [RNKakaoLogins handleOpenUrl:url];
+  }
+
+  return NO;
 }
 
 @end

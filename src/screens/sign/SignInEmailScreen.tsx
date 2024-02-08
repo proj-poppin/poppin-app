@@ -11,12 +11,19 @@ import KakaoSvg from '../../assets/icons/kakao.svg';
 import AppleSvg from '../../assets/icons/apple.svg';
 import NaverSvg from '../../assets/icons/naver.svg';
 import GoogleSvg from '../../assets/icons/google.svg';
-
+import {
+  login,
+  logout,
+  getProfile as getKakaoProfile,
+  shippingAddresses as getKakaoShippingAddresses,
+  unlink,
+} from '@react-native-seoul/kakao-login';
+import Config from 'react-native-config';
 function SignInEmailScreen({navigation}) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [touched, setTouched] = useState(true); // 사용자가 입력 필드를 수정했는지 추적
-
+  const [result, setResult] = useState<string>('');
   // 이메일 입력 필드 변경 핸들러
   const handleChangeEmail = text => {
     setEmail(text);
@@ -25,7 +32,14 @@ function SignInEmailScreen({navigation}) {
     const isValidEmail = /\S+@\S+\.\S+/.test(text);
     setError('');
   };
-
+  const signInWithKakao = async (): Promise<void> => {
+    try {
+      const token = await login();
+      setResult(JSON.stringify(token));
+    } catch (err) {
+      console.error('login err', err);
+    }
+  };
   // 이메일 유효성 검사 함수
   const validateEmail = () => {
     if (!email) {
@@ -97,7 +111,9 @@ function SignInEmailScreen({navigation}) {
       </Text>
       <View style={styles.snsIconsContainer}>
         <NaverSvg style={styles.snsIcon} />
-        <KakaoSvg style={styles.snsIcon} />
+        <Pressable onPress={signInWithKakao}>
+          <KakaoSvg style={styles.snsIcon} />
+        </Pressable>
         <GoogleSvg style={styles.snsIcon} />
         <AppleSvg style={styles.snsIcon} />
       </View>

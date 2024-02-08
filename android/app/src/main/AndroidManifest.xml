@@ -3,12 +3,26 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+      android:usesCleartextTraffic="true"
       android:name=".MainApplication"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
+      <activity
+              android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+              android:exported="true">
+          <intent-filter>
+              <action android:name="android.intent.action.VIEW" />
+              <category android:name="android.intent.category.DEFAULT" />
+              <category android:name="android.intent.category.BROWSABLE" />
+
+              <!-- Redirect URI: "kakao${각자 AIP KEY}://oauth“ -->
+              <data android:host="oauth"
+                    android:scheme="kakaoa0f8d6197676141aec6b2d28f472704c" />
+          </intent-filter>
+      </activity>
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"

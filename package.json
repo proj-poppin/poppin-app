@@ -7,11 +7,21 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest",
-    "ios:dev": "react-native run-ios --scheme Develop",
-    "ios:prod": "react-native run-ios --scheme Production"
+    "test": "test",
+    "ios:dev:d": "react-native run-ios --scheme Develop Debug --simulator='iPhone SE (3rd generation)'",
+    "ios:dev:r": "react-native run-ios --scheme Develop --configuration Release --simulator='iPhone (136)'",
+    "ios:stg:d": "react-native run-ios --scheme Stage --configuration Debug --simulator='iPhone SE (3rd generation)'",
+    "ios:stg:r": "react-native run-ios --scheme Stage --configuration Release --simulator='iPhone SE (3rd generation)'",
+    "ios:prd:d": "react-native run-ios --scheme Production --configuration Debug --simulator='iPhone SE (3rd generation)'",
+    "ios:prd:r": "react-native run-ios --scheme Production --configuration Release --simulator='iPhone (136)'",
+    "android:dev:d": "react-native run-android --mode=developDebug",
+    "android:dev:r": "react-native run-android --mode=developrelease",
+    "android:stg:d": "react-native run-android --mode=stagedebug",
+    "android:stg:r": "react-native run-android --mode=stagerelease",
+    "android:prd:d": "react-native run-android --mode=productdebug",
+    "android:prd:r": "react-native run-android --mode=productrelease"
   },
-  "dependencies": {
+    "dependencies": {
     "@react-native-async-storage/root": "github:react-native-async-storage/async-storage",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-seoul/kakao-login": "^5.3.1",

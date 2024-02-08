@@ -3,11 +3,16 @@ apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 apply plugin: "com.android.application"
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 /** 개발 환경에 따른 환경변수 config 파일 *, anothercustombuild는 상황에 맞게!*/
 project.ext.envConfigFiles = [
-    develop: ".env",
-    product: ".env",
-    anothercustombuild: ".env"
+    developdebug: "env/.env.develop",
+    developrelease: "env/.env.develop",
+    stagedebug: "env/.env.stage",
+    stagerelease: "env/.env.stage",
+    productdebug: "env/.env.product",
+    productrelease: "env/.env.product",
+    anothercustombuild: ".env",
 ]
 
 /**
@@ -81,6 +86,16 @@ android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
+
+flavorDimensions "version"
+    productFlavors {
+        develop {
+        }
+        stage {
+        }
+        production {
+        }
+    }
 
     namespace "com.bubble.poppinproject"
     defaultConfig {

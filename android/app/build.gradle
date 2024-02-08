@@ -1,6 +1,14 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+apply plugin: "com.android.application"
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+/** 개발 환경에 따른 환경변수 config 파일 *, anothercustombuild는 상황에 맞게!*/
+project.ext.envConfigFiles = [
+    develop: ".env",
+    product: ".env",
+    anothercustombuild: ".env"
+]
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -74,13 +82,15 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.poppinproject"
+    namespace "com.bubble.poppinproject"
     defaultConfig {
-        applicationId "com.poppinproject"
+        applicationId "com.bubble.poppinproject"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        resValue "string", "build_config_package", "com.bubble.poppinproject"
+        manifestPlaceholders = [kakaoScheme: "kakao${project.env.get("REACT_APP_KAKAO_API_KEY")}"]
     }
     signingConfigs {
         debug {

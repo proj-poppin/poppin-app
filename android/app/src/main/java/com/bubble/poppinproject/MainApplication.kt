@@ -1,4 +1,4 @@
-package com.poppinproject
+package com.bubble.poppinproject
 
 import android.app.Application
 import com.facebook.react.PackageList

@@ -1,4 +1,4 @@
-package com.poppinproject
+package com.bubble.poppinproject
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

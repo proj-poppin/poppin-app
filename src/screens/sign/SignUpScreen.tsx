@@ -81,6 +81,7 @@ function SignUpScreen({navigation}) {
     if (!isValidEmail) {
       setError('잘못된 이메일 주소입니다');
       console.log('touched2');
+      console.log('touched3');
       return;
     }
 

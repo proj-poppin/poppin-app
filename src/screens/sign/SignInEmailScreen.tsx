@@ -11,6 +11,9 @@ import KakaoSvg from '../../assets/icons/kakao.svg';
 import AppleSvg from '../../assets/icons/apple.svg';
 import NaverSvg from '../../assets/icons/naver.svg';
 import GoogleSvg from '../../assets/icons/google.svg';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
+
 import {
   login,
   logout,
@@ -28,6 +31,30 @@ const consumerKey = Config.NAVER_CONSUMER_KEY;
 const consumerSecret = Config.NAVER_SECRECT_KEY;
 const appName = '팝핀';
 const serviceUrlScheme = Config.NAVER_URL;
+
+GoogleSignin.configure({
+  webClientId: Config.GOOGLE_API_KEY,
+});
+
+async function onGoogleButtonPress() {
+  console.log('onGoogleButtonPress');
+  // Check if your device supports Google Play
+  try {
+    await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+    // google services are available
+  } catch (err) {
+    console.error('play services are not available');
+  }
+  // Get the users ID token
+  const {idToken} = await GoogleSignin.signIn();
+
+  console.log('idToken', idToken);
+  // Create a Google credential with the token
+  const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+  console.log('googleCredential', googleCredential);
+  // Sign-in the user with the credential
+  return auth().signInWithCredential(googleCredential);
+}
 
 function SignInEmailScreen({navigation}) {
   const [email, setEmail] = useState('');
@@ -181,7 +208,14 @@ function SignInEmailScreen({navigation}) {
         <Pressable onPress={signInWithKakao}>
           <KakaoSvg style={styles.snsIcon} />
         </Pressable>
-        <GoogleSvg style={styles.snsIcon} />
+        <Pressable
+          onPress={() =>
+            onGoogleButtonPress().then(() =>
+              console.log('Signed in with Google!'),
+            )
+          }>
+          <GoogleSvg style={styles.snsIcon} />
+        </Pressable>
         <AppleSvg style={styles.snsIcon} />
       </View>
     </View>

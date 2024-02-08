@@ -23,7 +23,7 @@ import PreferenceScreen from './src/screens/preference/PreferenceScreen.tsx';
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
+import SplashScreen from 'react-native-splash-screen';
 function MainTabNavigator() {
   return (
     <Tab.Navigator initialRouteName="Home">

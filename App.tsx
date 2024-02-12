@@ -9,8 +9,9 @@ import appleAuth from '@invertase/react-native-apple-authentication';
 
 // Provider 바깥에서는 useSelector 사용불가(따로 빼서 거기에 +)
 function App() {
-  SplashScreen.hide();
+  // SplashScreen.hide();
   useEffect(() => {
+    SplashScreen.hide(); // 앱 시작 시 SplashScreen 숨기기
     // onCredentialRevoked returns a function that will remove the event listener. useEffect will call this function when the component unmounts
     return appleAuth.onCredentialRevoked(async () => {
       console.warn(

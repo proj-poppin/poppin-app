@@ -10,6 +10,7 @@ interface CompleteButtonProps {
   loading?: boolean;
   disabled?: boolean;
   alwaysActive?: boolean;
+  widthRatio?: string;
 }
 
 const CompleteButton: React.FC<CompleteButtonProps> = ({
@@ -19,6 +20,7 @@ const CompleteButton: React.FC<CompleteButtonProps> = ({
   loading,
   disabled,
   alwaysActive = false,
+  widthRatio = '100%', // 디폴트 값을 '100%'로 설정
 }) => (
   <Pressable
     style={({pressed}) => [
@@ -61,8 +63,8 @@ const CompleteButton: React.FC<CompleteButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    width: '85%',
-    height: 57,
+    width: '100%',
+    height: 52,
     borderRadius: 25,
     marginTop: 35,
     marginBottom: 10,

@@ -13,6 +13,7 @@ const primaryColors = {
   red: '#EF4452',
   stroke: '#E5E5E5',
   white: '#FFFFFF',
+  stroke2: '#70828A',
   // 여기에 그라데이션 색상 추가
   blueToPurpleGradient: ['#0EB5F9', '#C37CD2'], // blue에서 purple로 변하는 그라데이션
 };

@@ -1,6 +1,7 @@
 // styles.js
 import {StyleSheet} from 'react-native';
 import Colors from './primaryColors.ts';
+import primaryColors from './primaryColors.ts';
 
 export const globalStyles = StyleSheet.create({
   headline: {
@@ -45,10 +46,21 @@ export const globalStyles = StyleSheet.create({
     fontWeight: '700',
     color: Colors.black,
   },
+  labelPrimary: {
+    fontFamily: 'Pretandard-Bold',
+    fontSize: 12,
+    fontWeight: '700',
+  },
   labelSub: {
     fontFamily: 'Pretandard-Regular',
     fontSize: 13,
     fontWeight: '400',
     color: Colors.black,
+  },
+  labelSubStroke: {
+    fontFamily: 'Pretandard-Regular',
+    fontSize: 13,
+    fontWeight: '400',
+    color: primaryColors.stroke2,
   },
 });

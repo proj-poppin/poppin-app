@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Pressable,
   Alert,
+  Platform,
 } from 'react-native';
 import CompleteButton from '../../components/CompleteButton.tsx';
 import {globalStyles} from '../../style/textStyles.ts';
@@ -108,7 +109,8 @@ function SignInEmailScreen({navigation}) {
   const [failure, setFailureResponse] =
     useState<NaverLoginResponse['failureResponse']>();
   const [getProfileRes, setGetProfileRes] = useState<GetProfileResponse>();
-
+  const isAppleAuthSupported = Platform.OS === 'ios' && appleAuth.isSupported;
+  console.log(Platform.OS);
   const loginInNaver = async () => {
     const {failureResponse, successResponse} = await NaverLogin.login({
       appName,
@@ -256,9 +258,11 @@ function SignInEmailScreen({navigation}) {
           }>
           <GoogleSvg style={styles.snsIcon} />
         </Pressable>
-        <Pressable onPress={onAppleButtonPress}>
-          <AppleSvg style={styles.snsIcon} />
-        </Pressable>
+        {isAppleAuthSupported && (
+          <Pressable onPress={onAppleButtonPress}>
+            <AppleSvg style={styles.snsIcon} />
+          </Pressable>
+        )}
       </View>
     </View>
   );

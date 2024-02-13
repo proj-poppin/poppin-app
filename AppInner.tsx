@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useSelector} from 'react-redux';
@@ -19,7 +19,7 @@ import LeftSvgIcon from './src/assets/icons/left.svg';
 import ProtectInfoScreen from './src/screens/sign/ProtectInfoScreen.tsx';
 import ServiceInfoScreen from './src/screens/sign/ServiceInfoScreen.tsx';
 import PreferenceScreen from './src/screens/preference/PreferenceScreen.tsx';
-import SplashScreen from './src/screens/SplashScreen.tsx';
+import SplashScreen from './src/screens/splash/SplashScreen.tsx';
 
 import Tab1Svg from './src/assets/icons/tab1.svg';
 import Tab2Svg from './src/assets/icons/tab2.svg';
@@ -31,11 +31,11 @@ import Tab3SvgOn from './src/assets/icons/tab3On.svg';
 import Tab4SvgOn from './src/assets/icons/tab4On.svg';
 import primaryColors from './src/style/primaryColors.ts';
 import {globalStyles} from './src/style/textStyles.ts';
+import OnboardingScreen from './src/screens/onboarding/OnboardingScreen.tsx';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-// import SplashScreen from 'react-native-splash-screen';
 function MainTabNavigator() {
   return (
     <Tab.Navigator
@@ -63,7 +63,7 @@ function MainTabNavigator() {
             case 'Find':
               return '팝업 찾기';
             case 'Likes':
-              return '즐겨 찾기';
+              return '관심';
             case 'MyPage':
               return '마이 페이지';
             default:
@@ -80,7 +80,7 @@ function MainTabNavigator() {
           borderTopRightRadius: 25, // 오른쪽 상단 모서리 둥글게
           position: 'absolute', // 필요에 따라 추가
         },
-        tabBarLabelStyle: globalStyles.labelPrimary,
+        tabBarLabelStyle: globalStyles.bottomNavigationTab, // color 설정은 X
       })}>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Find" component={FindScreen} />
@@ -92,7 +92,9 @@ function MainTabNavigator() {
 
 function AuthStackNavigator() {
   return (
-    <AuthStack.Navigator screenOptions={{headerShown: false}}>
+    <AuthStack.Navigator
+      initialRouteName="Onboarding"
+      screenOptions={{headerShown: false}}>
       <AuthStack.Screen
         name="SignInEmail"
         component={SignInEmailScreen}
@@ -229,21 +231,27 @@ export type RootStackParamList = {
   PreferenceCategoryScreen: undefined;
   PreferenceInterestScreen: undefined;
   PreferenceWhoScreen: undefined;
+  OnboardingScreen: undefined;
 };
 
 function AppInner() {
   const isLoggedIn = useSelector((state: RootState) => !!state.user.email);
-  console.log(isLoggedIn);
-  const [isSplashScreenVisible, setIsSplashScreenVisible] =
-    React.useState(true);
-  // 예를 들어, 앱이 로딩되고 필요한 데이터를 불러온 후 스플래시 스크린을 숨기는 로직을 구현
+  const [isSplashScreenVisible, setIsSplashScreenVisible] = useState(true);
+
   useEffect(() => {
     const loadDataAsync = async () => {
-      // 필요한 데이터 로딩 로직 구현
-      // 예: 사용자 세션 확인, 초기 설정 불러오기 등
+      try {
+        // 서버 통신을 시뮬레이션하는 부분
+        // 예: 사용자 세션 확인, 초기 설정 불러오기 등
+        await new Promise(resolve => setTimeout(resolve, 4000)); // 서버로부터 데이터 로딩 시간을 4초로 가정
 
-      // 데이터 로딩 완료 후 스플래시 스크린 숨김
-      setIsSplashScreenVisible(false);
+        // 데이터 로딩이 완료되면 스플래시 스크린 숨기기
+        setIsSplashScreenVisible(false);
+      } catch (error) {
+        console.error('Data loading failed:', error);
+        // 오류 발생 시에도 스플래시 스크린을 숨깁니다.
+        setIsSplashScreenVisible(false);
+      }
     };
 
     loadDataAsync();
@@ -253,25 +261,18 @@ function AppInner() {
     // 스플래시 스크린이 활성화되어 있으면, SplashScreen 컴포넌트를 렌더링
     return <SplashScreen />;
   }
-  // return (
-  //   <MainStack.Navigator screenOptions={{headerShown: false}}>
-  //     <MainStack.Screen name="Auth" component={AuthStackNavigator} />
-  //     <MainStack.Screen name="Main" component={MainTabNavigator} />
-  //   </MainStack.Navigator>
-  // );
 
-  // 홈쪽 UI 구현 위한 !isLoggedIn
+  // 로그인 상태에 따라 적절한 네비게이션 스택을 렌더링
   return !isLoggedIn ? (
-    // 로그인이 되어 있다면 메인 탭 네비게이터를 표시
     <MainStack.Navigator screenOptions={{headerShown: false}}>
       <MainStack.Screen name="Main" component={MainTabNavigator} />
     </MainStack.Navigator>
   ) : (
-    // 로그인이 되어 있지 않다면 인증 스택 네비게이터를 표시
     <MainStack.Navigator screenOptions={{headerShown: false}}>
       <MainStack.Screen name="Auth" component={AuthStackNavigator} />
     </MainStack.Navigator>
   );
+  // return <OnboardingScreen />; // 온보딩 스크린을 렌더링 test
 }
 
 export default AppInner;

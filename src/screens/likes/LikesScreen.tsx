@@ -1,16 +1,34 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {globalStyles} from '../../style/textStyles.ts';
 import CalendarSvg from '../../assets/icons/calendar.svg';
 import primaryColors from '../../style/primaryColors.ts'; // Note: Imported 'primaryColors' twice, removed 'Colors'
-import SelectDropdown from 'react-native-select-dropdown';
 import DownBlackSvg from '../../assets/icons/downBlack.svg'; // Note: Imported 'DownBlackSvg' from a different location
 import OrderSvg from '../../assets/icons/order.svg';
 import CustomSelectDropdown from '../../components/CustomDropDown.tsx';
+import LoadingScreen from '../splash/LoadingScreen.tsx';
+import {useAppDispatch} from '../../store';
+import loadingSlice from '../../slices/loading.ts';
+
 const popUpTypes = ['오픈 예정인 팝업', '운영 중인 팝업', '운영 종료 팝업'];
 const orderTypes = ['오픈일순', '마감일순', '저장순'];
+
 function LikesScreen() {
-  return (
+  const [isLoading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    // 로딩 시작
+    dispatch(loadingSlice.actions.setLoading({isLoading: true}));
+    // 데이터 로딩 로직...
+    setTimeout(() => {
+      // 로딩 완료 후 2초가 지나면 로딩 상태를 false로 변경
+      dispatch(loadingSlice.actions.setLoading({isLoading: false}));
+    }, 6000);
+  }, [isLoading, dispatch]);
+
+  return isLoading ? (
+    <LoadingScreen isLoading={isLoading} />
+  ) : (
     <View style={styles.container}>
       <View style={styles.middleContainer}>
         <Text style={globalStyles.headline}>관심 팝업</Text>

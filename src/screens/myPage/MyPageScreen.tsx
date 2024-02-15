@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import primaryColors from '../../style/primaryColors.ts';
 import {globalStyles} from '../../style/textStyles.ts';
@@ -7,53 +7,148 @@ import NextButton from '../../components/NextButton.tsx';
 import CompleteButton from '../../components/CompleteButton.tsx';
 import FeedBackSvg from '../../assets/icons/feedback.svg';
 import CompleteSvg from '../../assets/icons/complete.svg';
-import DividerLine from '../../components/DividerLine.tsx';
+import DividerSvg from '../../assets/images/divider.svg';
+import PopUpCard from '../../components/PopUpCard.tsx';
+import RightSvg from '../../assets/icons/bigRight.svg';
+import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 
 function MyPageScreen() {
   return (
-    <View style={styles.container}>
-      <View style={styles.middleContainer}>
-        <Text style={globalStyles.title}>마이 페이지</Text>
-      </View>
-      <View style={styles.rowCloseContainer}>
-        <ProfileSvg />
-        <View style={styles.colCloseContainer}>
-          <Text style={[globalStyles.title, styles.profileTitle]}>팝핀퀸</Text>
-          <Text style={[globalStyles.labelPrimaryGray, styles.profileLabel]}>
-            내 정보 및 취향 관리
-          </Text>
+    <DismissKeyboardView>
+      <View style={styles.container}>
+        <View style={styles.titleContainer}>
+          <Text style={globalStyles.headline}>마이 페이지</Text>
+        </View>
+        <View style={styles.rowHeaderContainer}>
+          <ProfileSvg />
+          <View style={styles.colCloseContainer}>
+            <Text style={[globalStyles.title]}>팝핀퀸</Text>
+            <Text style={[globalStyles.labelPrimaryGray, styles.profileLabel]}>
+              내 정보 및 취향 관리
+            </Text>
+          </View>
+        </View>
+        <CompleteButton
+          onPress={() => {}}
+          title={'팝업 제보하기'}
+          widthRatio={'100%'}
+        />
+        <View style={styles.rowBodyContainer}>
+          <View style={styles.colMidContainer}>
+            <Text>후기 작성하기</Text>
+            <FeedBackSvg style={styles.iconPadding} />
+          </View>
+          <DividerSvg style={styles.dividerPadding} />
+          <View style={styles.colMidContainer}>
+            <Text>작성 완료한 후기</Text>
+            <CompleteSvg style={styles.iconPadding} />
+          </View>
+        </View>
+        <View style={styles.titleContainer}>
+          <Text style={globalStyles.title}>최근 본 팝업</Text>
+        </View>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={styles.popUpScrollView}>
+          {[...Array(10).keys()].map(index => (
+            <PopUpCard
+              key={index}
+              Svg={FeedBackSvg} // 예시로 사용, 필요에 따라 다른 SVG 컴포넌트를 사용하세요
+              title={`팝업 ${index + 1}`}
+              date={'01.01.-02.02'} // 일부에만 날짜 표시
+            />
+          ))}
+        </ScrollView>
+        <View style={styles.middleContainer}>
+          <Text style={globalStyles.bodyMediumSub}>키워드 알림 설정</Text>
+          <RightSvg
+            style={styles.svgStyle}
+            onPress={() => {
+              console.log('설정 버튼 클릭');
+            }}
+          />
+        </View>
+        <View style={styles.middleContainer}>
+          <Text style={globalStyles.bodyMediumSub}>문의하기/FAQ</Text>
+          <RightSvg
+            style={styles.svgStyle}
+            onPress={() => {
+              console.log('설정 버튼 클릭');
+            }}
+          />
+        </View>
+        <View style={styles.appVersionContainer}>
+          <Text style={globalStyles.bodyMediumSub}>앱 버전</Text>
+          <View style={styles.rowHeaderContainer}>
+            <Text style={globalStyles.labelSubStroke}>1.16.0</Text>
+            <RightSvg
+              style={styles.svgStyle}
+              onPress={() => {
+                console.log('설정 버튼 클릭');
+              }}
+            />
+          </View>
+        </View>
+        <View style={styles.middleContainer}>
+          <Text style={globalStyles.bodyMediumSub}>키워드 알림 설정</Text>
+          <RightSvg
+            style={styles.svgStyle}
+            onPress={() => {
+              console.log('설정 버튼 클릭');
+            }}
+          />
+        </View>
+        <View style={styles.middleContainer}>
+          <Text style={globalStyles.bodyMediumSub}>이용 약관 및 정책</Text>
+          <RightSvg
+            style={styles.svgStyle}
+            onPress={() => {
+              console.log('설정 버튼 클릭');
+            }}
+          />
         </View>
       </View>
-      <CompleteButton
-        onPress={() => {}}
-        title={'팝업 제보하기'}
-        widthRatio={'100%'}
-      />
-      <View style={styles.rowCloseContainer}>
-        <View style={styles.colMidContainer}>
-          <Text>후기 작성하기</Text>
-          <FeedBackSvg style={styles.iconPadding} />
-        </View>
-        <View style={styles.divider} />
-        <View style={styles.colMidContainer}>
-          <Text>작성 완료한 후기</Text>
-          <CompleteSvg style={styles.iconPadding} />
-        </View>
-      </View>
-    </View>
+    </DismissKeyboardView>
   );
 }
 
 const styles = StyleSheet.create({
+  middleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+    marginTop: 15,
+  },
+  appVersionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  middleRowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginVertical: 15,
+  },
   container: {
     padding: 20,
     backgroundColor: 'white',
   },
-  profileTitle: {
-    // 필요한 스타일 추가
-  },
   profileLabel: {
     paddingTop: 10, // "내 정보 및 취향 관리"에 상단 패딩 추가
+  },
+  rowBodyContainer: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginTop: 15,
+  },
+  rowHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 15,
   },
   colMidContainer: {
     flexDirection: 'column',
@@ -67,12 +162,12 @@ const styles = StyleSheet.create({
     marginTop: 15,
     paddingHorizontal: 10,
   },
-  rowCloseContainer: {
-    flexDirection: 'row',
-    marginTop: 15,
-  },
+
   iconPadding: {
     paddingTop: 5, // SVG 아이콘과 텍스트 사이의 간격 조정
+  },
+  dividerPadding: {
+    paddingHorizontal: 30,
   },
   divider: {
     borderBottomColor: primaryColors.font,
@@ -80,10 +175,7 @@ const styles = StyleSheet.create({
     marginVertical: 20, // 선을 중심으로 컨텐츠가 서로 떨어져 있도록 마진 추가
   },
 
-  middleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  titleContainer: {
     marginTop: 15,
   },
   calendarViewContainer: {
@@ -111,6 +203,28 @@ const styles = StyleSheet.create({
   dropdownStyle: {
     borderRadius: 10, // 모서리 둥글기 적용
     // 필요한 경우 여기에 추가 스타일 설정
+  },
+  popUpScrollView: {
+    marginTop: 15,
+    paddingHorizontal: 5, // 스크롤뷰의 좌우 패딩
+  },
+  svgStyle: {
+    height: 30, // SVG 높이를 30으로 설정
+    width: 30, // SVG 너비를 30으로 설정
+    paddingRight: 10, // SVG 우측 패딩 유지
+  },
+
+  settingContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  labelSubStroke: {
+    fontFamily: 'Pretandard-Regular',
+    fontSize: 13,
+    fontWeight: '400',
+    color: primaryColors.stroke2,
   },
 });
 export default MyPageScreen;

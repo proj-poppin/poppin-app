@@ -48,7 +48,7 @@ function SignInPasswordScreen({navigation}) {
         <Text style={[globalStyles.bodyMediumSub, styles.infoText]}>
           비밀번호를 잊으셨나요?
         </Text>
-        <Pressable onPress={() => navigation.navigate('PasswordFind')}>
+        <Pressable onPress={() => navigation.navigate('FirstPasswordReset')}>
           <RoundRightSvg />
         </Pressable>
       </View>

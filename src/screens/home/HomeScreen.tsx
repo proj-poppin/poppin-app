@@ -19,7 +19,7 @@ import NotLogginBox from '../../components/NotLogginBox.tsx';
 import QuestionSvg from '../../assets/icons/question.svg';
 import DownSvg from '../../assets/icons/down.svg';
 import RightSvg from '../../assets/icons/smallright.svg';
-function HomeScreen() {
+function HomeScreen({navigation}) {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
   const handlePressQuestion = () => {
@@ -31,7 +31,7 @@ function HomeScreen() {
   };
 
   const handlePress = () => {
-    // 예: navigation.navigate('SomeScreen');
+    navigation.replace('SignInEmail');
   };
 
   return (

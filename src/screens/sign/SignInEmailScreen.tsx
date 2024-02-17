@@ -27,6 +27,19 @@ import appleAuth, {
   AppleAuthRequestScope,
   AppleAuthCredentialState,
 } from '@invertase/react-native-apple-authentication';
+import {
+  login,
+  logout,
+  getProfile as getKakaoProfile,
+  shippingAddresses as getKakaoShippingAddresses,
+  unlink,
+} from '@react-native-seoul/kakao-login';
+import NaverLogin, {
+  NaverLoginResponse,
+  GetProfileResponse,
+} from '@react-native-seoul/naver-login';
+import Config from 'react-native-config';
+import CloseSvgIcon from '../../assets/icons/close.svg';
 
 async function onAppleButtonPress() {
   // performs login request
@@ -54,19 +67,6 @@ async function onAppleButtonPress() {
     console.log('user is not authenticated :(');
   }
 }
-
-import {
-  login,
-  logout,
-  getProfile as getKakaoProfile,
-  shippingAddresses as getKakaoShippingAddresses,
-  unlink,
-} from '@react-native-seoul/kakao-login';
-import NaverLogin, {
-  NaverLoginResponse,
-  GetProfileResponse,
-} from '@react-native-seoul/naver-login';
-import Config from 'react-native-config';
 
 const consumerKey = Config.NAVER_CONSUMER_KEY;
 const consumerSecret = Config.NAVER_SECRECT_KEY;
@@ -123,6 +123,14 @@ function SignInEmailScreen({navigation}) {
     console.log('failureResponse', failureResponse);
     setSuccessResponse(successResponse);
     setFailureResponse(failureResponse);
+    try {
+      console.log(success!.accessToken);
+      const profileResult = await NaverLogin.getProfile(success!.accessToken);
+      console.log('profileResult', profileResult);
+      setGetProfileRes(profileResult);
+    } catch (e) {
+      setGetProfileRes(undefined);
+    }
   };
 
   const logout = async () => {
@@ -236,7 +244,9 @@ function SignInEmailScreen({navigation}) {
         <Text style={[globalStyles.bodyMediumSub, styles.infoText]}>
           아직 POPPIN회원이 아니신가요?
         </Text>
-        <Pressable onPress={() => navigation.navigate('SignUp')}>
+        <Pressable
+          onPress={() => navigation.navigate('SignUp')}
+          style={{padding: 10}}>
           <RoundRightSvg />
         </Pressable>
       </View>

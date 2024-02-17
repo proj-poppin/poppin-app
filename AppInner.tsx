@@ -8,7 +8,7 @@ import HomeScreen from './src/screens/home/HomeScreen.tsx';
 import LikesScreen from './src/screens/likes/LikesScreen.tsx';
 import MyPageScreen from './src/screens/myPage/MyPageScreen.tsx';
 import NickNameSettingScreen from './src/screens/sign/NicknameSettingScreen.tsx';
-import PasswordFindScreen from './src/screens/sign/PasswordFindScreen.tsx';
+import FirstPasswordResetScreen from './src/screens/password/FirstPasswordResetScreen.tsx';
 import SignInEmailScreen from './src/screens/sign/SignInEmailScreen.tsx';
 import SignInPasswordScreen from './src/screens/sign/SignInPasswordScreen.tsx';
 import SignUpScreen from './src/screens/sign/SignUpScreen.tsx';
@@ -32,6 +32,8 @@ import Tab4SvgOn from './src/assets/icons/tab4On.svg';
 import primaryColors from './src/style/primaryColors.ts';
 import {globalStyles} from './src/style/textStyles.ts';
 import OnboardingScreen from './src/screens/onboarding/OnboardingScreen.tsx';
+import {Pressable} from 'react-native';
+import SecondPasswordResetScreen from './src/screens/password/SecondPasswordResetScreen.tsx';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -101,7 +103,14 @@ function AuthStackNavigator() {
         options={({navigation}) => ({
           headerTitle: '',
           headerLeft: () => (
-            <CloseSvgIcon onPress={() => navigation.navigate('Main')} />
+            <Pressable
+              onPress={() => {
+                console.log('replacing to MainTabNavigator');
+                navigation.replace('MainTabNavigator');
+              }}
+              style={{padding: 10}}>
+              <CloseSvgIcon />
+            </Pressable>
           ),
           headerStyle: {
             borderBottomWidth: 0,
@@ -134,8 +143,16 @@ function AuthStackNavigator() {
         options={({navigation}) => ({
           headerTitle: '회원가입',
           headerLeft: () => (
-            <LeftSvgIcon onPress={() => navigation.navigate('SignInEmail')} />
+            <Pressable
+              onPress={() => {
+                console.log('Navigating back to SignInEmail');
+                navigation.navigate('SignInEmail');
+              }}
+              style={{padding: 5}}>
+              <LeftSvgIcon />
+            </Pressable>
           ),
+
           headerStyle: {
             borderBottomWidth: 0, // Android와 iOS에서 헤더 경계선 제거
           },
@@ -143,6 +160,49 @@ function AuthStackNavigator() {
           headerShown: true,
         })}
       />
+      <AuthStack.Screen
+        name="FirstPasswordReset"
+        component={FirstPasswordResetScreen}
+        options={({navigation}) => ({
+          headerTitle: '비밀번호 재설정', // 헤더 제목 설정
+          headerLeft: () => (
+            <Pressable
+              onPress={() => navigation.replace('SignInPassword')}
+              style={{padding: 10}}>
+              <CloseSvgIcon />
+            </Pressable>
+          ),
+          headerStyle: {
+            borderBottomWidth: 0,
+            elevation: 0, // Android에서 헤더 경계선 제거
+            shadowOpacity: 0, // iOS에서 헤더 그림자 제거
+          },
+          headerShadowVisible: false, // iOS에서 헤더 그림자 보이지 않도록 설정
+          headerShown: true, // 헤더 보이기 설정
+        })}
+      />
+      <AuthStack.Screen
+        name="SecondPasswordReset"
+        component={SecondPasswordResetScreen}
+        options={({navigation}) => ({
+          headerTitle: '비밀번호 재설정', // 헤더 제목 설정
+          headerLeft: () => (
+            <Pressable
+              onPress={() => navigation.replace('SignInPassword')}
+              style={{padding: 10}}>
+              <CloseSvgIcon />
+            </Pressable>
+          ),
+          headerStyle: {
+            borderBottomWidth: 0,
+            elevation: 0, // Android에서 헤더 경계선 제거
+            shadowOpacity: 0, // iOS에서 헤더 그림자 제거
+          },
+          headerShadowVisible: false, // iOS에서 헤더 그림자 보이지 않도록 설정
+          headerShown: true, // 헤더 보이기 설정
+        })}
+      />
+
       <AuthStack.Screen
         name="NicknameSetting"
         component={NickNameSettingScreen}
@@ -158,6 +218,7 @@ function AuthStackNavigator() {
           headerShown: true,
         })}
       />
+
       <AuthStack.Screen
         name="SignUpSucceed"
         component={SignUpSucceedScreen}
@@ -195,7 +256,6 @@ function AuthStackNavigator() {
           headerShown: true,
         })}
       />
-      <AuthStack.Screen name="PasswordFind" component={PasswordFindScreen} />
       <AuthStack.Screen
         name="Preference"
         component={PreferenceScreen}
@@ -263,7 +323,7 @@ function AppInner() {
   }
 
   // 로그인 상태에 따라 적절한 네비게이션 스택을 렌더링
-  return !isLoggedIn ? (
+  return isLoggedIn ? (
     <MainStack.Navigator screenOptions={{headerShown: false}}>
       <MainStack.Screen name="Main" component={MainTabNavigator} />
     </MainStack.Navigator>

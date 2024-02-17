@@ -8,6 +8,9 @@ import BlueDotsThreeSvg from '../../assets/icons/blueDotsThree.svg';
 import primaryColors from '../../style/primaryColors.ts';
 import NextButton from '../../components/NextButton.tsx';
 
+import WatchSvg from '../../assets/icons/watch.svg';
+import WatchFilledSvg from '../../assets/icons/watchFilled.svg';
+
 function SignUpSucceedScreen({route, navigation}) {
   // route 파라미터 추가
   // route.params에서 nickname 추출

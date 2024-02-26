@@ -105,6 +105,7 @@ flavorDimensions "version"
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
         resValue "string", "build_config_package", "com.bubble.poppinproject"
         manifestPlaceholders = [kakaoScheme: "kakao${project.env.get("KAKAO_API_KEY")}"]
     }

@@ -21,19 +21,20 @@ import ServiceInfoScreen from './src/screens/sign/ServiceInfoScreen.tsx';
 import PreferenceScreen from './src/screens/preference/PreferenceScreen.tsx';
 import SplashScreen from './src/screens/splash/SplashScreen.tsx';
 
-import Tab1Svg from './src/assets/icons/tab1.svg';
-import Tab2Svg from './src/assets/icons/tab2.svg';
-import Tab3Svg from './src/assets/icons/tab3.svg';
-import Tab4Svg from './src/assets/icons/tab4.svg';
-import Tab1SvgOn from './src/assets/icons/tab1On.svg';
-import Tab2SvgOn from './src/assets/icons/tab2On.svg';
-import Tab3SvgOn from './src/assets/icons/tab3On.svg';
-import Tab4SvgOn from './src/assets/icons/tab4On.svg';
+import Tab1Svg from './src/assets/icons/tab/tab1.svg';
+import Tab2Svg from './src/assets/icons/tab/tab2.svg';
+import Tab3Svg from './src/assets/icons/tab/tab3.svg';
+import Tab4Svg from './src/assets/icons/tab/tab4.svg';
+import Tab1SvgOn from './src/assets/icons/tab/tab1On.svg';
+import Tab2SvgOn from './src/assets/icons/tab/tab2On.svg';
+import Tab3SvgOn from './src/assets/icons/tab/tab3On.svg';
+import Tab4SvgOn from './src/assets/icons/tab/tab4On.svg';
 import primaryColors from './src/style/primaryColors.ts';
 import {globalStyles} from './src/style/textStyles.ts';
 import OnboardingScreen from './src/screens/onboarding/OnboardingScreen.tsx';
 import {Pressable} from 'react-native';
 import SecondPasswordResetScreen from './src/screens/password/SecondPasswordResetScreen.tsx';
+import MyProfileEditScreen from './src/screens/myPage/ProfileEditScreen.tsx';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -319,20 +320,48 @@ function AppInner() {
 
   if (isSplashScreenVisible) {
     // 스플래시 스크린이 활성화되어 있으면, SplashScreen 컴포넌트를 렌더링
-    return <SplashScreen />;
+    // return <SplashScreen />;
   }
 
   // 로그인 상태에 따라 적절한 네비게이션 스택을 렌더링
-  return isLoggedIn ? (
+  return (
     <MainStack.Navigator screenOptions={{headerShown: false}}>
-      <MainStack.Screen name="Main" component={MainTabNavigator} />
-    </MainStack.Navigator>
-  ) : (
-    <MainStack.Navigator screenOptions={{headerShown: false}}>
-      <MainStack.Screen name="Auth" component={AuthStackNavigator} />
+      {isLoggedIn ? (
+        // 로그인한 사용자를 위한 스크린
+        <>
+          <MainStack.Screen
+            name="MainTabNavigator"
+            component={MainTabNavigator}
+          />
+          {/* 로그인 상태와 무관하게 접근 가능한 스크린을 추가 */}
+          <MainStack.Screen
+            name="ProfileEdit"
+            component={MyProfileEditScreen}
+            options={{
+              headerBackVisible: false,
+            }}
+          />
+        </>
+      ) : (
+        // 로그인하지 않은 사용자를 위한 스크린
+        <>
+          <MainStack.Screen
+            name="Auth"
+            screenOptions={{headerShown: false}}
+            component={AuthStackNavigator}
+          />
+          {/* 로그인 상태와 무관하게 접근 가능한 스크린을 추가 */}
+          <MainStack.Screen
+            name="ProfileEdit"
+            component={MyProfileEditScreen}
+            options={{
+              headerBackVisible: false,
+            }}
+          />
+        </>
+      )}
     </MainStack.Navigator>
   );
-  // return <OnboardingScreen />; // 온보딩 스크린을 렌더링 test
 }
 
 export default AppInner;

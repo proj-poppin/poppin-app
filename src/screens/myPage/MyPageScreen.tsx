@@ -1,4 +1,4 @@
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import primaryColors from '../../style/primaryColors.ts';
 import {globalStyles} from '../../style/textStyles.ts';
@@ -11,8 +11,15 @@ import DividerSvg from '../../assets/images/divider.svg';
 import PopUpCard from '../../components/PopUpCard.tsx';
 import RightSvg from '../../assets/icons/bigRight.svg';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
+import ProfileSmallRightSvg from '../../assets/icons/profileSmallRight.svg';
 
-function MyPageScreen() {
+function MyPageScreen({navigation}) {
+  const navigateToProfileEdit = () => {
+    navigation.navigate('ProfileEdit');
+  };
+
+  const reviewCount = 10;
+
   return (
     <DismissKeyboardView>
       <View style={styles.container}>
@@ -23,9 +30,18 @@ function MyPageScreen() {
           <ProfileSvg />
           <View style={styles.colCloseContainer}>
             <Text style={[globalStyles.title]}>팝핀퀸</Text>
-            <Text style={[globalStyles.labelPrimaryGray, styles.profileLabel]}>
-              내 정보 및 취향 관리
-            </Text>
+            <Pressable
+              style={styles.profileInfoContainer}
+              onPress={navigateToProfileEdit}
+              style={styles.infoRow}>
+              <Text
+                style={[globalStyles.labelPrimaryGray, styles.profileLabel]}>
+                내 정보 및 취향 관리
+              </Text>
+              <ProfileSmallRightSvg
+                style={{marginTop: 10, marginHorizontal: 5}}
+              />
+            </Pressable>
           </View>
         </View>
         <CompleteButton
@@ -35,13 +51,23 @@ function MyPageScreen() {
         />
         <View style={styles.rowBodyContainer}>
           <View style={styles.colMidContainer}>
-            <Text>후기 작성하기</Text>
-            <FeedBackSvg style={styles.iconPadding} />
+            <Text style={globalStyles.labelSub}>후기 작성하기</Text>
+            <View style={styles.infoRow}>
+              <FeedBackSvg style={styles.iconPadding} />
+              <Text style={globalStyles.bodyLargePrimaryBlue}>
+                {reviewCount}
+              </Text>
+            </View>
           </View>
           <DividerSvg style={styles.dividerPadding} />
           <View style={styles.colMidContainer}>
-            <Text>작성 완료한 후기</Text>
-            <CompleteSvg style={styles.iconPadding} />
+            <Text style={globalStyles.labelSub}>작성 완료한 후기</Text>
+            <View style={styles.infoRow}>
+              <CompleteSvg style={styles.iconPadding} />
+              <Text style={globalStyles.bodyLargePrimaryGray}>
+                {reviewCount}
+              </Text>
+            </View>
           </View>
         </View>
         <View style={styles.titleContainer}>
@@ -82,12 +108,6 @@ function MyPageScreen() {
           <Text style={globalStyles.bodyMediumSub}>앱 버전</Text>
           <View style={styles.rowHeaderContainer}>
             <Text style={globalStyles.labelSubStroke}>1.16.0</Text>
-            <RightSvg
-              style={styles.svgStyle}
-              onPress={() => {
-                console.log('설정 버튼 클릭');
-              }}
-            />
           </View>
         </View>
         <View style={styles.middleContainer}>
@@ -114,6 +134,17 @@ function MyPageScreen() {
 }
 
 const styles = StyleSheet.create({
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center', // 세로 중앙 정렬
+  },
+  // 기존 스타일 유지
+  profileInfoContainer: {
+    flexDirection: 'row', // 가로로 배열
+    alignItems: 'center', // 세로 중앙 정렬
+    marginTop: 10, // 필요한 경우 마진 조정
+  },
+
   middleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -143,7 +174,7 @@ const styles = StyleSheet.create({
   rowBodyContainer: {
     justifyContent: 'center',
     flexDirection: 'row',
-    marginTop: 15,
+    marginTop: 10,
   },
   rowHeaderContainer: {
     flexDirection: 'row',
@@ -164,7 +195,9 @@ const styles = StyleSheet.create({
   },
 
   iconPadding: {
-    paddingTop: 5, // SVG 아이콘과 텍스트 사이의 간격 조정
+    paddingTop: 5, // 기존의 패딩 유지
+    marginBottom: -5, // 아이콘과 텍스트 사이의 간격 조정
+    marginHorizontal: 3,
   },
   dividerPadding: {
     paddingHorizontal: 30,

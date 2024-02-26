@@ -63,7 +63,7 @@ const PreferenceScreen: React.FC<PreferenceScreenProps> = ({navigation}) => {
 
   const progressBarContainerStyle = {
     height: 5,
-    backgroundColor: primaryColors.whiteGray,
+    backgroundColor: primaryColors.warmGray,
     borderRadius: 20,
     paddingRight: undefined as number | undefined,
     paddingLeft: undefined as number | undefined,

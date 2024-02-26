@@ -15,7 +15,8 @@ const SkipModal = ({isVisible, onClose, onSetNow}) => {
       <View style={styles.overlayStyle}>
         <View style={styles.modalView}>
           <SkipSvg style={{paddingBottom: 80}} />
-          <Text style={[globalStyles.bodyLargePrimary, {textAlign: 'center'}]}>
+          <Text
+            style={[globalStyles.bodyLargePrimaryBlack, {textAlign: 'center'}]}>
             {'취향을 설정하면 맞춤 팝업 정보를\n받아볼 수 있어요!'}
           </Text>
           <View style={{flexDirection: 'row', marginTop: 20}}>
@@ -34,7 +35,7 @@ const SkipModal = ({isVisible, onClose, onSetNow}) => {
             </Pressable>
             <Text
               style={{
-                color: primaryColors.whiteGray,
+                color: primaryColors.warmGray,
                 alignSelf: 'center',
                 paddingHorizontal: 10,
                 paddingBottom: 8,

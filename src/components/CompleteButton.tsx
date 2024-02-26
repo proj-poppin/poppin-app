@@ -47,7 +47,7 @@ const CompleteButton: React.FC<CompleteButtonProps> = ({
     ) : (
       <Text
         style={[
-          globalStyles.bodyLargePrimary,
+          globalStyles.bodyLargePrimaryBlack,
           {
             color:
               disabled && !alwaysActive

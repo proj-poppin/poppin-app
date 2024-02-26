@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {Animated, StyleSheet, View, Text} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import primaryColors from '../style/primaryColors.ts';
-import Splash1 from '../assets/images/splash1.svg';
-import Splash2 from '../assets/images/splash2.svg';
-import Splash3 from '../assets/images/splash3.svg';
-import Splash4 from '../assets/images/splash4.svg';
+import primaryColors from '../../style/primaryColors.ts';
+import Splash1 from '../../assets/images/splash1.svg';
+import Splash2 from '../../assets/images/splash2.svg';
+import Splash3 from '../../assets/images/splash3.svg';
+import Splash4 from '../../assets/images/splash4.svg';
 
 // 첫 번째 화면은 SVG 자체가 없으므로 null 추가, Splash4를 두 번 사용
 const svgs = [null, Splash1, Splash2, Splash3, Splash4, Splash4];

@@ -1,6 +1,6 @@
 // ShadowedBox.js
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, Pressable} from 'react-native';
 import primaryColors from '../style/primaryColors.ts';
 import Colors from '../style/primaryColors.ts';
 
@@ -12,9 +12,9 @@ const NotLogginBox = ({text1, text2, buttonText, onPress}) => {
           {text1} {'\n'}
           {text2}
         </Text>
-        <TouchableOpacity onPress={onPress} style={styles.button}>
+        <Pressable onPress={onPress} style={styles.button}>
           <Text style={styles.buttonText}>{buttonText}</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </View>
   );

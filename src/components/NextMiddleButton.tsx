@@ -22,7 +22,11 @@ const NextMiddleButton: React.FC<NextMiddleButtonProps> = ({
       },
     ]}
     onPress={onPress}>
-    <Text style={[globalStyles.bodyLargePrimary, {color: primaryColors.white}]}>
+    <Text
+      style={[
+        globalStyles.bodyLargePrimaryBlack,
+        {color: primaryColors.white},
+      ]}>
       {title}
     </Text>
   </Pressable>

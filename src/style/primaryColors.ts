@@ -9,7 +9,7 @@ const primaryColors = {
   icon: '#B8CAD2',
   subWhite: '#FAF4FC',
   component: '#F2F4F6',
-  whiteGray: '#DDDDDD',
+  warmGray: '#DDDDDD',
   red: '#EF4452',
   stroke: '#E5E5E5',
   white: '#FFFFFF',

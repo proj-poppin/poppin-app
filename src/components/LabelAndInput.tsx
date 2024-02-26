@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: primaryColors.whiteGray,
+    borderColor: primaryColors.warmGray,
     padding: 10,
     fontFamily: 'Pretandard-Regular',
     fontSize: 18,

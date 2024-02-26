@@ -41,7 +41,7 @@ const CheckModal = ({isVisible, onClose}) => {
         <View style={styles.modalView}>
           <Text
             style={[
-              globalStyles.bodyLargePrimary,
+              globalStyles.bodyLargePrimaryBlack,
               {textAlign: 'center', marginBottom: 20},
             ]}>
             소중한 제보 감사합니다

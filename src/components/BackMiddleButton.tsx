@@ -18,7 +18,7 @@ const BackMiddleButton: React.FC<BackMiddleButtonProps> = ({
       pressed ? styles.buttonPressed : styles.buttonNormal,
     ]}
     onPress={onPress}>
-    <Text style={[globalStyles.bodyLargePrimary, styles.buttonText]}>
+    <Text style={[globalStyles.bodyLargePrimaryBlack, styles.buttonText]}>
       {title}
     </Text>
   </Pressable>

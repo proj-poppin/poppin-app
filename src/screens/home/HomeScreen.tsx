@@ -49,20 +49,20 @@ function HomeScreen({navigation}) {
       <View style={styles.container}>
         <View style={styles.middleContainer}>
           <View style={styles.textAndQuestionContainer}>
-            <Text style={globalStyles.bodyLargePrimary}>인기 TOP 5</Text>
+            <Text style={globalStyles.bodyLargePrimaryBlack}>인기 TOP 5</Text>
             <QuestionSvg style={{paddingLeft: 40}} />
           </View>
           <DownSvg />
         </View>
         <View style={styles.middleContainer}>
-          <Text style={globalStyles.bodyLargePrimary}>새로 오픈</Text>
+          <Text style={globalStyles.bodyLargePrimaryBlack}>새로 오픈</Text>
           <View style={styles.textAndQuestionContainer}>
             <Text style={globalStyles.labelSubStroke}>전체 보기</Text>
             <RightSvg style={{paddingLeft: 20}} />
           </View>
         </View>
         <View style={styles.middleContainer}>
-          <Text style={globalStyles.bodyLargePrimary}>종료 임박</Text>
+          <Text style={globalStyles.bodyLargePrimaryBlack}>종료 임박</Text>
           <View style={styles.textAndQuestionContainer}>
             <Text style={globalStyles.labelSubStroke}>전체 보기</Text>
             <RightSvg style={{paddingLeft: 20}} />

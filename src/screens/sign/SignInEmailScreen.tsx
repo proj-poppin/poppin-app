@@ -15,10 +15,10 @@ import primaryColors from '../../style/primaryColors.ts';
 import MainTitle from '../../components/MainTitle.tsx';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
 import RoundRightSvg from '../../assets/icons/roundRight.svg';
-import KakaoSvg from '../../assets/icons/kakao.svg';
-import AppleSvg from '../../assets/icons/apple.svg';
-import NaverSvg from '../../assets/icons/naver.svg';
-import GoogleSvg from '../../assets/icons/google.svg';
+import KakaoSvg from '../../assets/icons/social_login/kakao.svg';
+import AppleSvg from '../../assets/icons/social_login/apple.svg';
+import NaverSvg from '../../assets/icons/social_login/naver.svg';
+import GoogleSvg from '../../assets/icons/social_login/google.svg';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import appleAuth, {
@@ -42,6 +42,11 @@ import Config from 'react-native-config';
 import CloseSvgIcon from '../../assets/icons/close.svg';
 
 async function onAppleButtonPress() {
+  if (Platform.OS === 'android') {
+    console.log('android');
+    return Alert.alert('안내', 'iOS 기기에서만 사용 가능합니다.');
+  }
+
   // performs login request
   const appleAuthRequestResponse = await appleAuth.performRequest({
     requestedOperation: appleAuth.Operation.LOGIN,

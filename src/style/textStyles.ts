@@ -2,8 +2,14 @@
 import {StyleSheet} from 'react-native';
 import Colors from './primaryColors.ts';
 import primaryColors from './primaryColors.ts';
+import PrimaryColors from './primaryColors.ts';
 
 export const globalStyles = StyleSheet.create({
+  bottomNavigationTab: {
+    fontFamily: 'Pretandard-Bold',
+    fontSize: 12,
+    fontWeight: '700',
+  },
   headline: {
     fontFamily: 'Pretandard-Semibold',
     fontSize: 24,
@@ -16,11 +22,25 @@ export const globalStyles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.black,
   },
-  bodyLargePrimary: {
+  bodyLargePrimaryBlack: {
     fontFamily: 'Pretandard-Semibold',
     fontSize: 18,
     fontWeight: '600',
     color: Colors.black,
+  },
+  bodyLargePrimaryBlue: {
+    fontFamily: 'Pretandard-Semibold',
+    fontSize: 18,
+    fontWeight: '600',
+    color: PrimaryColors.blue,
+    marginTop: 5,
+  },
+  bodyLargePrimaryGray: {
+    fontFamily: 'Pretandard-Semibold',
+    fontSize: 18,
+    fontWeight: '600',
+    color: primaryColors.font,
+    marginTop: 5,
   },
   bodyLargeSub: {
     fontFamily: 'Pretandard-Regular',
@@ -42,14 +62,15 @@ export const globalStyles = StyleSheet.create({
   },
   labelPrimary: {
     fontFamily: 'Pretandard-Bold',
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '600',
     color: Colors.black,
   },
-  labelPrimary: {
+  labelPrimaryGray: {
     fontFamily: 'Pretandard-Bold',
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '600',
+    color: primaryColors.font,
   },
   labelSub: {
     fontFamily: 'Pretandard-Regular',

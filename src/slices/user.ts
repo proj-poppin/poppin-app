@@ -6,6 +6,7 @@ const initialState = {
   accessToken: '',
   phoneToken: '',
   money: 0,
+  isSocialLogin: false,
 };
 const userSlice = createSlice({
   name: 'user',

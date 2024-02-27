@@ -93,6 +93,7 @@ function MyProfileEditScreen({navigation}) {
           style={styles.preferenceButton}
           onPress={() => {
             // 버튼 클릭 시 이벤트 핸들러
+            navigation.push('PreferenceSetting');
           }}>
           <Text style={styles.preferenceButtonText}>취향 설정</Text>
         </TouchableOpacity>

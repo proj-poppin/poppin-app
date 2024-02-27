@@ -38,6 +38,7 @@ import MyProfileEditScreen from './src/screens/myPage/ProfileEditScreen.tsx';
 import MemberDeleteScreen from './src/screens/myPage/MemberDeleteScreen.tsx';
 import PasswordChangeScreen from './src/screens/myPage/PasswordChangeScreen.tsx';
 import GoBackSvg from './src/assets/icons/goBack.svg';
+import PreferenceSettingScreen from './src/screens/myPage/PreferenceSettingScreen.tsx';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -261,16 +262,27 @@ function AuthStackNavigator() {
         })}
       />
       <AuthStack.Screen
-        name="Preference"
-        component={PreferenceScreen}
+        name="PreferenceSetting"
+        component={PreferenceSettingScreen}
         options={({navigation}) => ({
-          headerTitle: '나의 취향 설정하기',
-          headerLeft: () => '',
-          headerStyle: {
-            borderBottomWidth: 0, // Android와 iOS에서 헤더 경계선 제거
-          },
-          headerShadowVisible: false, // iOS에서 헤더 그림자 제거
           headerShown: true,
+          headerTitle: '취향 설정하기',
+          headerLeft: () => (
+            <Pressable
+              onPress={() => {
+                console.log('replacing to MainTabNavigator');
+                navigation.goBack();
+              }}
+              style={{padding: 10}}>
+              <CloseSvgIcon />
+            </Pressable>
+          ),
+          headerStyle: {
+            borderBottomWidth: 0,
+            elevation: 0, // For Android
+            shadowOpacity: 0, // For iOS
+          },
+          headerShadowVisible: false,
         })}
       />
     </AuthStack.Navigator>
@@ -400,6 +412,30 @@ function AppInner() {
                 </Pressable>
               ),
               // 기타 헤더 스타일링 옵션
+            })}
+          />
+          <AuthStack.Screen
+            name="PreferenceSetting"
+            component={PreferenceSettingScreen}
+            options={({navigation}) => ({
+              headerShown: true,
+              headerTitle: '취향 설정하기',
+              headerLeft: () => (
+                <Pressable
+                  onPress={() => {
+                    console.log('replacing to MainTabNavigator');
+                    navigation.goBack();
+                  }}
+                  style={{padding: 10}}>
+                  <CloseSvgIcon />
+                </Pressable>
+              ),
+              headerStyle: {
+                borderBottomWidth: 0,
+                elevation: 0, // For Android
+                shadowOpacity: 0, // For iOS
+              },
+              headerShadowVisible: false,
             })}
           />
         </>

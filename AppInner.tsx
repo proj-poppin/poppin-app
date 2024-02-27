@@ -35,6 +35,7 @@ import OnboardingScreen from './src/screens/onboarding/OnboardingScreen.tsx';
 import {Pressable} from 'react-native';
 import SecondPasswordResetScreen from './src/screens/password/SecondPasswordResetScreen.tsx';
 import MyProfileEditScreen from './src/screens/myPage/ProfileEditScreen.tsx';
+import MemberDeleteScreen from './src/screens/myPage/MemberDeleteScreen.tsx';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -337,9 +338,6 @@ function AppInner() {
           <MainStack.Screen
             name="ProfileEdit"
             component={MyProfileEditScreen}
-            options={{
-              headerBackVisible: false,
-            }}
           />
         </>
       ) : (
@@ -355,7 +353,15 @@ function AppInner() {
             name="ProfileEdit"
             component={MyProfileEditScreen}
             options={{
+              headerShadowVisible: false, //⭐️ Appbar(Header)에서 gray 지우기 ⭐️
               headerBackVisible: false,
+            }}
+          />
+          <MainStack.Screen
+            name="MemberDelete"
+            component={MemberDeleteScreen}
+            options={{
+              headerShadowVisible: false, //⭐️ Appbar(Header)에서 gray 지우기 ⭐️
             }}
           />
         </>

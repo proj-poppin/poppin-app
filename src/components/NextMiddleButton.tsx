@@ -34,8 +34,8 @@ const NextMiddleButton: React.FC<NextMiddleButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    width: '50%',
-    height: 57,
+    width: '55%',
+    height: 52,
     borderRadius: 25,
     marginTop: 35,
     marginBottom: 10,

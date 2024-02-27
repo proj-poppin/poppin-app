@@ -6,11 +6,13 @@ import {globalStyles} from '../style/textStyles.ts';
 interface BackMiddleButtonProps {
   onPress: () => void;
   title: string;
+  textColor?: string; // 선택적 속성으로 텍스트 색상 추가
 }
 
 const BackMiddleButton: React.FC<BackMiddleButtonProps> = ({
   onPress,
   title,
+  textColor, // 텍스트 색상을 props로 받음
 }) => (
   <Pressable
     style={({pressed}) => [
@@ -18,7 +20,12 @@ const BackMiddleButton: React.FC<BackMiddleButtonProps> = ({
       pressed ? styles.buttonPressed : styles.buttonNormal,
     ]}
     onPress={onPress}>
-    <Text style={[globalStyles.bodyLargePrimaryBlack, styles.buttonText]}>
+    <Text
+      style={[
+        globalStyles.bodyLargePrimaryBlack,
+        styles.buttonText,
+        {color: textColor || primaryColors.blue},
+      ]}>
       {title}
     </Text>
   </Pressable>
@@ -26,8 +33,8 @@ const BackMiddleButton: React.FC<BackMiddleButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    width: '50%',
-    height: 57,
+    width: '55%',
+    height: 52,
     borderRadius: 25,
     marginTop: 35,
     marginBottom: 10,
@@ -42,10 +49,9 @@ const styles = StyleSheet.create({
   },
   buttonPressed: {
     backgroundColor: `${primaryColors.blue}1A`, // 투명도 10% 적용
-    // borderColor 변경을 위해 외부 라이브러리 사용 필요
   },
   buttonText: {
-    color: primaryColors.blue, // 텍스트 색상
+    // 기본 텍스트 색상은 styles.buttonText 내에서 설정되지 않고, 컴포넌트 내에서 조건부로 적용됩니다.
   },
 });
 

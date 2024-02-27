@@ -49,7 +49,6 @@ function MyProfileEditScreen({navigation}) {
 
   // '회원 탈퇴' 버튼 클릭 핸들러
   const handleMemberWithdrawalPress = () => {
-    // 'MemberWithdrawal'은 회원 탈퇴 스크린의 라우트 이름이라고 가정합니다.
     navigation.navigate('MemberDelete');
   };
   // useEffect(() => {
@@ -66,8 +65,14 @@ function MyProfileEditScreen({navigation}) {
   // }, [user.email]);
 
   useEffect(() => {
-    // ProfileAppBar 컴포넌트를 사용하여 navigation options 설정
-    navigation.setOptions(ProfileAppBar({navigation}));
+    // Pass the title and the boolean for header right visibility
+    navigation.setOptions(
+      ProfileAppBar({
+        navigation,
+        appBarTitle: '프로필 설정',
+        isHeaderRight: true,
+      }),
+    );
   }, [navigation]);
 
   const openGallery = () => {
@@ -148,9 +153,7 @@ function MyProfileEditScreen({navigation}) {
       </View>
       <Text
         style={{color: primaryColors.red, marginLeft: 15}}
-        onPress={() => {
-          console.log('회원 ');
-        }}>
+        onPress={handleMemberWithdrawalPress}>
         회원 탈퇴
       </Text>
     </DismissKeyboardView>

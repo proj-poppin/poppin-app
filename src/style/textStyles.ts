@@ -63,13 +63,19 @@ export const globalStyles = StyleSheet.create({
   labelPrimary: {
     fontFamily: 'Pretandard-Bold',
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '400',
     color: Colors.black,
   },
   labelPrimaryGray: {
     fontFamily: 'Pretandard-Bold',
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '400',
+    color: primaryColors.font,
+  },
+  labelSubGray: {
+    fontFamily: 'Pretandard-Regular',
+    fontSize: 13,
+    fontWeight: '300',
     color: primaryColors.font,
   },
   labelSub: {

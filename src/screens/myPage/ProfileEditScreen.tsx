@@ -147,7 +147,7 @@ function MyProfileEditScreen({navigation}) {
         <RightSvg
           style={styles.svgStyle}
           onPress={() => {
-            console.log('설정 버튼 클릭');
+            navigation.navigate('PasswordChange');
           }}
         />
       </View>

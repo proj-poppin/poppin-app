@@ -36,6 +36,7 @@ import {Pressable} from 'react-native';
 import SecondPasswordResetScreen from './src/screens/password/SecondPasswordResetScreen.tsx';
 import MyProfileEditScreen from './src/screens/myPage/ProfileEditScreen.tsx';
 import MemberDeleteScreen from './src/screens/myPage/MemberDeleteScreen.tsx';
+import PasswordChangeScreen from './src/screens/myPage/PasswordChangeScreen.tsx';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -357,7 +358,14 @@ function AppInner() {
               headerBackVisible: false,
             }}
           />
-          <MainStack.Screen
+          <AuthStack.Screen
+            name="PasswordChange"
+            component={PasswordChangeScreen}
+            options={{
+              headerShadowVisible: false, //⭐️ Appbar(Header)에서 gray 지우기 ⭐️
+            }}
+          />
+          <AuthStack.Screen
             name="MemberDelete"
             component={MemberDeleteScreen}
             options={{

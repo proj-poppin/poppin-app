@@ -64,17 +64,6 @@ function MyProfileEditScreen({navigation}) {
   //   }
   // }, [user.email]);
 
-  useEffect(() => {
-    // Pass the title and the boolean for header right visibility
-    navigation.setOptions(
-      ProfileAppBar({
-        navigation,
-        appBarTitle: '프로필 설정',
-        isHeaderRight: true,
-      }),
-    );
-  }, [navigation]);
-
   const openGallery = () => {
     ImagePicker.openPicker({
       width: 110,

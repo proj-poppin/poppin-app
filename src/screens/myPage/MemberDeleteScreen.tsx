@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import ProfileAppBar from '../../components/ProfileAppBar.tsx';
-import MainTitle from '../../components/MainTitle.tsx';
 import {globalStyles} from '../../style/textStyles.ts';
 import primaryColors from '../../style/primaryColors.ts';
 import ShallowDividerLine from '../../components/ShallowDividerLine.tsx';
@@ -37,16 +36,6 @@ function MemberDeleteScreen({navigation}) {
     setIsDeleted(true);
     closeModal();
   };
-
-  useEffect(() => {
-    navigation.setOptions(
-      ProfileAppBar({
-        navigation,
-        appBarTitle: '회원 탈퇴',
-        isHeaderRight: false,
-      }),
-    );
-  }, [navigation]);
 
   if (isDeleted) {
     return (

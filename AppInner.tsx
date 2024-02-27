@@ -32,11 +32,12 @@ import Tab4SvgOn from './src/assets/icons/tab/tab4On.svg';
 import primaryColors from './src/style/primaryColors.ts';
 import {globalStyles} from './src/style/textStyles.ts';
 import OnboardingScreen from './src/screens/onboarding/OnboardingScreen.tsx';
-import {Pressable} from 'react-native';
+import {Pressable, Text} from 'react-native';
 import SecondPasswordResetScreen from './src/screens/password/SecondPasswordResetScreen.tsx';
 import MyProfileEditScreen from './src/screens/myPage/ProfileEditScreen.tsx';
 import MemberDeleteScreen from './src/screens/myPage/MemberDeleteScreen.tsx';
 import PasswordChangeScreen from './src/screens/myPage/PasswordChangeScreen.tsx';
+import GoBackSvg from './src/assets/icons/goBack.svg';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -353,10 +354,27 @@ function AppInner() {
           <MainStack.Screen
             name="ProfileEdit"
             component={MyProfileEditScreen}
-            options={{
+            options={({navigation}) => ({
+              headerShown: true,
+              title: '프로필 설정',
+              headerRight: () => (
+                <Text onPress={() => navigation.goBack()}>
+                  <Text style={{color: primaryColors.blue, marginRight: 10}}>
+                    완료
+                  </Text>
+                </Text>
+              ),
+              headerLeft: () => (
+                <Pressable
+                  onPress={() => navigation.goBack()}
+                  style={({pressed}) => ({
+                    opacity: pressed ? 0.5 : 1,
+                  })}>
+                  <GoBackSvg />
+                </Pressable>
+              ),
               headerShadowVisible: false, //⭐️ Appbar(Header)에서 gray 지우기 ⭐️
-              headerBackVisible: false,
-            }}
+            })}
           />
           <AuthStack.Screen
             name="PasswordChange"
@@ -368,9 +386,21 @@ function AppInner() {
           <AuthStack.Screen
             name="MemberDelete"
             component={MemberDeleteScreen}
-            options={{
-              headerShadowVisible: false, //⭐️ Appbar(Header)에서 gray 지우기 ⭐️
-            }}
+            options={({navigation}) => ({
+              headerShadowVisible: false, // Appbar(Header)에서 그림자 제거
+              headerShown: true,
+              title: '회원 탈퇴', // 헤더 타이틀 설정
+              headerLeft: () => (
+                <Pressable
+                  onPress={() => navigation.goBack()}
+                  style={({pressed}) => ({
+                    opacity: pressed ? 0.5 : 1,
+                  })}>
+                  <GoBackSvg />
+                </Pressable>
+              ),
+              // 기타 헤더 스타일링 옵션
+            })}
           />
         </>
       )}

@@ -100,6 +100,7 @@ function MemberDeleteScreen({navigation}) {
         subAlertTitle={'탈퇴하신 아이디로는\n30일간 재가입 하실 수 없어요'}
         onConfirm={confirmDelete}
         onClose={closeModal}
+        onBlankSpacePressed={closeModal}
         isVisible={modalVisible}
         selectFirstText={'계속 사용하기'}
         selectSecondText={'탈퇴하기'}

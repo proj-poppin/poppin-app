@@ -21,7 +21,7 @@ function MyPageScreen({navigation}) {
   const reviewCount = 10;
 
   return (
-    <DismissKeyboardView>
+    <DismissKeyboardView style={styles.container}>
       <View style={styles.container}>
         <View style={styles.titleContainer}>
           <Text style={globalStyles.headline}>마이 페이지</Text>
@@ -45,7 +45,9 @@ function MyPageScreen({navigation}) {
           </View>
         </View>
         <CompleteButton
-          onPress={() => {}}
+          onPress={() => {
+            navigation.navigate('UserRegister');
+          }}
           title={'팝업 제보하기'}
           widthRatio={'100%'}
         />
@@ -91,7 +93,7 @@ function MyPageScreen({navigation}) {
           <RightSvg
             style={styles.svgStyle}
             onPress={() => {
-              console.log('설정 버튼 클릭');
+              navigation.navigate('KeywordAlarm');
             }}
           />
         </View>
@@ -100,7 +102,7 @@ function MyPageScreen({navigation}) {
           <RightSvg
             style={styles.svgStyle}
             onPress={() => {
-              console.log('설정 버튼 클릭');
+              navigation.navigate('FAQ');
             }}
           />
         </View>
@@ -111,20 +113,11 @@ function MyPageScreen({navigation}) {
           </View>
         </View>
         <View style={styles.middleContainer}>
-          <Text style={globalStyles.bodyMediumSub}>키워드 알림 설정</Text>
-          <RightSvg
-            style={styles.svgStyle}
-            onPress={() => {
-              console.log('설정 버튼 클릭');
-            }}
-          />
-        </View>
-        <View style={styles.middleContainer}>
           <Text style={globalStyles.bodyMediumSub}>이용 약관 및 정책</Text>
           <RightSvg
             style={styles.svgStyle}
             onPress={() => {
-              console.log('설정 버튼 클릭');
+              navigation.navigate('Policy');
             }}
           />
         </View>
@@ -134,6 +127,11 @@ function MyPageScreen({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'white',
+    padding: 10,
+    marginBottom: 40,
+  },
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center', // 세로 중앙 정렬
@@ -164,10 +162,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 15,
   },
-  container: {
-    padding: 20,
-    backgroundColor: 'white',
-  },
+
   profileLabel: {
     paddingTop: 10, // "내 정보 및 취향 관리"에 상단 패딩 추가
   },

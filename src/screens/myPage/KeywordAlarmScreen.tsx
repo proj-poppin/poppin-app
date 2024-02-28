@@ -95,6 +95,7 @@ function KeywordAlarmScreen({navigation}) {
             removeKeyword(deleteIndex);
             setIsDeleteModalVisible(false);
           }}
+          onBlankSpacePressed={() => setIsDeleteModalVisible(false)}
           mainAlertTitle="삭제하시겠습니까?"
           subAlertTitle="키워드 알림을 삭제합니다."
           selectFirstText="취소하기"

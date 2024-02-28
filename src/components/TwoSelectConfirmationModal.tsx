@@ -19,6 +19,7 @@ const TwoSelectConfirmationModal = ({
   subAlertTitle,
   selectFirstText,
   selectSecondText,
+  onBlankSpacePressed,
 }) => {
   return (
     <Modal
@@ -26,7 +27,7 @@ const TwoSelectConfirmationModal = ({
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}>
-      <TouchableWithoutFeedback onPress={onClose}>
+      <TouchableWithoutFeedback onPress={onBlankSpacePressed}>
         <View style={styles.overlayStyle}>
           <View style={styles.modalView}>
             <AlertSvg />
@@ -63,7 +64,6 @@ const TwoSelectConfirmationModal = ({
                 style={[styles.button, styles.deleteButton]}
                 onPress={() => {
                   onConfirm(); // 삭제하기 버튼을 누를 때 onConfirm 함수 호출
-                  onClose(); // 모달 닫기
                 }}>
                 <Text
                   style={[

@@ -18,8 +18,6 @@ import CloseSvgIcon from './src/assets/icons/close.svg';
 import LeftSvgIcon from './src/assets/icons/left.svg';
 import ProtectInfoScreen from './src/screens/sign/ProtectInfoScreen.tsx';
 import ServiceInfoScreen from './src/screens/sign/ServiceInfoScreen.tsx';
-import PreferenceScreen from './src/screens/preference/PreferenceScreen.tsx';
-import SplashScreen from './src/screens/splash/SplashScreen.tsx';
 
 import Tab1Svg from './src/assets/icons/tab/tab1.svg';
 import Tab2Svg from './src/assets/icons/tab/tab2.svg';
@@ -39,6 +37,10 @@ import MemberDeleteScreen from './src/screens/myPage/MemberDeleteScreen.tsx';
 import PasswordChangeScreen from './src/screens/myPage/PasswordChangeScreen.tsx';
 import GoBackSvg from './src/assets/icons/goBack.svg';
 import PreferenceSettingScreen from './src/screens/myPage/PreferenceSettingScreen.tsx';
+import FAQScreen from './src/screens/myPage/FAQScreen.tsx';
+import PolicyScreen from './src/screens/myPage/PolicyScreen.tsx';
+import KeywordAlarmScreen from './src/screens/myPage/KeywordAlarmScreen.tsx';
+import UserRegisterScreen from './src/screens/myPage/UserRegisterScreen.tsx';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -113,6 +115,7 @@ function AuthStackNavigator() {
                 console.log('replacing to MainTabNavigator');
                 navigation.replace('MainTabNavigator');
               }}
+              hitSlop={{top: 30, bottom: 30, left: 30, right: 30}}
               style={{padding: 10}}>
               <CloseSvgIcon />
             </Pressable>
@@ -353,6 +356,7 @@ function AppInner() {
             name="ProfileEdit"
             component={MyProfileEditScreen}
           />
+          <MainStack.Screen name="FAQ" component={FAQScreen} />
         </>
       ) : (
         // 로그인하지 않은 사용자를 위한 스크린
@@ -394,6 +398,83 @@ function AppInner() {
             options={{
               headerShadowVisible: false, //⭐️ Appbar(Header)에서 gray 지우기 ⭐️
             }}
+          />
+          <MainStack.Screen
+            name="FAQ"
+            component={FAQScreen}
+            options={({navigation}) => ({
+              headerShadowVisible: false, // Appbar(Header)에서 그림자 제거
+              headerShown: true,
+              title: '문의하기/FAQ', // 헤더 타이틀 설정
+              headerLeft: () => (
+                <Pressable
+                  onPress={() => navigation.goBack()}
+                  style={({pressed}) => ({
+                    opacity: pressed ? 0.5 : 1,
+                  })}>
+                  <GoBackSvg />
+                </Pressable>
+              ),
+              // 기타 헤더 스타일링 옵션
+            })}
+          />
+          <AuthStack.Screen
+            name="KeywordAlarm"
+            component={KeywordAlarmScreen}
+            options={({navigation}) => ({
+              headerShadowVisible: false, // Appbar(Header)에서 그림자 제거
+              headerShown: true,
+              title: '키워드 알림', // 헤더 타이틀 설정
+              headerLeft: () => (
+                <Pressable
+                  onPress={() => navigation.goBack()}
+                  style={({pressed}) => ({
+                    opacity: pressed ? 0.5 : 1,
+                  })}>
+                  <GoBackSvg />
+                </Pressable>
+              ),
+              // 기타 헤더 스타일링 옵션
+            })}
+          />
+          <AuthStack.Screen
+            name="UserRegister"
+            component={UserRegisterScreen}
+            options={({navigation}) => ({
+              headerShadowVisible: false, // Appbar(Header)에서 그림자 제거
+              headerShown: true,
+              title: '이용자 제보하기', // 헤더 타이틀 설정
+              headerLeft: () => (
+                <Pressable
+                  onPress={() => navigation.goBack()}
+                  style={({pressed}) => ({
+                    opacity: pressed ? 0.5 : 1,
+                  })}>
+                  <GoBackSvg />
+                </Pressable>
+              ),
+              gestureEnabled: false, // 뒤로가기 제스처 비활성화
+              // 기타 헤더 스타일링 옵션
+            })}
+          />
+          <AuthStack.Screen
+            name="Policy"
+            component={PolicyScreen}
+            options={({navigation}) => ({
+              headerShadowVisible: false, // Appbar(Header)에서 그림자 제거
+              headerShown: true,
+              title: '이용 약관 및 정책', // 헤더 타이틀 설정
+              headerLeft: () => (
+                <Pressable
+                  onPress={() => navigation.goBack()}
+                  style={({pressed}) => ({
+                    opacity: pressed ? 0.5 : 1,
+                  })}>
+                  <GoBackSvg />
+                </Pressable>
+              ),
+              // 기타 헤더 스타일링 옵션
+            })}
           />
           <AuthStack.Screen
             name="MemberDelete"

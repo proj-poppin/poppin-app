@@ -18,7 +18,9 @@ const OptionButton = ({id, title, onPress}) => {
             styles.button,
             {
               backgroundColor: isSelected ? `${primaryColors.blue}1A` : 'white',
-              borderColor: isSelected ? primaryColors.blue : primaryColors.font,
+              borderColor: isSelected
+                ? primaryColors.blue
+                : primaryColors.warmGray,
             },
           ]}>
           <Text style={styles.text}>{title}</Text>
@@ -30,9 +32,9 @@ const OptionButton = ({id, title, onPress}) => {
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: 25,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    borderRadius: 35,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
     margin: 5,
     alignItems: 'center',
     justifyContent: 'center',

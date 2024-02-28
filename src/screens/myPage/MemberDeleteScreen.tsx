@@ -8,7 +8,7 @@ import BackMiddleButton from '../../components/BackMiddleButton.tsx';
 import NextMiddleButton from '../../components/NextMiddleButton.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import CompleteButton from '../../components/CompleteButton.tsx';
-import DeleteConfirmationModal from '../../components/DeleteConfirmModal.tsx';
+import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
 
 const reasons = [
   '앱 사용이 불편해요',
@@ -95,10 +95,14 @@ function MemberDeleteScreen({navigation}) {
           <NextMiddleButton onPress={openModal} title={'탈퇴하기'} />
         </View>
       </DismissKeyboardView>
-      <DeleteConfirmationModal
-        isVisible={modalVisible}
-        onClose={closeModal}
+      <TwoSelectConfirmationModal
+        mainAlertTitle={'정말 탈퇴 하시겠습니까?'}
+        subAlertTitle={'탈퇴하신 아이디로는\n30일간 재가입 하실 수 없어요'}
         onConfirm={confirmDelete}
+        onClose={closeModal}
+        isVisible={modalVisible}
+        selectFirstText={'계속 사용하기'}
+        selectSecondText={'탈퇴하기'}
       />
     </>
   );

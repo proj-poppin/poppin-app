@@ -11,7 +11,15 @@ import {globalStyles} from '../style/textStyles.ts'; // 경로는 실제 환경�
 import primaryColors from '../style/primaryColors.ts'; // 경로는 실제 환경에 맞게 조정
 import AlertSvg from '../assets/images/alert.svg';
 
-const DeleteConfirmationModal = ({isVisible, onClose, onConfirm}) => {
+const TwoSelectConfirmationModal = ({
+  isVisible,
+  onClose,
+  onConfirm,
+  mainAlertTitle,
+  subAlertTitle,
+  selectFirstText,
+  selectSecondText,
+}) => {
   return (
     <Modal
       animationType="fade"
@@ -24,10 +32,10 @@ const DeleteConfirmationModal = ({isVisible, onClose, onConfirm}) => {
             <AlertSvg />
             <Text
               style={[globalStyles.title, styles.mainText, {marginTop: 10}]}>
-              정말 탈퇴 하시겠습니까?
+              {mainAlertTitle}
             </Text>
             <Text style={[globalStyles.labelPrimaryGray, styles.subText]}>
-              탈퇴하신 아이디로는{'\n'}30일간 재가입 하실 수 없어요
+              {subAlertTitle}
             </Text>
             <View style={styles.buttonContainer}>
               <Pressable
@@ -38,7 +46,7 @@ const DeleteConfirmationModal = ({isVisible, onClose, onConfirm}) => {
                     globalStyles.labelPrimaryGray,
                     {color: primaryColors.font},
                   ]}>
-                  계속 사용하기
+                  {selectFirstText}
                 </Text>
               </Pressable>
               <Text
@@ -53,13 +61,16 @@ const DeleteConfirmationModal = ({isVisible, onClose, onConfirm}) => {
               </Text>
               <Pressable
                 style={[styles.button, styles.deleteButton]}
-                onPress={onConfirm}>
+                onPress={() => {
+                  onConfirm(); // 삭제하기 버튼을 누를 때 onConfirm 함수 호출
+                  onClose(); // 모달 닫기
+                }}>
                 <Text
                   style={[
                     globalStyles.bodyMediumSub,
                     {color: primaryColors.blue},
                   ]}>
-                  탈퇴하기
+                  {selectSecondText}
                 </Text>
               </Pressable>
             </View>
@@ -124,4 +135,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DeleteConfirmationModal;
+export default TwoSelectConfirmationModal;

@@ -41,6 +41,7 @@ import FAQScreen from './src/screens/myPage/FAQScreen.tsx';
 import PolicyScreen from './src/screens/myPage/PolicyScreen.tsx';
 import KeywordAlarmScreen from './src/screens/myPage/KeywordAlarmScreen.tsx';
 import UserRegisterScreen from './src/screens/myPage/UserRegisterScreen.tsx';
+import ReviewWriteScreen from './src/screens/myPage/ReviewWriteScreen.tsx';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -464,6 +465,25 @@ function AppInner() {
               headerShadowVisible: false, // Appbar(Header)에서 그림자 제거
               headerShown: true,
               title: '이용 약관 및 정책', // 헤더 타이틀 설정
+              headerLeft: () => (
+                <Pressable
+                  onPress={() => navigation.goBack()}
+                  style={({pressed}) => ({
+                    opacity: pressed ? 0.5 : 1,
+                  })}>
+                  <GoBackSvg />
+                </Pressable>
+              ),
+              // 기타 헤더 스타일링 옵션
+            })}
+          />
+          <AuthStack.Screen
+            name="ReviewWrite"
+            component={ReviewWriteScreen}
+            options={({navigation}) => ({
+              headerShadowVisible: false, // Appbar(Header)에서 그림자 제거
+              headerShown: true,
+              title: '일반 후기 작성', // 헤더 타이틀 설정
               headerLeft: () => (
                 <Pressable
                   onPress={() => navigation.goBack()}

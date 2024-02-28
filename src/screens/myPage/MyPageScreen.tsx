@@ -55,7 +55,9 @@ function MyPageScreen({navigation}) {
           <View style={styles.colMidContainer}>
             <Text style={globalStyles.labelSub}>후기 작성하기</Text>
             <View style={styles.infoRow}>
-              <FeedBackSvg style={styles.iconPadding} />
+              <Pressable onPress={() => navigation.navigate('ReviewWrite')}>
+                <FeedBackSvg style={styles.iconPadding} />
+              </Pressable>
               <Text style={globalStyles.bodyLargePrimaryBlue}>
                 {reviewCount}
               </Text>

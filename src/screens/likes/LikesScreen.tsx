@@ -9,9 +9,15 @@ import CustomSelectDropdown from '../../components/CustomDropDown.tsx';
 import LoadingScreen from '../splash/LoadingScreen.tsx';
 import {useAppDispatch} from '../../store';
 import loadingSlice from '../../slices/loading.ts';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const popUpTypes = ['오픈 예정인 팝업', '운영 중인 팝업', '운영 종료 팝업'];
 const orderTypes = ['오픈일순', '마감일순', '저장순'];
+
+import InterestSampleSvg from '../../assets/images/interestSample.svg';
+
+import DividerLine from '../../components/DividerLine.tsx';
+import InterestPopUpCard from '../../components/InterestPopUpCard.tsx';
 
 function LikesScreen() {
   const [isLoading, setLoading] = useState(false);
@@ -29,15 +35,20 @@ function LikesScreen() {
   return isLoading ? (
     <LoadingScreen isLoading={isLoading} />
   ) : (
-    <View style={styles.container}>
-      <View style={styles.middleContainer}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: primaryColors.white,
+        paddingHorizontal: 10,
+      }}>
+      <View style={styles.headerContainer}>
         <Text style={globalStyles.headline}>관심 팝업</Text>
         <View style={styles.calendarViewContainer}>
           <Text style={styles.labelSmallBlue}>캘린더 보기</Text>
           <CalendarSvg style={styles.calendarIcon} />
         </View>
       </View>
-      <View style={styles.middleContainer}>
+      <View style={styles.dropdownContainer}>
         <CustomSelectDropdown
           data={popUpTypes}
           onSelect={(selectedItem, index) => console.log(selectedItem, index)}
@@ -52,10 +63,37 @@ function LikesScreen() {
           buttonWidth={100}
           iconComponent={<OrderSvg style={styles.dropdownIcon} />}
           buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+          buttonTextStyle={globalStyles.labelPrimary}
         />
       </View>
-      <Text style={globalStyles.bodyLargePrimaryGray}>1월 15일</Text>
-    </View>
+      <Text style={[globalStyles.bodyLargePrimaryGray, styles.bodyContainer]}>
+        1월 15일
+      </Text>
+      {/*FlatList로 관심 팝업 모델객체 만들어서 후에 렌더링*/}
+      <DividerLine height={3} />
+      <InterestPopUpCard
+        Svg={InterestSampleSvg} // 필요한 경우 다른 SVG로 대체
+        title="팝업 스토어 이름1"
+        date="2024.01.01-2024.02.02"
+        status={'운영 중'}
+      />
+      <DividerLine height={3} />
+      <InterestPopUpCard
+        Svg={InterestSampleSvg} // 필요한 경우 다른 SVG로 대체
+        title="팝업 스토어 이름1"
+        date="2024.01.01-2024.02.02"
+        status={'운영 중'}
+      />
+      <DividerLine height={3} />
+      <InterestPopUpCard
+        Svg={InterestSampleSvg} // 필요한 경우 다른 SVG로 대체
+        title="팝업 스토어 이름1"
+        date="2024.01.01-2024.02.02"
+        status={'운영 중'}
+      />
+      <DividerLine height={3} />
+      <View />
+    </SafeAreaView>
   );
 }
 
@@ -70,12 +108,27 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: primaryColors.blue,
   },
-  middleContainer: {
+  headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
     marginTop: 15,
+    marginHorizontal: 10,
+  },
+  dropdownContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    marginTop: 15,
+  },
+  bodyContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    marginHorizontal: 10,
   },
   calendarViewContainer: {
     flexDirection: 'row',

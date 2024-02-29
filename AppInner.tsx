@@ -29,7 +29,6 @@ import Tab3SvgOn from './src/assets/icons/tab/tab3On.svg';
 import Tab4SvgOn from './src/assets/icons/tab/tab4On.svg';
 import primaryColors from './src/style/primaryColors.ts';
 import {globalStyles} from './src/style/textStyles.ts';
-import OnboardingScreen from './src/screens/onboarding/OnboardingScreen.tsx';
 import {Pressable, Text} from 'react-native';
 import SecondPasswordResetScreen from './src/screens/password/SecondPasswordResetScreen.tsx';
 import MyProfileEditScreen from './src/screens/myPage/ProfileEditScreen.tsx';
@@ -42,6 +41,8 @@ import PolicyScreen from './src/screens/myPage/PolicyScreen.tsx';
 import KeywordAlarmScreen from './src/screens/myPage/KeywordAlarmScreen.tsx';
 import UserRegisterScreen from './src/screens/myPage/UserRegisterScreen.tsx';
 import ReviewWriteScreen from './src/screens/myPage/ReviewWriteScreen.tsx';
+import OperatorRegisterScreen from './src/screens/myPage/OperatorRegisterScreen.tsx';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -83,12 +84,14 @@ function MainTabNavigator() {
         tabBarActiveTintColor: primaryColors.blue, // 활성 탭 텍스트 색상
         tabBarInactiveTintColor: primaryColors.font, // 비활성 탭 텍스트 색상
         tabBarStyle: {
-          height: 70, // 바텀 네비게이션 바의 높이 조정
-          paddingBottom: 5, // 아이콘과 텍스트 사이의 패딩 조정
+          height: 90, // 바텀 네비게이션 바의 높이 조정
           paddingTop: 5, // 상단 패딩 조정
-          borderTopLeftRadius: 25, // 왼쪽 상단 모서리 둥글게
-          borderTopRightRadius: 25, // 오른쪽 상단 모서리 둥글게
+          borderTopLeftRadius: 20, // 왼쪽 상단 모서리 둥글게
+          borderTopRightRadius: 20, // 오른쪽 상단 모서리 둥글게
           position: 'absolute', // 필요에 따라 추가
+          borderTopColor: 'white', // 경계선 색상을 흰색으로 설정
+          borderTopWidth: 2, // 경계선 두께 설정
+          backgroundColor: 'white', // 바의 배경색을 흰색으로 설정
         },
         tabBarLabelStyle: globalStyles.bottomNavigationTab, // color 설정은 X
       })}>
@@ -484,6 +487,25 @@ function AppInner() {
               headerShadowVisible: false, // Appbar(Header)에서 그림자 제거
               headerShown: true,
               title: '일반 후기 작성', // 헤더 타이틀 설정
+              headerLeft: () => (
+                <Pressable
+                  onPress={() => navigation.goBack()}
+                  style={({pressed}) => ({
+                    opacity: pressed ? 0.5 : 1,
+                  })}>
+                  <GoBackSvg />
+                </Pressable>
+              ),
+              // 기타 헤더 스타일링 옵션
+            })}
+          />
+          <AuthStack.Screen
+            name="OperatorRegister"
+            component={OperatorRegisterScreen}
+            options={({navigation}) => ({
+              headerShadowVisible: false, // Appbar(Header)에서 그림자 제거
+              headerShown: true,
+              title: '운영자 제보하기', // 헤더 타이틀 설정
               headerLeft: () => (
                 <Pressable
                   onPress={() => navigation.goBack()}

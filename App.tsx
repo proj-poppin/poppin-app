@@ -8,6 +8,7 @@ import appleAuth from '@invertase/react-native-apple-authentication';
 import store from './src/store';
 import LoadingScreen from './src/screens/splash/LoadingScreen.tsx';
 import {Alert, Platform} from 'react-native';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 // Provider 바깥에서는 useSelector 사용불가(따로 빼서 거기에 +)
 function App() {
@@ -34,10 +35,12 @@ function App() {
   // 리덕스 스토어의 로딩 상태(isLoading)에 따라 LoadingScreen이 전역적으로 표시되거나 숨겨지도록 함
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <AppInner />
-        {/*<LoadingScreen />*/}
-      </NavigationContainer>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <AppInner />
+          {/*<LoadingScreen />*/}
+        </NavigationContainer>
+      </SafeAreaProvider>
     </Provider>
   );
 }

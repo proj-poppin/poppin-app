@@ -43,6 +43,7 @@ import UserRegisterScreen from './src/screens/myPage/UserRegisterScreen.tsx';
 import ReviewWriteScreen from './src/screens/myPage/ReviewWriteScreen.tsx';
 import OperatorRegisterScreen from './src/screens/myPage/OperatorRegisterScreen.tsx';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import PreferenceScreen from './src/screens/preference/PreferenceScreen.tsx';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -117,7 +118,7 @@ function AuthStackNavigator() {
             <Pressable
               onPress={() => {
                 console.log('replacing to MainTabNavigator');
-                navigation.replace('MainTabNavigator');
+                navigation.replace('Main');
               }}
               hitSlop={{top: 30, bottom: 30, left: 30, right: 30}}
               style={{padding: 10}}>
@@ -133,7 +134,7 @@ function AuthStackNavigator() {
           headerShown: true,
         })}
       />
-      <AuthStack.Screen name="MainTabNavigator" component={MainTabNavigator} />
+      <AuthStack.Screen name="Main" component={MainTabNavigator} />
       <AuthStack.Screen
         name="SignInPassword"
         component={SignInPasswordScreen}
@@ -268,6 +269,20 @@ function AuthStackNavigator() {
           headerShown: true,
         })}
       />
+      <AuthStack.Screen
+        name="Preference"
+        component={PreferenceScreen}
+        options={({navigation}) => ({
+          headerTitle: '나의 취향 설정하기',
+          headerLeft: () => '',
+          headerStyle: {
+            borderBottomWidth: 0, // Android와 iOS에서 헤더 경계선 제거
+          },
+          headerShadowVisible: false, // iOS에서 헤더 그림자 제거
+          headerShown: true,
+        })}
+      />
+
       <AuthStack.Screen
         name="PreferenceSetting"
         component={PreferenceSettingScreen}

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Pressable, Text, StyleSheet, View} from 'react-native';
 import primaryColors from '../style/primaryColors.ts';
 
-const OptionButton = ({id, title, onPress}) => {
+const OptionMultipleButton = ({id, title, onPress}) => {
   const [isSelected, setIsSelected] = useState(false);
 
   const handlePress = () => {
@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 20,
     margin: 5,
+    height: 45,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1, // Adjust this if you need
@@ -46,4 +47,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OptionButton;
+export default OptionMultipleButton;

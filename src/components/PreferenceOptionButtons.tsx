@@ -1,6 +1,5 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import OptionButton from './optionButton.tsx';
 import OptionSingleButton from './OptionSingleButton.tsx';
 
 const PreferenceOptionButtons = ({
@@ -62,6 +61,7 @@ const PreferenceOptionButtons = ({
       {currentOptions.map((option, index) => (
         <OptionSingleButton
           key={index}
+          id={index.toString()}
           title={isEmojiRemoved ? removeEmoji(option) : option}
           onPress={() => handlePress(option)}
           isSelected={

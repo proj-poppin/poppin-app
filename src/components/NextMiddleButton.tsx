@@ -6,11 +6,13 @@ import {globalStyles} from '../style/textStyles.ts';
 interface NextMiddleButtonProps {
   onPress: () => void;
   title: string;
+  buttonWidth?: number | string; // 너비 조절을 위한 옵셔널 프로퍼티
 }
 
 const NextMiddleButton: React.FC<NextMiddleButtonProps> = ({
   onPress,
   title,
+  buttonWidth = '50%', // 기본값 '55%'
 }) => (
   <Pressable
     style={({pressed}) => [
@@ -19,6 +21,7 @@ const NextMiddleButton: React.FC<NextMiddleButtonProps> = ({
         backgroundColor: pressed
           ? primaryColors.buttonPressed
           : primaryColors.blue,
+        width: buttonWidth, // 너비를 동적으로 조절
       },
     ]}
     onPress={onPress}>

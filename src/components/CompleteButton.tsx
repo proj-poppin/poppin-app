@@ -5,22 +5,22 @@ import {globalStyles} from '../style/textStyles.ts';
 
 interface CompleteButtonProps {
   onPress: () => void;
-  onDisabledPress?: () => void; // 옵셔널 프로퍼티로 변경
+  onDisabledPress?: () => void;
   title: string;
   loading?: boolean;
   disabled?: boolean;
   alwaysActive?: boolean;
-  widthRatio?: string;
+  buttonWidth?: number | string; // 너비 조절을 위한 옵셔널 프로퍼티
 }
 
 const CompleteButton: React.FC<CompleteButtonProps> = ({
   onPress,
-  onDisabledPress, // 옵셔널 프로퍼티
+  onDisabledPress,
   title,
   loading,
   disabled,
   alwaysActive = false,
-  widthRatio = '100%', // 디폴트 값을 '100%'로 설정
+  buttonWidth = '100%', // 기본값 '100%'
 }) => (
   <Pressable
     style={({pressed}) => [
@@ -31,6 +31,7 @@ const CompleteButton: React.FC<CompleteButtonProps> = ({
           : disabled && !alwaysActive
           ? primaryColors.component
           : primaryColors.blue,
+        width: buttonWidth, // 너비를 동적으로 조절
       },
       disabled && !alwaysActive && styles.disabledButton,
     ]}
@@ -38,7 +39,6 @@ const CompleteButton: React.FC<CompleteButtonProps> = ({
       if (!disabled || alwaysActive) {
         onPress();
       } else {
-        // 옵셔널 체이닝을 사용하여 존재할 때만 onDisabledPress 호출
         onDisabledPress?.();
       }
     }}>
@@ -63,7 +63,6 @@ const CompleteButton: React.FC<CompleteButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    width: '100%',
     height: 52,
     borderRadius: 25,
     marginTop: 35,

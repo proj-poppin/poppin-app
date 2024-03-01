@@ -32,7 +32,7 @@ const ConfirmationModal = ({
               style={[globalStyles.title, styles.mainText, {marginTop: 20}]}>
               {mainTitle}
             </Text>
-            isAlertSvg ? <AlertSvg /> : <CheckSvg />
+            <View>{isAlertSvg ? <AlertSvg /> : <CheckSvg />}</View>
             <Text
               style={[
                 globalStyles.labelPrimary,
@@ -42,15 +42,21 @@ const ConfirmationModal = ({
               {subTitle}
             </Text>
             <Pressable
-              style={[styles.button, styles.okButton]}
-              onPress={onClose}>
-              <Text
-                style={[
-                  globalStyles.bodyMediumSub,
-                  {color: primaryColors.blue},
-                ]}>
-                확인
-              </Text>
+              onPress={onClose}
+              style={[styles.button, styles.okButton]}>
+              {({pressed}) => (
+                <Text
+                  style={[
+                    globalStyles.bodyMediumSub,
+                    {
+                      color: pressed
+                        ? primaryColors.buttonPressed
+                        : primaryColors.blue,
+                    },
+                  ]}>
+                  확인
+                </Text>
+              )}
             </Pressable>
           </View>
         </View>

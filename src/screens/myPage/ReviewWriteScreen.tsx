@@ -92,6 +92,7 @@ function ReviewWriteScreen() {
             (time, index) => (
               <OptionSingleButton
                 key={index}
+                id={index.toString()}
                 title={time}
                 onPress={() => setSelectedVisitTime(time)}
                 isSelected={selectedVisitTime === time}
@@ -114,6 +115,7 @@ function ReviewWriteScreen() {
           {['만족', '보통', '불만족'].map((satisfaction, index) => (
             <OptionSingleButton
               key={index}
+              id={index.toString()}
               title={satisfaction}
               onPress={() => setSelectedSatisfaction(satisfaction)}
               isSelected={selectedSatisfaction === satisfaction}
@@ -135,6 +137,7 @@ function ReviewWriteScreen() {
           {['여유', '보통', '혼잡'].map((congestion, index) => (
             <OptionSingleButton
               key={index}
+              id={index.toString()}
               title={congestion}
               onPress={() => setSelectedCongestion(congestion)}
               isSelected={selectedCongestion === congestion}

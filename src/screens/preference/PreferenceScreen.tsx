@@ -1,23 +1,13 @@
 import React, {useLayoutEffect, useState} from 'react';
-import {
-  Modal,
-  Pressable,
-  ScrollView,
-  View,
-  Text,
-  StyleSheet,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import {Pressable, ScrollView, View, Text, StyleSheet} from 'react-native';
 import {globalStyles} from '../../style/textStyles';
 import primaryColors from '../../style/primaryColors';
 import NextMiddleButton from '../../components/NextMiddleButton';
 import BackMiddleButton from '../../components/BackMiddleButton';
 import CompleteButton from '../../components/CompleteButton';
-import OptionButton from '../../components/optionButton';
+import OptionMultipleButton from '../../components/optionMultipleButton.tsx';
 import {NavigationProp} from '@react-navigation/native';
-import SkipSvg from '../../assets/images/skip.svg';
 import SkipModal from '../../components/SkipModal.tsx';
-import CheckAnimationModal from '../../components/CheckAnimationModal.tsx';
 
 type Step = {
   text1: string;
@@ -55,6 +45,7 @@ const PreferenceScreen: React.FC<PreferenceScreenProps> = ({navigation}) => {
       ),
     });
   }, [navigation]);
+
   const progressBarStyle = {
     width: '100%',
     backgroundColor: primaryColors.blue,
@@ -102,7 +93,7 @@ const PreferenceScreen: React.FC<PreferenceScreenProps> = ({navigation}) => {
               '🏃 체험형',
               '무료 체험이었으면 좋겠어요',
             ].map((option, index) => (
-              <OptionButton
+              <OptionMultipleButton
                 key={index}
                 id={index.toString()}
                 title={option}
@@ -129,7 +120,7 @@ const PreferenceScreen: React.FC<PreferenceScreenProps> = ({navigation}) => {
               '🍷 주류',
               '🪴 동물/식물',
             ].map((option, index) => (
-              <OptionButton
+              <OptionMultipleButton
                 key={index}
                 id={index.toString()}
                 title={option}
@@ -147,7 +138,7 @@ const PreferenceScreen: React.FC<PreferenceScreenProps> = ({navigation}) => {
               '가족과 방문해요',
               '연인과 방문해요',
             ].map((option, index) => (
-              <OptionButton
+              <OptionMultipleButton
                 key={index}
                 id={index.toString()}
                 title={option}
@@ -192,7 +183,11 @@ const PreferenceScreen: React.FC<PreferenceScreenProps> = ({navigation}) => {
           </Text>
           <View style={styles.buttonContainer}>
             {step === 1 && (
-              <CompleteButton onPress={handleNext} title={'다음'} />
+              <CompleteButton
+                onPress={handleNext}
+                title={'다음'}
+                buttonWidth={'95%'}
+              />
             )}
             {step === 2 && (
               <View style={styles.buttonRow}>
@@ -216,8 +211,8 @@ const PreferenceScreen: React.FC<PreferenceScreenProps> = ({navigation}) => {
       </ScrollView>
       <SkipModal
         isVisible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onSetNow={handleSkip}
+        onClose={handleSkip}
+        onSetNow={() => setModalVisible(false)}
       />
       {/*<CheckAnimationModal*/}
       {/*  isVisible={modalVisible}*/}

@@ -169,16 +169,16 @@ function UserRegisterScreen({navigation}) {
     setSelectedCategory(option);
   };
 
-  // 복수 선택 모드에서 호출될 함수
-  const onSelectMultipleOption = option => {
-    setSelectedCategories(prev => {
-      if (prev.includes(option)) {
-        return prev.filter(o => o !== option); // 이미 선택되어 있다면 제거
-      } else {
-        return [...prev, option]; // 새로 선택된 경우 추가
-      }
-    });
-  };
+  // // 복수 선택 모드에서 호출될 함수
+  // const onSelectMultipleOption = option => {
+  //   setSelectedCategories(prev => {
+  //     if (prev.includes(option)) {
+  //       return prev.filter(o => o !== option); // 이미 선택되어 있다면 제거
+  //     } else {
+  //       return [...prev, option]; // 새로 선택된 경우 추가
+  //     }
+  //   });
+  // };
 
   const handleConfirmSelection = useCallback(() => {
     console.log('Selected Category: ', selectedCategory); // 콘솔에 선택된 카테고리 출력
@@ -287,7 +287,7 @@ function UserRegisterScreen({navigation}) {
             *올려주신 사진은 정보 업데이트시 사용될 수 있습니다.
           </Text>
           <CompleteButton
-            onPress={handleConfirmSelection}
+            onPress={openCompleteModal}
             title={'제보하기'}
             disabled={!isSubmitEnabled}
           />
@@ -307,7 +307,9 @@ function UserRegisterScreen({navigation}) {
         isVisible={completeModalVisible}
         onClose={closeCompleteModal}
         mainTitle="소중한 제보 감사합니다!"
-        subTitle="제보하신 팝업은\n POPPIN에서 확인 후 업로드 될 예정입니다.\n더 나은 POPPIN이 되겠습니다."
+        subTitle={
+          '제보하신 팝업은\nPOPPIN에서 확인 후 업로드 될 예정입니다.\n더 나은 POPPIN이 되겠습니다.'
+        }
       />
     </GestureHandlerRootView>
   );

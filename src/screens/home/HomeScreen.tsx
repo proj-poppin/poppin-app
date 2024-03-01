@@ -19,6 +19,7 @@ import NotLogginBox from '../../components/NotLogginBox.tsx';
 import QuestionSvg from '../../assets/icons/question.svg';
 import DownSvg from '../../assets/icons/down.svg';
 import RightSvg from '../../assets/icons/smallright.svg';
+import {SafeAreaView} from 'react-native-safe-area-context';
 function HomeScreen({navigation}) {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
@@ -35,7 +36,7 @@ function HomeScreen({navigation}) {
   };
 
   return (
-    <View>
+    <SafeAreaView style={{flex: 1, backgroundColor: primaryColors.white}}>
       <View style={styles.container}>
         <HomeMainTitle text1="어서오세요, OO님" />
         <NotLogginBox
@@ -69,13 +70,13 @@ function HomeScreen({navigation}) {
           </View>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingHorizontal: 20,
     backgroundColor: 'white',
   },
   middleContainer: {

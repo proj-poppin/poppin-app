@@ -12,6 +12,7 @@ import PopUpCard from '../../components/PopUpCard.tsx';
 import RightSvg from '../../assets/icons/bigRight.svg';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import ProfileSmallRightSvg from '../../assets/icons/profileSmallRight.svg';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 function MyPageScreen({navigation}) {
   const navigateToProfileEdit = () => {
@@ -22,7 +23,7 @@ function MyPageScreen({navigation}) {
 
   return (
     <DismissKeyboardView style={styles.container}>
-      <View style={styles.container}>
+      <SafeAreaView style={{flex: 1, backgroundColor: primaryColors.white}}>
         <View style={styles.titleContainer}>
           <Text style={globalStyles.headline}>마이 페이지</Text>
         </View>
@@ -49,6 +50,13 @@ function MyPageScreen({navigation}) {
             navigation.navigate('UserRegister');
           }}
           title={'팝업 제보하기'}
+          widthRatio={'100%'}
+        />
+        <CompleteButton
+          onPress={() => {
+            navigation.navigate('OperatorRegister');
+          }}
+          title={'운영자 제보하기(임시로)'}
           widthRatio={'100%'}
         />
         <View style={styles.rowBodyContainer}>
@@ -123,7 +131,7 @@ function MyPageScreen({navigation}) {
             }}
           />
         </View>
-      </View>
+      </SafeAreaView>
     </DismissKeyboardView>
   );
 }
@@ -131,8 +139,7 @@ function MyPageScreen({navigation}) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
-    padding: 10,
-    marginBottom: 40,
+    paddingHorizontal: 20,
   },
   infoRow: {
     flexDirection: 'row',

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Provider} from 'react-redux';
 import AppInner from './AppInner.tsx';
-import {NavigationContainer} from '@react-navigation/native';
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import SplashScreen from 'react-native-splash-screen';
 import {useEffect} from 'react';
 import appleAuth from '@invertase/react-native-apple-authentication';
@@ -9,6 +9,8 @@ import store from './src/store';
 import LoadingScreen from './src/screens/splash/LoadingScreen.tsx';
 import {Alert, Platform} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 // Provider 바깥에서는 useSelector 사용불가(따로 빼서 거기에 +)
 function App() {
@@ -32,15 +34,27 @@ function App() {
     // 예: AsyncStorage.getItem('onboardingComplete').then(value => setIsOnboardingComplete(!!value));
   }, []);
 
+  const MyTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: 'white', // 배경색을 흰색으로 설정
+    },
+  };
+
   // 리덕스 스토어의 로딩 상태(isLoading)에 따라 LoadingScreen이 전역적으로 표시되거나 숨겨지도록 함
   return (
     <Provider store={store}>
-      <SafeAreaProvider>
-        <NavigationContainer>
-          <AppInner />
-          {/*<LoadingScreen />*/}
-        </NavigationContainer>
-      </SafeAreaProvider>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <BottomSheetModalProvider>
+          <SafeAreaProvider>
+            <NavigationContainer theme={MyTheme}>
+              <AppInner />
+              {/*<LoadingScreen />*/}
+            </NavigationContainer>
+          </SafeAreaProvider>
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
     </Provider>
   );
 }

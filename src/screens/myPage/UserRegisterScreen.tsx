@@ -19,18 +19,18 @@ import React, {
 } from 'react';
 import LabelAndInputWithCloseSvg from '../../components/LabelAndInputWithCloseSvg.tsx';
 import {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import CategoryBottomSheetInput from '../../components/CategoryBottomSheetInput.tsx';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import TextInputWithSvgIconInRight from '../../components/TextInputWithSvgIconInRight.tsx';
 import CompleteButton from '../../components/CompleteButton.tsx';
 import PreferenceOptionButtons from '../../components/PreferenceOptionButtons.tsx';
-import {useDispatch, useSelector} from 'react-redux';
 import ImagePicker from 'react-native-image-crop-picker';
 import PlusSvg from '../../assets/icons/plus.svg';
 import ImageDeleteSvg from '../../assets/icons/imageDelete.svg';
 import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
 import GoBackSvg from '../../assets/icons/goBack.svg';
 import ConfirmationModal from '../../components/ConfirmationModal.tsx';
+import ImageContainerRow from '../../components/ImageContainerRow.tsx';
+import DownSvg from '../../assets/icons/down.svg';
 
 function UserRegisterScreen({navigation}) {
   const [storeName, setStoreName] = useState('');
@@ -90,18 +90,6 @@ function UserRegisterScreen({navigation}) {
     );
   }, []);
 
-  const renderBackdrop = useCallback(
-    props => (
-      <BottomSheetBackdrop
-        {...props}
-        pressBehavior="close"
-        appearsOnIndex={0}
-        disappearsOnIndex={-1}
-      />
-    ),
-    [],
-  );
-
   const isSubmitEnabled =
     storeName.trim() !== '' &&
     // selectedCategories.length > 0 &&
@@ -129,10 +117,23 @@ function UserRegisterScreen({navigation}) {
   };
 
   // BottomSheetModal
+
+  // 화면클릭시 모달 내려감
+  const renderBackdrop = useCallback(
+    props => (
+      <BottomSheetBackdrop
+        {...props}
+        pressBehavior="close"
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+      />
+    ),
+    [],
+  );
   // ref
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   // variables
-  const snapPoints = useMemo(() => ['85%'], []);
+  const snapPoints = useMemo(() => ['60%'], []);
   // callbacks
   const handlePresentModal = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -188,111 +189,81 @@ function UserRegisterScreen({navigation}) {
   }, [selectedCategory]);
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
-      <BottomSheetModalProvider>
-        <DismissKeyboardView style={styles.container}>
-          <Text style={[globalStyles.title, {marginTop: 40, marginBottom: 10}]}>
-            {'POPPIN이 모르는 새로운\n'}
-            {'팝업을 알려주세요'}
-          </Text>
-          <View style={{height: 20}} />
-          <LabelAndInputWithCloseSvg
-            label={'팝업 이름'}
-            value={storeName}
-            onChangeText={setStoreName}
-          />
-          <View style={{height: 20}} />
-          {/*<CategoryBottomSheetInput*/}
-          {/*  label={'카테고리'}*/}
-          {/*  value={selectedOptions.join(',')}*/}
-          {/*  onIconPress={handlePresentModal}*/}
-          {/*/>*/}
-          <CategoryBottomSheetInput
-            label={'카테고리'}
-            value={selectedCategory} // 변경됨
-            onIconPress={handlePresentModal}
-          />
-          <View style={{height: 20}} />
-          <LabelAndInputWithCloseSvg
-            label={'정보를 접한 사이트 주소'}
-            value={infoLink}
-            onChangeText={setInfoLink}
-          />
-          <View style={{paddingTop: 10}} />
-          <Text style={styles.labelText}>{'관련사진'}</Text>
-          <View style={styles.modalContainer}>
-            <BottomSheetModal
-              ref={bottomSheetModalRef}
-              index={0}
-              backdropComponent={renderBackdrop}
-              snapPoints={snapPoints}
-              onChange={handleSheetChanges}>
-              <View style={styles.contentContainer}>
-                <Text
-                  style={[
-                    globalStyles.bodyLargePrimaryBlack,
-                    {paddingTop: 15, paddingBottom: 40},
-                  ]}>
-                  제보할 팝업의 카테고리를 설정해 주세요
-                </Text>
-                <PreferenceOptionButtons
-                  step={2}
-                  onSelectOption={onSelectSingleOption}
-                  isEmojiRemoved={true}
-                  isSingleSelect={true}
-                  selectedCategory={selectedCategory}
-                />
-                <CompleteButton
-                  onPress={handleConfirmSelection}
-                  title={'확인'}
-                />
-              </View>
-            </BottomSheetModal>
+    <DismissKeyboardView style={styles.container}>
+      <Text style={[globalStyles.title, {marginTop: 40, marginBottom: 10}]}>
+        {'POPPIN이 모르는 새로운\n'}
+        {'팝업을 알려주세요'}
+      </Text>
+      <View style={{height: 20}} />
+      <LabelAndInputWithCloseSvg
+        label={'팝업 이름'}
+        value={storeName}
+        onChangeText={setStoreName}
+      />
+      <View style={{height: 20}} />
+      {/*<CategoryBottomSheetInput*/}
+      {/*  label={'카테고리'}*/}
+      {/*  value={selectedOptions.join(',')}*/}
+      {/*  onIconPress={handlePresentModal}*/}
+      {/*/>*/}
+      <TextInputWithSvgIconInRight
+        label={'카테고리'}
+        value={selectedCategory} // 변경됨
+        onIconPress={handlePresentModal}
+        IconComponent={DownSvg}
+      />
+      <View style={{height: 20}} />
+      <LabelAndInputWithCloseSvg
+        label={'정보를 접한 사이트 주소'}
+        value={infoLink}
+        onChangeText={setInfoLink}
+      />
+      <View style={{paddingTop: 10}} />
+      <Text style={styles.labelText}>{'관련사진'}</Text>
+      <View style={styles.modalContainer}>
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={0}
+          backdropComponent={renderBackdrop}
+          snapPoints={snapPoints}
+          onChange={handleSheetChanges}>
+          <View style={styles.contentContainer}>
+            <Text
+              style={[
+                globalStyles.bodyLargePrimaryBlack,
+                {paddingTop: 15, paddingBottom: 40},
+              ]}>
+              제보할 팝업의 카테고리를 설정해 주세요
+            </Text>
+            <PreferenceOptionButtons
+              step={2}
+              onSelectOption={onSelectSingleOption}
+              isEmojiRemoved={true}
+              isSingleSelect={true}
+              selectedCategory={selectedCategory}
+            />
+            <CompleteButton onPress={handleConfirmSelection} title={'확인'} />
           </View>
-          <View style={styles.imagesContainer}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              scrollEnabled={selectedImages.length >= 2} // 2장 이상일 때만 스크롤 활성화
-              contentContainerStyle={styles.imagesContainer} // 스타일 조정
-            >
-              {selectedImages.length < 5 && (
-                <Pressable
-                  style={styles.addImageButton}
-                  onPress={handleSelectImages}>
-                  <PlusSvg />
-                  <Text style={styles.addImageText}>
-                    {'사진 추가하기\n(최대 5장)'}
-                  </Text>
-                </Pressable>
-              )}
-              {selectedImages.map((image, index) => (
-                <View key={index} style={styles.imageContainer}>
-                  <Image
-                    source={{uri: image.uri}}
-                    style={styles.selectedImage}
-                  />
-                  <TouchableOpacity
-                    style={styles.deleteIcon}
-                    onPress={() => handleRemoveImage(index)}>
-                    <ImageDeleteSvg />
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </ScrollView>
-          </View>
-          <Text style={globalStyles.labelSubGray}>
-            *첨부파일은 20MB 이하의 파일만 첨부 가능하며, 최대 5개까지 등록
-            가능합니다.{'\n'}
-            *올려주신 사진은 정보 업데이트시 사용될 수 있습니다.
-          </Text>
-          <CompleteButton
-            onPress={openCompleteModal}
-            title={'제보하기'}
-            disabled={!isSubmitEnabled}
-          />
-        </DismissKeyboardView>
-      </BottomSheetModalProvider>
+        </BottomSheetModal>
+      </View>
+      <ImageContainerRow
+        selectedImages={selectedImages}
+        handleSelectImages={handleSelectImages}
+        handleRemoveImage={handleRemoveImage}
+      />
+      <Text style={globalStyles.labelSubGray}>
+        *첨부파일은 20MB 이하의 파일만 첨부 가능하며, 최대 5개까지 등록
+        가능합니다.{'\n'}
+        *올려주신 사진은 정보 업데이트시 사용될 수 있습니다.{'\n'}
+        *사진은 팝업명과 내/외부 사진이 명확하게 나와야 합니다.{'\n'}
+        *저품질의 사진은 정보 제공이 불가할 수 있습니다.{'\n'}
+      </Text>
+      <CompleteButton
+        onPress={openCompleteModal}
+        title={'제보하기'}
+        disabled={!isSubmitEnabled}
+      />
+
       <TwoSelectConfirmationModal
         isVisible={isModalVisible}
         onClose={closeModal}
@@ -311,7 +282,7 @@ function UserRegisterScreen({navigation}) {
           '제보하신 팝업은\nPOPPIN에서 확인 후 업로드 될 예정입니다.\n더 나은 POPPIN이 되겠습니다.'
         }
       />
-    </GestureHandlerRootView>
+    </DismissKeyboardView>
   );
 }
 

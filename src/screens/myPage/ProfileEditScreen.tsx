@@ -24,6 +24,7 @@ import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import RightSvg from '../../assets/icons/bigRight.svg';
 import {globalStyles} from '../../style/textStyles.ts';
 import CloseGraySvg from '../../assets/icons/closeGray.svg';
+import RequiredTextLabel from '../../components/RequiredTextLabel.tsx';
 
 function MyProfileEditScreen({navigation}) {
   const [profileImage, setProfileImage] = useState(ProfileImg);
@@ -111,7 +112,7 @@ function MyProfileEditScreen({navigation}) {
             />
           </View>
           <View style={{height: 30}} />
-          <Text style={styles.labelText}>{'닉네임'}</Text>
+          <RequiredTextLabel label={'닉네임'} />
           <View
             style={[
               styles.inputContainer,
@@ -127,11 +128,21 @@ function MyProfileEditScreen({navigation}) {
               clearButtonMode="while-editing"
             />
             <TouchableOpacity onPress={handleClearNickname}>
-              <CloseGraySvg />
+              <CloseGraySvg style={{paddingHorizontal: 15}} />
             </TouchableOpacity>
+          </View>
+          <View style={{height: 30}} />
+          <RequiredTextLabel label={'생년월일'} />
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value="2021.09.30" // 임시 값
+              editable={false} // 편집 불가능하게 설정
+            />
           </View>
         </View>
       </View>
+
       <View style={styles.middleContainer}>
         <Text style={globalStyles.bodyMediumSub}>비밀번호 변경</Text>
         <RightSvg

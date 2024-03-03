@@ -1,9 +1,8 @@
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useCallback, useMemo, useRef} from 'react';
 import primaryColors from '../../style/primaryColors.ts';
 import {globalStyles} from '../../style/textStyles.ts';
 import ProfileSvg from '../../assets/images/profile.svg';
-import NextButton from '../../components/NextButton.tsx';
 import CompleteButton from '../../components/CompleteButton.tsx';
 import FeedBackSvg from '../../assets/icons/feedback.svg';
 import CompleteSvg from '../../assets/icons/complete.svg';
@@ -12,12 +11,44 @@ import PopUpCard from '../../components/PopUpCard.tsx';
 import RightSvg from '../../assets/icons/bigRight.svg';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import ProfileSmallRightSvg from '../../assets/icons/profileSmallRight.svg';
+import BigRightSvg from '../../assets/icons/bigRight.svg';
 import {SafeAreaView} from 'react-native-safe-area-context';
-
+import {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from '@gorhom/bottom-sheet';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 function MyPageScreen({navigation}) {
   const navigateToProfileEdit = () => {
     navigation.navigate('ProfileEdit');
   };
+
+  // 화면클릭시 모달 내려감
+  const renderBackdrop = useCallback(
+    props => (
+      <BottomSheetBackdrop
+        {...props}
+        pressBehavior="close"
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+      />
+    ),
+    [],
+  );
+  // ref
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  // variables
+  const snapPoints = useMemo(() => ['40%'], []);
+  // callbacks
+  const handlePresentModal = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+    // handleOpenBottomSheet();
+  }, []);
 
   const reviewCount = 10;
 
@@ -46,17 +77,8 @@ function MyPageScreen({navigation}) {
           </View>
         </View>
         <CompleteButton
-          onPress={() => {
-            navigation.navigate('UserRegister');
-          }}
+          onPress={handlePresentModal}
           title={'팝업 제보하기'}
-          widthRatio={'100%'}
-        />
-        <CompleteButton
-          onPress={() => {
-            navigation.navigate('OperatorRegister');
-          }}
-          title={'운영자 제보하기(임시로)'}
           widthRatio={'100%'}
         />
         <View style={styles.rowBodyContainer}>
@@ -132,6 +154,63 @@ function MyPageScreen({navigation}) {
           />
         </View>
       </SafeAreaView>
+      <View style={styles.modalContainer}>
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={0}
+          backdropComponent={renderBackdrop}
+          snapPoints={snapPoints}
+          onChange={handleSheetChanges}>
+          <View style={styles.contentContainer}>
+            <Text
+              style={[
+                globalStyles.bodyLargePrimaryBlack,
+                {paddingTop: 15, paddingBottom: 40},
+              ]}>
+              제보하는 사람이 누구인가요?
+            </Text>
+            <Pressable
+              style={styles.optionContainer}
+              onPress={() => {
+                navigation.navigate('UserRegister'); // 사용자 등록 화면으로 이동
+                bottomSheetModalRef.current?.dismiss(); // 바텀시트 닫기
+              }}>
+              <View style={styles.optionRow}>
+                <Text style={globalStyles.bodyLargePrimaryBlue}>
+                  팝업 이용자
+                </Text>
+                <View style={styles.optionRight}>
+                  <Text style={globalStyles.labelPrimaryGray}>제보하기</Text>
+                  <BigRightSvg />
+                </View>
+              </View>
+              <Text style={[globalStyles.labelPrimary, {paddingTop: 10}]}>
+                관심있는 팝업이 POPPIN에 올라와 있지 않다면?
+              </Text>
+            </Pressable>
+            <View style={styles.divider} />
+            <Pressable
+              style={styles.optionContainer}
+              onPress={() => {
+                navigation.navigate('OperatorRegister'); // 운영자 등록 화면으로 이동
+                bottomSheetModalRef.current?.dismiss(); // 바텀시트 닫기
+              }}>
+              <View style={styles.optionRow}>
+                <Text style={globalStyles.bodyLargePrimaryPurple}>
+                  팝업 운영자
+                </Text>
+                <View style={styles.optionRight}>
+                  <Text style={globalStyles.labelPrimaryGray}>제보하기</Text>
+                  <BigRightSvg />
+                </View>
+              </View>
+              <Text style={[globalStyles.labelPrimary, {paddingTop: 10}]}>
+                운영하는 팝업이 POPPIN에 올라와 있지 않다면?
+              </Text>
+            </Pressable>
+          </View>
+        </BottomSheetModal>
+      </View>
     </DismissKeyboardView>
   );
 }
@@ -262,6 +341,43 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '400',
     color: primaryColors.stroke2,
+  },
+
+  modalContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  contentContainer: {
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  optionContainer: {
+    width: '100%',
+    marginBottom: 20,
+  },
+  optionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  optionRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  optionDescription: {
+    color: primaryColors.font,
+    fontSize: 14,
+    paddingLeft: 10,
+  },
+  divider: {
+    height: 2,
+    backgroundColor: primaryColors.warmGray,
+    width: '100%',
+    marginBottom: 20,
   },
 });
 export default MyPageScreen;

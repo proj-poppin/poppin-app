@@ -6,15 +6,23 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import DownSvg from '../assets/icons/down.svg';
+// DownSvg import 구문 제거
 import primaryColors from '../style/primaryColors.ts';
+import RequiredTextLabel from './RequiredTextLabel.tsx';
 
-const CategoryBottomSheetInput = ({label, value, onIconPress}) => {
+// IconComponent prop 추가
+const TextInputWithSvgIconInRight = ({
+  label,
+  value,
+  onIconPress,
+  IconComponent,
+  isRequired = false,
+}) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
     <>
-      <Text style={styles.labelText}>{label}</Text>
+      <RequiredTextLabel label={label} isRequired={isRequired} />
       <View
         style={[
           styles.inputContainer,
@@ -25,12 +33,13 @@ const CategoryBottomSheetInput = ({label, value, onIconPress}) => {
         <TextInput
           style={styles.input}
           value={value}
-          onPressIn={onIconPress}
+          editable={false} // 텍스트 입력 비활성화 (필요에 따라 조정)
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
         />
         <TouchableOpacity style={styles.iconButton} onPress={onIconPress}>
-          <DownSvg />
+          {/* IconComponent를 사용하여 동적으로 아이콘 표시 */}
+          {IconComponent}
         </TouchableOpacity>
       </View>
     </>
@@ -38,7 +47,6 @@ const CategoryBottomSheetInput = ({label, value, onIconPress}) => {
 };
 
 const styles = StyleSheet.create({
-  // 스타일 정의
   labelText: {
     paddingVertical: 5,
   },
@@ -58,4 +66,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CategoryBottomSheetInput;
+export default TextInputWithSvgIconInRight;

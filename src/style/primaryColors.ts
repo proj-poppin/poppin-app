@@ -1,7 +1,9 @@
 const primaryColors = {
   blue: '#0EB5F9',
+  calendar: '#007AFF',
   buttonPressed: '#0B8FCA',
   purple: '#C37CD2',
+  purpleLight: '#FAF4FC',
   main: '#14B4F9',
   black: '#000000',
   subBlack: '#343434',

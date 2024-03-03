@@ -1,7 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
-import primaryColors from '../style/primaryColors.ts'; // 경로 확인 필요
+import primaryColors from '../style/primaryColors.ts';
+import {globalStyles} from '../style/textStyles.ts'; // 경로 확인 필요
 
 const CustomSelectDropdown = ({
   data,
@@ -9,6 +10,7 @@ const CustomSelectDropdown = ({
   buttonWidth,
   iconComponent,
   buttonTextAfterSelection,
+  buttonTextStyle,
 }) => {
   return (
     <SelectDropdown
@@ -16,23 +18,22 @@ const CustomSelectDropdown = ({
       onSelect={onSelect}
       defaultValueByIndex={0}
       buttonTextAfterSelection={buttonTextAfterSelection}
-      rowTextForSelection={(item, index) => {
-        return item;
-      }}
+      rowTextForSelection={(item, index) => item}
       dropdownStyle={[styles.dropdownStyle, {width: buttonWidth}]}
       buttonStyle={[styles.dropdownButtonStyle, {width: buttonWidth}]}
       rowTextStyle={{color: primaryColors.font, textAlign: 'center'}}
-      renderCustomizedButtonChild={(selectedItem, index) => {
-        return (
-          <View style={styles.buttonInnerContainer}>
-            <Text>{selectedItem || '선택'}</Text>
-            {iconComponent}
-          </View>
-        );
-      }}
+      renderCustomizedButtonChild={(selectedItem, index) => (
+        <View style={styles.buttonInnerContainer}>
+          <Text style={[globalStyles.bodyLargePrimaryBlack, buttonTextStyle]}>
+            {selectedItem || '선택'}
+          </Text>
+          {iconComponent}
+        </View>
+      )}
     />
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     padding: 20,

@@ -179,7 +179,7 @@ const OperationPeriodInput = ({onPeriodSelected}) => {
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={0}
-        snapPoints={['85%']}
+        snapPoints={['75%']}
         backdropComponent={renderBackdrop}>
         <View style={styles.sheetTitleContainer}>
           <Text

@@ -84,7 +84,7 @@ const OperationTimerInput = ({onTimesSelected}) => {
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={0}
-        snapPoints={['70%']}
+        snapPoints={['60%']}
         backdropComponent={renderBackdrop}>
         <View style={styles.sheetTitleContainer}>
           <Text

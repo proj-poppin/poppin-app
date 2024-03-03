@@ -1,20 +1,20 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, View, TextInput, TouchableOpacity} from 'react-native';
 import CloseGraySvg from '../assets/icons/closeGray.svg'; // 아이콘 경로 확인 필요
-import primaryColors from '../style/primaryColors.ts'; // 색상 파일 경로 확인 필요
+import primaryColors from '../style/primaryColors.ts';
+import RequiredTextLabel from './RequiredTextLabel.tsx';
 
-const LabelAndInputWithCloseSvg = ({label, value, onChangeText}) => {
+const LabelAndInputWithCloseSvg = ({
+  label,
+  value,
+  onChangeText,
+  isRequired = false,
+}) => {
   const [isFocused, setIsFocused] = useState(false); // 입력 필드 포커스 상태 관리
 
   return (
     <>
-      <Text style={styles.labelText}>{label}</Text>
+      <RequiredTextLabel label={label} isRequired={isRequired} />
       <View
         style={[
           styles.inputContainer,
@@ -40,9 +40,6 @@ const LabelAndInputWithCloseSvg = ({label, value, onChangeText}) => {
 };
 
 const styles = StyleSheet.create({
-  labelText: {
-    paddingVertical: 5,
-  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',

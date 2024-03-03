@@ -35,6 +35,13 @@ export const globalStyles = StyleSheet.create({
     color: PrimaryColors.blue,
     marginTop: 5,
   },
+  bodyLargePrimaryPurple: {
+    fontFamily: 'Pretandard-Semibold',
+    fontSize: 18,
+    fontWeight: '600',
+    color: PrimaryColors.purple,
+    marginTop: 5,
+  },
   bodyLargePrimaryGray: {
     fontFamily: 'Pretandard-Semibold',
     fontSize: 18,

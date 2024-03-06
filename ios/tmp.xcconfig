@@ -4,3 +4,4 @@ NAVER_CONSUMER_KEY=M2mWk56bdC416uLGQbiT
 NAVER_SECRECT_KEY=9VYnRvmiY3
 NAVER_URL=navertest
 GOOGLE_API_KEY=807321583109-o7gsuqd86bk8it99uec4n4g1jcuv7qeu.apps.googleusercontent.com
+API_URL=https:/$()/www.bubble-poppin.com

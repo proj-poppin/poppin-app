@@ -33,6 +33,9 @@ import {
   getProfile as getKakaoProfile,
   shippingAddresses as getKakaoShippingAddresses,
   unlink,
+  KakaoOAuthToken,
+  loginWithKakaoAccount,
+  getAccessToken,
 } from '@react-native-seoul/kakao-login';
 import NaverLogin, {
   NaverLoginResponse,
@@ -83,23 +86,25 @@ GoogleSignin.configure({
 });
 
 async function onGoogleButtonPress() {
-  console.log('onGoogleButtonPress');
-  // Check if your device supports Google Play
-  try {
-    await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-    // google services are available
-  } catch (err) {
-    console.error('play services are not available');
-  }
-  // Get the users ID token
-  const {idToken} = await GoogleSignin.signIn();
+  console.log('onGoogleButtonPress 시작');
 
-  console.log('idToken', idToken);
-  // Create a Google credential with the token
-  const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-  console.log('googleCredential', googleCredential);
-  // Sign-in the user with the credential
-  return auth().signInWithCredential(googleCredential);
+  // Google Play 서비스 지원 여부 확인
+  await GoogleSignin.hasPlayServices();
+  const userInfo = await GoogleSignin.signIn();
+
+  const result = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    body: JSON.stringify({
+      code: userInfo.serverAuthCode,
+      client_id: Config.GOOGLE_WEB_CLIENT_ID,
+      client_secret: Config.GOOGLE_WEB_CLIENT_SECRET,
+      grant_type: 'authorization_code',
+      redirect_uri: Config.REDIRECT_URI,
+    }),
+  }).then(res => {
+    return res.json();
+  });
+  console.log(result);
 }
 
 function SignInEmailScreen({navigation}) {
@@ -178,14 +183,10 @@ function SignInEmailScreen({navigation}) {
     setError('');
   };
   const signInWithKakao = async (): Promise<void> => {
-    console.log('signInWithKakao!!');
-    try {
-      const token = await login();
-      setResult(JSON.stringify(token));
-      console.log('kakaoToken', token);
-    } catch (err) {
-      console.error('login err', err);
-    }
+    const token = await getAccessToken();
+    console.log(token.accessToken);
+    console.log(token);
+    setResult(JSON.stringify(token));
   };
   // 이메일 유효성 검사 함수
   const validateEmail = () => {

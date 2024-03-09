@@ -13,20 +13,38 @@ import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import ProfileSmallRightSvg from '../../assets/icons/profileSmallRight.svg';
 import BigRightSvg from '../../assets/icons/bigRight.svg';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {
-  BottomSheetBackdrop,
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from '@gorhom/bottom-sheet';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
+import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../store/reducer.ts';
+
 function MyPageScreen({navigation}) {
   const navigateToProfileEdit = () => {
-    navigation.navigate('ProfileEdit');
+    isLoggedIn
+      ? navigation.navigate('ProfileEdit')
+      : navigation.navigate('SignInEmail');
   };
+
+  const navigateToReviewWrite = () => {
+    isLoggedIn
+      ? navigation.navigate('ReviewWrite')
+      : navigation.navigate('SignInEmail');
+  };
+
+  const navigateToKeywordAlarm = () => {
+    isLoggedIn
+      ? navigation.navigate('KeywordAlarm')
+      : navigation.navigate('SignInEmail');
+  };
+
+  // const isLoggedIn = useSelector((state: RootState) => !!state.user.email);
+  const isLoggedIn = true;
 
   // 화면클릭시 모달 내려감
   const renderBackdrop = useCallback(
-    props => (
+    (
+      props: React.JSX.IntrinsicAttributes & BottomSheetDefaultBackdropProps,
+    ) => (
       <BottomSheetBackdrop
         {...props}
         pressBehavior="close"
@@ -40,10 +58,20 @@ function MyPageScreen({navigation}) {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   // variables
   const snapPoints = useMemo(() => ['40%'], []);
+
+  const navigateToSignIn = () => navigation.replace('SignInEmail');
+
   // callbacks
-  const handlePresentModal = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
+  const handlePresentModal = useCallback(
+    (action: () => void) => {
+      if (isLoggedIn) {
+        bottomSheetModalRef.current?.present();
+      } else {
+        navigateToSignIn();
+      }
+    },
+    [isLoggedIn, navigateToSignIn],
+  );
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
@@ -61,7 +89,10 @@ function MyPageScreen({navigation}) {
         <View style={styles.rowHeaderContainer}>
           <ProfileSvg />
           <View style={styles.colCloseContainer}>
-            <Text style={[globalStyles.title]}>팝핀퀸</Text>
+            <Text style={[globalStyles.title]}>
+              {' '}
+              {isLoggedIn ? '팝핀퀸' : '로그인 후 이용해주세요'}
+            </Text>
             <Pressable
               style={styles.profileInfoContainer}
               onPress={navigateToProfileEdit}
@@ -76,16 +107,12 @@ function MyPageScreen({navigation}) {
             </Pressable>
           </View>
         </View>
-        <CompleteButton
-          onPress={handlePresentModal}
-          title={'팝업 제보하기'}
-          widthRatio={'100%'}
-        />
+        <CompleteButton onPress={handlePresentModal} title={'팝업 제보하기'} />
         <View style={styles.rowBodyContainer}>
           <View style={styles.colMidContainer}>
             <Text style={globalStyles.labelSub}>후기 작성하기</Text>
             <View style={styles.infoRow}>
-              <Pressable onPress={() => navigation.navigate('ReviewWrite')}>
+              <Pressable onPress={navigateToReviewWrite}>
                 <FeedBackSvg style={styles.iconPadding} />
               </Pressable>
               <Text style={globalStyles.bodyLargePrimaryBlue}>
@@ -116,18 +143,12 @@ function MyPageScreen({navigation}) {
               key={index}
               Svg={FeedBackSvg} // 예시로 사용, 필요에 따라 다른 SVG 컴포넌트를 사용하세요
               title={`팝업 ${index + 1}`}
-              date={'01.01.-02.02'} // 일부에만 날짜 표시
             />
           ))}
         </ScrollView>
         <View style={styles.middleContainer}>
           <Text style={globalStyles.bodyMediumSub}>키워드 알림 설정</Text>
-          <RightSvg
-            style={styles.svgStyle}
-            onPress={() => {
-              navigation.navigate('KeywordAlarm');
-            }}
-          />
+          <RightSvg style={styles.svgStyle} onPress={navigateToKeywordAlarm} />
         </View>
         <View style={styles.middleContainer}>
           <Text style={globalStyles.bodyMediumSub}>문의하기/FAQ</Text>
@@ -285,12 +306,6 @@ const styles = StyleSheet.create({
   dividerPadding: {
     paddingHorizontal: 30,
   },
-  divider: {
-    borderBottomColor: primaryColors.font,
-    borderBottomWidth: 1,
-    marginVertical: 20, // 선을 중심으로 컨텐츠가 서로 떨어져 있도록 마진 추가
-  },
-
   titleContainer: {
     marginTop: 15,
   },

@@ -10,11 +10,12 @@ import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 
 function SignUpScreen({navigation}) {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
   const [error, setError] = useState('');
   const [touched, setTouched] = useState(true); // 사용자가 입력 필드를 수정했는지 추적
-  const [password, setPassword] = useState('');
   const [isPasswordValid, setIsPasswordValid] = useState(false); // 비밀번호 유효성 상태
-  const [passwordConfirm, setPasswordConfirm] = useState('');
+
   const [isPasswordSame, setIsPasswordSame] = useState(false); // 비밀번호 일치 상태
   const [isEmailValid, setIsEmailValid] = useState(false); // 이메일 유효성 상태
 
@@ -68,26 +69,33 @@ function SignUpScreen({navigation}) {
 
   const handlePress = () => {
     setTouched(true);
-    if (isPasswordValid) {
-      // 비밀번호 유효성이 확인되면 로그인 시도 로직 실행
-      console.log('로그인 시도부분2');
+    if (!isPasswordValid) {
+      console.log('비밀번호 유효성 미통과');
+      return;
     }
-
-    // 이메일 주소가 .com, .co.kr, .net으로 끝나는지 확인
+    // 이메일 주소 유효성 검사
     const isValidEmail =
       /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@([0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.)+(com|co\.kr|net)$/i.test(
         email,
       );
     if (!isValidEmail) {
       setError('잘못된 이메일 주소입니다');
-      console.log('touched2');
-      console.log('touched3');
+      console.log('잘못된 이메일 주소');
       return;
     }
 
-    // 에러가 없고, 입력이 유효한 경우 로그인 시도 로직 실행
-    console.log('로그인 시도 가능');
-    navigation.navigate('NicknameSetting'); // 여기로 이동
+    if (!canGoNext) {
+      console.log('입력 값이 유효하지 않습니다.');
+      return;
+    }
+
+    console.log('회원가입 데이터 전달 및 화면 이동');
+    // 이메일, 비밀번호, 비밀번호 확인 데이터를 NicknameSetting 화면으로 넘깁니다.
+    navigation.navigate('NicknameSetting', {
+      email: email,
+      password: password,
+      passwordConfirm: passwordConfirm,
+    });
   };
 
   return (

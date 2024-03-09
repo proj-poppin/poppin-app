@@ -43,7 +43,7 @@ import NaverLogin, {
 } from '@react-native-seoul/naver-login';
 import Config from 'react-native-config';
 import CloseSvgIcon from '../../assets/icons/close.svg';
-
+import axios from 'axios';
 async function onAppleButtonPress() {
   if (Platform.OS === 'android') {
     console.log('android');
@@ -205,11 +205,31 @@ function SignInEmailScreen({navigation}) {
   };
 
   // 계속하기 버튼 클릭 핸들러
-  const handlePress = () => {
+  // const handlePress = () => {
+  //   setTouched(true);
+  //   console.log('touched');
+  //
+  //   // 이메일 주소가 .com, .co.kr, .net으로 끝나는지 확인
+  //   const isValidEmail =
+  //     /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@([0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.)+(com|co\.kr|net)$/i.test(
+  //       email,
+  //     );
+  //   if (!isValidEmail) {
+  //     setError('잘못된 이메일 주소입니다');
+  //     console.log('touched2');
+  //     return;
+  //   }
+  //
+  //   // 에러가 없고, 입력이 유효한 경우 로그인 시도 로직 실행
+  //   console.log('로그인 시도 가능');
+  //   navigation.navigate('SignInPassword'); // 여기로 이동
+  // };
+
+  const handlePress = async () => {
     setTouched(true);
     console.log('touched');
 
-    // 이메일 주소가 .com, .co.kr, .net으로 끝나는지 확인
+    // Validate email with your existing logic
     const isValidEmail =
       /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@([0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.)+(com|co\.kr|net)$/i.test(
         email,
@@ -220,9 +240,30 @@ function SignInEmailScreen({navigation}) {
       return;
     }
 
-    // 에러가 없고, 입력이 유효한 경우 로그인 시도 로직 실행
-    console.log('로그인 시도 가능');
-    navigation.navigate('SignInPassword'); // 여기로 이동
+    // Prepare FormData
+    const formData = new FormData();
+    formData.append('email', email); // Use the email state
+    formData.append('password', 'dldldldldl123!'); // Use a predefined or state-driven password
+
+    // Perform POST request
+    try {
+      const response = await axios({
+        method: 'post',
+        url: Config.API_URL + '/auth/login',
+        data: formData,
+        headers: {'Content-Type': 'multipart/form-data'},
+      });
+
+      console.log('Response:', response.data);
+      // Handle response data or navigate
+      navigation.navigate('SignInPassword'); // Or handle based on response
+    } catch (error) {
+      console.error(
+        'Error during Axios request:',
+        error.response ? error.response.data : error.message,
+      );
+      setError('로그인 요청 중 문제가 발생했습니다.');
+    }
   };
 
   return (

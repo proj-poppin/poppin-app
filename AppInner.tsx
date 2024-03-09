@@ -42,7 +42,6 @@ import KeywordAlarmScreen from './src/screens/myPage/KeywordAlarmScreen.tsx';
 import UserRegisterScreen from './src/screens/myPage/UserRegisterScreen.tsx';
 import ReviewWriteScreen from './src/screens/myPage/ReviewWriteScreen.tsx';
 import OperatorRegisterScreen from './src/screens/myPage/OperatorRegisterScreen.tsx';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import PreferenceScreen from './src/screens/preference/PreferenceScreen.tsx';
 
 const MainStack = createNativeStackNavigator();
@@ -341,7 +340,7 @@ function AppInner() {
       try {
         // 서버 통신을 시뮬레이션하는 부분
         // 예: 사용자 세션 확인, 초기 설정 불러오기 등
-        await new Promise(resolve => setTimeout(resolve, 4000)); // 서버로부터 데이터 로딩 시간을 4초로 가정
+        await new Promise(resolve => setTimeout(resolve, 1000)); // 서버로부터 데이터 로딩 시간을 4초로 가정
 
         // 데이터 로딩이 완료되면 스플래시 스크린 숨기기
         setIsSplashScreenVisible(false);
@@ -352,13 +351,8 @@ function AppInner() {
       }
     };
 
-    loadDataAsync();
+    loadDataAsync().then(r => console.log('Data loading finished'));
   }, []);
-
-  if (isSplashScreenVisible) {
-    // 스플래시 스크린이 활성화되어 있으면, SplashScreen 컴포넌트를 렌더링
-    // return <SplashScreen />;
-  }
 
   // 로그인 상태에 따라 적절한 네비게이션 스택을 렌더링
   return (
@@ -370,12 +364,6 @@ function AppInner() {
             name="MainTabNavigator"
             component={MainTabNavigator}
           />
-          {/* 로그인 상태와 무관하게 접근 가능한 스크린을 추가 */}
-          <MainStack.Screen
-            name="ProfileEdit"
-            component={MyProfileEditScreen}
-          />
-          <MainStack.Screen name="FAQ" component={FAQScreen} />
         </>
       ) : (
         // 로그인하지 않은 사용자를 위한 스크린

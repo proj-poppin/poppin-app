@@ -34,6 +34,7 @@ const PreferenceOptionButtons = ({
       '가족과 방문해요',
       '연인과 방문해요',
     ],
+    4: ['전체', '7세 이상', '12세 이상', '15세 이상', '성인'],
   };
   const handlePress = option => {
     if (isSingleSelect) {

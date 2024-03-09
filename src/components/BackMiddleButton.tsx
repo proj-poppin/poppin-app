@@ -26,8 +26,7 @@ const BackMiddleButton: React.FC<BackMiddleButtonProps> = ({
     <Text
       style={[
         globalStyles.bodyLargePrimaryBlack,
-        styles.buttonText,
-        {color: textColor || primaryColors.blue},
+        {color: textColor || primaryColors.font},
       ]}>
       {title}
     </Text>
@@ -52,9 +51,6 @@ const styles = StyleSheet.create({
   },
   buttonPressed: {
     backgroundColor: `${primaryColors.blue}1A`, // 투명도 10% 적용
-  },
-  buttonText: {
-    // 기본 텍스트 색상은 styles.buttonText 내에서 설정되지 않고, 컴포넌트 내에서 조건부로 적용됩니다.
   },
 });
 

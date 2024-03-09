@@ -1,12 +1,16 @@
-// ShadowedBox.js
 import React from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import primaryColors from '../style/primaryColors.ts';
-import Colors from '../style/primaryColors.ts';
 
-const NotLogginBox = ({text1, text2, buttonText, onPress}) => {
+const NotLogginBox = ({
+  text1,
+  text2,
+  buttonText,
+  onPress,
+  isNeedBox = true,
+}) => {
   return (
-    <View style={styles.shadowedBox}>
+    <View style={isNeedBox ? styles.shadowedBox : styles.boxWithoutShadow}>
       <View style={styles.contentContainer}>
         <Text style={styles.text}>
           {text1} {'\n'}
@@ -33,20 +37,25 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    marginBottom: 20, // Adjust as needed
+    marginBottom: 20,
+  },
+  boxWithoutShadow: {
+    backgroundColor: primaryColors.white,
+    padding: 20,
+    marginBottom: 20,
   },
   contentContainer: {
-    alignItems: 'center', // Center the content
+    alignItems: 'center',
   },
   text: {
     fontSize: 14,
     textAlign: 'center',
     fontFamily: 'Pretandard-Semibold',
-    fontWeight: '300',
-    marginBottom: 20, // Adjust as needed
+    fontWeight: '400',
+    marginBottom: 20,
   },
   button: {
-    backgroundColor: primaryColors.blue, // A nice shade of blue
+    backgroundColor: primaryColors.blue,
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,

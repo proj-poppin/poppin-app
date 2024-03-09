@@ -1,18 +1,24 @@
 import React from 'react';
-import {Pressable, Text, StyleSheet} from 'react-native';
+import {Pressable, Text, ActivityIndicator, StyleSheet} from 'react-native';
 import primaryColors from '../style/primaryColors.ts';
 import {globalStyles} from '../style/textStyles.ts';
 
 interface NextMiddleButtonProps {
   onPress: () => void;
   title: string;
-  buttonWidth?: number | string; // 너비 조절을 위한 옵셔널 프로퍼티
+  loading?: boolean;
+  disabled?: boolean;
+  alwaysActive?: boolean;
+  buttonWidth?: number | string;
 }
 
 const NextMiddleButton: React.FC<NextMiddleButtonProps> = ({
   onPress,
   title,
-  buttonWidth = '50%', // 기본값 '55%'
+  loading = false,
+  disabled = false,
+  alwaysActive = false,
+  buttonWidth = '50%',
 }) => (
   <Pressable
     style={({pressed}) => [
@@ -20,18 +26,35 @@ const NextMiddleButton: React.FC<NextMiddleButtonProps> = ({
       {
         backgroundColor: pressed
           ? primaryColors.buttonPressed
+          : disabled && !alwaysActive
+          ? primaryColors.component
           : primaryColors.blue,
-        width: buttonWidth, // 너비를 동적으로 조절
+        width: buttonWidth,
       },
+      disabled && !alwaysActive && styles.disabledButton,
     ]}
-    onPress={onPress}>
-    <Text
-      style={[
-        globalStyles.bodyLargePrimaryBlack,
-        {color: primaryColors.white},
-      ]}>
-      {title}
-    </Text>
+    onPress={() => {
+      if (!disabled || alwaysActive) {
+        onPress();
+      }
+    }}
+    disabled={disabled && !alwaysActive}>
+    {loading ? (
+      <ActivityIndicator color={primaryColors.white} />
+    ) : (
+      <Text
+        style={[
+          globalStyles.bodyLargePrimaryBlack,
+          {
+            color:
+              disabled && !alwaysActive
+                ? primaryColors.font
+                : primaryColors.white,
+          },
+        ]}>
+        {title}
+      </Text>
+    )}
   </Pressable>
 );
 
@@ -40,12 +63,17 @@ const styles = StyleSheet.create({
     width: '55%',
     height: 52,
     borderRadius: 25,
-    marginTop: 35,
-    marginBottom: 10,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: primaryColors.blue, // 기본 배경 색상 설정
+    marginTop: 35,
+    marginBottom: 10,
+  },
+  text: {
+    // 이제 이 스타일은 필요 없으므로 제거합니다.
+  },
+  disabledButton: {
+    backgroundColor: primaryColors.component,
   },
 });
 

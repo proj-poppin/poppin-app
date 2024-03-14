@@ -2053,10 +2053,10 @@
   resolved "https://registry.npmjs.org/@react-navigation/elements/-/elements-1.3.21.tgz"
   integrity sha512-eyS2C6McNR8ihUoYfc166O1D8VYVh9KIl0UQPI8/ZJVsStlfSTgeEEh+WXge6+7SFPnZ4ewzEJdSAHH+jzcEfg==
 
-"@react-navigation/material-top-tabs@^6.6.5":
-  version "6.6.5"
-  resolved "https://registry.npmjs.org/@react-navigation/material-top-tabs/-/material-top-tabs-6.6.5.tgz"
-  integrity sha512-ovKc+ltWYJwu3ju5sw1txBTMemlRM85/JceSrkqU++QnL9l0TAPiPxDlO+wJddR1iwi+P6zj5/+QkXR5Ku+trw==
+"@react-navigation/material-top-tabs@^6.6.12":
+  version "6.6.12"
+  resolved "https://registry.npmjs.org/@react-navigation/material-top-tabs/-/material-top-tabs-6.6.12.tgz"
+  integrity sha512-mqGRG2+HmYgslqBNt05oBZp0e9y5TsYEck/iFDsJBwBS6KnizZrcjj+BhzuHeTacjt9sqa8HCPcDq91RNwj47Q==
   dependencies:
     color "^4.2.3"
     warn-once "^0.1.0"
@@ -6346,6 +6346,10 @@ react-native-modal@^13.0.1:
     prop-types "^15.6.2"
     react-native-animatable "1.3.3"
 
+"react-native-nmap@github:ZeroCho/react-native-naver-map":
+  version "0.0.67"
+  resolved "git+ssh://git@github.com/ZeroCho/react-native-naver-map.git#b2134b45f0db93374863bbb1ead8efc477691c6b"
+
 react-native-pager-view@*, react-native-pager-view@^6.2.3, "react-native-pager-view@>= 4.0.0":
   version "6.2.3"
   resolved "https://registry.npmjs.org/react-native-pager-view/-/react-native-pager-view-6.2.3.tgz"
@@ -6435,7 +6439,7 @@ react-native-webview@^13.8.1:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
 
-react-native@*, react-native@^0.73.4, "react-native@>= 0.30.0", "react-native@>= 0.64.3", react-native@>=0.25.1, react-native@>=0.40.0, react-native@>=0.42.0, react-native@>=0.48.0, react-native@>=0.48.4, react-native@>=0.57, react-native@>=0.57.0, react-native@>=0.58.4, react-native@>=0.59.0, react-native@>=0.65.0, react-native@>=0.69, react-native@>=v0.40.0:
+react-native@*, react-native@^0.73.4, "react-native@>= 0.30.0", "react-native@>= 0.64.3", react-native@>=0.25.1, react-native@>=0.40.0, react-native@>=0.42.0, react-native@>=0.48.0, react-native@>=0.48.4, react-native@>=0.57, react-native@>=0.57.0, react-native@>=0.58.4, react-native@>=0.59.0, react-native@>=0.65.0, react-native@>=0.66, react-native@>=0.69, react-native@>=v0.40.0:
   version "0.73.4"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.73.4.tgz"
   integrity sha512-VtS+Yr6OOTIuJGDECIYWzNU8QpJjASQYvMtfa/Hvm/2/h5GdB6W9H9TOmh13x07Lj4AOhNMx3XSsz6TdrO4jIg==
@@ -6509,7 +6513,7 @@ react-test-renderer@18.2.0:
     react-shallow-renderer "^16.15.0"
     scheduler "^0.23.0"
 
-react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", react@^18.0, react@^18.2.0, "react@>= 15.2.1", "react@>= 17.0.1", react@>=0.14.5, react@>=16.0, react@>=16.6.3, react@>=16.8, react@>=17.0.0, react@18.2.0:
+react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", react@^18.0, react@^18.2.0, "react@>= 15.2.1", "react@>= 17.0.1", react@>=0.14.5, react@>=16.0, react@>=16.6.3, react@>=16.8, react@>=17, react@>=17.0.0, react@18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==

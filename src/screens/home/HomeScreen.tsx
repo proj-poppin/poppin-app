@@ -20,6 +20,8 @@ import QuestionSvg from '../../assets/icons/question.svg';
 import DownSvg from '../../assets/icons/down.svg';
 import RightSvg from '../../assets/icons/smallright.svg';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import NaverMapView, {Marker, Path} from 'react-native-nmap';
+
 function HomeScreen({navigation}) {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
@@ -39,6 +41,7 @@ function HomeScreen({navigation}) {
     <SafeAreaView style={{flex: 1, backgroundColor: primaryColors.white}}>
       <View style={styles.container}>
         <HomeMainTitle text1="어서오세요, OO님" />
+        {/*<NaverMapView />*/}
         <NotLogginBox
           text1={'로그인하고'}
           text2={'팝업 추천을 받아보세요!'}

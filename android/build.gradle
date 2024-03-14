@@ -19,4 +19,15 @@ buildscript {
         classpath 'com.google.gms:google-services:4.4.0'
     }
 }
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        // 네이버 지도 저장소
+        maven {
+            url 'https://naver.jfrog.io/artifactory/maven/'
+        }
+    }
+}
 apply plugin: "com.facebook.react.rootproject"

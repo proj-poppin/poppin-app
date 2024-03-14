@@ -17,6 +17,9 @@
       android:icon="@mipmap/ic_launcher"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
+        <meta-data
+                android:name="com.naver.maps.map.CLIENT_ID"
+                android:value="@string/NAVER_MAP_CLIENT_ID" />
       <activity
               android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
               android:exported="true">

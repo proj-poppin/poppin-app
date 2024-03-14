@@ -5,3 +5,7 @@ NAVER_SECRECT_KEY=9VYnRvmiY3
 NAVER_URL=navertest
 GOOGLE_API_KEY=807321583109-o7gsuqd86bk8it99uec4n4g1jcuv7qeu.apps.googleusercontent.com
 API_URL=https:/$()/www.bubble-poppin.com
+GOOGLE_WEB_CLIENT_ID=807321583109-o7gsuqd86bk8it99uec4n4g1jcuv7qeu.apps.googleusercontent.com
+GOOGLE_WEB_CLIENT_SECRET=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
+REDIRECT_URI=https:/$()/poppin-f79ac.firebaseapp.com/__/auth/handler
+NAVER_MAP_CLIENT_ID=94lhwlu07z

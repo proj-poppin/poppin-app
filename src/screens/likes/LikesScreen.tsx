@@ -24,8 +24,6 @@ import InterestSampleSvg from '../../assets/images/interestSample.svg';
 
 import DividerLine from '../../components/DividerLine.tsx';
 import InterestPopUpCard from '../../components/InterestPopUpCard.tsx';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../store/reducer.ts';
 import LoadingPoppinSvg from '../../assets/icons/loadingPoppin.svg';
 import NotLogginBox from '../../components/NotLogginBox.tsx';
 import ListIconSvg from '../../assets/icons/listIcon.svg';
@@ -86,6 +84,8 @@ function LikesScreen() {
   const getMarkedDates = () => {
     const today = new Date().toISOString().split('T')[0]; // Format today's date as YYYY-MM-DD
 
+    console.log('today', today);
+
     let markedDates = {
       ...selectedDate, // Preserve previously selected dates
       [today]: {
@@ -93,6 +93,7 @@ function LikesScreen() {
         selectedDate: true, // Mark today as selected
         textColor: 'black', // Ensuring text color is black for today
         selectedColor: primaryColors.purpleLight, // Background color for today
+        selected: true,
         dots: [
           {color: primaryColors.blue, selectedDotColor: primaryColors.blue},
           {color: primaryColors.purple, selectedDotColor: primaryColors.purple},
@@ -102,11 +103,30 @@ function LikesScreen() {
     };
 
     // Ensure other dates also have their textColor set if needed
-    Object.keys(markedDates).forEach(date => {
-      if (date !== today) {
-        markedDates[date].textColor = markedDates[date].textColor || 'black'; // Default to black if not set
-      }
-    });
+    // Object.keys(markedDates).forEach(date => {
+    //   if (date !== today) {
+    //     markedDates[date].textColor = markedDates[date].textColor || 'black'; // Default to black if not set
+    //   }
+    // });
+
+    markedDates[selectedDate] = {
+      selected: true,
+      selectedColor: primaryColors.purple, // Background color for the selected date
+      textColor: primaryColors.white, // Text color for the selected date
+    };
+
+    // Ensure today's date is always marked, even if not selected
+    if (!markedDates[today]) {
+      markedDates[today] = {
+        marked: true,
+        primaryColors: primaryColors.purple,
+        dots: [
+          {color: primaryColors.blue, selectedDotColor: primaryColors.blue},
+          {color: primaryColors.purple, selectedDotColor: primaryColors.purple},
+          {color: primaryColors.white, selectedDotColor: primaryColors.white},
+        ],
+      };
+    }
 
     return markedDates;
   };

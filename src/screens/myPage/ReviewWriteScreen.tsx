@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import primaryColors from '../../style/primaryColors.ts';
 import {globalStyles} from '../../style/textStyles.ts';
-import SearchSvg from '../../assets/icons/search.svg';
+import SearchSvg from '../../assets/icons/searchGray.svg';
 import OptionSingleButton from '../../components/OptionSingleButton.tsx';
 import PlusSvg from '../../assets/icons/plus.svg';
 import ImageDeleteSvg from '../../assets/icons/imageDelete.svg';

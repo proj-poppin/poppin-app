@@ -9,12 +9,12 @@ import {
 import {BottomSheetModal, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import {Calendar} from 'react-native-calendars'; // Ensure this is installed
 import CalendarGraySvg from '../assets/icons/calendarGray.svg'; // Your SVG path
-import globalColors from '../utils/color/globalColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
 import DividerLine from './DividerLine.tsx';
 import CompleteButton from './CompleteButton.tsx';
 import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
-import Text18B from './texts/body_large/Text18B.ts';
-import Text18R from './texts/body_large/Text18R.ts';
+import Text18B from '../styles/texts/body_large/Text18B.ts';
+import Text18R from '../styles/texts/body_large/Text18R.ts';
 
 interface Dates {
   start: string;

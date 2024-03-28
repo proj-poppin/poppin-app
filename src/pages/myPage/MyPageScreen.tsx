@@ -1,6 +1,6 @@
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useMemo, useRef} from 'react';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 import ProfileSvg from '../../assets/images/profile.svg';
 import CompleteButton from '../../components/CompleteButton.tsx';
 import FeedBackSvg from '../../assets/icons/feedback.svg';
@@ -14,13 +14,13 @@ import BigRightSvg from '../../assets/icons/bigRight.svg';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
 import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
-import text24B from '../../components/texts/headline/Text24B.ts';
-import text20B from '../../components/texts/title/Text20B.ts';
-import Text18B from '../../components/texts/body_large/Text18B.ts';
-import Text13R from '../../components/texts/label/Text12R.ts';
-import Text20B from '../../components/texts/title/Text20B.ts';
-import Text14R from '../../components/texts/body_medium/Text14R.ts';
-import Text14B from '../../components/texts/body_medium/Text14B.ts';
+import text24B from '../../styles/texts/headline/Text24B.ts';
+import text20B from '../../styles/texts/title/Text20B.ts';
+import Text18B from '../../styles/texts/body_large/Text18B.ts';
+import Text13R from '../../styles/texts/label/Text12R.ts';
+import Text20B from '../../styles/texts/title/Text20B.ts';
+import Text14R from '../../styles/texts/body_medium/Text14R.ts';
+import Text14B from '../../styles/texts/body_medium/Text14B.ts';
 
 function MyPageScreen({navigation}) {
   const navigateToProfileEdit = () => {

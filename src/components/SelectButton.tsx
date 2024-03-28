@@ -1,8 +1,8 @@
 // SelectionButton.tsx
 import React from 'react';
 import {TouchableOpacity, Text, StyleSheet} from 'react-native';
-import globalColors from '../utils/color/globalColors.ts';
-import Text14B from './texts/body_medium/Text14B.ts';
+import globalColors from '../styles/color/globalColors.ts';
+import Text14B from '../styles/texts/body_medium/Text14B.ts';
 
 interface SelectButtonProps {
   title: string;

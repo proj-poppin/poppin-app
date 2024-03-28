@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, TextInput, TouchableOpacity} from 'react-native';
 import CloseGraySvg from '../assets/icons/closeGray.svg'; // 아이콘 경로 확인 필요
-import globalColors from '../utils/color/globalColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
 import RequiredTextLabel from './RequiredTextLabel.tsx';
 
 const LabelAndInputWithCloseSvg = ({

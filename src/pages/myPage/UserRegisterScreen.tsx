@@ -1,5 +1,5 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import React, {
   useCallback,
@@ -20,9 +20,9 @@ import GoBackSvg from '../../assets/icons/goBack.svg';
 import ConfirmationModal from '../../components/ConfirmationModal.tsx';
 import ImageContainerRow from '../../components/ImageContainerRow.tsx';
 import DownSvg from '../../assets/icons/down.svg';
-import Text20B from '../../components/texts/title/Text20B.ts';
-import Text18B from '../../components/texts/body_large/Text18B.ts';
-import Text12R from '../../components/texts/label/Text12R.ts';
+import Text20B from '../../styles/texts/title/Text20B.ts';
+import Text18B from '../../styles/texts/body_large/Text18B.ts';
+import Text12R from '../../styles/texts/label/Text12R.ts';
 
 function UserRegisterScreen({navigation}) {
   const [storeName, setStoreName] = useState('');

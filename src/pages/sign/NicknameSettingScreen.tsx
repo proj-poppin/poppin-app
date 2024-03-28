@@ -1,6 +1,6 @@
 import {StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 import MainTitle from '../../components/MainTitle.tsx';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
 import CompleteButton from '../../components/CompleteButton.tsx';

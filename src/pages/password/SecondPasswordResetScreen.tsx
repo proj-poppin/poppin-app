@@ -4,7 +4,7 @@ import MainTitle from '../../components/MainTitle.tsx';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
 import CompleteButton from '../../components/CompleteButton.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
-import PrimaryColors from '../../utils/color/globalColors.ts';
+import PrimaryColors from '../../styles/color/globalColors.ts';
 
 function SecondPasswordResetScreen({navigation}) {
   const [email, setEmail] = useState('');

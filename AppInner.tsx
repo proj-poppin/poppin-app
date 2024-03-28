@@ -27,7 +27,7 @@ import Tab1SvgOn from './src/assets/icons/tab/tab1On.svg';
 import Tab2SvgOn from './src/assets/icons/tab/tab2On.svg';
 import Tab3SvgOn from './src/assets/icons/tab/tab3On.svg';
 import Tab4SvgOn from './src/assets/icons/tab/tab4On.svg';
-import globalColors from './src/utils/color/globalColors.ts';
+import globalColors from './src/styles/color/globalColors.ts';
 import {Pressable, Text} from 'react-native';
 import SecondPasswordResetScreen from './src/pages/password/SecondPasswordResetScreen.tsx';
 import MyProfileEditScreen from './src/pages/myPage/ProfileEditScreen.tsx';
@@ -42,7 +42,7 @@ import UserRegisterScreen from './src/pages/myPage/UserRegisterScreen.tsx';
 import ReviewWriteScreen from './src/pages/myPage/ReviewWriteScreen.tsx';
 import OperatorRegisterScreen from './src/pages/myPage/OperatorRegisterScreen.tsx';
 import PreferenceScreen from './src/pages/preference/PreferenceScreen.tsx';
-import Text13R from './src/components/texts/label/Text12R.ts';
+import Text13R from './src/styles/texts/label/Text12R.ts';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();

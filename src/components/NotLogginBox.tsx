@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
-import globalColors from '../utils/color/globalColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
 
 const NotLogginBox = ({
   text1,

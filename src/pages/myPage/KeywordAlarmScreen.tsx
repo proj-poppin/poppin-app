@@ -7,11 +7,11 @@ import {
   Text,
   Keyboard,
 } from 'react-native';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 import KeywordAlarmOnSvg from '../../assets/icons/keywordAlarmOn.svg';
 import CloseSvg from '../../assets/icons/closeGray.svg';
 import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
-import Text13R from '../../components/texts/label/Text12R.ts';
+import Text13R from '../../styles/texts/label/Text12R.ts';
 
 const exampleText =
   '팝업 이름이나 내용에 포함될 수 있는 \n 키워드를 등록해주세요. \n 예) 슬램덩크, 먼작귀, 오뚜기';

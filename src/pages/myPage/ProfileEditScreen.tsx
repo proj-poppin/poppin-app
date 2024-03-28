@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 // @ts-ignore
 import ProfileImg from '../../assets/images/defaultProfile.png';
 import GoBackSvg from '../../assets/icons/goBack.svg';
@@ -24,7 +24,7 @@ import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import RightSvg from '../../assets/icons/bigRight.svg';
 import CloseGraySvg from '../../assets/icons/closeGray.svg';
 import RequiredTextLabel from '../../components/RequiredTextLabel.tsx';
-import Text14R from '../../components/texts/body_medium/Text14R.ts';
+import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 
 function MyProfileEditScreen({navigation}) {
   const [profileImage, setProfileImage] = useState(ProfileImg);

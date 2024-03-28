@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 // DownSvg import 구문 제거
-import globalColors from '../utils/color/globalColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
 import RequiredTextLabel from './RequiredTextLabel.tsx';
 
 // IconComponent prop 추가

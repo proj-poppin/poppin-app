@@ -7,12 +7,12 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
-import globalColors from '../utils/color/globalColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
 import AlertSvg from '../assets/images/alert.svg';
-import Text20B from './texts/title/Text20B.ts';
-import Text14B from './texts/body_medium/Text14B.ts';
-import Text12B from './texts/label/Text12B.ts';
-import Text14R from './texts/body_medium/Text14R.ts';
+import Text20B from '../styles/texts/title/Text20B.ts';
+import Text14B from '../styles/texts/body_medium/Text14B.ts';
+import Text12B from '../styles/texts/label/Text12B.ts';
+import Text14R from '../styles/texts/body_medium/Text14R.ts';
 
 const TwoSelectConfirmationModal = ({
   isVisible,

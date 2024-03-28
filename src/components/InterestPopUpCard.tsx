@@ -1,10 +1,10 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import DefaultImageSvg from '../assets/images/interestSample.svg';
-import globalColors from '../utils/color/globalColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
 import StarOnSvg from '../assets/icons/starOn.svg';
-import Text12B from './texts/label/Text12B.ts';
-import Text18B from './texts/body_large/Text18B.ts';
+import Text12B from '../styles/texts/label/Text12B.ts';
+import Text18B from '../styles/texts/body_large/Text18B.ts';
 
 const InterestPopUpCard = ({
   Svg = DefaultImageSvg,

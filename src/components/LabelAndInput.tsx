@@ -7,8 +7,8 @@ import {
   TextInputProps,
   TextStyle,
 } from 'react-native';
-import globalColors from '../utils/color/globalColors.ts';
-import Text20B from './texts/title/Text20B.ts';
+import globalColors from '../styles/color/globalColors.ts';
+import Text20B from '../styles/texts/title/Text20B.ts';
 
 // Props 타입 정의
 interface LabelAndInputProps extends TextInputProps {

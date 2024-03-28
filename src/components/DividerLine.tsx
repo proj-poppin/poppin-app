@@ -1,7 +1,7 @@
 // DividerLine.js
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import globalColors from '../utils/color/globalColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
 
 const DividerLine = ({height = 15}) => {
   return <View style={[styles.divider, {height}]} />;

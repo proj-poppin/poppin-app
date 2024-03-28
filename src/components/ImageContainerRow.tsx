@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import PlusSvg from '../assets/icons/plus.svg'; // 경로에 주의하세요
 import ImageDeleteSvg from '../assets/icons/imageDelete.svg'; // 경로에 주의하세요
-import globalColors from '../utils/color/globalColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
 
 const ImageContainerRow = ({
   selectedImages,

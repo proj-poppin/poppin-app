@@ -10,7 +10,7 @@ import {
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/stores/reducer.ts';
 import LoadingSvg from '../../assets/images/loading.svg';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 
 const LoadingScreen = () => {
   const isLoading = useSelector((state: RootState) => state.loading.isLoading);

@@ -2,7 +2,7 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, Pressable, Alert, Platform} from 'react-native';
 import CompleteButton from '../../components/CompleteButton.tsx';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 import MainTitle from '../../components/MainTitle.tsx';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
 import RoundRightSvg from '../../assets/icons/roundRight.svg';
@@ -19,8 +19,8 @@ import NaverLogin, {
 } from '@react-native-seoul/naver-login';
 import Config from 'react-native-config';
 import axios from 'axios';
-import Text14B from '../../components/texts/body_medium/Text14B.ts';
-import Text14R from '../../components/texts/body_medium/Text14R.ts';
+import Text14B from '../../styles/texts/body_medium/Text14B.ts';
+import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 
 async function onAppleButtonPress() {
   if (Platform.OS === 'android') {

@@ -9,7 +9,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 import SearchSvg from '../../assets/icons/searchGray.svg';
 import OptionSingleButton from '../../components/OptionSingleButton.tsx';
 import PlusSvg from '../../assets/icons/plus.svg';
@@ -17,8 +17,8 @@ import ImageDeleteSvg from '../../assets/icons/imageDelete.svg';
 import ImagePicker from 'react-native-image-crop-picker';
 import CompleteButton from '../../components/CompleteButton.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
-import Text14R from '../../components/texts/body_medium/Text14R.ts';
-import Text13R from '../../components/texts/label/Text12R.ts';
+import Text14R from '../../styles/texts/body_medium/Text14R.ts';
+import Text13R from '../../styles/texts/label/Text12R.ts';
 
 function ReviewWriteScreen() {
   const [keyword, setKeyword] = useState('');

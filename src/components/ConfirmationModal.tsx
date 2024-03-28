@@ -7,12 +7,12 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
-import globalColors from '../utils/color/globalColors.ts'; // 경로는 실제 환경에 맞게 조정
+import globalColors from '../styles/color/globalColors.ts'; // 경로는 실제 환경에 맞게 조정
 import CheckSvg from '../assets/images/check3.svg'; // 경로 확인 필요
 import AlertSvg from '../assets/images/alert.svg';
-import Text14R from './texts/body_medium/Text14R.ts';
-import Text20B from './texts/title/Text20B.ts';
-import Text18B from './texts/body_large/Text18B.ts';
+import Text14R from '../styles/texts/body_medium/Text14R.ts';
+import Text20B from '../styles/texts/title/Text20B.ts';
+import Text18B from '../styles/texts/body_large/Text18B.ts';
 
 const ConfirmationModal = ({
   isVisible,

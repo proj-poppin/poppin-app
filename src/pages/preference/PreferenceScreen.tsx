@@ -1,14 +1,14 @@
 import React, {useLayoutEffect, useState} from 'react';
 import {Pressable, ScrollView, View, Text, StyleSheet} from 'react-native';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 import NextMiddleButton from '../../components/NextMiddleButton';
 import BackMiddleButton from '../../components/BackMiddleButton';
 import CompleteButton from '../../components/CompleteButton';
 import OptionMultipleButton from '../../components/optionMultipleButton.tsx';
 import {NavigationProp} from '@react-navigation/native';
 import SkipModal from '../../components/SkipModal.tsx';
-import Text24B from '../../components/texts/headline/Text24B.ts';
-import Text12R from '../../components/texts/label/Text12R.ts';
+import Text24B from '../../styles/texts/headline/Text24B.ts';
+import Text12R from '../../styles/texts/label/Text12R.ts';
 
 type Step = {
   text1: string;

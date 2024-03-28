@@ -1,6 +1,6 @@
 import React from 'react';
 import {Pressable, Text, StyleSheet} from 'react-native';
-import globalColors from '../utils/color/globalColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
 
 interface NextButtonProps {
   onPress: () => void;

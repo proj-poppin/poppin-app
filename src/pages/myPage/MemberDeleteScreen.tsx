@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 import ShallowDividerLine from '../../components/ShallowDividerLine.tsx';
 import BackMiddleButton from '../../components/BackMiddleButton.tsx';
 import NextMiddleButton from '../../components/NextMiddleButton.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import CompleteButton from '../../components/CompleteButton.tsx';
 import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
-import Text20B from '../../components/texts/title/Text20B.ts';
-import Text12R from '../../components/texts/label/Text12R.ts';
+import Text20B from '../../styles/texts/title/Text20B.ts';
+import Text12R from '../../styles/texts/label/Text12R.ts';
 
 const reasons = [
   '앱 사용이 불편해요',

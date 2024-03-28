@@ -8,7 +8,7 @@ import {
   TextInputProps,
   TextStyle,
 } from 'react-native';
-import globalColors from '../utils/color/globalColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
 import PasswordWatchSvg from '../assets/icons/watch.svg';
 import PasswordWatchFilledSvg from '../assets/icons/watchFilled.svg';
 

@@ -6,7 +6,7 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import SearchBlueSvg from '../../assets/icons/searchBlue.svg';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
@@ -16,8 +16,8 @@ import InterestPopUpCard from '../../components/InterestPopUpCard.tsx';
 import FilterSvg from '../../assets/icons/filter.svg';
 import CustomSelectDropdown from '../../components/CustomDropDown.tsx';
 import OrderSvg from '../../assets/icons/order.svg';
-import Text12B from '../../components/texts/label/Text12B.ts';
-import Text24B from '../../components/texts/headline/Text24B.ts';
+import Text12B from '../../styles/texts/label/Text12B.ts';
+import Text24B from '../../styles/texts/headline/Text24B.ts';
 
 const orderTypes = ['오픈일순', '마감일순', '저장순'];
 

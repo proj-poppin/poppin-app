@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 import HomeMainTitle from '../../components/HomeMainTitle.tsx';
 import DividerLine from '../../components/DividerLine.tsx';
 import NotLogginBox from '../../components/NotLogginBox.tsx';
@@ -8,8 +8,8 @@ import QuestionSvg from '../../assets/icons/question.svg';
 import DownSvg from '../../assets/icons/down.svg';
 import RightSvg from '../../assets/icons/smallright.svg';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Text18B from '../../components/texts/body_large/Text18B.ts';
-import Text12R from '../../components/texts/label/Text12R.ts';
+import Text18B from '../../styles/texts/body_large/Text18B.ts';
+import Text12R from '../../styles/texts/label/Text12R.ts';
 
 function HomeScreen({navigation}) {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);

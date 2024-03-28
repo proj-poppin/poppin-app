@@ -1,7 +1,7 @@
 import React from 'react';
 import {Pressable, Text, ActivityIndicator, StyleSheet} from 'react-native';
-import globalColors from '../utils/color/globalColors.ts';
-import Text18B from './texts/body_large/Text18B.ts';
+import globalColors from '../styles/color/globalColors.ts';
+import Text18B from '../styles/texts/body_large/Text18B.ts';
 
 interface NextMiddleButtonProps {
   onPress: () => void;

@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import CalendarSvg from '../../assets/icons/calendar.svg';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 import DownBlackSvg from '../../assets/icons/downBlack.svg';
 import OrderSvg from '../../assets/icons/order.svg';
 import CustomSelectDropdown from '../../components/CustomDropDown.tsx';
@@ -27,10 +27,10 @@ import NotLogginBox from '../../components/NotLogginBox.tsx';
 import ListIconSvg from '../../assets/icons/listIcon.svg';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {Calendar} from 'react-native-calendars';
-import Text20B from '../../components/texts/title/Text20B.ts';
-import Text24B from '../../components/texts/headline/Text24B.ts';
-import Text12B from '../../components/texts/label/Text12B.ts';
-import Text18B from '../../components/texts/body_large/Text18B.ts';
+import Text20B from '../../styles/texts/title/Text20B.ts';
+import Text24B from '../../styles/texts/headline/Text24B.ts';
+import Text12B from '../../styles/texts/label/Text12B.ts';
+import Text18B from '../../styles/texts/body_large/Text18B.ts';
 
 function LikesScreen() {
   const [isLoading, setLoading] = useState(false);

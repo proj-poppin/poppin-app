@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Pressable, Text, StyleSheet, View} from 'react-native';
-import globalColors from '../utils/color/globalColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
 
 const OptionMultipleButton = ({id, title, onPress}) => {
   const [isSelected, setIsSelected] = useState(false);

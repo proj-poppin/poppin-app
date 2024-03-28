@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
-import globalColors from '../utils/color/globalColors.ts'; // 경로는 실제 환경에 맞게 조정
+import globalColors from '../styles/color/globalColors.ts'; // 경로는 실제 환경에 맞게 조정
 import AlertSvg from '../assets/images/alert.svg';
 import CheckSvg from '../assets/images/check3.svg'; // CheckSvg 경로도 실제 환경에 맞게 조정
 

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Animated, StyleSheet, View, Text} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 import Splash1 from '../../assets/images/splash1.svg';
 import Splash2 from '../../assets/images/splash2.svg';
 import Splash3 from '../../assets/images/splash3.svg';

@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import PoppinSvg from '../assets/icons/poppin.svg';
 import AlarmOffSvg from '../assets/icons/alarmOff.svg';
-import Text24B from './texts/headline/Text24B.ts';
+import Text24B from '../styles/texts/headline/Text24B.ts';
 // @ts-ignore
 const HomeMainTitle = ({text1, text2}) => {
   const handlePress = () => {

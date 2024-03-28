@@ -1,11 +1,11 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import globalColors from '../../utils/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors.ts';
 import MainTitle from '../../components/MainTitle.tsx';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
 import CompleteButton from '../../components/CompleteButton.tsx';
 import RoundRightSvg from '../../assets/icons/roundRight.svg';
-import Text14R from '../../components/texts/body_medium/Text14R.ts';
+import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 
 function SignInPasswordScreen({navigation}) {
   const [password, setPassword] = useState('');

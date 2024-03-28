@@ -2,8 +2,8 @@ import DefaultImageSvg from '../../src/assets/images/defaultImage.svg';
 
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import globalColors from '../utils/color/globalColors.ts';
-import Text14B from './texts/body_medium/Text14B.ts';
+import globalColors from '../styles/color/globalColors.ts';
+import Text14B from '../styles/texts/body_medium/Text14B.ts';
 const PopUpCard = ({Svg = DefaultImageSvg, title, date = null}) => {
   const formattedTitle =
     title.length > 7 ? `${title.substring(0, 7)}...` : title;

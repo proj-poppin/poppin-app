@@ -7,12 +7,13 @@ import {
   StyleSheet,
   Pressable,
 } from 'react-native';
-import primaryColors from '../style/primaryColors.ts';
+import globalColors from '../utils/color/globalColors.ts';
 import DatePicker from 'react-native-date-picker';
 import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
-import {globalStyles} from '../style/textStyles.ts';
 import DividerLine from './DividerLine.tsx';
 import CompleteButton from './CompleteButton.tsx';
+import Text18B from './texts/body_large/Text18B.ts';
+import Text18R from './texts/body_large/Text18R.ts';
 
 interface Times {
   start: string;
@@ -59,7 +60,7 @@ const OperationHoursBottomSheet = () => {
   };
 
   const getInputStyle = (type: string) => ({
-    color: selectionMode === type ? primaryColors.calendar : 'black',
+    color: selectionMode === type ? globalColors.calendar : 'black',
   });
 
   // 바깥 화면 터치 시 바텀 시트를 내리도록 설정
@@ -104,13 +105,13 @@ const OperationHoursBottomSheet = () => {
     <View>
       <View style={styles.inputRow}>
         <View style={[styles.input, styles.firstInput]}>
-          <Text style={{color: primaryColors.font}}>{times.start}</Text>
+          <Text style={{color: globalColors.font}}>{times.start}</Text>
         </View>
         <Text style={styles.toText}>~</Text>
         <TouchableOpacity
           style={[styles.input, styles.secondInput]}
           onPress={() => showTimePicker('start')}>
-          <Text style={{color: primaryColors.font}}>{times.end}</Text>
+          <Text style={{color: globalColors.font}}>{times.end}</Text>
           <ClockSvg />
         </TouchableOpacity>
       </View>
@@ -121,20 +122,17 @@ const OperationHoursBottomSheet = () => {
         snapPoints={['60%']}
         backdropComponent={renderBackdrop}>
         <View style={styles.sheetTitleContainer}>
-          <Text
-            style={[globalStyles.bodyLargePrimaryBlack, {textAlign: 'center'}]}>
+          <Text style={[Text18B.text, {textAlign: 'center'}]}>
             팝업의 운영 기간을 알려주세요
           </Text>
         </View>
 
         <View style={styles.dateRow}>
-          <Text style={[globalStyles.bodyLargeSub, {marginLeft: 10}]}>
-            시작
-          </Text>
+          <Text style={[Text18R.text, {marginLeft: 10}]}>시작</Text>
           <Pressable
             style={({pressed}) => [
               styles.timeInputContainer,
-              pressed && {backgroundColor: primaryColors.warmGray},
+              pressed && {backgroundColor: globalColors.warmGray},
             ]}
             onPress={() => setSelectionMode('start')}>
             <Text style={getInputStyle('start')}>{times.start}</Text>
@@ -142,13 +140,11 @@ const OperationHoursBottomSheet = () => {
         </View>
         <DividerLine height={1} />
         <View style={styles.dateRow}>
-          <Text style={[globalStyles.bodyLargeSub, {marginLeft: 10}]}>
-            종료
-          </Text>
+          <Text style={[Text18B.text, {marginLeft: 10}]}>종료</Text>
           <Pressable
             style={({pressed}) => [
               styles.timeInputContainer,
-              pressed && {backgroundColor: primaryColors.warmGray},
+              pressed && {backgroundColor: globalColors.warmGray},
             ]}
             onPress={() => setSelectionMode('end')}>
             <Text style={getInputStyle('end')}>{times.end}</Text>
@@ -193,7 +189,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: primaryColors.warmGray,
+    borderColor: globalColors.warmGray,
     borderRadius: 20,
     height: 40,
     padding: 10,
@@ -212,12 +208,12 @@ const styles = StyleSheet.create({
   },
   toText: {
     marginHorizontal: 10,
-    color: primaryColors.font,
+    color: globalColors.font,
   },
   timeInputContainer: {
     alignItems: 'center',
     height: 35,
-    backgroundColor: primaryColors.component,
+    backgroundColor: globalColors.component,
     borderRadius: 10,
     padding: 10,
     marginRight: 10,
@@ -225,7 +221,7 @@ const styles = StyleSheet.create({
   dateInput: {
     flex: 1, // 나머지 공간 채우기
     marginLeft: 10, // 아이콘과의 간격
-    color: primaryColors.black,
+    color: globalColors.black,
   },
   centeredView: {
     alignItems: 'center', // 수평 중앙 정렬

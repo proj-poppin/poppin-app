@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Pressable, Text, StyleSheet, View} from 'react-native';
-import primaryColors from '../style/primaryColors.ts';
+import globalColors from '../utils/color/globalColors.ts';
 
 const OptionMultipleButton = ({id, title, onPress}) => {
   const [isSelected, setIsSelected] = useState(false);
@@ -17,10 +17,10 @@ const OptionMultipleButton = ({id, title, onPress}) => {
           style={[
             styles.button,
             {
-              backgroundColor: isSelected ? `${primaryColors.blue}1A` : 'white',
+              backgroundColor: isSelected ? `${globalColors.blue}1A` : 'white',
               borderColor: isSelected
-                ? primaryColors.blue
-                : primaryColors.warmGray,
+                ? globalColors.blue
+                : globalColors.warmGray,
             },
           ]}>
           <Text style={styles.text}>{title}</Text>

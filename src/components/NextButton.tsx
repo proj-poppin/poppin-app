@@ -1,6 +1,6 @@
 import React from 'react';
 import {Pressable, Text, StyleSheet} from 'react-native';
-import primaryColors from '../style/primaryColors.ts';
+import globalColors from '../utils/color/globalColors.ts';
 
 interface NextButtonProps {
   onPress: () => void;
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: primaryColors.stroke,
+    backgroundColor: globalColors.stroke,
   },
   text: {
     color: 'black',

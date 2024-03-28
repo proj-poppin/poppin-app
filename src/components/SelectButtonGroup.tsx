@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Pressable, Text, StyleSheet} from 'react-native';
-import primaryColors from '../style/primaryColors.ts';
-import {globalStyles} from '../style/textStyles.ts';
+import globalColors from '../utils/color/globalColors.ts';
+import Text18B from './texts/body_large/Text18B.ts';
 
 interface SelectButtonsGroupProps {
   titles: [string, string]; // 두 개의 선택지 타이틀
@@ -23,26 +23,24 @@ const SelectButtonsGroup: React.FC<SelectButtonsGroupProps> = ({
             styles.button,
             {
               borderColor:
-                selected === title
-                  ? primaryColors.blue
-                  : primaryColors.warmGray,
+                selected === title ? globalColors.blue : globalColors.warmGray,
               backgroundColor:
                 selected === title
-                  ? `${primaryColors.blue}1A`
-                  : primaryColors.white,
+                  ? `${globalColors.blue}1A`
+                  : globalColors.white,
             },
           ]}
           onPress={() => onSelect(title)}>
           <Text
             style={[
-              globalStyles.bodyMediumPrimary,
+              Text18B.text,
               {
                 color:
                   selected === title
-                    ? primaryColors.black
+                    ? globalColors.black
                     : selected
-                    ? primaryColors.warmGray
-                    : primaryColors.black,
+                    ? globalColors.warmGray
+                    : globalColors.black,
               },
             ]}>
             {title}
@@ -69,7 +67,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonPressed: {
-    backgroundColor: `${primaryColors.blue}1A`, // 투명도 10% 적용
+    backgroundColor: `${globalColors.blue}1A`, // 투명도 10% 적용
   },
 });
 

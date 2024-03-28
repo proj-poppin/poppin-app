@@ -1,14 +1,11 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import PoppinSvg from '../assets/icons/poppin.svg';
-import {globalStyles} from '../style/textStyles.ts';
-import AlarmOnSvg from '../../assets/icons/alarmOn.svg';
 import AlarmOffSvg from '../assets/icons/alarmOff.svg';
-import NotLogginBox from './NotLogginBox.tsx';
+import Text24B from './texts/headline/Text24B.ts';
 // @ts-ignore
 const HomeMainTitle = ({text1, text2}) => {
   const handlePress = () => {
-    // 여기에 버튼 클릭 시 실행할 로직을 추가하세요.
     // 예: navigation.navigate('SomeScreen');
   };
 
@@ -18,7 +15,7 @@ const HomeMainTitle = ({text1, text2}) => {
         <PoppinSvg />
         <AlarmOffSvg style={styles.alarmStyle} />
       </View>
-      <Text style={[globalStyles.headline]}>
+      <Text style={[Text24B.text]}>
         {text1} {'\n'}
         {text2}
       </Text>

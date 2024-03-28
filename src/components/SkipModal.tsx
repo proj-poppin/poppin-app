@@ -2,8 +2,9 @@
 import React from 'react';
 import {Modal, View, Text, Pressable, StyleSheet} from 'react-native';
 import SkipSvg from '../assets/images/skip.svg';
-import {globalStyles} from '../style/textStyles.ts';
-import primaryColors from '../style/primaryColors.ts'; // 경로는 실제 환경에 맞게 조정
+import globalColors from '../utils/color/globalColors.ts';
+import Text18B from './texts/body_large/Text18B.ts';
+import Text14R from './texts/body_medium/Text14R.ts';
 
 const SkipModal = ({isVisible, onClose, onSetNow}) => {
   return (
@@ -15,8 +16,7 @@ const SkipModal = ({isVisible, onClose, onSetNow}) => {
       <View style={styles.overlayStyle}>
         <View style={styles.modalView}>
           <SkipSvg style={{paddingBottom: 80}} />
-          <Text
-            style={[globalStyles.bodyLargePrimaryBlack, {textAlign: 'center'}]}>
+          <Text style={[Text18B.text, {textAlign: 'center'}]}>
             {'취향을 설정하면 맞춤 팝업 정보를\n받아볼 수 있어요!'}
           </Text>
           <View style={{flexDirection: 'row', marginTop: 20}}>
@@ -24,9 +24,9 @@ const SkipModal = ({isVisible, onClose, onSetNow}) => {
               {({pressed}) => (
                 <Text
                   style={[
-                    globalStyles.bodyMediumSub,
+                    Text14R.text,
                     {
-                      color: pressed ? 'gray' : primaryColors.font,
+                      color: pressed ? 'gray' : globalColors.font,
                     }, // 조건부 색상 적용
                   ]}>
                   건너뛰기
@@ -35,7 +35,7 @@ const SkipModal = ({isVisible, onClose, onSetNow}) => {
             </Pressable>
             <Text
               style={{
-                color: primaryColors.warmGray,
+                color: globalColors.warmGray,
                 alignSelf: 'center',
                 paddingHorizontal: 10,
                 paddingBottom: 8,
@@ -47,11 +47,11 @@ const SkipModal = ({isVisible, onClose, onSetNow}) => {
               {({pressed}) => (
                 <Text
                   style={[
-                    globalStyles.bodyMediumSub,
+                    Text14R.text,
                     {
                       color: pressed
-                        ? primaryColors.buttonPressed
-                        : primaryColors.blue,
+                        ? globalColors.buttonPressed
+                        : globalColors.blue,
                     }, // 조건부 색상 적용
                   ]}>
                   지금 설정하기

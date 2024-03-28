@@ -8,8 +8,7 @@ import {
   TextInputProps,
   TextStyle,
 } from 'react-native';
-import {globalStyles} from '../style/textStyles.ts';
-import primaryColors from '../style/primaryColors.ts';
+import globalColors from '../utils/color/globalColors.ts';
 import PasswordWatchSvg from '../assets/icons/watch.svg';
 import PasswordWatchFilledSvg from '../assets/icons/watchFilled.svg';
 
@@ -114,14 +113,14 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
           style={[
             styles.textInput,
             {
-              color: primaryColors.black,
+              color: globalColors.black,
             } as TextStyle,
           ]}
           onChangeText={
             isPasswordSetting ? handlePasswordValidation : handlePasswordChange
           }
           placeholder={placeholder}
-          placeholderTextColor={primaryColors.font}
+          placeholderTextColor={globalColors.font}
           keyboardType={keyboardType}
           secureTextEntry={secureTextEntry}
           returnKeyType={isPassword ? 'done' : 'next'} // Use "done" for password fields
@@ -135,8 +134,8 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
           <Text
             style={{
               color: containsNumAndLetter
-                ? primaryColors.blue
-                : primaryColors.font,
+                ? globalColors.blue
+                : globalColors.font,
               paddingLeft: 10,
               fontSize: 13,
             }}>
@@ -145,8 +144,8 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
           <Text
             style={{
               color: containsSpecialChar
-                ? primaryColors.blue
-                : primaryColors.font,
+                ? globalColors.blue
+                : globalColors.font,
               paddingLeft: 10,
               fontSize: 13,
             }}>
@@ -154,7 +153,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
           </Text>
           <Text
             style={{
-              color: isValidLength ? primaryColors.blue : primaryColors.font,
+              color: isValidLength ? globalColors.blue : globalColors.font,
               paddingLeft: 10,
               fontSize: 13,
             }}>
@@ -166,7 +165,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
         <Text
           style={[
             styles.validationText,
-            {color: isPasswordSame ? primaryColors.blue : primaryColors.font},
+            {color: isPasswordSame ? globalColors.blue : globalColors.font},
           ]}>
           ✓ 비밀번호 일치
         </Text>
@@ -186,7 +185,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: primaryColors.warmGray,
+    borderColor: globalColors.warmGray,
   },
   icon: {
     position: 'absolute',
@@ -197,7 +196,7 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: primaryColors.warmGray,
+    borderColor: globalColors.warmGray,
     padding: 10,
     paddingRight: 40,
     fontSize: 18,

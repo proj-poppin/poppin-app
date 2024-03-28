@@ -1,17 +1,18 @@
 // CheckModal.js
 import React, {useState, useEffect} from 'react';
 import {Modal, View, Text, Pressable, StyleSheet} from 'react-native';
-import {globalStyles} from '../style/textStyles.ts';
-import primaryColors from '../style/primaryColors.ts';
+import globalColors from '../utils/color/globalColors.ts';
 import Check1Svg from '../assets/images/check1.svg';
 import Check2Svg from '../assets/images/check2.svg';
 import Check3Svg from '../assets/images/check3.svg';
+import Text18B from './texts/body_large/Text18B.ts';
+import Text14R from './texts/body_medium/Text14R.ts';
 
 const CheckModal = ({isVisible, onClose}) => {
   const [checkStage, setCheckStage] = useState(1);
 
   useEffect(() => {
-    let timer;
+    let timer: string | number | NodeJS.Timeout | undefined;
     if (isVisible && checkStage < 3) {
       timer = setTimeout(() => {
         setCheckStage(checkStage + 1);
@@ -39,40 +40,32 @@ const CheckModal = ({isVisible, onClose}) => {
       onRequestClose={onClose}>
       <View style={styles.overlayStyle}>
         <View style={styles.modalView}>
-          <Text
-            style={[
-              globalStyles.bodyLargePrimaryBlack,
-              {textAlign: 'center', marginBottom: 20},
-            ]}>
+          <Text style={[Text18B.text, {textAlign: 'center', marginBottom: 20}]}>
             소중한 제보 감사합니다
           </Text>
           {renderCheckSvg()}
           <Text
             style={[
-              globalStyles.bodyMediumSub,
+              Text14R.text,
               {textAlign: 'center', marginTop: 20, paddingBottom: 3},
             ]}>
             제보하신 팝업은
           </Text>
-          <Text
-            style={[
-              globalStyles.bodyMediumSub,
-              {textAlign: 'center', paddingBottom: 3},
-            ]}>
+          <Text style={[Text14R.text, {textAlign: 'center', paddingBottom: 3}]}>
             POPPIN에서 확인 후 업로드 될 예정입니다.
           </Text>
-          <Text style={[globalStyles.bodyMediumSub, {textAlign: 'center'}]}>
+          <Text style={[Text14R.text, {textAlign: 'center'}]}>
             더 나은 POPPIN이 되겠습니다.
           </Text>
           <Pressable style={styles.confirmButton} onPress={onClose}>
             {({pressed}) => (
               <Text
                 style={[
-                  globalStyles.bodyMediumSub,
+                  Text14R.text,
                   {
                     color: pressed
-                      ? primaryColors.buttonPressed
-                      : primaryColors.blue,
+                      ? globalColors.buttonPressed
+                      : globalColors.blue,
                   }, // 조건부 색상 적용
                 ]}>
                 확인

@@ -9,11 +9,12 @@ import {
 import {BottomSheetModal, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import {Calendar} from 'react-native-calendars'; // Ensure this is installed
 import CalendarGraySvg from '../assets/icons/calendarGray.svg'; // Your SVG path
-import primaryColors from '../style/primaryColors.ts';
-import {globalStyles} from '../style/textStyles.ts';
+import globalColors from '../utils/color/globalColors.ts';
 import DividerLine from './DividerLine.tsx';
 import CompleteButton from './CompleteButton.tsx';
 import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
+import Text18B from './texts/body_large/Text18B.ts';
+import Text18R from './texts/body_large/Text18R.ts';
 
 interface Dates {
   start: string;
@@ -71,7 +72,7 @@ const OperationCalendarBottomSheet: React.FC = () => {
   };
 
   const getDateInputTextStyle = (type: string) => ({
-    color: selectionMode === type ? primaryColors.calendar : 'black', // 선택 모드에 따라 텍스트 색상 변경
+    color: selectionMode === type ? globalColors.calendar : 'black', // 선택 모드에 따라 텍스트 색상 변경
   });
 
   const handleComplete = () => {
@@ -101,9 +102,9 @@ const OperationCalendarBottomSheet: React.FC = () => {
           selected: true,
           startingDay: true,
           endingDay: dates.start === dates.end,
-          color: primaryColors.calendar,
+          color: globalColors.calendar,
           textColor: 'black',
-          primaryColors: primaryColors.calendar,
+          primaryColors: globalColors.calendar,
         };
       }
     } else if (selectionMode === 'end') {
@@ -113,8 +114,8 @@ const OperationCalendarBottomSheet: React.FC = () => {
           selected: true,
           startingDay: dates.start === dates.end,
           endingDay: true,
-          color: primaryColors.calendar,
-          primaryColors: primaryColors.calendar,
+          color: globalColors.calendar,
+          primaryColors: globalColors.calendar,
           textColor: 'black',
         };
       }
@@ -128,7 +129,7 @@ const OperationCalendarBottomSheet: React.FC = () => {
         const dateString = iterateDate.toISOString().split('T')[0];
         if (dateString !== dates.start && dateString !== dates.end) {
           markedDates[dateString] = {
-            color: primaryColors.calendar,
+            color: globalColors.calendar,
             textColor: 'black',
           };
         }
@@ -143,7 +144,7 @@ const OperationCalendarBottomSheet: React.FC = () => {
     <View>
       <View style={styles.inputRow}>
         <View style={[styles.input, styles.firstInput]}>
-          <Text style={{color: primaryColors.font}}>
+          <Text style={{color: globalColors.font}}>
             {dates.start || '오픈일'}
           </Text>
         </View>
@@ -151,7 +152,7 @@ const OperationCalendarBottomSheet: React.FC = () => {
         <TouchableOpacity
           style={[styles.input, styles.secondInput]}
           onPress={() => handleOpenCalendar('start')}>
-          <Text style={{color: primaryColors.font}}>
+          <Text style={{color: globalColors.font}}>
             {dates.end || '종료일'}
           </Text>
           <CalendarGraySvg />
@@ -164,20 +165,17 @@ const OperationCalendarBottomSheet: React.FC = () => {
         snapPoints={['75%']}
         backdropComponent={renderBackdrop}>
         <View style={styles.sheetTitleContainer}>
-          <Text
-            style={[globalStyles.bodyLargePrimaryBlack, {textAlign: 'center'}]}>
+          <Text style={[Text18B.text, {textAlign: 'center'}]}>
             팝업의 운영 기간을 알려주세요
           </Text>
         </View>
 
         <View style={styles.dateRow}>
-          <Text style={[globalStyles.bodyLargeSub, {marginLeft: 10}]}>
-            시작
-          </Text>
+          <Text style={[Text18R.text, {marginLeft: 10}]}>시작</Text>
           <Pressable
             style={({pressed}) => [
               styles.dateInputContainer,
-              pressed && {backgroundColor: primaryColors.warmGray},
+              pressed && {backgroundColor: globalColors.warmGray},
             ]}
             onPress={() => setSelectionMode('start')}>
             <Text style={getDateInputTextStyle('start')}>{dates.start}</Text>
@@ -191,7 +189,7 @@ const OperationCalendarBottomSheet: React.FC = () => {
           <Pressable
             style={({pressed}) => [
               styles.dateInputContainer,
-              pressed && {backgroundColor: primaryColors.warmGray},
+              pressed && {backgroundColor: globalColors.warmGray},
             ]}
             onPress={() => setSelectionMode('end')}>
             <Text style={getDateInputTextStyle('end')}>{dates.end}</Text>
@@ -204,13 +202,13 @@ const OperationCalendarBottomSheet: React.FC = () => {
             textDayHeaderFontWeight: '600',
             textMonthFontWeight: '600',
             todayButtonFontWeight: '600',
-            arrowColor: primaryColors.calendar,
+            arrowColor: globalColors.calendar,
             backgroundColor: '#ffffff',
             calendarBackground: '#ffffff',
             textSectionTitleColor: '#b6c1cd',
             selectedDayBackgroundColor: '#B3E5FC',
-            todayTextColor: primaryColors.calendar,
-            selectedDayTextColor: primaryColors.calendar,
+            todayTextColor: globalColors.calendar,
+            selectedDayTextColor: globalColors.calendar,
             dayTextColor: '#2d4150',
             textDisabledColor: '#d9e1e8',
             textDayFontSize: 18,
@@ -249,7 +247,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: primaryColors.warmGray,
+    borderColor: globalColors.warmGray,
     borderRadius: 20,
     height: 40,
     padding: 10,
@@ -268,13 +266,13 @@ const styles = StyleSheet.create({
   },
   toText: {
     marginHorizontal: 10,
-    color: primaryColors.font,
+    color: globalColors.font,
   },
   dateInputContainer: {
     alignItems: 'center',
     height: 33,
     width: 110,
-    backgroundColor: primaryColors.component,
+    backgroundColor: globalColors.component,
     borderRadius: 10,
     padding: 10,
     marginRight: 10,

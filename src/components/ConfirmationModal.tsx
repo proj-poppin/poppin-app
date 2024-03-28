@@ -7,17 +7,19 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {globalStyles} from '../style/textStyles'; // 경로는 실제 환경에 맞게 조정
-import primaryColors from '../style/primaryColors'; // 경로는 실제 환경에 맞게 조정
+import globalColors from '../utils/color/globalColors.ts'; // 경로는 실제 환경에 맞게 조정
 import CheckSvg from '../assets/images/check3.svg'; // 경로 확인 필요
 import AlertSvg from '../assets/images/alert.svg';
+import Text14R from './texts/body_medium/Text14R.ts';
+import Text20B from './texts/title/Text20B.ts';
+import Text18B from './texts/body_large/Text18B.ts';
 
 const ConfirmationModal = ({
   isVisible,
   onClose,
   mainTitle,
-  subTitle, // subTitle 파라미터 추가
-  isAlertSvg = false, // isAlertSvg 삭제
+  subTitle,
+  isAlertSvg = false,
 }) => {
   return (
     <Modal
@@ -28,17 +30,11 @@ const ConfirmationModal = ({
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlayStyle}>
           <View style={styles.modalView}>
-            <Text
-              style={[globalStyles.title, styles.mainText, {marginTop: 20}]}>
+            <Text style={[Text20B.text, styles.mainText, {marginTop: 20}]}>
               {mainTitle}
             </Text>
             <View>{isAlertSvg ? <AlertSvg /> : <CheckSvg />}</View>
-            <Text
-              style={[
-                globalStyles.labelPrimary,
-                styles.subText,
-                {marginTop: 20},
-              ]}>
+            <Text style={[Text18B.text, styles.subText, {marginTop: 20}]}>
               {subTitle}
             </Text>
             <Pressable
@@ -47,11 +43,11 @@ const ConfirmationModal = ({
               {({pressed}) => (
                 <Text
                   style={[
-                    globalStyles.bodyMediumSub,
+                    Text14R.text,
                     {
                       color: pressed
-                        ? primaryColors.buttonPressed
-                        : primaryColors.blue,
+                        ? globalColors.buttonPressed
+                        : globalColors.blue,
                     },
                   ]}>
                   확인
@@ -97,7 +93,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 20,
     paddingVertical: 15,
-    backgroundColor: primaryColors.white, // 확인 버튼 배경색
+    backgroundColor: globalColors.white, // 확인 버튼 배경색
   },
   okButton: {
     // 필요한 경우 추가 스타일링

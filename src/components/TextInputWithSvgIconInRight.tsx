@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 // DownSvg import 구문 제거
-import primaryColors from '../style/primaryColors.ts';
+import globalColors from '../utils/color/globalColors.ts';
 import RequiredTextLabel from './RequiredTextLabel.tsx';
 
 // IconComponent prop 추가
@@ -27,8 +27,8 @@ const TextInputWithSvgIconInRight = ({
         style={[
           styles.inputContainer,
           isFocused
-            ? {borderColor: primaryColors.blue}
-            : {borderColor: primaryColors.warmGray},
+            ? {borderColor: globalColors.blue}
+            : {borderColor: globalColors.warmGray},
         ]}>
         <TextInput
           style={styles.input}

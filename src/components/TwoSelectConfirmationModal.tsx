@@ -7,9 +7,12 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {globalStyles} from '../style/textStyles.ts'; // 경로는 실제 환경에 맞게 조정
-import primaryColors from '../style/primaryColors.ts'; // 경로는 실제 환경에 맞게 조정
+import globalColors from '../utils/color/globalColors.ts';
 import AlertSvg from '../assets/images/alert.svg';
+import Text20B from './texts/title/Text20B.ts';
+import Text14B from './texts/body_medium/Text14B.ts';
+import Text12B from './texts/label/Text12B.ts';
+import Text14R from './texts/body_medium/Text14R.ts';
 
 const TwoSelectConfirmationModal = ({
   isVisible,
@@ -31,28 +34,28 @@ const TwoSelectConfirmationModal = ({
         <View style={styles.overlayStyle}>
           <View style={styles.modalView}>
             <AlertSvg />
-            <Text
-              style={[globalStyles.title, styles.mainText, {marginTop: 10}]}>
+            <Text style={[Text20B.text, styles.mainText, {marginTop: 10}]}>
               {mainAlertTitle}
             </Text>
-            <Text style={[globalStyles.labelPrimaryGray, styles.subText]}>
+            <Text
+              style={[
+                Text14B.text,
+                {color: globalColors.font},
+                styles.subText,
+              ]}>
               {subAlertTitle}
             </Text>
             <View style={styles.buttonContainer}>
               <Pressable
                 style={[styles.button, styles.continueButton]}
                 onPress={onClose}>
-                <Text
-                  style={[
-                    globalStyles.labelPrimaryGray,
-                    {color: primaryColors.font},
-                  ]}>
+                <Text style={[Text12B.text, {color: globalColors.font}]}>
                   {selectFirstText}
                 </Text>
               </Pressable>
               <Text
                 style={{
-                  color: primaryColors.warmGray,
+                  color: globalColors.warmGray,
                   alignSelf: 'center',
                   paddingHorizontal: 10,
                   paddingBottom: 8,
@@ -65,11 +68,7 @@ const TwoSelectConfirmationModal = ({
                 onPress={() => {
                   onConfirm(); // 삭제하기 버튼을 누를 때 onConfirm 함수 호출
                 }}>
-                <Text
-                  style={[
-                    globalStyles.bodyMediumSub,
-                    {color: primaryColors.blue},
-                  ]}>
+                <Text style={[Text14R.text, {color: globalColors.blue}]}>
                   {selectSecondText}
                 </Text>
               </Pressable>
@@ -128,10 +127,10 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   continueButton: {
-    backgroundColor: primaryColors.white, // 계속 사용하기 버튼 배경색
+    backgroundColor: globalColors.white, // 계속 사용하기 버튼 배경색
   },
   deleteButton: {
-    backgroundColor: primaryColors.white, // 탈퇴하기 버튼 배경색
+    backgroundColor: globalColors.white, // 탈퇴하기 버튼 배경색
   },
 });
 

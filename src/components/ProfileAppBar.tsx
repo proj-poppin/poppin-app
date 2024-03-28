@@ -2,7 +2,7 @@
 import React from 'react';
 import {Pressable, Text} from 'react-native';
 import GoBackSvg from '../assets/icons/goBack.svg';
-import primaryColors from '../style/primaryColors.ts';
+import globalColors from '../utils/color/globalColors.ts';
 
 // Add appBarTitle and isHeaderRight as parameters
 const ProfileAppBar = ({navigation, appBarTitle, isHeaderRight}) => {
@@ -30,7 +30,7 @@ const ProfileAppBar = ({navigation, appBarTitle, isHeaderRight}) => {
     headerRight: () =>
       isHeaderRight ? ( // Conditionally render based on isHeaderRight
         <Text onPress={() => navigation.goBack()}>
-          <Text style={{color: primaryColors.blue, marginRight: 10}}>완료</Text>
+          <Text style={{color: globalColors.blue, marginRight: 10}}>완료</Text>
         </Text>
       ) : null, // Return null if isHeaderRight is false
   };

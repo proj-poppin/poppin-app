@@ -2,22 +2,22 @@ import React, {useEffect, useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useSelector} from 'react-redux';
-import {RootState} from './src/store/reducer.ts';
-import FindScreen from './src/screens/find/FindScreen.tsx';
-import HomeScreen from './src/screens/home/HomeScreen.tsx';
-import LikesScreen from './src/screens/likes/LikesScreen.tsx';
-import MyPageScreen from './src/screens/myPage/MyPageScreen.tsx';
-import NickNameSettingScreen from './src/screens/sign/NicknameSettingScreen.tsx';
-import FirstPasswordResetScreen from './src/screens/password/FirstPasswordResetScreen.tsx';
-import SignInEmailScreen from './src/screens/sign/SignInEmailScreen.tsx';
-import SignInPasswordScreen from './src/screens/sign/SignInPasswordScreen.tsx';
-import SignUpScreen from './src/screens/sign/SignUpScreen.tsx';
-import SignUpSucceedScreen from './src/screens/sign/SignUpSucceedScreen.tsx';
+import {RootState} from './src/redux/stores/reducer.ts';
+import FindScreen from './src/pages/find/FindScreen.tsx';
+import HomeScreen from './src/pages/home/HomeScreen.tsx';
+import LikesScreen from './src/pages/likes/LikesScreen.tsx';
+import MyPageScreen from './src/pages/myPage/MyPageScreen.tsx';
+import NickNameSettingScreen from './src/pages/sign/NicknameSettingScreen.tsx';
+import FirstPasswordResetScreen from './src/pages/password/FirstPasswordResetScreen.tsx';
+import SignInEmailScreen from './src/pages/sign/SignInEmailScreen.tsx';
+import SignInPasswordScreen from './src/pages/sign/SignInPasswordScreen.tsx';
+import SignUpScreen from './src/pages/sign/SignUpScreen.tsx';
+import SignUpSucceedScreen from './src/pages/sign/SignUpSucceedScreen.tsx';
 
 import CloseSvgIcon from './src/assets/icons/close.svg';
 import LeftSvgIcon from './src/assets/icons/left.svg';
-import ProtectInfoScreen from './src/screens/sign/ProtectInfoScreen.tsx';
-import ServiceInfoScreen from './src/screens/sign/ServiceInfoScreen.tsx';
+import ProtectInfoScreen from './src/pages/sign/ProtectInfoScreen.tsx';
+import ServiceInfoScreen from './src/pages/sign/ServiceInfoScreen.tsx';
 
 import Tab1Svg from './src/assets/icons/tab/tab1.svg';
 import Tab2Svg from './src/assets/icons/tab/tab2.svg';
@@ -27,22 +27,22 @@ import Tab1SvgOn from './src/assets/icons/tab/tab1On.svg';
 import Tab2SvgOn from './src/assets/icons/tab/tab2On.svg';
 import Tab3SvgOn from './src/assets/icons/tab/tab3On.svg';
 import Tab4SvgOn from './src/assets/icons/tab/tab4On.svg';
-import primaryColors from './src/style/primaryColors.ts';
-import {globalStyles} from './src/style/textStyles.ts';
+import globalColors from './src/utils/color/globalColors.ts';
 import {Pressable, Text} from 'react-native';
-import SecondPasswordResetScreen from './src/screens/password/SecondPasswordResetScreen.tsx';
-import MyProfileEditScreen from './src/screens/myPage/ProfileEditScreen.tsx';
-import MemberDeleteScreen from './src/screens/myPage/MemberDeleteScreen.tsx';
-import PasswordChangeScreen from './src/screens/myPage/PasswordChangeScreen.tsx';
+import SecondPasswordResetScreen from './src/pages/password/SecondPasswordResetScreen.tsx';
+import MyProfileEditScreen from './src/pages/myPage/ProfileEditScreen.tsx';
+import MemberDeleteScreen from './src/pages/myPage/MemberDeleteScreen.tsx';
+import PasswordChangeScreen from './src/pages/myPage/PasswordChangeScreen.tsx';
 import GoBackSvg from './src/assets/icons/goBack.svg';
-import PreferenceSettingScreen from './src/screens/myPage/PreferenceSettingScreen.tsx';
-import FAQScreen from './src/screens/myPage/FAQScreen.tsx';
-import PolicyScreen from './src/screens/myPage/PolicyScreen.tsx';
-import KeywordAlarmScreen from './src/screens/myPage/KeywordAlarmScreen.tsx';
-import UserRegisterScreen from './src/screens/myPage/UserRegisterScreen.tsx';
-import ReviewWriteScreen from './src/screens/myPage/ReviewWriteScreen.tsx';
-import OperatorRegisterScreen from './src/screens/myPage/OperatorRegisterScreen.tsx';
-import PreferenceScreen from './src/screens/preference/PreferenceScreen.tsx';
+import PreferenceSettingScreen from './src/pages/myPage/PreferenceSettingScreen.tsx';
+import FAQScreen from './src/pages/myPage/FAQScreen.tsx';
+import PolicyScreen from './src/pages/myPage/PolicyScreen.tsx';
+import KeywordAlarmScreen from './src/pages/myPage/KeywordAlarmScreen.tsx';
+import UserRegisterScreen from './src/pages/myPage/UserRegisterScreen.tsx';
+import ReviewWriteScreen from './src/pages/myPage/ReviewWriteScreen.tsx';
+import OperatorRegisterScreen from './src/pages/myPage/OperatorRegisterScreen.tsx';
+import PreferenceScreen from './src/pages/preference/PreferenceScreen.tsx';
+import Text13R from './src/components/texts/label/Text12R.ts';
 
 const MainStack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -81,8 +81,8 @@ function MainTabNavigator() {
               return route.name;
           }
         })(),
-        tabBarActiveTintColor: primaryColors.blue, // 활성 탭 텍스트 색상
-        tabBarInactiveTintColor: primaryColors.font, // 비활성 탭 텍스트 색상
+        tabBarActiveTintColor: globalColors.blue, // 활성 탭 텍스트 색상
+        tabBarInactiveTintColor: globalColors.font, // 비활성 탭 텍스트 색상
         tabBarStyle: {
           height: 90, // 바텀 네비게이션 바의 높이 조정
           paddingTop: 5, // 상단 패딩 조정
@@ -93,7 +93,7 @@ function MainTabNavigator() {
           borderTopWidth: 2, // 경계선 두께 설정
           backgroundColor: 'white', // 바의 배경색을 흰색으로 설정
         },
-        tabBarLabelStyle: globalStyles.bottomNavigationTab, // color 설정은 X
+        tabBarLabelStyle: Text13R.text,
       })}>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Find" component={FindScreen} />
@@ -382,7 +382,7 @@ function AppInner() {
               title: '프로필 설정',
               headerRight: () => (
                 <Text onPress={() => navigation.goBack()}>
-                  <Text style={{color: primaryColors.blue, marginRight: 10}}>
+                  <Text style={{color: globalColors.blue, marginRight: 10}}>
                     완료
                   </Text>
                 </Text>

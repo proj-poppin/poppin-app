@@ -1,10 +1,10 @@
-// InterestPopUpCard.js
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import DefaultImageSvg from '../assets/images/interestSample.svg'; // SVG 파일 경로가 정확한지 확인하세요.
-import primaryColors from '../style/primaryColors.ts';
-import {globalStyles} from '../style/textStyles.ts';
+import DefaultImageSvg from '../assets/images/interestSample.svg';
+import globalColors from '../utils/color/globalColors.ts';
 import StarOnSvg from '../assets/icons/starOn.svg';
+import Text12B from './texts/label/Text12B.ts';
+import Text18B from './texts/body_large/Text18B.ts';
 
 const InterestPopUpCard = ({
   Svg = DefaultImageSvg,
@@ -30,14 +30,8 @@ const InterestPopUpCard = ({
           )}
           <StarOnSvg style={styles.starIcon} />
         </View>
-        <Text style={[globalStyles.bodyLargePrimaryBlack, styles.title]}>
-          {formattedTitle}
-        </Text>
-        {date && (
-          <Text style={[globalStyles.labelPrimaryGray, styles.date]}>
-            {date}
-          </Text>
-        )}
+        <Text style={[Text18B.text, styles.title]}>{formattedTitle}</Text>
+        {date && <Text style={[Text12B.text, styles.date]}>{date}</Text>}
       </View>
     </View>
   );
@@ -50,7 +44,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     padding: 10,
     alignItems: 'flex-start', // SVG와 텍스트 컨테이너를 위쪽으로 정렬
-    backgroundColor: primaryColors.white,
+    backgroundColor: globalColors.white,
   },
   svgContainer: {
     width: 120,
@@ -69,13 +63,13 @@ const styles = StyleSheet.create({
     width: '100%', // 부모 컨테이너의 전체 너비 사용
   },
   statusContainer: {
-    backgroundColor: primaryColors.purpleLight,
+    backgroundColor: globalColors.purpleLight,
     borderRadius: 5,
     paddingVertical: 2,
     paddingHorizontal: 4,
   },
   statusText: {
-    color: primaryColors.black,
+    color: globalColors.black,
     fontSize: 12,
     fontWeight: 'bold',
   },

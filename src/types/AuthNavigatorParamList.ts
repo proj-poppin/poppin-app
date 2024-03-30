@@ -10,5 +10,6 @@ export type AuthNavigatorParamList = {
   OperatorRegister: undefined;
   MemberDelete: undefined;
   PreferenceSetting: undefined;
+  SignInEmail: undefined;
 };
-// Path: src/types/RootStackParamList.ts
+// src/types/AuthNavigatorParamList.ts

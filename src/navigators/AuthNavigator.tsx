@@ -16,6 +16,7 @@ import {AuthNavigatorParamList} from '../types/AuthNavigatorParamList.ts';
 import HeaderRightPressableTextButton from '../components/molecules/pressable_text/AppbarRightPressableTextButton.tsx';
 import AppBarLeftPressableIconButton from '../components/molecules/pressable_icon/AppbarLeftPressableIconButton.tsx';
 import SignInEmailScreen from '../pages/sign/SignInEmailScreen.tsx';
+import {signInEmailScreenOptions} from './options/SignInEmailScreenOptions.tsx';
 
 const Stack = createNativeStackNavigator<AuthNavigatorParamList>();
 
@@ -38,7 +39,7 @@ function AuthNavigator() {
       <Stack.Screen
         name="SignInEmail"
         component={SignInEmailScreen}
-        options={{headerShown: false}}
+        options={signInEmailScreenOptions}
       />
       <Stack.Screen
         name="ProfileEdit"
@@ -60,7 +61,7 @@ function AuthNavigator() {
       <Stack.Screen
         name="FAQ"
         component={FAQScreen}
-        options={({navigation}) => ({
+        options={() => ({
           headerShown: true,
           title: '문의하기/FAQ',
           headerLeft: () => <AppBarLeftPressableIconButton />,
@@ -69,7 +70,7 @@ function AuthNavigator() {
       <Stack.Screen
         name="KeywordAlarm"
         component={KeywordAlarmScreen}
-        options={({navigation}) => ({
+        options={() => ({
           headerShown: true,
           title: '키워드 알림', // 헤더 타이틀 설정
           headerLeft: () => <AppBarLeftPressableIconButton />,
@@ -78,7 +79,7 @@ function AuthNavigator() {
       <Stack.Screen
         name="UserRegister"
         component={UserRegisterScreen}
-        options={({navigation}) => ({
+        options={() => ({
           headerShown: true,
           title: '이용자 제보하기',
           headerLeft: () => <AppBarLeftPressableIconButton />,
@@ -88,7 +89,7 @@ function AuthNavigator() {
       <Stack.Screen
         name="Policy"
         component={PolicyScreen}
-        options={({navigation}) => ({
+        options={() => ({
           headerShown: true,
           title: '이용 약관 및 정책', // 헤더 타이틀 설정
           headerLeft: () => <AppBarLeftPressableIconButton />,
@@ -97,7 +98,7 @@ function AuthNavigator() {
       <Stack.Screen
         name="ReviewWrite"
         component={ReviewWriteScreen}
-        options={({navigation}) => ({
+        options={() => ({
           headerShown: true,
           title: '일반 후기 작성', // 헤더 타이틀 설정
           headerLeft: () => <AppBarLeftPressableIconButton />,
@@ -106,7 +107,7 @@ function AuthNavigator() {
       <Stack.Screen
         name="OperatorRegister"
         component={OperatorRegisterScreen}
-        options={({navigation}) => ({
+        options={() => ({
           headerShown: true,
           title: '운영자 제보하기', // 헤더 타이틀 설정
           headerLeft: () => <AppBarLeftPressableIconButton />,
@@ -115,7 +116,7 @@ function AuthNavigator() {
       <Stack.Screen
         name="MemberDelete"
         component={MemberDeleteScreen}
-        options={({navigation}) => ({
+        options={() => ({
           headerShown: true,
           title: '회원 탈퇴', // 헤더 타이틀 설정
           headerLeft: () => <AppBarLeftPressableIconButton />,
@@ -124,7 +125,7 @@ function AuthNavigator() {
       <Stack.Screen
         name="PreferenceSetting"
         component={PreferenceSettingScreen}
-        options={({navigation}) => ({
+        options={() => ({
           headerShown: true,
           headerTitle: '취향 설정하기',
           headerLeft: () => <AppBarLeftPressableIconButton />,

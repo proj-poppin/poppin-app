@@ -21,7 +21,6 @@ import Config from 'react-native-config';
 import axios from 'axios';
 import Text14B from '../../styles/texts/body_medium/Text14B.ts';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
 async function onAppleButtonPress() {
   if (Platform.OS === 'android') {
@@ -210,61 +209,59 @@ function SignInEmailScreen({navigation}) {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={{flex: 1, backgroundColor: globalColors.white}}>
-        <MainTitle
-          text1="내 취향을 기반으로"
-          text2="팝업스토어를 관리하고 저장해요"
-        />
-        <LabelAndInput
-          onChangeText={handleChangeEmail}
-          placeholder="이메일 주소를 입력해주세요."
-          keyboardType="email-address"
-          errorText={touched && error ? error : ''}
-          labelText={'이메일'}
-        />
-        <CompleteButton
-          title="계속하기"
-          onPress={handlePress}
-          loading={false}
-          disabled={!email}
-          alwaysActive={false}
-          onDisabledPress={() => setError('✕ 아이디를 입력해주세요')} // 콜백 추가
-        />
-        <View style={styles.memberInfoContainer}>
-          <Text style={[Text14R.text, styles.infoText]}>
-            아직 POPPIN회원이 아니신가요?
-          </Text>
-          <Pressable
-            onPress={() => navigation.navigate('SignUp')}
-            style={{padding: 10}}>
-            <RoundRightSvg />
-          </Pressable>
-        </View>
-        <Text style={[Text14B.text, styles.snsLoginText]}>
-          SNS계정으로 간편 로그인
+      <MainTitle
+        text1="내 취향을 기반으로"
+        text2="팝업스토어를 관리하고 저장해요"
+      />
+      <LabelAndInput
+        onChangeText={handleChangeEmail}
+        placeholder="이메일 주소를 입력해주세요."
+        keyboardType="email-address"
+        errorText={touched && error ? error : ''}
+        labelText={'이메일'}
+      />
+      <CompleteButton
+        title="계속하기"
+        onPress={handlePress}
+        loading={false}
+        disabled={!email}
+        alwaysActive={false}
+        onDisabledPress={() => setError('✕ 아이디를 입력해주세요')} // 콜백 추가
+      />
+      <View style={styles.memberInfoContainer}>
+        <Text style={[Text14R.text, styles.infoText]}>
+          아직 POPPIN회원이 아니신가요?
         </Text>
-        <View style={styles.snsIconsContainer}>
-          <Pressable onPress={loginInNaver}>
-            <NaverSvg style={styles.snsIcon} />
+        <Pressable
+          onPress={() => navigation.navigate('SignUp')}
+          style={{padding: 10}}>
+          <RoundRightSvg />
+        </Pressable>
+      </View>
+      <Text style={[Text14B.text, styles.snsLoginText]}>
+        SNS계정으로 간편 로그인
+      </Text>
+      <View style={styles.snsIconsContainer}>
+        <Pressable onPress={loginInNaver}>
+          <NaverSvg style={styles.snsIcon} />
+        </Pressable>
+        <Pressable onPress={signInWithKakao}>
+          <KakaoSvg style={styles.snsIcon} />
+        </Pressable>
+        <Pressable
+          onPress={() =>
+            onGoogleButtonPress().then(() =>
+              console.log('Signed in with Google!'),
+            )
+          }>
+          <GoogleSvg style={styles.snsIcon} />
+        </Pressable>
+        {isAppleAuthSupported && (
+          <Pressable onPress={onAppleButtonPress}>
+            <AppleSvg style={styles.snsIcon} />
           </Pressable>
-          <Pressable onPress={signInWithKakao}>
-            <KakaoSvg style={styles.snsIcon} />
-          </Pressable>
-          <Pressable
-            onPress={() =>
-              onGoogleButtonPress().then(() =>
-                console.log('Signed in with Google!'),
-              )
-            }>
-            <GoogleSvg style={styles.snsIcon} />
-          </Pressable>
-          {isAppleAuthSupported && (
-            <Pressable onPress={onAppleButtonPress}>
-              <AppleSvg style={styles.snsIcon} />
-            </Pressable>
-          )}
-        </View>
-      </SafeAreaView>
+        )}
+      </View>
     </View>
   );
 }

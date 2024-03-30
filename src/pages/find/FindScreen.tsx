@@ -115,28 +115,25 @@ function FindScreen() {
   const [selectedTab, setSelectedTab] = useState('operating'); // 'operating', 'upcoming', 'closed'
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: globalColors.white,
-        paddingHorizontal: 20,
-      }}>
-      <View style={styles.headerContainer}>
-        <Text style={Text24B.text}>팝업 목록</Text>
-        <TouchableOpacity
-          onPress={() => {
-            console.log('search');
-          }}
-          style={styles.calendarViewContainer}>
-          <SearchBlueSvg />
-        </TouchableOpacity>
-      </View>
-      <Tab.Navigator>
-        <Tab.Screen name="운영 중" component={OperatingTab} />
-        <Tab.Screen name="오픈 예정" component={UpcomingTab} />
-        <Tab.Screen name="운영 종료" component={ClosedTab} />
-      </Tab.Navigator>
-    </SafeAreaView>
+    <>
+      <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
+        <View style={styles.headerContainer}>
+          <Text style={Text24B.text}>팝업 목록</Text>
+          <TouchableOpacity
+            onPress={() => {
+              console.log('search');
+            }}
+            style={styles.calendarViewContainer}>
+            <SearchBlueSvg />
+          </TouchableOpacity>
+        </View>
+        <Tab.Navigator>
+          <Tab.Screen name="운영 중" component={OperatingTab} />
+          <Tab.Screen name="오픈 예정" component={UpcomingTab} />
+          <Tab.Screen name="운영 종료" component={ClosedTab} />
+        </Tab.Navigator>
+      </SafeAreaView>
+    </>
   );
 }
 

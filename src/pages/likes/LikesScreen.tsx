@@ -137,12 +137,7 @@ function LikesScreen() {
   }, [dispatch]);
 
   return isLoggedIn ? (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: globalColors.white,
-        paddingHorizontal: 10,
-      }}>
+    <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
       <BottomSheetModalProvider>
         <View style={styles.headerContainer}>
           <Text style={Text24B.text}>관심 팝업</Text>

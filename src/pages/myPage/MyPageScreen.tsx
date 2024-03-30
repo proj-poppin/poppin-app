@@ -86,7 +86,7 @@ function MyPageScreen({navigation}) {
 
   return (
     <DismissKeyboardView style={styles.container}>
-      <SafeAreaView style={{flex: 1, backgroundColor: globalColors.white}}>
+      <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
         <View style={styles.titleContainer}>
           <Text style={text24B.text}>마이 페이지</Text>
         </View>
@@ -182,62 +182,63 @@ function MyPageScreen({navigation}) {
             }}
           />
         </View>
-      </SafeAreaView>
-      <View style={styles.modalContainer}>
-        <BottomSheetModal
-          ref={bottomSheetModalRef}
-          index={0}
-          backdropComponent={renderBackdrop}
-          snapPoints={snapPoints}
-          onChange={handleSheetChanges}>
-          <View style={styles.contentContainer}>
-            <Text style={[Text18B.text, {paddingTop: 15, paddingBottom: 40}]}>
-              제보하는 사람이 누구인가요?
-            </Text>
-            <Pressable
-              style={styles.optionContainer}
-              onPress={() => {
-                navigation.navigate('UserRegister'); // 사용자 등록 화면으로 이동
-                bottomSheetModalRef.current?.dismiss(); // 바텀시트 닫기
-              }}>
-              <View style={styles.optionRow}>
-                <Text style={[Text18B.text, {color: globalColors.blue}]}>
-                  팝업 이용자
-                </Text>
-                <View style={styles.optionRight}>
-                  <Text style={Text18B.text}>제보하기</Text>
-                  <BigRightSvg />
-                </View>
-              </View>
-              <Text style={[Text14B.text, {paddingTop: 10}]}>
-                관심있는 팝업이 POPPIN에 올라와 있지 않다면?
+        <View style={styles.modalContainer}>
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={0}
+            backdropComponent={renderBackdrop}
+            snapPoints={snapPoints}
+            onChange={handleSheetChanges}>
+            <View style={styles.contentContainer}>
+              <Text style={[Text18B.text, {paddingTop: 15, paddingBottom: 40}]}>
+                제보하는 사람이 누구인가요?
               </Text>
-            </Pressable>
-            <View style={styles.divider} />
-            <Pressable
-              style={styles.optionContainer}
-              onPress={() => {
-                navigation.navigate('OperatorRegister'); // 운영자 등록 화면으로 이동
-                bottomSheetModalRef.current?.dismiss(); // 바텀시트 닫기
-              }}>
-              <View style={styles.optionRow}>
-                <Text style={[Text18B.text, {color: globalColors.purple}]}>
-                  팝업 운영자
-                </Text>
-                <View style={styles.optionRight}>
-                  <Text style={[Text18B.text, {color: globalColors.warmGray}]}>
-                    제보하기
+              <Pressable
+                style={styles.optionContainer}
+                onPress={() => {
+                  navigation.navigate('UserRegister'); // 사용자 등록 화면으로 이동
+                  bottomSheetModalRef.current?.dismiss(); // 바텀시트 닫기
+                }}>
+                <View style={styles.optionRow}>
+                  <Text style={[Text18B.text, {color: globalColors.blue}]}>
+                    팝업 이용자
                   </Text>
-                  <BigRightSvg />
+                  <View style={styles.optionRight}>
+                    <Text style={Text18B.text}>제보하기</Text>
+                    <BigRightSvg />
+                  </View>
                 </View>
-              </View>
-              <Text style={[Text18B.text, {paddingTop: 10}]}>
-                운영하는 팝업이 POPPIN에 올라와 있지 않다면?
-              </Text>
-            </Pressable>
-          </View>
-        </BottomSheetModal>
-      </View>
+                <Text style={[Text14B.text, {paddingTop: 10}]}>
+                  관심있는 팝업이 POPPIN에 올라와 있지 않다면?
+                </Text>
+              </Pressable>
+              <View style={styles.divider} />
+              <Pressable
+                style={styles.optionContainer}
+                onPress={() => {
+                  navigation.navigate('OperatorRegister'); // 운영자 등록 화면으로 이동
+                  bottomSheetModalRef.current?.dismiss(); // 바텀시트 닫기
+                }}>
+                <View style={styles.optionRow}>
+                  <Text style={[Text18B.text, {color: globalColors.purple}]}>
+                    팝업 운영자
+                  </Text>
+                  <View style={styles.optionRight}>
+                    <Text
+                      style={[Text18B.text, {color: globalColors.warmGray}]}>
+                      제보하기
+                    </Text>
+                    <BigRightSvg />
+                  </View>
+                </View>
+                <Text style={[Text18B.text, {paddingTop: 10}]}>
+                  운영하는 팝업이 POPPIN에 올라와 있지 않다면?
+                </Text>
+              </Pressable>
+            </View>
+          </BottomSheetModal>
+        </View>
+      </SafeAreaView>
     </DismissKeyboardView>
   );
 }

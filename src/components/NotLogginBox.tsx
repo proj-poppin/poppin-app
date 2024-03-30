@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
-import primaryColors from '../style/primaryColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
 
 const NotLogginBox = ({
   text1,
@@ -26,7 +26,7 @@ const NotLogginBox = ({
 
 const styles = StyleSheet.create({
   shadowedBox: {
-    backgroundColor: primaryColors.white,
+    backgroundColor: globalColors.white,
     borderRadius: 10,
     padding: 20,
     shadowColor: '#000',
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   boxWithoutShadow: {
-    backgroundColor: primaryColors.white,
+    backgroundColor: globalColors.white,
     padding: 20,
     marginBottom: 20,
   },
@@ -55,13 +55,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: primaryColors.blue,
+    backgroundColor: globalColors.blue,
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
   },
   buttonText: {
-    color: primaryColors.white,
+    color: globalColors.white,
     fontSize: 16,
   },
 });

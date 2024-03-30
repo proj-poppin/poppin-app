@@ -1,7 +1,7 @@
 import React from 'react';
 import {Pressable, Text, ActivityIndicator, StyleSheet} from 'react-native';
-import primaryColors from '../style/primaryColors.ts';
-import {globalStyles} from '../style/textStyles.ts';
+import globalColors from '../styles/color/globalColors.ts';
+import Text18B from '../styles/texts/body_large/Text18B.ts';
 
 interface CompleteButtonProps {
   onPress: () => void;
@@ -27,10 +27,10 @@ const CompleteButton: React.FC<CompleteButtonProps> = ({
       styles.button,
       {
         backgroundColor: pressed
-          ? primaryColors.buttonPressed
+          ? globalColors.buttonPressed
           : disabled && !alwaysActive
-          ? primaryColors.component
-          : primaryColors.blue,
+          ? globalColors.component
+          : globalColors.blue,
         width: buttonWidth, // 너비를 동적으로 조절
       },
       disabled && !alwaysActive && styles.disabledButton,
@@ -43,16 +43,16 @@ const CompleteButton: React.FC<CompleteButtonProps> = ({
       }
     }}>
     {loading ? (
-      <ActivityIndicator color={primaryColors.white} />
+      <ActivityIndicator color={globalColors.white} />
     ) : (
       <Text
         style={[
-          globalStyles.bodyLargePrimaryBlack,
+          Text18B.text,
           {
             color:
               disabled && !alwaysActive
-                ? primaryColors.font
-                : primaryColors.white,
+                ? globalColors.font
+                : globalColors.white,
           },
         ]}>
         {title}
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   disabledButton: {
-    backgroundColor: primaryColors.component,
+    backgroundColor: globalColors.component,
   },
 });
 

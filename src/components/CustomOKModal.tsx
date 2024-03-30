@@ -7,8 +7,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {globalStyles} from '../style/textStyles'; // 경로는 실제 환경에 맞게 조정
-import primaryColors from '../style/primaryColors'; // 경로는 실제 환경에 맞게 조정
+import globalColors from '../styles/color/globalColors.ts'; // 경로는 실제 환경에 맞게 조정
 import AlertSvg from '../assets/images/alert.svg';
 import CheckSvg from '../assets/images/check3.svg'; // CheckSvg 경로도 실제 환경에 맞게 조정
 
@@ -48,7 +47,7 @@ const CustomOKModal = ({
               <Text
                 style={[
                   globalStyles.bodyMediumSub,
-                  {color: primaryColors.blue},
+                  {color: globalColors.blue},
                 ]}>
                 확인
               </Text>
@@ -95,7 +94,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 20,
     paddingVertical: 15,
-    backgroundColor: primaryColors.white, // 확인 버튼 배경색
+    backgroundColor: globalColors.white, // 확인 버튼 배경색
   },
   okButton: {
     // 필요한 경우 추가 스타일링

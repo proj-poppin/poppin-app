@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import PlusSvg from '../assets/icons/plus.svg'; // 경로에 주의하세요
 import ImageDeleteSvg from '../assets/icons/imageDelete.svg'; // 경로에 주의하세요
-import primaryColors from '../style/primaryColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
 
 const ImageContainerRow = ({
   selectedImages,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addImageButton: {
-    borderColor: primaryColors.component,
+    borderColor: globalColors.component,
     borderWidth: 2,
     borderRadius: 20,
     justifyContent: 'center',
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   addImageText: {
-    color: primaryColors.font,
+    color: globalColors.font,
     paddingTop: 8,
     textAlign: 'center',
   },

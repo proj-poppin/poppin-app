@@ -73,3 +73,7 @@ env/.env.stage
 env/
 .env
 android/app/google-services.json
+
+/ios/tmp.xcconfig
+/ios/Config.xcconfig
+

@@ -1,8 +1,8 @@
 // SelectionButton.tsx
 import React from 'react';
 import {TouchableOpacity, Text, StyleSheet} from 'react-native';
-import primaryColors from '../style/primaryColors.ts';
-import {globalStyles} from '../style/textStyles.ts';
+import globalColors from '../styles/color/globalColors.ts';
+import Text14B from '../styles/texts/body_medium/Text14B.ts';
 
 interface SelectButtonProps {
   title: string;
@@ -21,16 +21,13 @@ const SelectionButton: React.FC<SelectButtonProps> = ({
       style={[
         styles.button,
         {
-          borderColor: isSelected ? primaryColors.blue : primaryColors.warmGray,
+          borderColor: isSelected ? globalColors.blue : globalColors.warmGray,
           backgroundColor: isSelected
-            ? `${primaryColors.blue}1A`
-            : primaryColors.white,
+            ? `${globalColors.blue}1A`
+            : globalColors.white,
         },
       ]}>
-      <Text
-        style={[globalStyles.bodyMediumPrimary, {color: primaryColors.black}]}>
-        {title}
-      </Text>
+      <Text style={[Text14B.text, {color: globalColors.black}]}>{title}</Text>
     </TouchableOpacity>
   );
 };

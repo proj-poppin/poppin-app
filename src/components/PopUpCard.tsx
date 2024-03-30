@@ -2,8 +2,8 @@ import DefaultImageSvg from '../../src/assets/images/defaultImage.svg';
 
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {globalStyles} from '../style/textStyles.ts';
-import primaryColors from '../style/primaryColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
+import Text14B from '../styles/texts/body_medium/Text14B.ts';
 const PopUpCard = ({Svg = DefaultImageSvg, title, date = null}) => {
   const formattedTitle =
     title.length > 7 ? `${title.substring(0, 7)}...` : title;
@@ -12,11 +12,11 @@ const PopUpCard = ({Svg = DefaultImageSvg, title, date = null}) => {
       <View style={styles.svgContainer}>
         <DefaultImageSvg width="60%" height="80%" />
       </View>
-      <Text style={[globalStyles.labelPrimary, styles.title]}>
-        {formattedTitle}
-      </Text>
+      <Text style={[Text14B.text, styles.title]}>{formattedTitle}</Text>
       {date && (
-        <Text style={[globalStyles.labelPrimaryGray, styles.date]}>{date}</Text>
+        <Text style={[Text14B.text, {color: globalColors.font}, styles.date]}>
+          {date}
+        </Text>
       )}
     </View>
   );
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   container: {
     width: 120,
     height: 130,
-    backgroundColor: primaryColors.white,
+    backgroundColor: globalColors.white,
     borderRadius: 8,
     overflow: 'hidden',
     padding: 5,

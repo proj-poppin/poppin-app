@@ -1,7 +1,7 @@
 import React from 'react';
 import {Pressable, Text, StyleSheet} from 'react-native';
-import primaryColors from '../style/primaryColors.ts';
-import {globalStyles} from '../style/textStyles.ts';
+import globalColors from '../styles/color/globalColors.ts';
+import Text18B from '../styles/texts/body_large/Text18B.ts';
 
 interface BackMiddleButtonProps {
   onPress: () => void;
@@ -23,11 +23,7 @@ const BackMiddleButton: React.FC<BackMiddleButtonProps> = ({
       {width: buttonWidth},
     ]}
     onPress={onPress}>
-    <Text
-      style={[
-        globalStyles.bodyLargePrimaryBlack,
-        {color: textColor || primaryColors.font},
-      ]}>
+    <Text style={[Text18B.text, {color: textColor || globalColors.font}]}>
       {title}
     </Text>
   </Pressable>
@@ -44,13 +40,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     borderWidth: 1,
-    borderColor: primaryColors.blue, // 테두리 색상
+    borderColor: globalColors.blue, // 테두리 색상
   },
   buttonNormal: {
     backgroundColor: 'white', // 기본 배경색
   },
   buttonPressed: {
-    backgroundColor: `${primaryColors.blue}1A`, // 투명도 10% 적용
+    backgroundColor: `${globalColors.blue}1A`, // 투명도 10% 적용
   },
 });
 

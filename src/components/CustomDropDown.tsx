@@ -1,8 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
-import primaryColors from '../style/primaryColors.ts';
-import {globalStyles} from '../style/textStyles.ts'; // 경로 확인 필요
+import globalColors from '../styles/color/globalColors.ts';
+import Text18B from '../styles/texts/body_large/Text18B.ts';
 
 const CustomSelectDropdown = ({
   data,
@@ -21,10 +21,10 @@ const CustomSelectDropdown = ({
       rowTextForSelection={(item, index) => item}
       dropdownStyle={[styles.dropdownStyle, {width: buttonWidth}]}
       buttonStyle={[styles.dropdownButtonStyle, {width: buttonWidth}]}
-      rowTextStyle={{color: primaryColors.font, textAlign: 'center'}}
+      rowTextStyle={{color: globalColors.font, textAlign: 'center'}}
       renderCustomizedButtonChild={(selectedItem, index) => (
         <View style={styles.buttonInnerContainer}>
-          <Text style={[globalStyles.bodyLargePrimaryBlack, buttonTextStyle]}>
+          <Text style={[Text18B.text, buttonTextStyle]}>
             {selectedItem || '선택'}
           </Text>
           {iconComponent}
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Pretandard-Regular',
     fontSize: 12,
     fontWeight: '400',
-    color: primaryColors.blue,
+    color: globalColors.blue,
   },
   middleContainer: {
     flexDirection: 'row',
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     // 필요한 경우 여기에 다른 스타일 추가
   },
   rowTextStyle: {
-    backgroundColor: primaryColors.white,
+    backgroundColor: globalColors.white,
   },
   buttonInnerContainer: {
     flexDirection: 'row', // 텍스트와 아이콘을 가로로 배열

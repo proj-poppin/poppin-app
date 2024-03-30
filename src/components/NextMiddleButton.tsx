@@ -1,7 +1,7 @@
 import React from 'react';
 import {Pressable, Text, ActivityIndicator, StyleSheet} from 'react-native';
-import primaryColors from '../style/primaryColors.ts';
-import {globalStyles} from '../style/textStyles.ts';
+import globalColors from '../styles/color/globalColors.ts';
+import Text18B from '../styles/texts/body_large/Text18B.ts';
 
 interface NextMiddleButtonProps {
   onPress: () => void;
@@ -25,10 +25,10 @@ const NextMiddleButton: React.FC<NextMiddleButtonProps> = ({
       styles.button,
       {
         backgroundColor: pressed
-          ? primaryColors.buttonPressed
+          ? globalColors.buttonPressed
           : disabled && !alwaysActive
-          ? primaryColors.component
-          : primaryColors.blue,
+          ? globalColors.component
+          : globalColors.blue,
         width: buttonWidth,
       },
       disabled && !alwaysActive && styles.disabledButton,
@@ -40,16 +40,16 @@ const NextMiddleButton: React.FC<NextMiddleButtonProps> = ({
     }}
     disabled={disabled && !alwaysActive}>
     {loading ? (
-      <ActivityIndicator color={primaryColors.white} />
+      <ActivityIndicator color={globalColors.white} />
     ) : (
       <Text
         style={[
-          globalStyles.bodyLargePrimaryBlack,
+          Text18B.text,
           {
             color:
               disabled && !alwaysActive
-                ? primaryColors.font
-                : primaryColors.white,
+                ? globalColors.font
+                : globalColors.white,
           },
         ]}>
         {title}
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     // 이제 이 스타일은 필요 없으므로 제거합니다.
   },
   disabledButton: {
-    backgroundColor: primaryColors.component,
+    backgroundColor: globalColors.component,
   },
 });
 

@@ -3,13 +3,12 @@ import {
   View,
   Text,
   TextInput,
-  Pressable,
   StyleSheet,
   TextInputProps,
   TextStyle,
 } from 'react-native';
-import {globalStyles} from '../style/textStyles.ts';
-import primaryColors from '../style/primaryColors.ts';
+import globalColors from '../styles/color/globalColors.ts';
+import Text20B from '../styles/texts/title/Text20B.ts';
 
 // Props 타입 정의
 interface LabelAndInputProps extends TextInputProps {
@@ -57,19 +56,19 @@ const LabelAndInput: React.FC<LabelAndInputProps> = ({
 
   return (
     <View style={styles.container}>
-      <Text style={[globalStyles.title, {marginBottom: 8}]}>{labelText}</Text>
+      <Text style={[Text20B.text, {marginBottom: 8}]}>{labelText}</Text>
       <TextInput
         style={[
           styles.textInput,
           {
-            color: primaryColors.black,
+            color: globalColors.black,
           } as TextStyle,
         ]}
         onChangeText={
           isPasswordSetting ? handlePasswordValidation : onChangeText
         }
         placeholder={placeholder}
-        placeholderTextColor={primaryColors.font}
+        placeholderTextColor={globalColors.font}
         keyboardType={keyboardType}
         secureTextEntry={secureTextEntry}
         returnKeyType={isPassword ? 'done' : 'next'} // Use "done" for password fields
@@ -79,8 +78,8 @@ const LabelAndInput: React.FC<LabelAndInputProps> = ({
           <Text
             style={{
               color: containsNumAndLetter
-                ? primaryColors.blue
-                : primaryColors.font,
+                ? globalColors.blue
+                : globalColors.font,
               paddingLeft: 10,
               fontSize: 13,
             }}>
@@ -89,8 +88,8 @@ const LabelAndInput: React.FC<LabelAndInputProps> = ({
           <Text
             style={{
               color: containsSpecialChar
-                ? primaryColors.blue
-                : primaryColors.font,
+                ? globalColors.blue
+                : globalColors.font,
               paddingLeft: 10,
               fontSize: 13,
             }}>
@@ -98,7 +97,7 @@ const LabelAndInput: React.FC<LabelAndInputProps> = ({
           </Text>
           <Text
             style={{
-              color: isValidLength ? primaryColors.blue : primaryColors.font,
+              color: isValidLength ? globalColors.blue : globalColors.font,
               paddingLeft: 10,
               fontSize: 13,
             }}>
@@ -110,7 +109,7 @@ const LabelAndInput: React.FC<LabelAndInputProps> = ({
         <Text
           style={[
             styles.validationText,
-            {color: isPasswordSame ? primaryColors.blue : primaryColors.font},
+            {color: isPasswordSame ? globalColors.blue : globalColors.font},
           ]}>
           ✓ 비밀번호 일치
         </Text>
@@ -126,7 +125,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: primaryColors.warmGray,
+    borderColor: globalColors.warmGray,
     padding: 10,
     fontFamily: 'Pretandard-Regular',
     fontSize: 18,

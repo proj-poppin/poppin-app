@@ -15,8 +15,8 @@ import PreferenceSettingScreen from '../pages/myPage/PreferenceSettingScreen.tsx
 import {AuthNavigatorParamList} from '../types/AuthNavigatorParamList.ts';
 import HeaderRightPressableTextButton from '../components/molecules/pressable_text/AppbarRightPressableTextButton.tsx';
 import AppBarLeftPressableIconButton from '../components/molecules/pressable_icon/AppbarLeftPressableIconButton.tsx';
-import SignInEmailScreen from '../pages/sign/SignInEmailScreen.tsx';
-import {signInEmailScreenOptions} from './options/SignInEmailScreenOptions.tsx';
+import EntryScreen from '../pages/sign/EntryScreen.tsx';
+import {EntryScreenOptions} from './options/EntryScreenOptions.tsx';
 
 const Stack = createNativeStackNavigator<AuthNavigatorParamList>();
 
@@ -37,9 +37,9 @@ function AuthNavigator() {
         options={headerOptions}
       />
       <Stack.Screen
-        name="SignInEmail"
-        component={SignInEmailScreen}
-        options={signInEmailScreenOptions}
+        name="Entry"
+        component={EntryScreen}
+        options={EntryScreenOptions}
       />
       <Stack.Screen
         name="ProfileEdit"

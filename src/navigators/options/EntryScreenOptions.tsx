@@ -9,7 +9,7 @@ type SignInEmailScreenNavigationProp = NativeStackNavigationProp<
   'SignInEmail'
 >;
 
-export const signInEmailScreenOptions = ({
+export const EntryScreenOptions = ({
   navigation,
 }: {
   navigation: SignInEmailScreenNavigationProp;

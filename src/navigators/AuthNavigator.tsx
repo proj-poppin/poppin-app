@@ -11,12 +11,24 @@ import PolicyScreen from '../pages/myPage/PolicyScreen.tsx';
 import ReviewWriteScreen from '../pages/myPage/ReviewWriteScreen.tsx';
 import OperatorRegisterScreen from '../pages/myPage/OperatorRegisterScreen.tsx';
 import MemberDeleteScreen from '../pages/myPage/MemberDeleteScreen.tsx';
-import PreferenceSettingScreen from '../pages/myPage/PreferenceSettingScreen.tsx';
 import {AuthNavigatorParamList} from '../types/AuthNavigatorParamList.ts';
 import HeaderRightPressableTextButton from '../components/molecules/pressable_text/AppbarRightPressableTextButton.tsx';
 import AppBarLeftPressableIconButton from '../components/molecules/pressable_icon/AppbarLeftPressableIconButton.tsx';
 import EntryScreen from '../pages/sign/EntryScreen.tsx';
 import {EntryScreenOptions} from './options/EntryScreenOptions.tsx';
+import BasicLoginScreen from '../pages/sign/BasicLoginScreen.tsx';
+import SignUpEmailScreen from '../pages/sign/SignUpEmailScreen.tsx';
+import SignUpEmailOptions from './options/SignUpEmailOptions.tsx';
+import SignUpAuthScreen from '../pages/sign/SignUpAuthScreen.tsx';
+import SignUpAuthOptions from './options/SignUpAuthOptions.tsx';
+import SignUpNickNameScreen from '../pages/sign/SignUpNickNameScreen.tsx';
+import SignUpNickNameOptions from './options/SignUpNickNameOptions.tsx';
+import SignUpSucceedScreen from '../pages/sign/SignUpSucceedScreen.tsx';
+import BasicLoginOptions from './options/BasicLoginOptions.tsx';
+import PasswordResetScreen from '../pages/sign/PasswordResetScreen.tsx';
+import {PasswordResetOptions} from './options/PasswordResetOptions.tsx';
+import PreferenceSettingOptions from './options/PreferenceSettingOptions.tsx';
+import PreferenceScreen from '../pages/preference/PreferenceScreen.tsx';
 
 const Stack = createNativeStackNavigator<AuthNavigatorParamList>();
 
@@ -24,7 +36,7 @@ const screenOptions = {
   headerShadowVisible: false,
 };
 
-const headerOptions = {
+const DefaultNoHeaderOptions = {
   headerShown: false,
 };
 
@@ -34,13 +46,49 @@ function AuthNavigator() {
       <Stack.Screen
         name="MainTabNavigator"
         component={MainTabNavigator}
-        options={headerOptions}
+        options={DefaultNoHeaderOptions}
       />
       <Stack.Screen
         name="Entry"
         component={EntryScreen}
         options={EntryScreenOptions}
       />
+      <Stack.Screen
+        name="SignUpEmail"
+        component={SignUpEmailScreen}
+        options={SignUpEmailOptions}
+      />
+      <Stack.Screen
+        name="SignUpAuthCode"
+        component={SignUpAuthScreen}
+        options={SignUpAuthOptions}
+      />
+      <Stack.Screen
+        name="SignUpNickName"
+        component={SignUpNickNameScreen}
+        options={SignUpNickNameOptions}
+      />
+      <Stack.Screen
+        name="SignUpSucceed"
+        component={SignUpSucceedScreen}
+        options={DefaultNoHeaderOptions}
+      />
+      <Stack.Screen
+        name="PreferenceSetting"
+        component={PreferenceScreen}
+        options={PreferenceSettingOptions}
+      />
+      <Stack.Screen
+        name="BasicLogin"
+        component={BasicLoginScreen}
+        options={BasicLoginOptions}
+      />
+      <Stack.Screen
+        name="PasswordReset"
+        component={PasswordResetScreen}
+        options={PasswordResetOptions}
+      />
+
       <Stack.Screen
         name="ProfileEdit"
         component={MyProfileEditScreen}
@@ -119,15 +167,6 @@ function AuthNavigator() {
         options={() => ({
           headerShown: true,
           title: '회원 탈퇴', // 헤더 타이틀 설정
-          headerLeft: () => <AppBarLeftPressableIconButton />,
-        })}
-      />
-      <Stack.Screen
-        name="PreferenceSetting"
-        component={PreferenceSettingScreen}
-        options={() => ({
-          headerShown: true,
-          headerTitle: '취향 설정하기',
           headerLeft: () => <AppBarLeftPressableIconButton />,
         })}
       />

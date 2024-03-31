@@ -15,5 +15,10 @@ export type AuthNavigatorParamList = {
   SignUp: undefined;
   PrivacyPolicy: undefined;
   TermsOfService: undefined;
+  SignUpEmail: undefined;
+  SignUpAuthCode: undefined;
+  SignUpNickName: undefined;
+  SignUpSucceed: undefined;
+  PasswordReset: undefined;
 };
 // src/types/AuthNavigatorParamList.ts

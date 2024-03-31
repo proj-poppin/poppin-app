@@ -183,9 +183,7 @@ const OperationCalendarBottomSheet: React.FC = () => {
         </View>
         <DividerLine height={1} />
         <View style={styles.dateRow}>
-          <Text style={[globalStyles.bodyLargeSub, {marginLeft: 10}]}>
-            종료
-          </Text>
+          <Text style={[Text18B.text, {marginLeft: 10}]}>종료</Text>
           <Pressable
             style={({pressed}) => [
               styles.dateInputContainer,

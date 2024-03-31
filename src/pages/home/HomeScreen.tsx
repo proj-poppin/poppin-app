@@ -15,7 +15,7 @@ function HomeScreen({navigation}) {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
   const handlePress = () => {
-    navigation.replace('SignInEmail');
+    navigation.replace('Entry');
   };
 
   return (

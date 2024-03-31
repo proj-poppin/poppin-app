@@ -4,7 +4,7 @@ import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import React, {useEffect, useState} from 'react';
 import ProfileAppBar from '../../components/ProfileAppBar.tsx';
 import CompleteButton from '../../components/CompleteButton.tsx';
-import PasswordInput from '../../components/PasswordInput.tsx';
+import PasswordCheckTextFormField from '../../components/molecules/form_field/PasswordCheckTextFormField.tsx';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
 
@@ -119,7 +119,7 @@ function PasswordChangeScreen({navigation}) {
         />
       </View>
       <View style={{marginBottom: 20}} />
-      <PasswordInput
+      <PasswordCheckTextFormField
         onChangeText={handleChangePassword}
         placeholder="현재 비밀번호"
         keyboardType="default"
@@ -133,19 +133,16 @@ function PasswordChangeScreen({navigation}) {
           현재 비밀번호가 기억나지 않으세요?
         </Text>
       </Pressable>
-      <PasswordInput
+      <PasswordCheckTextFormField
         onChangeText={handleChangePassword}
         placeholder="새 비밀번호"
-        keyboardType="default"
         labelText={'비밀번호 설정'}
         isPassword={true}
-        isPasswordSetting={true}
         containerStyle={{marginBottom: 20}}
       />
-      <PasswordInput
+      <PasswordCheckTextFormField
         onChangeText={handleSamePassword}
         placeholder="새 비밀번호 확인"
-        keyboardType="default"
         labelText={'비밀번호 확인'}
         isPassword={true}
         isPasswordSame={isPasswordSame}

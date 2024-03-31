@@ -12,14 +12,9 @@ import {
 import globalColors from '../../styles/color/globalColors.ts';
 // @ts-ignore
 import ProfileImg from '../../assets/images/defaultProfile.png';
-import GoBackSvg from '../../assets/icons/goBack.svg';
 import GallerySvg from '../../assets/icons/gallery.svg';
 import ImagePicker from 'react-native-image-crop-picker';
-import KakaoSvg from '../../assets/icons/social_login/kakao.svg';
-import NaverSvg from '../../assets/icons/social_login/naver.svg';
-import GoogleSvg from '../../assets/icons/social_login/google.svg';
 import {useSelector} from 'react-redux';
-import ProfileAppBar from '../../components/ProfileAppBar.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import RightSvg from '../../assets/icons/bigRight.svg';
 import CloseGraySvg from '../../assets/icons/closeGray.svg';

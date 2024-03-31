@@ -10,6 +10,15 @@ export type AuthNavigatorParamList = {
   OperatorRegister: undefined;
   MemberDelete: undefined;
   PreferenceSetting: undefined;
-  SignInEmail: undefined;
+  Entry: undefined;
+  BasicLogin: undefined;
+  SignUp: undefined;
+  PrivacyPolicy: undefined;
+  TermsOfService: undefined;
+  SignUpEmail: undefined;
+  SignUpAuthCode: undefined;
+  SignUpNickName: undefined;
+  SignUpSucceed: undefined;
+  PasswordReset: undefined;
 };
 // src/types/AuthNavigatorParamList.ts

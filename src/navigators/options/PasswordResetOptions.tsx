@@ -4,20 +4,20 @@ import CloseSvg from '../../assets/icons/close.svg';
 import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
-type SignInEmailScreenNavigationProp = NativeStackNavigationProp<
+type PasswordResetScreenNavigationProp = NativeStackNavigationProp<
   AuthNavigatorParamList,
-  'SignInEmail'
+  'PasswordReset'
 >;
 
-export const signInEmailScreenOptions = ({
+export const PasswordResetOptions = ({
   navigation,
 }: {
-  navigation: SignInEmailScreenNavigationProp;
+  navigation: PasswordResetScreenNavigationProp;
 }) => ({
-  headerTitle: '',
+  headerTitle: '비밀번호 재설정',
   headerLeft: () => (
     <Pressable
-      onPress={() => navigation.replace('MainTabNavigator')}
+      onPress={() => navigation.replace('Entry')}
       style={{padding: 10}}>
       <CloseSvg />
     </Pressable>

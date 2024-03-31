@@ -2,32 +2,31 @@ import React from 'react';
 import {Pressable, Text, StyleSheet} from 'react-native';
 import globalColors from '../styles/color/globalColors.ts';
 
-interface NextButtonProps {
+interface ActiveGreyNextButtonProps {
   onPress: () => void;
   title: string;
-  widthRatio?: string; // `?`를 사용하여 옵셔널 프로퍼티로 선언
+  style?: object;
 }
 
-const NextButton: React.FC<NextButtonProps> = ({
+const ActiveGreyNextButton: React.FC<ActiveGreyNextButtonProps> = ({
   onPress,
   title,
-  widthRatio = '85%', // 디폴트 값을 '85%'로 설정
+  style = {},
 }) => (
-  <Pressable style={[styles.button, {width: widthRatio}]} onPress={onPress}>
+  <Pressable
+    style={[style, styles.button, {width: '85%'}, {height: 50}]}
+    onPress={onPress}>
     <Text style={styles.text}>{title}</Text>
   </Pressable>
 );
 
 const styles = StyleSheet.create({
   button: {
-    height: 47,
-    borderRadius: 25,
-    marginTop: 35,
-    marginBottom: 10,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: globalColors.stroke,
+    backgroundColor: globalColors.component,
   },
   text: {
     color: 'black',
@@ -35,4 +34,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NextButton;
+export default ActiveGreyNextButton;

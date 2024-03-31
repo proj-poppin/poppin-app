@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, Platform} from 'react-native';
-import MainTitle from '../../components/MainTitle';
+import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import SocialLoginButtonRow from '../../utils/function/SocialLoginButtonRow.tsx';
 import {useKakaoLogin} from '../../hooks/useKakaoLogin.tsx';
 import {useGoogleLogin} from '../../hooks/useGoogleLogin.tsx';
@@ -37,12 +37,13 @@ function EntryScreen() {
       <MainTitle
         text1="내 취향을 기반으로"
         text2="팝업스토어를 관리하고 저장해요"
+        isPoppinLogo={true}
       />
       <View style={{paddingBottom: 25}}>
         <SvgImgButton SvgComponent={BasicLoginButton} onPress={goBasicLogin} />
       </View>
       <SvgImgButton SvgComponent={KakaoLoginButton} onPress={signInWithKakao} />
-      <ToSignUpTextLine onPress={() => navigation.navigate('SignUp')} />
+      <ToSignUpTextLine onPress={() => navigation.navigate('SignUpEmail')} />
       <View style={{paddingTop: 80}}>
         <Text style={styles.snsLoginText}>다른 방법으로 로그인하기</Text>
         <SocialLoginButtonRow

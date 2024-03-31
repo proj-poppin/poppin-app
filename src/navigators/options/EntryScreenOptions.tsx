@@ -6,7 +6,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 type SignInEmailScreenNavigationProp = NativeStackNavigationProp<
   AuthNavigatorParamList,
-  'SignInEmail'
+  'Entry'
 >;
 
 export const EntryScreenOptions = ({

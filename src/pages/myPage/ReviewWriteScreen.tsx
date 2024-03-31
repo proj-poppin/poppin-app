@@ -19,6 +19,7 @@ import CompleteButton from '../../components/CompleteButton.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import Text13R from '../../styles/texts/label/Text12R.ts';
+import Text12R from '../../styles/texts/label/Text12R.ts';
 
 function ReviewWriteScreen() {
   const [keyword, setKeyword] = useState('');
@@ -116,12 +117,7 @@ function ReviewWriteScreen() {
       </View>
 
       <View style={styles.sectionContainer}>
-        <Text
-          style={[
-            globalStyles.labelSub,
-            {color: globalColors.purple},
-            {width: 65},
-          ]}>
+        <Text style={[Text12R.text, {color: globalColors.purple}, {width: 65}]}>
           혼잡도
         </Text>
         <View style={styles.buttonsContainer}>

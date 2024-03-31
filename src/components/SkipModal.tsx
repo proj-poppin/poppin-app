@@ -4,7 +4,7 @@ import {Modal, View, Text, Pressable, StyleSheet} from 'react-native';
 import SkipSvg from '../assets/images/skip.svg';
 import globalColors from '../styles/color/globalColors.ts';
 import Text18B from '../styles/texts/body_large/Text18B.ts';
-import Text14R from '../styles/texts/body_medium/Text14R.ts';
+import Text14M from '../styles/texts/body_medium/Text14M.ts';
 
 const SkipModal = ({isVisible, onClose, onSetNow}) => {
   return (
@@ -24,7 +24,7 @@ const SkipModal = ({isVisible, onClose, onSetNow}) => {
               {({pressed}) => (
                 <Text
                   style={[
-                    Text14R.text,
+                    Text14M.text,
                     {
                       color: pressed ? 'gray' : globalColors.font,
                     }, // 조건부 색상 적용
@@ -47,7 +47,7 @@ const SkipModal = ({isVisible, onClose, onSetNow}) => {
               {({pressed}) => (
                 <Text
                   style={[
-                    Text14R.text,
+                    Text14M.text,
                     {
                       color: pressed
                         ? globalColors.buttonPressed

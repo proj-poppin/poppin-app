@@ -2,11 +2,10 @@ import {useState} from 'react';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import Config from 'react-native-config';
 import loginSocial from '../apis/auth/login/loginSocial.ts';
-import {getAccessToken} from '@react-native-seoul/kakao-login';
 
 GoogleSignin.configure({
   webClientId: Config.GOOGLE_WEB_CLIENT_ID,
-  offlineAccess: true,
+  offlineAccess: true, // 오프라인 액세스를 위한 구성
 });
 
 export const useGoogleLogin = () => {
@@ -15,16 +14,17 @@ export const useGoogleLogin = () => {
 
   const signInWithGoogle = async () => {
     try {
-      console.log('fuck');
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.getTokens().then(getAccessToken);
-      console.log('Google login userInfo:', userInfo);
-      setUserInfo(userInfo.accessToken);
+      await GoogleSignin.hasPlayServices(); // Google Play 서비스 사용 가능 여부 확인
+      const {user} = await GoogleSignin.signIn(); // Google 로그인
+      console.log('Google login user:', user);
+      setUserInfo(user); // 사용자 정보 상태 업데이트
 
-      console.log('Google login userInfo:', userInfo);
-      await loginSocial('google', userInfo.accessToken);
+      const {accessToken} = await GoogleSignin.getTokens(); // 액세스 토큰 받아오기
+      console.log('Google login accessToken:', accessToken);
+      await loginSocial('google', accessToken); // 서버에 로그인 정보 전송
     } catch (err) {
       console.error('Failed to login with Google:', err);
+      setError(err.toString()); // 에러 상태 업데이트
     }
   };
 

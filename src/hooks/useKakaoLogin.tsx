@@ -11,7 +11,6 @@ export const useKakaoLogin = () => {
       const tokenResult = await getAccessToken();
       console.log('Kakao login tokenResult:', tokenResult);
       console.log('Kakao login accessToken:', tokenResult.accessToken);
-      setToken(tokenResult);
 
       // 카카오 로그인 후 서버에 인증 정보 보내기
       await loginSocial('kakao', tokenResult.accessToken);

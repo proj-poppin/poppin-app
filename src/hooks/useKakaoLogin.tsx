@@ -1,24 +1,42 @@
 import {useState} from 'react';
 import {getAccessToken} from '@react-native-seoul/kakao-login';
-import loginSocial from '../apis/auth/login/loginSocial.ts';
+import loginSocial from '../apis/auth/loginSocial.ts';
+import {useAppDispatch} from '../redux/stores';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import userSlice from '../redux/slices/user.ts';
 
+// useKakaoLogin 커스텀 훅 수정
 export const useKakaoLogin = () => {
-  const [token, setToken] = useState(null);
-  const [error, setError] = useState('');
+  const [kakaoLoginStatus, setKakaoLoginStatus] = useState({
+    newUser: false,
+  });
+  const dispatch = useAppDispatch();
 
   const signInWithKakao = async () => {
     try {
       const tokenResult = await getAccessToken();
-      console.log('Kakao login tokenResult:', tokenResult);
-      console.log('Kakao login accessToken:', tokenResult.accessToken);
+      const loginResult = await loginSocial('kakao', tokenResult.accessToken);
 
-      // 카카오 로그인 후 서버에 인증 정보 보내기
-      await loginSocial('kakao', tokenResult.accessToken);
+      // 기존 유저라면 로그인
+      if (loginResult.success && loginResult.data?.refreshToken) {
+        const {accessToken, refreshToken} = loginResult.data;
+        await EncryptedStorage.setItem('accessToken', accessToken);
+        await EncryptedStorage.setItem('refreshToken', refreshToken);
+        dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
+        dispatch(userSlice.actions.setAccessToken(accessToken));
+      } else {
+        // 신규 유저라면 닉네입 입력 화면으로 이동
+        setKakaoLoginStatus({newUser: true});
+        const accessToken = loginResult.data!.accessToken;
+        console.log('naya');
+        await EncryptedStorage.setItem('accessToken', accessToken);
+        dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
+        dispatch(userSlice.actions.setAccessToken(accessToken));
+      }
     } catch (err) {
       console.error('Failed to login with Kakao:', err);
-      setError(err.message);
     }
   };
 
-  return {signInWithKakao, token, error};
+  return {signInWithKakao, kakaoLoginStatus: kakaoLoginStatus};
 };

@@ -1,14 +1,18 @@
 import {useState} from 'react';
 import appleAuth from '@invertase/react-native-apple-authentication';
 import {Alert, Platform} from 'react-native';
-import loginSocial from '../apis/auth/login/loginSocial';
+import loginSocial from '../apis/auth/loginSocial.ts';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import userSlice from '../redux/slices/user.ts';
+import {useAppDispatch} from '../redux/stores';
 
 export const useAppleLogin = () => {
-  const [userInfo, setUserInfo] = useState(null);
-  const [error, setError] = useState('');
-
+  const dispatch = useAppDispatch();
+  const [appleLoginStatus, setAppleLoginStatus] = useState({
+    newUser: false,
+  });
   const signInWithApple = async () => {
-    // Android 기기에서의 접근 방지
+    // Android 기기에서의 사용을 방지
     if (Platform.OS === 'android') {
       Alert.alert('안내', 'iOS 기기에서만 사용 가능합니다.');
       return;
@@ -26,29 +30,40 @@ export const useAppleLogin = () => {
         appleAuthRequestResponse.user,
       );
 
-      // 인증 상태 확인
+      // 인증 상태가 AUTHORIZED인 경우
       if (credentialState === appleAuth.State.AUTHORIZED) {
         // 사용자가 인증된 경우
-        setUserInfo(appleAuthRequestResponse);
-
         console.log('appleAuthRequestResponse:', appleAuthRequestResponse);
 
-        // 서버에 인증 정보 보내기
-        // Apple 로그인에서는 identityToken 또는 authorizationCode 중 하나를 사용
-        const identityToken = appleAuthRequestResponse.identityToken;
+        const {identityToken} = appleAuthRequestResponse;
         if (identityToken) {
-          await loginSocial('apple', identityToken);
+          const loginResult = await loginSocial('apple', identityToken);
+          console.log('Apple loginResult:', loginResult);
+
+          if (loginResult.success && loginResult.data?.refreshToken) {
+            const {accessToken, refreshToken} = loginResult.data;
+            await EncryptedStorage.setItem('accessToken', accessToken);
+            await EncryptedStorage.setItem('refreshToken', refreshToken);
+            dispatch(userSlice.actions.setAccessToken(accessToken));
+          } else {
+            // 신규 유저라면 닉네입 입력 화면으로 이동
+            setAppleLoginStatus({newUser: true});
+            const accessToken = loginResult.data!.accessToken;
+            console.log('naya');
+            await EncryptedStorage.setItem('accessToken', accessToken);
+            dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
+            dispatch(userSlice.actions.setAccessToken(accessToken));
+          }
         } else {
           throw new Error("Apple login didn't provide an identityToken.");
         }
       } else {
-        // 사용자가 인증되지 않은 경우
-        setError('User is not authenticated.');
+        console.error('Apple login failed:', credentialState);
       }
     } catch (err) {
-      setError(err.message);
+      console.error('Failed to login with Apple:', err);
     }
   };
 
-  return {signInWithApple, userInfo, error};
+  return {signInWithApple, appleLoginStatus: appleLoginStatus};
 };

@@ -33,7 +33,7 @@ const LabelAndInput: React.FC<LabelAndInputProps> = ({
   isPasswordSameSetting = false, // 기본값은 false
   isPasswordSame = false, // 기본값은 false
 }) => {
-  const [secureTextEntry, setSecureTextEntry] = useState(isPassword);
+  const [secureTextEntry] = useState(isPassword);
   // 비밀번호 유효성 검사 상태
   const [isValidLength, setIsValidLength] = useState(false);
   const [containsNumAndLetter, setContainsNumAndLetter] = useState(false);

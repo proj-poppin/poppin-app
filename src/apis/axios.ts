@@ -8,7 +8,6 @@ const apiInstance = axios.create({
 
 apiInstance.interceptors.request.use(
   async config => {
-    // Retrieve the access token from storage
     const accessToken = await EncryptedStorage.getItem('accessToken');
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -26,31 +25,33 @@ apiInstance.interceptors.response.use(
   },
   async error => {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true; // Mark the request as retried
+    // Check for both 401 and 403 status codes
+    if (
+      (error.response?.status === 401 || error.response?.status === 403) &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
 
       try {
-        const refreshToken = await EncryptedStorage.getItem('refreshToken');
+        const originalRefreshToken = await EncryptedStorage.getItem(
+          'refreshToken',
+        );
+        console.log('refresh Start:', originalRefreshToken);
         const response = await axios.post(
-          `${Config.API_URL}/refresh`,
+          `${Config.API_URL}/api/v1/auth/refresh`,
           {},
           {
-            headers: {Authorization: `Bearer ${refreshToken}`},
+            headers: {Authorization: `Bearer ${originalRefreshToken}`},
           },
         );
-
-        if (response.status === 200) {
-          const newAccessToken = response.data.accessToken;
-          // Store the new token
-          await EncryptedStorage.setItem('accessToken', newAccessToken);
-          // Update the original request with the new token
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-          // Retry the original request with the new token
+        if (response.data.success) {
+          const {accessToken, refreshToken} = response.data.data;
+          await EncryptedStorage.setItem('refreshToken', refreshToken);
+          await EncryptedStorage.setItem('accessToken', accessToken);
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return axios(originalRequest);
         }
-      } catch (refreshError) {
-        console.error('Error refreshing token:', refreshError);
-      }
+      } catch (refreshError) {}
     }
 
     return Promise.reject(error);

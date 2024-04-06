@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
   shadowedBox: {
     backgroundColor: globalColors.white,
     borderRadius: 10,
+    marginTop: 10,
     padding: 20,
     shadowColor: '#000',
     shadowOffset: {

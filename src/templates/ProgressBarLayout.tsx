@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Pressable, Text, ScrollView} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import CompleteButton from '../components/CompleteButton.tsx';
 import BackMiddleButton from '../components/BackMiddleButton.tsx';
 import NextMiddleButton from '../components/NextMiddleButton.tsx';

@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Alert} from 'react-native';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import LabelText20B from '../../components/atoms/label/LabelText20B.tsx';
@@ -10,8 +10,14 @@ import CompleteButton from '../../components/CompleteButton.tsx';
 import ResendButton from '../../components/molecules/pressable_text/ResendButton.tsx';
 import useAuthCode from '../../hooks/useAuthCode.tsx';
 import useSignUpEmail from '../../hooks/useSignUpEmail.tsx';
+import useResetPassword from '../../hooks/useResetPassword.tsx';
+import usePasswordEmailVerification from '../../hooks/usePasswordEmailVerification.tsx';
 
-function PasswordResetScreen({navigation}) {
+type PasswordResetScreenProps = {
+  navigation: any;
+};
+
+function PasswordResetScreen({navigation}: PasswordResetScreenProps) {
   const {
     email,
     password,
@@ -26,10 +32,61 @@ function PasswordResetScreen({navigation}) {
     isPasswordSame,
   } = useSignUpEmail();
 
-  const {code, setCode, countdown, resetCountdown, startTheCountdown} =
-    useAuthCode();
+  const {code, setCode, countdown, resetCountdown} = useAuthCode();
+
+  const {authCode, verifyEmail} = usePasswordEmailVerification(email);
+
+  const {resetUserPassword, resetPasswordStatus} = useResetPassword();
 
   const [pageIndex, setPageIndex] = useState(1);
+
+  const handlePress = () => {
+    verifyEmail()
+      .then(() => setPageIndex(2))
+      .catch(error =>
+        Alert.alert(
+          'Error',
+          error.message || '이메일 인증 중 알 수 없는 오류가 발생했습니다.',
+        ),
+      );
+  };
+
+  const handlePressAuthCode = () => {
+    if (code === authCode) {
+      setPageIndex(3);
+    } else {
+      Alert.alert('인증 코드가 일치하지 않습니다.');
+    }
+  };
+
+  useEffect(() => {
+    if (resetPasswordStatus.success) {
+      Alert.alert(
+        '비밀번호 변경 성공',
+        '비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요.',
+      );
+      navigation.navigate('BasicLogin');
+    }
+  }, [resetPasswordStatus.success, navigation]);
+
+  const handleResetPassword = () => {
+    if (
+      isPasswordSame &&
+      isValidLength &&
+      containsNumAndLetter &&
+      containsSpecialChar
+    ) {
+      resetUserPassword(password, passwordConfirm).then();
+    } else {
+      Alert.alert('Error', 'Passwords do not match or meet the criteria.');
+    }
+  };
+
+  useEffect(() => {
+    if (pageIndex === 2) {
+      resetCountdown();
+    }
+  }, [pageIndex, resetCountdown]);
 
   const renderStepContent = () => {
     switch (pageIndex) {
@@ -43,17 +100,14 @@ function PasswordResetScreen({navigation}) {
             />
             <LabelText20B text="이메일" />
             <CommonTextFormField
-              onChangeText={text => handleChangeEmail(text)}
+              onChangeText={handleChangeEmail}
               onEndEditing={() => {}}
               placeholder="이메일 주소를 입력해주세요."
               keyboardType="email-address"
               errorText={emailError}
             />
             <CompleteButton
-              onPress={() => {
-                startTheCountdown();
-                setPageIndex(2);
-              }}
+              onPress={handlePress}
               title="다음"
               disabled={!email}
             />
@@ -74,7 +128,7 @@ function PasswordResetScreen({navigation}) {
               countdown={countdown}
             />
             <CompleteButton
-              onPress={() => setPageIndex(3)}
+              onPress={handlePressAuthCode}
               title="다음"
               disabled={!code}
             />
@@ -107,9 +161,7 @@ function PasswordResetScreen({navigation}) {
               isPasswordSetting={true}
             />
             <CompleteButton
-              onPress={() => {
-                navigation.navigate('BasicLogin');
-              }}
+              onPress={handleResetPassword}
               title="완료"
               disabled={
                 !password || !passwordConfirm || password !== passwordConfirm

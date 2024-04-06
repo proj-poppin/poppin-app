@@ -1,5 +1,12 @@
-import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useCallback, useMemo, useRef} from 'react';
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useRef} from 'react';
 import globalColors from '../../styles/color/globalColors.ts';
 import ProfileSvg from '../../assets/images/profile.svg';
 import CompleteButton from '../../components/CompleteButton.tsx';
@@ -21,8 +28,43 @@ import Text13R from '../../styles/texts/label/Text12R.ts';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import Text14B from '../../styles/texts/body_medium/Text14B.ts';
+import useLogout from '../../hooks/useLogout.tsx';
 
 function MyPageScreen({navigation}) {
+  const {handleLogout, logoutStatus} = useLogout();
+
+  // 로그아웃 확인 다이얼로그 표시
+  const showLogoutConfirmation = () => {
+    Alert.alert(
+      '로그아웃', // 타이틀
+      '로그아웃 하시겠습니까?', // 메시지
+      [
+        {
+          text: '아니오',
+          onPress: () => console.log('로그아웃 취소'),
+          style: 'cancel',
+        },
+        {text: '예', onPress: () => handleLogout()},
+      ],
+      {cancelable: false},
+    );
+  };
+
+  // 로그아웃 버튼 클릭 시 이벤트 핸들러
+  const onLogoutClick = () => {
+    showLogoutConfirmation();
+  };
+
+  // 로그아웃 상태에 따른 처리
+  useEffect(() => {
+    if (logoutStatus.success) {
+      // 로그아웃 성공 시, 로그인 화면으로 이동 등의 처리
+      // navigation.replace('SignInEmail');
+    } else if (logoutStatus.error) {
+      // 로그아웃 실패 시, 에러 메시지 표시 등의 처리
+      Alert.alert('오류', logoutStatus.error);
+    }
+  }, [logoutStatus, navigation]);
   const navigateToProfileEdit = () => {
     isLoggedIn
       ? navigation.navigate('ProfileEdit')
@@ -178,9 +220,13 @@ function MyPageScreen({navigation}) {
           <RightSvg
             style={styles.svgStyle}
             onPress={() => {
-              navigation.navigate('Policy');
+              navigation.navigate('ServicePolicy');
             }}
           />
+        </View>
+        <View style={styles.middleContainer}>
+          <Text style={Text13R.text}>로그아웃</Text>
+          <RightSvg style={styles.svgStyle} onPress={onLogoutClick} />
         </View>
         <View style={styles.modalContainer}>
           <BottomSheetModal
@@ -247,6 +293,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     paddingHorizontal: 20,
+    marginBottom: 50,
   },
   infoRow: {
     flexDirection: 'row',

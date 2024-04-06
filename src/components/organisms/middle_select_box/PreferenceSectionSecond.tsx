@@ -4,7 +4,29 @@ import OptionMultipleButton from '../../optionMultipleButton.tsx';
 import MainTitle from '../header/MainTitle.tsx';
 import globalColors from '../../../styles/color/globalColors.ts';
 
-const PreferenceSectionSecond = () => {
+const PreferenceSectionSecond = ({updatePreference, preferences}) => {
+  const options = [
+    {title: '💄 패션/뷰티', key: 'fashionBeauty'},
+    {title: '🥰 캐릭터', key: 'characters'},
+    {title: '🍽️ 식품/음료', key: 'foodBeverage'},
+    {title: '📚 웹툰/애니메이션', key: 'webtoonAni'},
+    {title: '🛋️ 인테리어/소품', key: 'interiorThings'},
+    {title: '🎬 영화/드라마/예능', key: 'movie'},
+    {title: '🎼 뮤지컬/연극', key: 'musical'},
+    {title: '⚽ 스포츠', key: 'sports'},
+    {title: '🎮 게임', key: 'game'},
+    {title: '💻 IT/테크', key: 'itTech'},
+    {title: '🎤 K-POP', key: 'kpop'},
+    {title: '🍷 주류', key: 'alcohol'},
+    {title: '🪴 동물/식물', key: 'animalPlant'},
+  ];
+
+  const handlePress = (key: string, isSelected: boolean) => {
+    updatePreference('taste', key, isSelected);
+    console.log('key:', key);
+    console.log('preferences:', preferences);
+  };
+
   return (
     <View>
       <MainTitle
@@ -16,26 +38,15 @@ const PreferenceSectionSecond = () => {
         <Text style={styles.noteText}>*복수 선택 가능</Text>
       </View>
       <View style={styles.optionsContainer}>
-        {[
-          '💄 패션/뷰티',
-          '🥰 캐릭터',
-          '🍽️ 식품/음료',
-          '📚 웹툰/애니메이션',
-          '🛋️ 인테리어/소품',
-          '🎬 영화/드라마/예능',
-          '🎼 뮤지컬/연극',
-          '⚽ 스포츠',
-          '🎮 게임',
-          '💻 IT/테크',
-          '🎤 K-POP',
-          '🍷 주류',
-          '🪴 동물/식물',
-        ].map((option, index) => (
+        {options.map((option, index) => (
           <OptionMultipleButton
             key={index}
-            id={index.toString()}
-            title={option}
-            onPress={() => console.log(`${option} 선택됨, id: ${index}`)}
+            id={option.key}
+            title={option.title}
+            isSelected={preferences.taste[option.key]} // Pass the current selection state
+            onPress={(isSelected: boolean) =>
+              handlePress(option.key, isSelected)
+            }
           />
         ))}
       </View>

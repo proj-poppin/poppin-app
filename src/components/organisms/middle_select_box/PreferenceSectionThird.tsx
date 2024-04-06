@@ -4,7 +4,22 @@ import MainTitle from '../header/MainTitle.tsx';
 import OptionMultipleButton from '../../optionMultipleButton.tsx';
 import globalColors from '../../../styles/color/globalColors.ts';
 
-const PreferenceSectionThird = () => {
+const PreferenceSectionThird = ({updatePreference, preferences}) => {
+  // 훅에서 updatePreferences 함수 사용
+
+  const options = [
+    {title: '나 혼자 방문해요', key: 'solo'},
+    {title: '친구와 방문해요', key: 'withFriend'},
+    {title: '가족과 방문해요', key: 'withFamily'},
+    {title: '연인과 방문해요', key: 'withLover'},
+  ];
+
+  const handlePress = (key: string, isSelected: boolean) => {
+    updatePreference('whoWith', key, isSelected);
+    console.log('key:', key);
+    console.log('preferences:', preferences);
+  };
+
   return (
     <View>
       <MainTitle
@@ -16,17 +31,15 @@ const PreferenceSectionThird = () => {
         <Text style={styles.noteText}>*복수 선택 가능</Text>
       </View>
       <View style={styles.optionsContainer}>
-        {[
-          '나 혼자 방문해요',
-          '친구와 방문해요',
-          '가족과 방문해요',
-          '연인과 방문해요',
-        ].map((option, index) => (
+        {options.map((option, index) => (
           <OptionMultipleButton
             key={index}
-            id={index.toString()}
-            title={option}
-            onPress={() => console.log(`${option} 선택됨, id: ${index}`)}
+            id={option.key}
+            title={option.title}
+            isSelected={preferences.whoWith[option.key]} // Pass the current selection state
+            onPress={(isSelected: boolean) =>
+              handlePress(option.key, isSelected)
+            }
           />
         ))}
       </View>

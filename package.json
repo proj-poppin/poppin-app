@@ -59,6 +59,7 @@
     "react-native-modal-datetime-picker": "^17.1.0",
     "react-native-nmap": "github:ZeroCho/react-native-naver-map",
     "react-native-pager-view": "^6.2.3",
+    "react-native-quick-base64": "^2.1.0",
     "react-native-reanimated": "^3.7.1",
     "react-native-safe-area-context": "^4.9.0",
     "react-native-screens": "^3.29.0",

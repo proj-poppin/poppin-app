@@ -1,12 +1,6 @@
 // src/components/LoadingScreen.js
 import React, {useEffect, useRef} from 'react';
-import {
-  View,
-  ActivityIndicator,
-  StyleSheet,
-  Modal,
-  Animated,
-} from 'react-native';
+import {View, StyleSheet, Modal, Animated} from 'react-native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/stores/reducer.ts';
 import LoadingSvg from '../../assets/images/loading.svg';

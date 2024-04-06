@@ -14,10 +14,11 @@ export type AuthNavigatorParamList = {
   BasicLogin: undefined;
   SignUp: undefined;
   PrivacyPolicy: undefined;
-  TermsOfService: undefined;
+  ServicePolicy: undefined;
   SignUpEmail: undefined;
   SignUpAuthCode: undefined;
   SignUpNickName: undefined;
+  SignUpNickNameSocial: undefined;
   SignUpSucceed: undefined;
   PasswordReset: undefined;
 };

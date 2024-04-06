@@ -13,20 +13,29 @@ import PolicyScreen from '../pages/myPage/PolicyScreen.tsx';
 import ReviewWriteScreen from '../pages/myPage/ReviewWriteScreen.tsx';
 import OperatorRegisterScreen from '../pages/myPage/OperatorRegisterScreen.tsx';
 import MemberDeleteScreen from '../pages/myPage/MemberDeleteScreen.tsx';
-import PreferenceSettingScreen from '../pages/myPage/PreferenceSettingScreen.tsx';
 import {AppNavigatorParamList} from '../types/AppNavigatorParamList.ts';
 import AppBarLeftPressableIconButton from '../components/molecules/pressable_icon/AppbarLeftPressableIconButton.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
+// 모든 스크린에 적용될 기본 옵션
 const screenOptions = {
   headerShadowVisible: false,
+};
+
+// 헤더가 필요 없는 스크린에 적용될 옵션
+const DefaultNoHeaderOptions = {
+  headerShown: false,
 };
 
 function AppNavigator() {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      <Stack.Screen name="MainTabNavigator" component={MainTabNavigator} />
+      <Stack.Screen
+        name="MainTabNavigator"
+        component={MainTabNavigator}
+        options={DefaultNoHeaderOptions}
+      />
       <Stack.Screen
         name="ProfileEdit"
         component={MyProfileEditScreen}
@@ -34,18 +43,16 @@ function AppNavigator() {
           headerShown: true,
           title: '프로필 설정',
           headerRight: () => (
-            <Text onPress={() => navigation.goBack()}>
-              <Text style={{color: globalColors.blue, marginRight: 10}}>
-                완료
-              </Text>
+            <Text
+              onPress={() => navigation.goBack()}
+              style={{color: globalColors.blue, marginRight: 10}}>
+              완료
             </Text>
           ),
           headerLeft: () => (
             <Pressable
               onPress={() => navigation.goBack()}
-              style={({pressed}) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
+              style={({pressed}) => ({opacity: pressed ? 0.5 : 1})}>
               <GoBackSvg />
             </Pressable>
           ),
@@ -116,15 +123,6 @@ function AppNavigator() {
           title: '회원 탈퇴', // 헤더 타이틀 설정
           headerLeft: AppBarLeftPressableIconButton,
           // 기타 헤더 스타일링 옵션
-        })}
-      />
-      <Stack.Screen
-        name="PreferenceSetting"
-        component={PreferenceSettingScreen}
-        options={({navigation}) => ({
-          headerShown: true,
-          headerTitle: '취향 설정하기',
-          headerLeft: AppBarLeftPressableIconButton,
         })}
       />
     </Stack.Navigator>

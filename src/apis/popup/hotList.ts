@@ -6,24 +6,31 @@ const getHotList = async (): Promise<
 > => {
   try {
     const response = await apiInstance.get('/api/v1/popup/hot-list');
-    console.log('Sign up response:', response.data);
+    console.log('Hot list response:', response.data);
 
     if (response.data.success) {
-      console.log('getHotList response:', response.data);
-      return response.data;
+      console.log('Hot list fetched successfully', response.data);
+      // 성공적으로 데이터를 가져온 경우, error는 null입니다.
+      return {
+        success: true,
+        data: response.data.data,
+        error: null,
+      };
     } else {
       return {
         success: false,
+        data: null,
         error: response.data.error,
       };
     }
   } catch (error) {
-    console.log('getHotList error:', error);
+    // 네트워크 에러 또는 기타 예외 처리
     return {
       success: false,
+      data: null,
       error: {
-        code: 'Network',
-        message: 'Network error222',
+        code: 'NetworkError',
+        message: 'Network error occurred',
       },
     };
   }

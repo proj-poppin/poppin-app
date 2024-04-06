@@ -16,6 +16,7 @@ const colorSystem = {
   stroke: '#E5E5E5',
   white: '#FFFFFF',
   stroke2: '#70828A',
+  hotList: '#FAF4FC',
   // 여기에 그라데이션 색상 추가
   blueToPurpleGradient: ['#0EB5F9', '#C37CD2'],
 };

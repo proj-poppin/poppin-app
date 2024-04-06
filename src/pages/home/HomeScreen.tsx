@@ -26,7 +26,9 @@ import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import RowPopUpCard from '../../components/molecules/card/RowPopUpCard.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import HomeHeader from '../../components/organisms/header/HomeHeader.tsx';
+import HomeMainTitle from '../../components/organisms/header/HomeMainTitle.tsx';
 
+// @ts-ignore
 function HomeScreen({navigation}) {
   const dispatch = useDispatch();
   const handlePress = () => {

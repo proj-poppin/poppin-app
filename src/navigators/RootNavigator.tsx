@@ -11,13 +11,11 @@ import LoadingScreen from '../pages/splash/LoadingScreen.tsx';
 import userSlice from '../redux/slices/user.ts';
 
 const RootNavigator = () => {
-  const dispatch = useDispatch(); // Redux의 dispatch를 사용하기 위해
+  const dispatch = useDispatch();
   const [initialLoading, setInitialLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // 수정됨
   const isFinishedPreferenceSetting = useSelector(
     (state: RootState) => state.user.isFinishedPreferenceSetting,
-  );
-  const isLoggedIn = useSelector(
-    (state: RootState) => !!state.user.accessToken,
   );
 
   useEffect(() => {
@@ -27,6 +25,7 @@ const RootNavigator = () => {
 
       // 토큰이 없을 경우, 로그인 화면으로
       if (!accessToken || !refreshToken) {
+        setIsLoggedIn(false); // 수정됨
         setInitialLoading(false);
         SplashScreen.hide();
         return;
@@ -39,19 +38,20 @@ const RootNavigator = () => {
           // 사용자 정보 조회 성공, 메인 화면으로
           console.log('User info fetched successfully.');
           dispatch(userSlice.actions.getUser(userResponse.data));
-          // 여기에 필요한 사용자 정보 저장 로직 추가 (예: dispatch(setUser(userResponse.data)))
+          setIsLoggedIn(true); // 수정됨
         } else {
           throw new Error('User info fetch failed.');
         }
       } catch (error) {
         console.error('Error fetching user info:', error);
+        setIsLoggedIn(false); // 수정됨
       } finally {
         setInitialLoading(false);
         SplashScreen.hide();
       }
     };
 
-    initializeApp().then();
+    initializeApp();
   }, [dispatch]);
 
   if (initialLoading) {
@@ -65,6 +65,9 @@ const RootNavigator = () => {
       background: 'white',
     },
   };
+
+  console.log('isFinishedPreferenceSetting:', isFinishedPreferenceSetting);
+  console.log('isLoggedIn:', isLoggedIn);
 
   return (
     <NavigationContainer theme={MyTheme}>

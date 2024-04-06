@@ -1,6 +1,6 @@
 // SignInEmailScreen.js
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Alert} from 'react-native';
 import CompleteButton from '../../components/CompleteButton.tsx';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
@@ -10,8 +10,15 @@ import CommonTextFormField from '../../components/molecules/form_field/CommonTex
 import TermsAndPrivacyPolicyAgreement from '../../components/molecules/pressable_text/PressableUnderlineText.tsx';
 import SignUpOrderHeader from '../../components/organisms/header/SignUpOrderHeader.tsx';
 import useSignUpEmail from '../../hooks/useSignUpEmail.tsx';
+import {useDispatch} from 'react-redux';
+import userSlice from '../../redux/slices/user.ts';
+import useEmailVerification from '../../hooks/useEmailVerification.tsx';
 
-function SignUpEmailScreen({navigation}) {
+type SignUpEmailScreenProps = {
+  navigation: any;
+};
+
+function SignUpEmailScreen({navigation}: SignUpEmailScreenProps) {
   const {
     email,
     handleEmailEndEditing,
@@ -28,13 +35,37 @@ function SignUpEmailScreen({navigation}) {
     isPasswordSame,
   } = useSignUpEmail();
 
+  const disPatch = useDispatch();
+  const {verifyEmail} = useEmailVerification(email); // 수정된 부분
   const handlePress = () => {
-    navigation.navigate('SignUpAuthCode', {
-      email,
-      password,
-      passwordConfirm,
-    });
+    verifyEmail()
+      .then(receivedAuthCode => {
+        // verifyEmail 함수에서 Promise.resolve로 authCode를 반환!
+        disPatch(
+          userSlice.actions.setSignUpEmailScreen({
+            email: email,
+            password: password,
+            passwordConfirm: passwordConfirm,
+            agreedToPrivacyPolicy: true,
+            agreedToServiceTerms: true,
+          }),
+        );
+
+        console.log('email', email);
+        console.log('authCode', receivedAuthCode); // 여기에서 receivedAuthCode를 사용
+        navigation.navigate('SignUpAuthCode', {
+          fromScreen: 'SignUpEmail',
+          authCode: receivedAuthCode, // 직접 전달
+        });
+      })
+      .catch(error => {
+        // 에러 처리
+        const message =
+          error.message || '이메일 인증 중 알 수 없는 오류가 발생했습니다.';
+        Alert.alert('Error', message);
+      });
   };
+
   return (
     <DismissKeyboardView>
       <View style={styles.container}>
@@ -69,7 +100,6 @@ function SignUpEmailScreen({navigation}) {
           isPasswordSame={isPasswordSame}
           isPasswordSetting={true}
         />
-        {/*/>*/}
         <CompleteButton
           title="다음"
           onPress={handlePress}
@@ -79,7 +109,7 @@ function SignUpEmailScreen({navigation}) {
         />
         <TermsAndPrivacyPolicyAgreement
           onPrivacyPolicyPress={() => navigation.navigate('PrivacyPolicy')}
-          onTermsOfServicePress={() => navigation.navigate('TermsOfService')}
+          onTermsOfServicePress={() => navigation.navigate('ServicePolicy')}
         />
       </View>
     </DismissKeyboardView>

@@ -9,9 +9,19 @@ import ActiveGreyNextButton from '../../components/ActiveGreyNextButton.tsx';
 
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text14M from '../../styles/texts/body_medium/Text14M.ts';
+import {useAppDispatch} from '../../redux/stores';
+import userSlice from '../../redux/slices/user.ts';
+import usePreferenceSetting from '../../hooks/usePreferenceSetting.tsx';
 
 function SignUpSucceedScreen({route, navigation}) {
+  const disPatch = useAppDispatch();
   const {nickname} = route.params;
+  const {resetPreference} = usePreferenceSetting();
+  const handleOnComplete = () => {
+    resetPreference();
+    navigation.navigate('PreferenceSetting');
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -22,7 +32,7 @@ function SignUpSucceedScreen({route, navigation}) {
           style={[Text20B.text, styles.nicknameText]}>{`${nickname}님`}</Text>
         <Text style={[Text20B.text, styles.welcomeText]}>환영해요!</Text>
         <CompleteButton
-          onPress={() => navigation.navigate('PreferenceSetting')}
+          onPress={handleOnComplete}
           title="취향 설정하러 가기"
           loading={false}
           disabled={false}
@@ -35,7 +45,9 @@ function SignUpSucceedScreen({route, navigation}) {
       </ScrollView>
       <View style={styles.buttonContainer}>
         <ActiveGreyNextButton
-          onPress={() => navigation.navigate('MainTabNavigator')}
+          onPress={() =>
+            disPatch(userSlice.actions.setIsFinishedPreferenceProcess(true))
+          }
           title="다음에 하기"
         />
       </View>

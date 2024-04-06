@@ -9,6 +9,9 @@ import PreferenceSectionSecond from '../../components/organisms/middle_select_bo
 import PreferenceSectionThird from '../../components/organisms/middle_select_box/PreferenceSectionThird.tsx';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
+import {useAppDispatch} from '../../redux/stores';
+import userSlice from '../../redux/slices/user.ts';
+import usePreferenceSetting from '../../hooks/usePreferenceSetting.tsx';
 
 type PreferenceScreenNavigationProp = NativeStackNavigationProp<
   AuthNavigatorParamList,
@@ -16,13 +19,24 @@ type PreferenceScreenNavigationProp = NativeStackNavigationProp<
 >;
 
 function PreferenceScreen() {
+  const {preferences, updatePreference, submitPreferences} =
+    usePreferenceSetting();
   const [step, setStep] = useState<number>(1);
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation<PreferenceScreenNavigationProp>();
 
-  const handleComplete = () => {
+  const dispatch = useAppDispatch();
+
+  const handleSkipComplete = () => {
+    dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
+    console.log('skip complete');
     setModalVisible(false);
-    navigation.navigate('MainTabNavigator');
+  };
+
+  const handleComplete = () => {
+    dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
+    submitPreferences().then(r => console.log(r));
+    setModalVisible(false);
   };
 
   useLayoutEffect(() => {
@@ -41,11 +55,26 @@ function PreferenceScreen() {
   const renderSection = () => {
     switch (step) {
       case 1:
-        return <PreferenceSectionFirst />;
+        return (
+          <PreferenceSectionFirst
+            updatePreference={updatePreference}
+            preferences={preferences}
+          />
+        );
       case 2:
-        return <PreferenceSectionSecond />;
+        return (
+          <PreferenceSectionSecond
+            updatePreference={updatePreference}
+            preferences={preferences}
+          />
+        );
       case 3:
-        return <PreferenceSectionThird />;
+        return (
+          <PreferenceSectionThird
+            updatePreference={updatePreference}
+            preferences={preferences}
+          />
+        );
       default:
         return null;
     }
@@ -61,7 +90,7 @@ function PreferenceScreen() {
       <ScrollView>{renderSection()}</ScrollView>
       <SkipModal
         isVisible={modalVisible}
-        onClose={() => handleComplete()}
+        onClose={() => handleSkipComplete()}
         onSetNow={() => setModalVisible(false)}
       />
     </ProgressBarLayout>

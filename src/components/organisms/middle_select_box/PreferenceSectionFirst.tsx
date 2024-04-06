@@ -4,7 +4,20 @@ import MainTitle from '../header/MainTitle.tsx';
 import OptionMultipleButton from '../../optionMultipleButton.tsx';
 import globalColors from '../../../styles/color/globalColors.ts';
 
-const PreferenceSectionFirst = () => {
+const PreferenceSectionFirst = ({updatePreference, preferences}) => {
+  const options = [
+    {title: '🛍️ 소비형', key: 'market'},
+    {title: '🖼️ 전시형', key: 'display'},
+    {title: '🏃 체험형', key: 'experience'},
+    {title: '무료 체험이었으면 좋겠어요', key: 'wantFree'},
+  ];
+
+  const handlePress = (key: string, isSelected: boolean) => {
+    updatePreference('preference', key, isSelected);
+    console.log('key:', key);
+    console.log('preferences:', preferences);
+  };
+
   return (
     <View>
       <MainTitle
@@ -16,17 +29,15 @@ const PreferenceSectionFirst = () => {
         <Text style={styles.noteText}>*복수 선택 가능</Text>
       </View>
       <View style={styles.optionsContainer}>
-        {[
-          '🛍️ 소비형',
-          '🖼️ 전시형',
-          '🏃 체험형',
-          '무료 체험이었으면 좋겠어요',
-        ].map((option, index) => (
+        {options.map((option, index) => (
           <OptionMultipleButton
             key={index}
-            id={index.toString()}
-            title={option}
-            onPress={() => console.log(`${option} 선택됨, id: ${index}`)}
+            id={option.key}
+            title={option.title}
+            isSelected={preferences.preference[option.key]}
+            onPress={(isSelected: boolean) =>
+              handlePress(option.key, isSelected)
+            }
           />
         ))}
       </View>
@@ -36,9 +47,9 @@ const PreferenceSectionFirst = () => {
 
 const styles = StyleSheet.create({
   noteContainer: {
-    width: '100%', // 컨테이너가 화면 너비 전체를 차지하도록 설정
-    alignItems: 'center', // 수평 중앙 정렬
-    marginTop: 30, // 상단 여백
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 30,
   },
   noteText: {
     color: globalColors.blue,

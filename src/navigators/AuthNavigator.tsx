@@ -29,6 +29,12 @@ import PasswordResetScreen from '../pages/sign/PasswordResetScreen.tsx';
 import {PasswordResetOptions} from './options/PasswordResetOptions.tsx';
 import PreferenceSettingOptions from './options/PreferenceSettingOptions.tsx';
 import PreferenceScreen from '../pages/preference/PreferenceScreen.tsx';
+import SignUpSocialNickNameScreen from '../pages/sign/SignUpSocialNickNameScreen.tsx';
+import SignUpNickNameSocialOptions from './options/SignUpNickNameSocialOptions.tsx';
+import PrivacyPolicyScreen from '../pages/sign/PrivacyPolicyScreen.tsx';
+import PrivacyPolicyOptions from './options/PrivacyPolicyOptions.tsx';
+import ServicePolicyScreen from '../pages/sign/ServicePolicyScreen.tsx';
+import ServicePolicyOptions from './options/ServicePolicyOptions.tsx';
 
 const Stack = createNativeStackNavigator<AuthNavigatorParamList>();
 
@@ -44,14 +50,29 @@ function AuthNavigator() {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen
+        name="Entry"
+        component={EntryScreen}
+        options={EntryScreenOptions}
+      />
+      <Stack.Screen
+        name="PrivacyPolicy"
+        component={PrivacyPolicyScreen}
+        options={PrivacyPolicyOptions}
+      />
+      <Stack.Screen
+        name="ServicePolicy"
+        component={ServicePolicyScreen}
+        options={ServicePolicyOptions}
+      />
+      <Stack.Screen
         name="MainTabNavigator"
         component={MainTabNavigator}
         options={DefaultNoHeaderOptions}
       />
       <Stack.Screen
-        name="Entry"
-        component={EntryScreen}
-        options={EntryScreenOptions}
+        name="SignUpNickNameSocial"
+        component={SignUpSocialNickNameScreen}
+        options={SignUpNickNameSocialOptions}
       />
       <Stack.Screen
         name="SignUpEmail"
@@ -68,6 +89,7 @@ function AuthNavigator() {
         component={SignUpNickNameScreen}
         options={SignUpNickNameOptions}
       />
+
       <Stack.Screen
         name="SignUpSucceed"
         component={SignUpSucceedScreen}

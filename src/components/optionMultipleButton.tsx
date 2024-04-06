@@ -1,13 +1,23 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Pressable, Text, StyleSheet, View} from 'react-native';
 import globalColors from '../styles/color/globalColors.ts';
 
-const OptionMultipleButton = ({id, title, onPress}) => {
-  const [isSelected, setIsSelected] = useState(false);
+const OptionMultipleButton = ({
+  id,
+  title,
+  onPress,
+  isSelected: initialSelected,
+}) => {
+  const [isSelected, setIsSelected] = useState(initialSelected);
+
+  // Use useEffect to update state when initialSelected changes
+  useEffect(() => {
+    setIsSelected(initialSelected);
+  }, [initialSelected]);
 
   const handlePress = () => {
     setIsSelected(!isSelected);
-    onPress(id);
+    onPress(!isSelected);
   };
 
   return (

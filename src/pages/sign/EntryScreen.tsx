@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, StyleSheet, Platform} from 'react-native';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import SocialLoginButtonRow from '../../utils/function/SocialLoginButtonRow.tsx';
@@ -15,7 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
-type EntryScreenNavigationProp = NativeStackNavigationProp<
+export type EntryScreenNavigationProp = NativeStackNavigationProp<
   AuthNavigatorParamList,
   'Entry'
 >;
@@ -23,12 +23,38 @@ type EntryScreenNavigationProp = NativeStackNavigationProp<
 function EntryScreen() {
   const navigation = useNavigation<EntryScreenNavigationProp>();
 
-  const {signInWithKakao} = useKakaoLogin();
-  const {signInWithGoogle} = useGoogleLogin();
-  const {login: signInWithNaver} = useNaverLogin();
-  const {signInWithApple} = useAppleLogin();
+  const {signInWithKakao, kakaoLoginStatus} = useKakaoLogin();
+  const {signInWithGoogle, googleLoginStatus} = useGoogleLogin();
+  const {signInWithNaver, naverLoginStatus} = useNaverLogin();
+  const {signInWithApple, appleLoginStatus} = useAppleLogin();
+
+  useEffect(() => {
+    let newUserType = null;
+    if (kakaoLoginStatus.newUser) {
+      console.log('kakaoLoginStatus.newUser: ', kakaoLoginStatus.newUser);
+      newUserType = 'KAKAO';
+    } else if (googleLoginStatus.newUser) {
+      newUserType = 'GOOGLE';
+    } else if (naverLoginStatus.newUser) {
+      newUserType = 'NAVER';
+    } else if (appleLoginStatus.newUser) {
+      newUserType = 'APPLE';
+    }
+
+    if (newUserType) {
+      // @ts-ignore
+      navigation.navigate('SignUpNickNameSocial', {type: newUserType});
+    }
+  }, [
+    kakaoLoginStatus,
+    googleLoginStatus,
+    naverLoginStatus,
+    appleLoginStatus,
+    navigation,
+  ]);
 
   const goBasicLogin = () => {
+    console.log('navigation: ', navigation);
     navigation.navigate('BasicLogin');
   };
 
@@ -54,7 +80,7 @@ function EntryScreen() {
       </View>
       <TermsAndPrivacyPolicyAgreement
         onPrivacyPolicyPress={() => navigation.navigate('PrivacyPolicy')}
-        onTermsOfServicePress={() => navigation.navigate('TermsOfService')}
+        onTermsOfServicePress={() => navigation.navigate('ServicePolicy')}
       />
     </View>
   );

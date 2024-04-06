@@ -7,8 +7,16 @@ import CompleteButton from '../../components/CompleteButton.tsx';
 import useBasicLogin from '../../hooks/useBasicLogin.tsx';
 import {StyleSheet, View} from 'react-native';
 import PressableGreyTextWord from '../../components/molecules/pressable_text/PressableGreyTextWord.tsx';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
+import {useNavigation} from '@react-navigation/native';
 
-function BasicLoginScreen({navigation}) {
+type BasicLoginScreenNavigationProp = NativeStackNavigationProp<
+  AuthNavigatorParamList,
+  'BasicLogin'
+>;
+
+function BasicLoginScreen() {
   const {
     email,
     password,
@@ -19,6 +27,8 @@ function BasicLoginScreen({navigation}) {
     handleChangePassword,
     handleLogin,
   } = useBasicLogin();
+
+  const navigation = useNavigation<BasicLoginScreenNavigationProp>();
 
   console.log(email, password, emailError, passwordError, isLoginButtonEnabled);
 
@@ -51,6 +61,8 @@ function BasicLoginScreen({navigation}) {
           onChangeText={handleChangePassword}
           placeholder="영문,숫자,특수문자 포함 8자 이상"
           errorText={passwordError}
+          secureTextEntry={true}
+          isWatchNeed={true}
         />
         <CompleteButton
           onPress={handleLogin}

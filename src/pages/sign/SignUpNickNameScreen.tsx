@@ -1,12 +1,18 @@
 import {StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import globalColors from '../../styles/color/globalColors.ts';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
 import CompleteButton from '../../components/CompleteButton.tsx';
 import useSignUpNickName from '../../hooks/useSignUpNickName.tsx';
+import SignUpOrderHeader from '../../components/organisms/header/SignUpOrderHeader.tsx';
+import {useDispatch, useSelector} from 'react-redux';
+import userSlice from '../../redux/slices/user.ts';
+import useSignUp from '../../hooks/useSignUp.tsx';
 
 function SignUpNickNameScreen({navigation}) {
+  const dispatch = useDispatch();
+  const {handleSignUp, signUpStatus} = useSignUp();
   const {
     nickname,
     nicknameError,
@@ -16,28 +22,42 @@ function SignUpNickNameScreen({navigation}) {
     handleChangeNickname,
     handleChangeBirthDate,
   } = useSignUpNickName();
+  const user = useSelector(state => state.user);
+  useEffect(() => {
+    if (signUpStatus.success) {
+      navigation.navigate('SignUpSucceed', {nickname: nickname});
+    }
+    dispatch(
+      userSlice.actions.setSignUpNickNameScreen({
+        nickname: nickname,
+        birthDate: birthDate,
+      }),
+    );
+  }, [signUpStatus.success, navigation, nickname, dispatch, birthDate]);
 
   const handlePress = async () => {
-    if (!isNicknameValid || !isBirthDateValid) {
-      return;
-    }
-    console.log('birthDate', birthDate);
-    console.log('nickname', nickname);
-    navigation.navigate('SignUpSucceed', {nickname});
+    dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
+
+    console.log('email:', user.email);
+    console.log('nickname:', nickname);
+    console.log('password:', user.password);
+    console.log('Signing up...');
+    await handleSignUp();
   };
 
   return (
     <View style={styles.container}>
+      <SignUpOrderHeader currentStep="SignUpNickName" />
       <MainTitle text1="POPPIN에서" text2="사용 할 정보를 알려주세요" />
       <LabelAndInput
-        onChangeText={handleChangeNickname} // For nickname
+        onChangeText={handleChangeNickname}
         placeholder="한글/영 10자 이하(공백포함)"
         keyboardType="default"
         labelText={'닉네임'}
-        errorText={nicknameError} // Pass the error text to the component
+        errorText={nicknameError}
       />
       <LabelAndInput
-        onChangeText={handleChangeBirthDate} // For birth date, use the new handler
+        onChangeText={handleChangeBirthDate}
         placeholder="YYYY.MM.DD"
         keyboardType="default"
         labelText={'생년월일'}

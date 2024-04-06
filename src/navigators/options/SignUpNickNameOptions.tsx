@@ -17,9 +17,7 @@ const SignUpNickNameOptions = ({
   navigation: SignUpNickNameScreenNavigationProp;
 }) => ({
   headerLeft: () => (
-    <Pressable
-      onPress={() => navigation.replace('SignUpNickName')}
-      style={{padding: 10}}>
+    <Pressable onPress={() => navigation.goBack()} style={{padding: 10}}>
       <BackSvg />
     </Pressable>
   ),

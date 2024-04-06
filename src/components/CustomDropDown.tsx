@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import globalColors from '../styles/color/globalColors.ts';
-import Text18B from '../styles/texts/body_large/Text18B.ts';
+import Text14M from '../styles/texts/body_medium/Text14M.ts';
 
 const CustomSelectDropdown = ({
   data,
@@ -12,19 +12,23 @@ const CustomSelectDropdown = ({
   buttonTextAfterSelection,
   buttonTextStyle,
 }) => {
+  const dropdownWidth = buttonWidth;
+
   return (
     <SelectDropdown
       data={data}
       onSelect={onSelect}
-      defaultValueByIndex={0}
       buttonTextAfterSelection={buttonTextAfterSelection}
       rowTextForSelection={(item, index) => item}
-      dropdownStyle={[styles.dropdownStyle, {width: buttonWidth}]}
+      dropdownStyle={[
+        styles.dropdownStyle,
+        {width: dropdownWidth}, // 여기에서 넓이 조정
+      ]}
       buttonStyle={[styles.dropdownButtonStyle, {width: buttonWidth}]}
       rowTextStyle={{color: globalColors.font, textAlign: 'center'}}
       renderCustomizedButtonChild={(selectedItem, index) => (
         <View style={styles.buttonInnerContainer}>
-          <Text style={[Text18B.text, buttonTextStyle]}>
+          <Text style={[Text14M.text, buttonTextStyle]}>
             {selectedItem || '선택'}
           </Text>
           {iconComponent}
@@ -76,7 +80,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   dropdownStyle: {
-    borderRadius: 20,
+    borderRadius: 210,
     // 필요한 경우 여기에 추가 스타일 설정
   },
 });

@@ -54,7 +54,6 @@ function EntryScreen() {
   ]);
 
   const goBasicLogin = () => {
-    console.log('navigation: ', navigation);
     navigation.navigate('BasicLogin');
   };
 

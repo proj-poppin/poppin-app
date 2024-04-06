@@ -17,11 +17,18 @@ const RootNavigator = () => {
   const isFinishedPreferenceSetting = useSelector(
     (state: RootState) => state.user.isFinishedPreferenceSetting,
   );
+  const userAccessToken = useSelector(
+    (state: RootState) => state.user.accessToken,
+  );
 
   useEffect(() => {
     const initializeApp = async () => {
       const accessToken = await EncryptedStorage.getItem('accessToken');
       const refreshToken = await EncryptedStorage.getItem('refreshToken');
+
+      if (userAccessToken) {
+        console.log('userAccessToken:', userAccessToken);
+      }
 
       // 토큰이 없을 경우, 로그인 화면으로
       if (!accessToken || !refreshToken) {
@@ -43,7 +50,7 @@ const RootNavigator = () => {
           throw new Error('User info fetch failed.');
         }
       } catch (error) {
-        console.error('Error fetching user info:', error);
+        console.log('Error fetching user info:', error);
         setIsLoggedIn(false); // 수정됨
       } finally {
         setInitialLoading(false);
@@ -52,7 +59,7 @@ const RootNavigator = () => {
     };
 
     initializeApp();
-  }, [dispatch]);
+  }, [dispatch, userAccessToken]);
 
   if (initialLoading) {
     return <LoadingScreen />;

@@ -12,44 +12,56 @@ import SearchBlueSvg from '../../assets/icons/searchBlue.svg';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import InterestSampleSvg from '../../assets/images/interestSample.svg';
 import DividerLine from '../../components/DividerLine.tsx';
-import InterestPopUpCard from '../../components/InterestPopUpCard.tsx';
-import FilterSvg from '../../assets/icons/filter.svg';
 import CustomSelectDropdown from '../../components/CustomDropDown.tsx';
 import OrderSvg from '../../assets/icons/order.svg';
-import Text12B from '../../styles/texts/label/Text12B.ts';
 import Text24B from '../../styles/texts/headline/Text24B.ts';
+import FilterSettingButton from '../../components/atoms/button/FilterSettingButton.tsx';
+import Text14M from '../../styles/texts/body_medium/Text14M.ts';
+import SampleInterestPopUpCard from '../../components/molecules/card/SampleInterestPopUpCard.tsx';
 
-const orderTypes = ['오픈일순', '마감일순', '저장순'];
+const findOrderTypes = [
+  '최근 오픈 순',
+  '종료 임박 순',
+  '조회 순',
+  '최신 업로드 순',
+];
 
 const Tab = createMaterialTopTabNavigator();
 
 function OperatingTab() {
   return (
     <ScrollView>
-      <CustomSelectDropdown
-        data={orderTypes}
-        onSelect={(selectedItem, index) => console.log(selectedItem, index)}
-        buttonWidth={100}
-        iconComponent={<OrderSvg style={styles.dropdownIcon} />}
-        buttonTextAfterSelection={(selectedItem, index) => selectedItem}
-        buttonTextStyle={Text12B.text}
-      />
+      <View style={styles.headerContainer}>
+        <FilterSettingButton
+          onPress={() => {
+            console.log('filter');
+          }}
+        />
+        <CustomSelectDropdown
+          data={findOrderTypes}
+          onSelect={(selectedItem, index) => console.log(selectedItem, index)}
+          buttonWidth={120}
+          iconComponent={<OrderSvg style={styles.dropdownIcon} />}
+          buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+          buttonTextStyle={Text14M.text}
+        />
+      </View>
       <DividerLine height={1} />
-      <InterestPopUpCard
+      <SampleInterestPopUpCard
         Svg={InterestSampleSvg}
         title="팝업 스토어 이름1"
         date="2024.01.01-2024.02.02"
         status={'운영 중'}
       />
       <DividerLine height={1} />
-      <InterestPopUpCard
+      <SampleInterestPopUpCard
         Svg={InterestSampleSvg}
         title="팝업 스토어 이름1"
         date="2024.01.01-2024.02.02"
         status={'운영 중'}
       />
       <DividerLine height={1} />
-      <InterestPopUpCard
+      <SampleInterestPopUpCard
         Svg={InterestSampleSvg}
         title="팝업 스토어 이름1"
         date="2024.01.01-2024.02.02"
@@ -63,19 +75,36 @@ function OperatingTab() {
 function UpcomingTab() {
   return (
     <ScrollView>
-      <InterestPopUpCard
+      <View style={styles.headerContainer}>
+        <FilterSettingButton
+          onPress={() => {
+            console.log('filter');
+          }}
+        />
+        <CustomSelectDropdown
+          data={findOrderTypes}
+          onSelect={(selectedItem, index) => console.log(selectedItem, index)}
+          buttonWidth={120}
+          iconComponent={<OrderSvg style={styles.dropdownIcon} />}
+          buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+          buttonTextStyle={Text14M.text}
+        />
+      </View>
+
+      <DividerLine height={1} />
+      <SampleInterestPopUpCard
         Svg={InterestSampleSvg}
         title="팝업 스토어 이름1"
         date="2024.01.01-2024.02.02"
         status={'운영 중'}
       />
-      <InterestPopUpCard
+      <SampleInterestPopUpCard
         Svg={InterestSampleSvg}
         title="팝업 스토어 이름1"
         date="2024.01.01-2024.02.02"
         status={'운영 중'}
       />
-      <InterestPopUpCard
+      <SampleInterestPopUpCard
         Svg={InterestSampleSvg}
         title="팝업 스토어 이름1"
         date="2024.01.01-2024.02.02"
@@ -88,20 +117,35 @@ function UpcomingTab() {
 function ClosedTab() {
   return (
     <ScrollView>
-      <DividerLine height={3} />
-      <InterestPopUpCard
+      <View style={styles.headerContainer}>
+        <FilterSettingButton
+          onPress={() => {
+            console.log('filter');
+          }}
+        />
+        <CustomSelectDropdown
+          data={findOrderTypes}
+          onSelect={(selectedItem, index) => console.log(selectedItem, index)}
+          buttonWidth={120}
+          iconComponent={<OrderSvg style={styles.dropdownIcon} />}
+          buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+          buttonTextStyle={Text14M.text}
+        />
+      </View>
+      <DividerLine height={1} />
+      <SampleInterestPopUpCard
         Svg={InterestSampleSvg}
         title="팝업 스토어 이름1"
         date="2024.01.01-2024.02.02"
         status={'운영 중'}
       />
-      <InterestPopUpCard
+      <SampleInterestPopUpCard
         Svg={InterestSampleSvg}
         title="팝업 스토어 이름1"
         date="2024.01.01-2024.02.02"
         status={'운영 중'}
       />
-      <InterestPopUpCard
+      <SampleInterestPopUpCard
         Svg={InterestSampleSvg}
         title="팝업 스토어 이름1"
         date="2024.01.01-2024.02.02"
@@ -113,7 +157,6 @@ function ClosedTab() {
 
 function FindScreen() {
   const [selectedTab, setSelectedTab] = useState('operating'); // 'operating', 'upcoming', 'closed'
-
   return (
     <>
       <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
@@ -127,6 +170,7 @@ function FindScreen() {
             <SearchBlueSvg />
           </TouchableOpacity>
         </View>
+
         <Tab.Navigator>
           <Tab.Screen name="운영 중" component={OperatingTab} />
           <Tab.Screen name="오픈 예정" component={UpcomingTab} />
@@ -147,8 +191,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   titleContainer: {
-    width: '100%', // Ensure the container takes the full width
-    paddingHorizontal: 16, // Add some padding
+    width: '100%',
+    paddingHorizontal: 16,
   },
   bottomSheetBackground: {
     backgroundColor: 'white',
@@ -173,7 +217,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 15,
     marginTop: 15,
-    marginHorizontal: 10,
+    marginHorizontal: 0,
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+    marginTop: 15,
   },
   dropdownContainer: {
     flexDirection: 'row',
@@ -212,8 +263,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   dropdownStyle: {
-    borderRadius: 10, // 모서리 둥글기 적용
-    // 필요한 경우 여기에 추가 스타일 설정
+    borderRadius: 10,
   },
 });
 

@@ -6,10 +6,8 @@ const getNewList = async (): Promise<
 > => {
   try {
     const response = await apiInstance.get('/api/v1/popup/new-list');
-    console.log('Sign up response:', response.data);
 
     if (response.data.success) {
-      console.log('getNewList response:', response.data);
       return response.data;
     } else {
       return {

@@ -21,7 +21,7 @@ const useGetHotList = () => {
       try {
         const response = await getHotList();
         if (response.success) {
-          setHotListState({loading: false, error: null, data: response.data}); // API 응답에 따라 'data'나 'result'로 접근 가능
+          setHotListState({loading: false, error: null, data: response.data!}); // API 응답에 따라 'data'나 'result'로 접근 가능
         } else {
           setHotListState({
             loading: false,

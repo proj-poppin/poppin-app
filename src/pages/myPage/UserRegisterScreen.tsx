@@ -44,7 +44,6 @@ function UserRegisterScreen({navigation}) {
 
   // 뒤로가기 버튼 클릭 모달에서 나가기 클릭시
   const closeModal = () => {
-    console.log('aaa');
     navigation.goBack(); // 모달을 닫고 이전 화면으로 돌아감
     setIsModalVisible(false);
   };
@@ -159,23 +158,10 @@ function UserRegisterScreen({navigation}) {
   const onSelectSingleOption = option => {
     setSelectedCategory(option);
   };
-
-  // // 복수 선택 모드에서 호출될 함수
-  // const onSelectMultipleOption = option => {
-  //   setSelectedCategories(prev => {
-  //     if (prev.includes(option)) {
-  //       return prev.filter(o => o !== option); // 이미 선택되어 있다면 제거
-  //     } else {
-  //       return [...prev, option]; // 새로 선택된 경우 추가
-  //     }
-  //   });
-  // };
-
   const handleConfirmSelection = useCallback(() => {
     console.log('Selected Category: ', selectedCategory); // 콘솔에 선택된 카테고리 출력
 
     bottomSheetModalRef.current?.close(); // 바텀 시트 닫기
-    // setSelectedCategory(''); // 선택 상태 초기화
   }, [selectedCategory]);
 
   return (
@@ -191,11 +177,6 @@ function UserRegisterScreen({navigation}) {
         onChangeText={setStoreName}
       />
       <View style={{height: 20}} />
-      {/*<CategoryBottomSheetInput*/}
-      {/*  label={'카테고리'}*/}
-      {/*  value={selectedOptions.join(',')}*/}
-      {/*  onIconPress={handlePresentModal}*/}
-      {/*/>*/}
       <TextInputWithSvgIconInRight
         label={'카테고리'}
         value={selectedCategory} // 변경됨

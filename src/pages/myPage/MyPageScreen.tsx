@@ -29,9 +29,14 @@ import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import Text14B from '../../styles/texts/body_medium/Text14B.ts';
 import useLogout from '../../hooks/useLogout.tsx';
+import useGetUser from '../../hooks/useGetUser.tsx';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../redux/stores/reducer.ts';
 
 function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
+
+  const {data: user, loading, error} = useGetUser();
 
   // 로그아웃 확인 다이얼로그 표시
   const showLogoutConfirmation = () => {
@@ -50,41 +55,40 @@ function MyPageScreen({navigation}) {
     );
   };
 
-  // 로그아웃 버튼 클릭 시 이벤트 핸들러
   const onLogoutClick = () => {
     showLogoutConfirmation();
   };
 
-  // 로그아웃 상태에 따른 처리
   useEffect(() => {
     if (logoutStatus.success) {
-      // 로그아웃 성공 시, 로그인 화면으로 이동 등의 처리
-      // navigation.replace('SignInEmail');
+      console.log('로그아웃 성공');
     } else if (logoutStatus.error) {
-      // 로그아웃 실패 시, 에러 메시지 표시 등의 처리
-      Alert.alert('오류', logoutStatus.error);
+      console.log('로그아웃 실패:', logoutStatus.error);
     }
   }, [logoutStatus, navigation]);
   const navigateToProfileEdit = () => {
     isLoggedIn
       ? navigation.navigate('ProfileEdit')
-      : navigation.navigate('SignInEmail');
+      : navigation.navigate('Entry');
   };
 
   const navigateToReviewWrite = () => {
     isLoggedIn
       ? navigation.navigate('ReviewWrite')
-      : navigation.navigate('SignInEmail');
+      : navigation.navigate('Entry');
   };
 
   const navigateToKeywordAlarm = () => {
     isLoggedIn
       ? navigation.navigate('KeywordAlarm')
-      : navigation.navigate('SignInEmail');
+      : navigation.navigate('Entry');
   };
 
-  // const isLoggedIn = useSelector((state: RootState) => !!state.user.email);
-  const isLoggedIn = true;
+  const isLoggedIn = useSelector(
+    (state: RootState) => !!state.user.accessToken,
+  );
+
+  console.log('isLoggedIn', isLoggedIn);
 
   // 화면클릭시 모달 내려감
   const renderBackdrop = useCallback(
@@ -105,23 +109,19 @@ function MyPageScreen({navigation}) {
   // variables
   const snapPoints = useMemo(() => ['40%'], []);
 
-  const navigateToSignIn = () => navigation.replace('SignInEmail');
-
   // callbacks
   const handlePresentModal = useCallback(
     (action: () => void) => {
       if (isLoggedIn) {
         bottomSheetModalRef.current?.present();
       } else {
-        navigateToSignIn();
       }
     },
-    [isLoggedIn, navigateToSignIn],
+    [isLoggedIn],
   );
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
-    // handleOpenBottomSheet();
   }, []);
 
   const reviewCount = 10;

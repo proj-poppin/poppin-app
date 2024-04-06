@@ -17,8 +17,6 @@ import RightSvg from '../../assets/icons/smallright.svg';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
-import {useDispatch} from 'react-redux';
-import {resetUser} from '../../redux/slices/user.ts';
 import useGetUser from '../../hooks/useGetUser.tsx';
 import useGetHotList from '../../hooks/useGetHotList.tsx';
 import useGetNewList from '../../hooks/useGetNewList.tsx';

@@ -18,6 +18,7 @@ const PopupTypeOptions = ({onSelectOption, selectedPopUpType}) => {
           id={index.toString()}
           title={option.label}
           onPress={() => onSelectOption(option.value)}
+          isSelected={undefined}
         />
       ))}
     </View>

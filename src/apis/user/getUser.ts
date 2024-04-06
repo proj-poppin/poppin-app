@@ -24,7 +24,6 @@ const getUser = async (): Promise<CommonResponse<GetUserData>> => {
       };
     }
   } catch (error) {
-    console.error('Error fetching hot list:', error);
     // 네트워크 에러 또는 기타 예외 처리
     return {
       success: false,

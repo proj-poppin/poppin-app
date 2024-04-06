@@ -23,12 +23,10 @@ const passwordEmailVerification = async (
       return {
         success: true,
         data: {authCode: response.data.data.authCode},
-        error: null,
       };
     } else {
       return {
         success: false,
-        data: null,
         error: response.data.error,
       };
     }

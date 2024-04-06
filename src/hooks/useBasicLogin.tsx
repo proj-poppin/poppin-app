@@ -52,7 +52,6 @@ const useBasicLogin = () => {
         console.log('Login successful', result);
         // 로그인 성공 시 accessToken을 Redux 스토어에 저장
         dispatch(userSlice.actions.setAccessToken(result.data!.accessToken));
-
         console.log('Login successful', result);
         // 로그인 성공 시 필요한 처리 진행
       } else {

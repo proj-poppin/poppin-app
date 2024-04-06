@@ -12,11 +12,7 @@ const logout = async () => {
       console.log('Logout successful');
       await EncryptedStorage.removeItem('accessToken');
       await EncryptedStorage.removeItem('refreshToken');
-    } else {
-      return {
-        success: false,
-        error: response.data.error,
-      };
+      return {success: true, error: null};
     }
   } catch (error) {
     // HTTP 에러 처리

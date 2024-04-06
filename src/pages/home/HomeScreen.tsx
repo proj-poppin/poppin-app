@@ -1,11 +1,13 @@
 import {
   ActivityIndicator,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import globalColors from '../../styles/color/globalColors.ts';
 import DividerLine from '../../components/DividerLine.tsx';
 import NotLogginBox from '../../components/NotLogginBox.tsx';
@@ -19,7 +21,6 @@ import {useDispatch} from 'react-redux';
 import {resetUser} from '../../redux/slices/user.ts';
 import useGetUser from '../../hooks/useGetUser.tsx';
 import useGetHotList from '../../hooks/useGetHotList.tsx';
-import useGetClosingList from '../../hooks/useGetClosingList.tsx';
 import useGetNewList from '../../hooks/useGetNewList.tsx';
 import useGetDetailPopUp from '../../hooks/useGetDetailPopUp.tsx';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
@@ -27,27 +28,36 @@ import RowPopUpCard from '../../components/molecules/card/RowPopUpCard.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import HomeHeader from '../../components/organisms/header/HomeHeader.tsx';
 import HomeMainTitle from '../../components/organisms/header/HomeMainTitle.tsx';
+import UpSvg from '../../assets/icons/up.svg';
+import HotListCard from '../../components/molecules/card/HotListCard.tsx';
+import useGetTasteList from '../../hooks/useGetTasteList.tsx';
+import useGetClosingList from '../../hooks/useGetClosingList.tsx';
+import HotListNoticeSvg from '../../assets/images/hotListNotice.svg';
 
 // @ts-ignore
 function HomeScreen({navigation}) {
-  const dispatch = useDispatch();
   const handlePress = () => {
-    dispatch(resetUser());
     navigation.replace('Entry');
   };
   const {data: user, loading, error} = useGetUser();
+
+  const [showNotice, setShowNotice] = useState(false);
+
+  const toggleNotice = () => {
+    setShowNotice(!showNotice);
+  };
+
+  const handleHideNotice = () => {
+    if (showNotice) {
+      setShowNotice(false);
+    }
+  };
 
   const {
     data: hotList,
     loading: hotListLoading,
     error: hotListError,
   } = useGetHotList();
-
-  const {
-    data: closingList,
-    loading: getClosingLoading,
-    error: getClosingError,
-  } = useGetClosingList();
 
   const {
     data: newList,
@@ -59,9 +69,42 @@ function HomeScreen({navigation}) {
     data: detailPopUpData,
     loading: newDetailPopUpLoading,
     error: newDetailPopUpError,
-  } = useGetDetailPopUp(17);
+  } = useGetDetailPopUp(34);
 
-  if (loading) {
+  const {
+    data: tasteList,
+    loading: newTasteLoading,
+    error: newTastePopUpError,
+  } = useGetTasteList();
+
+  const {
+    data: closingList,
+    loading: closingListLoading,
+    error: closingListError,
+  } = useGetClosingList();
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const navigateToFind = () => {
+    navigation.navigate('Find');
+  };
+
+  // 드롭다운 아이콘을 렌더링하는 로직
+  const renderDropdownIcon = () => {
+    return isDropdownOpen ? <UpSvg /> : <DownSvg />;
+  };
+
+  if (
+    loading ||
+    hotListLoading ||
+    newListLoading ||
+    newDetailPopUpLoading ||
+    newTasteLoading
+  ) {
     return <ActivityIndicator />;
   }
 
@@ -84,10 +127,18 @@ function HomeScreen({navigation}) {
             <View style={styles.middleContainer}>
               <View style={styles.textAndQuestionContainer}>
                 <Text style={Text18B.text}>인기 TOP 5</Text>
-                <QuestionSvg style={{paddingLeft: 40}} />
+                <Pressable onPress={toggleNotice}>
+                  <QuestionSvg style={{paddingLeft: 40}} />
+                </Pressable>
               </View>
               <DownSvg />
             </View>
+            {showNotice && (
+              <View style={styles.noticeAbsoluteContainer}>
+                <HotListNoticeSvg />
+              </View>
+            )}
+
             <View style={styles.middleContainer}>
               <Text style={Text18B.text}>새로 오픈</Text>
               <View style={styles.textAndQuestionContainer}>
@@ -110,15 +161,6 @@ function HomeScreen({navigation}) {
                 />
               ))}
             </ScrollView>
-            <View style={styles.middleContainer}>
-              <Text style={Text18B.text}>종료 임박</Text>
-              <View style={styles.textAndQuestionContainer}>
-                <Text style={[Text12R.text, {color: globalColors.black}]}>
-                  전체 보기
-                </Text>
-                <RightSvg style={{paddingLeft: 20}} />
-              </View>
-            </View>
           </View>
         </SafeAreaView>
       </DismissKeyboardView>
@@ -153,16 +195,42 @@ function HomeScreen({navigation}) {
           <View style={styles.middleContainer}>
             <View style={styles.textAndQuestionContainer}>
               <Text style={Text18B.text}>인기 TOP 5</Text>
-              <QuestionSvg style={{paddingLeft: 40}} />
+              <View style={styles.questionContainer}>
+                <TouchableOpacity onPress={() => setShowNotice(prev => !prev)}>
+                  <QuestionSvg style={{paddingLeft: 40}} />
+                </TouchableOpacity>
+                {showNotice && (
+                  <View style={styles.noticeAbsoluteContainer}>
+                    <HotListNoticeSvg />
+                  </View>
+                )}
+              </View>
+              <TouchableOpacity onPress={toggleDropdown}>
+                {isDropdownOpen ? (
+                  <UpSvg style={{paddingLeft: 420}} />
+                ) : (
+                  <DownSvg style={{paddingLeft: 420}} />
+                )}
+              </TouchableOpacity>
             </View>
-            <DownSvg />
           </View>
+          {isDropdownOpen ? (
+            <HotListCard
+              textList={hotList?.slice(0, 5).map(item => item.name)} // UpSvg 일 때, 상위 5개 항목 보여주기
+            />
+          ) : (
+            <HotListCard
+              textList={hotList?.slice(0, 1).map(item => item.name)} // DownSvg 일 때, 첫 번째 항목만 보여주기
+            />
+          )}
           <View style={styles.middleContainer}>
             <Text style={Text18B.text}>새로 오픈</Text>
             <View style={styles.textAndQuestionContainer}>
-              <Text style={[Text14R.text, {color: globalColors.black}]}>
-                전체 보기
-              </Text>
+              <TouchableOpacity onPress={navigateToFind}>
+                <Text style={[Text14R.text, {color: globalColors.black}]}>
+                  전체 보기
+                </Text>
+              </TouchableOpacity>
               <RightSvg style={{paddingLeft: 20}} />
             </View>
           </View>
@@ -170,7 +238,7 @@ function HomeScreen({navigation}) {
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             style={styles.popUpScrollView}>
-            {hotList?.map(item => (
+            {closingList?.map(item => (
               <RowPopUpCard
                 key={item.id}
                 imageUrl={item.image_url}
@@ -213,6 +281,17 @@ const styles = StyleSheet.create({
   popUpScrollView: {
     marginTop: 15,
     paddingHorizontal: 5, // 스크롤뷰의 좌우 패딩
+  },
+  questionContainer: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noticeAbsoluteContainer: {
+    position: 'absolute',
+    right: -200,
+    top: -30,
+    zIndex: 1,
   },
 });
 export default HomeScreen;

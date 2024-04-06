@@ -18,10 +18,20 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 const popUpTypes = ['오픈 예정인 팝업', '운영 중인 팝업', '운영 종료 팝업'];
 const orderTypes = ['오픈일순', '마감일순', '저장순'];
 
+type MarkedDates = {
+  [date: string]: {
+    selected: boolean;
+    marked?: boolean;
+    selectedColor?: string;
+    textColor?: string;
+    dots?: Array<{color: string; selectedDotColor: string}>;
+  };
+};
+
 import InterestSampleSvg from '../../assets/images/interestSample.svg';
 
 import DividerLine from '../../components/DividerLine.tsx';
-import InterestPopUpCard from '../../components/InterestPopUpCard.tsx';
+import InterestPopUpCard from '../../components/molecules/card/InterestPopUpCard.tsx';
 import LoadingPoppinSvg from '../../assets/icons/loadingPoppin.svg';
 import NotLogginBox from '../../components/NotLogginBox.tsx';
 import ListIconSvg from '../../assets/icons/listIcon.svg';
@@ -31,12 +41,20 @@ import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text24B from '../../styles/texts/headline/Text24B.ts';
 import Text12B from '../../styles/texts/label/Text12B.ts';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
+import useGetInterestList from '../../hooks/useGetInterestList.tsx';
+import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 
 function LikesScreen() {
   const [isLoading, setLoading] = useState(false);
   // const isLoggedIn = useSelector((state: RootState) => !!state.user.email);
   const [dates, setDates] = useState('');
   const isLoggedIn = true;
+
+  const {
+    data: interestList,
+    loading: newInterestLoading,
+    error: interestPopUpError,
+  } = useGetInterestList();
 
   // BottomSheetModal ref
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -72,12 +90,7 @@ function LikesScreen() {
       <View style={styles.titleContainer}>
         <Text style={[Text20B.text]}>{selectedDate} Events</Text>
       </View>
-      <InterestPopUpCard
-        Svg={InterestSampleSvg}
-        title="팝업 스토어 이름1"
-        date="2024.01.01-2024.02.02"
-        status={'운영 중'}
-      />
+
       {/* Add more cards as needed */}
     </View>
   );
@@ -137,162 +150,116 @@ function LikesScreen() {
   }, [dispatch]);
 
   return isLoggedIn ? (
-    <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
-      <BottomSheetModalProvider>
-        <View style={styles.headerContainer}>
-          <Text style={Text24B.text}>관심 팝업</Text>
-          <TouchableOpacity
-            onPress={toggleView}
-            style={styles.calendarViewContainer}>
-            {isCalendarView ? (
-              <>
-                <Text style={styles.labelSmallBlue}>리스트 보기</Text>
-                <ListIconSvg />
-              </>
-            ) : (
-              <>
-                <Text style={styles.labelSmallBlue}>캘린더 보기</Text>
-                <CalendarSvg />
-              </>
-            )}
-          </TouchableOpacity>
-        </View>
-        {isCalendarView ? (
-          <View style={{flex: 1}}>
-            <Calendar
-              onDayPress={handleDateSelected}
-              markedDates={getMarkedDates()}
-              markingType="multi-dot"
-              theme={{
-                textDayHeaderFontWeight: '600',
-                textMonthFontWeight: '600',
-                todayButtonFontWeight: '600',
-                arrowColor: globalColors.black,
-                backgroundColor: '#ffffff',
-                textSectionTitleColor: '#b6c1cd',
-                selectedDayBackgroundColor: globalColors.purple,
-                todayTextColor: globalColors.blue,
-                selectedDayTextColor: globalColors.white,
-                dayTextColor: '#2d4150',
-                textDisabledColor: '#d9e1e8',
-                textDayFontSize: 16,
-                textDayFontWeight: '500',
-              }}
-            />
-            <BottomSheetModal
-              ref={bottomSheetModalRef}
-              index={1}
-              snapPoints={['25%', '40%', '75%']}
-              backgroundStyle={styles.bottomSheetBackground}
-              handleStyle={styles.bottomSheetHandle}>
-              {renderBottomSheetContent()}
-            </BottomSheetModal>
+    <DismissKeyboardView>
+      <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
+        <BottomSheetModalProvider>
+          <View style={styles.headerContainer}>
+            <Text style={Text24B.text}>관심 팝업</Text>
+            <TouchableOpacity
+              onPress={toggleView}
+              style={styles.calendarViewContainer}>
+              {isCalendarView ? (
+                <>
+                  <Text style={styles.labelSmallBlue}>리스트 보기</Text>
+                  <ListIconSvg />
+                </>
+              ) : (
+                <>
+                  <Text style={styles.labelSmallBlue}>캘린더 보기</Text>
+                  <CalendarSvg />
+                </>
+              )}
+            </TouchableOpacity>
           </View>
-        ) : (
-          <View style={{flex: 1}}>
-            <View style={styles.dropdownContainer}>
-              <CustomSelectDropdown
-                data={popUpTypes}
-                onSelect={(selectedItem, index) =>
-                  console.log(selectedItem, index)
-                }
-                buttonWidth={150}
-                iconComponent={<DownBlackSvg style={styles.dropdownIcon} />}
-                buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+          {isCalendarView ? (
+            <View style={{flex: 1}}>
+              <Calendar
+                onDayPress={handleDateSelected}
+                markedDates={getMarkedDates()}
+                markingType="multi-dot"
+                theme={{
+                  textDayHeaderFontWeight: '600',
+                  textMonthFontWeight: '600',
+                  todayButtonFontWeight: '600',
+                  arrowColor: globalColors.black,
+                  backgroundColor: '#ffffff',
+                  textSectionTitleColor: '#b6c1cd',
+                  selectedDayBackgroundColor: globalColors.purple,
+                  todayTextColor: globalColors.blue,
+                  selectedDayTextColor: globalColors.white,
+                  dayTextColor: '#2d4150',
+                  textDisabledColor: '#d9e1e8',
+                  textDayFontSize: 16,
+                  textDayFontWeight: '500',
+                }}
               />
-              <View style={{width: 100}} />
-              <CustomSelectDropdown
-                data={orderTypes}
-                onSelect={(selectedItem, index) =>
-                  console.log(selectedItem, index)
-                }
-                buttonWidth={100}
-                iconComponent={<OrderSvg style={styles.dropdownIcon} />}
-                buttonTextAfterSelection={(selectedItem, index) => selectedItem}
-                buttonTextStyle={Text12B.text}
-              />
+              <BottomSheetModal
+                ref={bottomSheetModalRef}
+                index={1}
+                snapPoints={['25%', '40%', '75%']}
+                backgroundStyle={styles.bottomSheetBackground}
+                handleStyle={styles.bottomSheetHandle}>
+                {renderBottomSheetContent()}
+              </BottomSheetModal>
             </View>
-            <Text
-              style={[
-                Text18B.text,
-                {color: globalColors.font},
-                styles.bodyContainer,
-              ]}>
-              1월 15일
-            </Text>
-            {/*FlatList로 관심 팝업 모델객체 만들어서 후에 렌더링*/}
-            <DividerLine height={3} />
-            <InterestPopUpCard
-              Svg={InterestSampleSvg} // 필요한 경우 다른 SVG로 대체
-              title="팝업 스토어 이름1"
-              date="2024.01.01-2024.02.02"
-              status={'운영 중'}
-            />
-            <DividerLine height={3} />
-            <InterestPopUpCard
-              Svg={InterestSampleSvg} // 필요한 경우 다른 SVG로 대체
-              title="팝업 스토어 이름1"
-              date="2024.01.01-2024.02.02"
-              status={'운영 중'}
-            />
-            <DividerLine height={3} />
-            <InterestPopUpCard
-              Svg={InterestSampleSvg} // 필요한 경우 다른 SVG로 대체
-              title="팝업 스토어 이름1"
-              date="2024.01.01-2024.02.02"
-              status={'운영 중'}
-            />
-            <DividerLine height={3} />
-            <View />
-          </View>
-        )}
-        {/*<View styles={styles.dropdownContainer}>*/}
-        {/*  <CustomSelectDropdown*/}
-        {/*    data={popUpTypes}*/}
-        {/*    onSelect={(selectedItem, index) => console.log(selectedItem, index)}*/}
-        {/*    buttonWidth={150}*/}
-        {/*    iconComponent={<DownBlackSvg styles={styles.dropdownIcon} />}*/}
-        {/*    buttonTextAfterSelection={(selectedItem, index) => selectedItem}*/}
-        {/*  />*/}
-        {/*  <View styles={{width: 100}} />*/}
-        {/*  <CustomSelectDropdown*/}
-        {/*    data={orderTypes}*/}
-        {/*    onSelect={(selectedItem, index) => console.log(selectedItem, index)}*/}
-        {/*    buttonWidth={100}*/}
-        {/*    iconComponent={<OrderSvg styles={styles.dropdownIcon} />}*/}
-        {/*    buttonTextAfterSelection={(selectedItem, index) => selectedItem}*/}
-        {/*    buttonTextStyle={globalStyles.labelPrimary}*/}
-        {/*  />*/}
-        {/*</View>*/}
-        {/*<Text styles={[globalStyles.bodyLargePrimaryGray, styles.bodyContainer]}>*/}
-        {/*  1월 15일*/}
-        {/*</Text>*/}
-        {/*/!*FlatList로 관심 팝업 모델객체 만들어서 후에 렌더링*!/*/}
-        {/*<DividerLine height={3} />*/}
-        {/*<InterestPopUpCard*/}
-        {/*  Svg={InterestSampleSvg} // 필요한 경우 다른 SVG로 대체*/}
-        {/*  title="팝업 스토어 이름1"*/}
-        {/*  date="2024.01.01-2024.02.02"*/}
-        {/*  status={'운영 중'}*/}
-        {/*/>*/}
-        {/*<DividerLine height={3} />*/}
-        {/*<InterestPopUpCard*/}
-        {/*  Svg={InterestSampleSvg} // 필요한 경우 다른 SVG로 대체*/}
-        {/*  title="팝업 스토어 이름1"*/}
-        {/*  date="2024.01.01-2024.02.02"*/}
-        {/*  status={'운영 중'}*/}
-        {/*/>*/}
-        {/*<DividerLine height={3} />*/}
-        {/*<InterestPopUpCard*/}
-        {/*  Svg={InterestSampleSvg} // 필요한 경우 다른 SVG로 대체*/}
-        {/*  title="팝업 스토어 이름1"*/}
-        {/*  date="2024.01.01-2024.02.02"*/}
-        {/*  status={'운영 중'}*/}
-        {/*/>*/}
-        {/*<DividerLine height={3} />*/}
-        {/*<View />*/}
-      </BottomSheetModalProvider>
-    </SafeAreaView>
+          ) : (
+            <View style={{flex: 1}}>
+              <View style={styles.dropdownContainer}>
+                <CustomSelectDropdown
+                  data={popUpTypes}
+                  onSelect={(selectedItem, index) =>
+                    console.log(selectedItem, index)
+                  }
+                  buttonWidth={150}
+                  iconComponent={<DownBlackSvg style={styles.dropdownIcon} />}
+                  buttonTextAfterSelection={(selectedItem, index) =>
+                    selectedItem
+                  }
+                  buttonTextStyle={undefined}
+                />
+                <View style={{width: 100}} />
+                <CustomSelectDropdown
+                  data={orderTypes}
+                  onSelect={(selectedItem, index) =>
+                    console.log(selectedItem, index)
+                  }
+                  buttonWidth={100}
+                  iconComponent={<OrderSvg style={styles.dropdownIcon} />}
+                  buttonTextAfterSelection={(selectedItem, index) =>
+                    selectedItem
+                  }
+                  buttonTextStyle={Text12B.text}
+                />
+              </View>
+              <Text
+                style={[
+                  Text18B.text,
+                  {color: globalColors.font},
+                  styles.bodyContainer,
+                ]}>
+                1월 15일
+              </Text>
+              <DividerLine height={1} />
+              {interestList?.map(
+                ({image_url, name, close_date, open_date, status, id}) => (
+                  <InterestPopUpCard
+                    key={id}
+                    image_url={image_url}
+                    name={name}
+                    close_date={close_date}
+                    open_date={open_date}
+                    status={status}
+                    id={id}
+                  />
+                ),
+              )}
+              <DividerLine height={3} />
+              <View />
+            </View>
+          )}
+        </BottomSheetModalProvider>
+      </SafeAreaView>
+    </DismissKeyboardView>
   ) : (
     <SafeAreaView
       style={{

@@ -125,24 +125,43 @@ function HomeScreen({navigation}) {
             <View style={styles.middleContainer}>
               <View style={styles.textAndQuestionContainer}>
                 <Text style={Text18B.text}>인기 TOP 5</Text>
-                <Pressable onPress={toggleNotice}>
-                  <QuestionSvg style={{paddingLeft: 40}} />
-                </Pressable>
+                <View style={styles.questionContainer}>
+                  <TouchableOpacity
+                    onPress={() => setShowNotice(prev => !prev)}>
+                    <QuestionSvg style={{paddingLeft: 40}} />
+                  </TouchableOpacity>
+                  {showNotice && (
+                    <View style={styles.noticeAbsoluteContainer}>
+                      <HotListNoticeSvg />
+                    </View>
+                  )}
+                </View>
+                <TouchableOpacity onPress={toggleDropdown}>
+                  {isDropdownOpen ? (
+                    <UpSvg style={{paddingLeft: 420}} />
+                  ) : (
+                    <DownSvg style={{paddingLeft: 420}} />
+                  )}
+                </TouchableOpacity>
               </View>
-              <DownSvg />
             </View>
-            {showNotice && (
-              <View style={styles.noticeAbsoluteContainer}>
-                <HotListNoticeSvg />
-              </View>
+            {isDropdownOpen ? (
+              <HotListCard
+                textList={hotList?.slice(0, 5).map(item => item.name) || []} // If hotList is defined, map over it; otherwise, use an empty array
+              />
+            ) : (
+              <HotListCard
+                textList={hotList?.slice(0, 1).map(item => item.name) || []} // Same as above
+              />
             )}
-
             <View style={styles.middleContainer}>
               <Text style={Text18B.text}>새로 오픈</Text>
               <View style={styles.textAndQuestionContainer}>
-                <Text style={[Text14R.text, {color: globalColors.black}]}>
-                  전체 보기
-                </Text>
+                <TouchableOpacity onPress={navigateToFind}>
+                  <Text style={[Text14R.text, {color: globalColors.black}]}>
+                    전체 보기
+                  </Text>
+                </TouchableOpacity>
                 <RightSvg style={{paddingLeft: 20}} />
               </View>
             </View>
@@ -150,13 +169,51 @@ function HomeScreen({navigation}) {
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               style={styles.popUpScrollView}>
-              {hotList?.map(item => (
-                <RowPopUpCard
-                  key={item.id}
-                  imageUrl={item.image_url}
-                  name={item.name}
-                  introduce={item.introduce}
-                />
+              {closingList?.map(item => (
+                <TouchableOpacity
+                  key={item.id} // `key` should be here
+                  onPress={() =>
+                    navigation.navigate('PopUpDetail', {id: item.id})
+                  }>
+                  <RowPopUpCard
+                    key={item.id}
+                    id={item.id}
+                    imageUrl={item.image_url}
+                    name={item.name}
+                    introduce={item.introduce}
+                  />
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            <View style={styles.middleContainer}>
+              <Text style={Text18B.text}>종료 임박</Text>
+              <View style={styles.textAndQuestionContainer}>
+                <TouchableOpacity onPress={navigateToFind}>
+                  <Text style={[Text14R.text, {color: globalColors.black}]}>
+                    전체 보기
+                  </Text>
+                </TouchableOpacity>
+                <RightSvg style={{paddingLeft: 20}} />
+              </View>
+            </View>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              style={styles.popUpScrollView}>
+              {closingList?.map(item => (
+                <TouchableOpacity
+                  key={item.id} // `key` should be here
+                  onPress={() =>
+                    navigation.navigate('PopUpDetail', {id: item.id})
+                  }>
+                  <RowPopUpCard
+                    key={item.id}
+                    id={item.id}
+                    imageUrl={item.image_url}
+                    name={item.name}
+                    introduce={item.introduce}
+                  />
+                </TouchableOpacity>
               ))}
             </ScrollView>
           </View>
@@ -178,18 +235,25 @@ function HomeScreen({navigation}) {
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             style={styles.popUpScrollView}>
-            {hotList?.map(item => (
-              <RowPopUpCard
-                key={item.id}
-                imageUrl={item.image_url}
-                name={item.name}
-                introduce={item.introduce}
-              />
+            {tasteList?.popupSummaryDtos.map(item => (
+              <TouchableOpacity
+                key={item.id} // `key` should be here
+                onPress={() =>
+                  navigation.navigate('PopUpDetail', {id: item.id})
+                }>
+                <RowPopUpCard
+                  key={item.id}
+                  id={item.id}
+                  imageUrl={item.image_url}
+                  name={item.name}
+                  introduce={item.introduce}
+                />
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
         <DividerLine />
-        <View style={styles.container}>
+        <View style={styles.bottomContainer}>
           <View style={styles.middleContainer}>
             <View style={styles.textAndQuestionContainer}>
               <Text style={Text18B.text}>인기 TOP 5</Text>
@@ -214,13 +278,14 @@ function HomeScreen({navigation}) {
           </View>
           {isDropdownOpen ? (
             <HotListCard
-              textList={hotList?.slice(0, 5).map(item => item.name)} // UpSvg 일 때, 상위 5개 항목 보여주기
+              textList={hotList?.slice(0, 5).map(item => item.name) || []} // If hotList is defined, map over it; otherwise, use an empty array
             />
           ) : (
             <HotListCard
-              textList={hotList?.slice(0, 1).map(item => item.name)} // DownSvg 일 때, 첫 번째 항목만 보여주기
+              textList={hotList?.slice(0, 1).map(item => item.name) || []} // Same as above
             />
           )}
+
           <View style={styles.middleContainer}>
             <Text style={Text18B.text}>새로 오픈</Text>
             <View style={styles.textAndQuestionContainer}>
@@ -237,23 +302,52 @@ function HomeScreen({navigation}) {
             showsHorizontalScrollIndicator={false}
             style={styles.popUpScrollView}>
             {closingList?.map(item => (
-              <RowPopUpCard
-                key={item.id}
-                imageUrl={item.image_url}
-                name={item.name}
-                introduce={item.introduce}
-              />
+              <TouchableOpacity
+                key={item.id} // `key` should be here
+                onPress={() =>
+                  navigation.navigate('PopUpDetail', {id: item.id})
+                }>
+                <RowPopUpCard
+                  key={item.id}
+                  id={item.id}
+                  imageUrl={item.image_url}
+                  name={item.name}
+                  introduce={item.introduce}
+                />
+              </TouchableOpacity>
             ))}
           </ScrollView>
           <View style={styles.middleContainer}>
             <Text style={Text18B.text}>종료 임박</Text>
             <View style={styles.textAndQuestionContainer}>
-              <Text style={[Text12R.text, {color: globalColors.black}]}>
-                전체 보기
-              </Text>
+              <TouchableOpacity onPress={navigateToFind}>
+                <Text style={[Text14R.text, {color: globalColors.black}]}>
+                  전체 보기
+                </Text>
+              </TouchableOpacity>
               <RightSvg style={{paddingLeft: 20}} />
             </View>
           </View>
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            style={styles.popUpScrollView}>
+            {closingList?.map(item => (
+              <TouchableOpacity
+                key={item.id} // `key` should be here
+                onPress={() =>
+                  navigation.navigate('PopUpDetail', {id: item.id})
+                }>
+                <RowPopUpCard
+                  key={item.id}
+                  id={item.id}
+                  imageUrl={item.image_url}
+                  name={item.name}
+                  introduce={item.introduce}
+                />
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </View>
       </SafeAreaView>
     </DismissKeyboardView>
@@ -264,13 +358,18 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
     backgroundColor: 'white',
+    marginBottom: 20,
+  },
+  bottomContainer: {
+    paddingHorizontal: 20,
+    backgroundColor: 'white',
+    marginBottom: 60,
   },
   middleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
-    marginTop: 15,
+    marginTop: 5,
   },
   textAndQuestionContainer: {
     flexDirection: 'row',

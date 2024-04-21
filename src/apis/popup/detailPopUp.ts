@@ -19,7 +19,7 @@ const getDetailPopUp = async (
       };
     }
   } catch (error) {
-    console.error('Error fetching pop up detail:', error);
+    console.log('Error fetching pop up detail:', error);
     return {
       success: false,
       error: {

@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import OptionSingleButton from './OptionSingleButton.tsx';
+import OptionSingleButton from './atoms/button/OptionSingleButton.tsx';
 
 const PreferenceOptionButtons = ({
   step,

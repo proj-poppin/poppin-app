@@ -11,7 +11,7 @@ import {Calendar} from 'react-native-calendars'; // Ensure this is installed
 import CalendarGraySvg from '../assets/icons/calendarGray.svg'; // Your SVG path
 import globalColors from '../styles/color/globalColors.ts';
 import DividerLine from './DividerLine.tsx';
-import CompleteButton from './CompleteButton.tsx';
+import CompleteButton from './atoms/button/CompleteButton.tsx';
 import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 import Text18B from '../styles/texts/body_large/Text18B.ts';
 import Text18R from '../styles/texts/body_large/Text18R.ts';

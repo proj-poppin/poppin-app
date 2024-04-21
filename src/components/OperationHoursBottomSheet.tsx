@@ -11,7 +11,7 @@ import globalColors from '../styles/color/globalColors.ts';
 import DatePicker from 'react-native-date-picker';
 import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
 import DividerLine from './DividerLine.tsx';
-import CompleteButton from './CompleteButton.tsx';
+import CompleteButton from './atoms/button/CompleteButton.tsx';
 import Text18B from '../styles/texts/body_large/Text18B.ts';
 import Text18R from '../styles/texts/body_large/Text18R.ts';
 

@@ -9,7 +9,7 @@ import {
 import React, {useCallback, useEffect, useMemo, useRef} from 'react';
 import globalColors from '../../styles/color/globalColors.ts';
 import ProfileSvg from '../../assets/images/profile.svg';
-import CompleteButton from '../../components/CompleteButton.tsx';
+import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import FeedBackSvg from '../../assets/icons/feedback.svg';
 import CompleteSvg from '../../assets/icons/complete.svg';
 import DividerSvg from '../../assets/images/divider.svg';
@@ -62,6 +62,7 @@ function MyPageScreen({navigation}) {
   useEffect(() => {
     if (logoutStatus.success) {
       console.log('로그아웃 성공');
+      navigation.navigate('MyPage');
     } else if (logoutStatus.error) {
       console.log('로그아웃 실패:', logoutStatus.error);
     }
@@ -84,9 +85,7 @@ function MyPageScreen({navigation}) {
       : navigation.navigate('Entry');
   };
 
-  const isLoggedIn = useSelector(
-    (state: RootState) => !!state.user.accessToken,
-  );
+  const isLoggedIn = !!user?.email;
 
   console.log('isLoggedIn', isLoggedIn);
 
@@ -137,7 +136,7 @@ function MyPageScreen({navigation}) {
           <View style={styles.colCloseContainer}>
             <Text style={[text20B.text]}>
               {' '}
-              {isLoggedIn ? '팝핀퀸' : '로그인 후 이용해주세요'}
+              {isLoggedIn ? user?.nickname : '로그인 후 이용해주세요'}
             </Text>
             <Pressable
               style={styles.profileInfoContainer}

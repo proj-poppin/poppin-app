@@ -11,11 +11,11 @@ import {
 } from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 import SearchSvg from '../../assets/icons/searchGray.svg';
-import OptionSingleButton from '../../components/OptionSingleButton.tsx';
+import OptionSingleButton from '../../components/atoms/button/OptionSingleButton.tsx';
 import PlusSvg from '../../assets/icons/plus.svg';
 import ImageDeleteSvg from '../../assets/icons/imageDelete.svg';
 import ImagePicker from 'react-native-image-crop-picker';
-import CompleteButton from '../../components/CompleteButton.tsx';
+import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import Text13R from '../../styles/texts/label/Text12R.ts';

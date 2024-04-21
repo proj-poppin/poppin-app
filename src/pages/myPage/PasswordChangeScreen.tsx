@@ -3,7 +3,7 @@ import globalColors from '../../styles/color/globalColors.ts';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import React, {useEffect, useState} from 'react';
 import ProfileAppBar from '../../components/ProfileAppBar.tsx';
-import CompleteButton from '../../components/CompleteButton.tsx';
+import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import PasswordCheckTextFormField from '../../components/molecules/form_field/PasswordCheckTextFormField.tsx';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';

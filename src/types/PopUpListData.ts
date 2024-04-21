@@ -1,5 +1,5 @@
 export type GetPopUpListResponse = {
-  id: string;
+  id: number;
   image_url: string;
   name: string;
   introduce: string;

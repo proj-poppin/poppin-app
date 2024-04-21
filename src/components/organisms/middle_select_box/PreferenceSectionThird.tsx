@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import MainTitle from '../header/MainTitle.tsx';
-import OptionMultipleButton from '../../optionMultipleButton.tsx';
+import OptionMultipleButton from '../../atoms/button/optionMultipleButton.tsx';
 import globalColors from '../../../styles/color/globalColors.ts';
 
 const PreferenceSectionThird = ({updatePreference, preferences}) => {

@@ -32,7 +32,7 @@ const emailVerification = async (
       };
     }
   } catch (error) {
-    console.error('Email verification error:', error);
+    console.log('Email verification error:', error);
     return {
       success: false,
       data: {authCode: ''},

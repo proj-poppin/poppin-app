@@ -3,7 +3,7 @@ import React, {useEffect} from 'react';
 import globalColors from '../../styles/color/globalColors.ts';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
-import CompleteButton from '../../components/CompleteButton.tsx';
+import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import useSignUpNickName from '../../hooks/useSignUpNickName.tsx';
 import SignUpOrderHeader from '../../components/organisms/header/SignUpOrderHeader.tsx';
 import useSocialSignUp from '../../hooks/useSocialSignUp.tsx';

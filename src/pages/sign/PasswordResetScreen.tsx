@@ -6,7 +6,7 @@ import LabelText20B from '../../components/atoms/label/LabelText20B.tsx';
 import CommonTextFormField from '../../components/molecules/form_field/CommonTextFormField.tsx';
 import AuthCodeTextFormField from '../../components/molecules/form_field/AuthCodeTextFormField.tsx';
 import PasswordCheckTextFormField from '../../components/molecules/form_field/PasswordCheckTextFormField.tsx';
-import CompleteButton from '../../components/CompleteButton.tsx';
+import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import ResendButton from '../../components/molecules/pressable_text/ResendButton.tsx';
 import useAuthCode from '../../hooks/useAuthCode.tsx';
 import useSignUpEmail from '../../hooks/useSignUpEmail.tsx';

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Pressable, Text, StyleSheet, View} from 'react-native';
-import globalColors from '../styles/color/globalColors.ts';
+import globalColors from '../../../styles/color/globalColors.ts';
 
 const OptionMultipleButton = ({
   id,

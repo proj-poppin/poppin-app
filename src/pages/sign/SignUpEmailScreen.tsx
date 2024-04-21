@@ -1,7 +1,7 @@
 // SignInEmailScreen.js
 import React from 'react';
 import {View, StyleSheet, Alert} from 'react-native';
-import CompleteButton from '../../components/CompleteButton.tsx';
+import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import PasswordCheckTextFormField from '../../components/molecules/form_field/PasswordCheckTextFormField.tsx';

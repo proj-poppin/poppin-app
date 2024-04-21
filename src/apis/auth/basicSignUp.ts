@@ -37,7 +37,7 @@ const basicSignUp = async (
       };
     }
   } catch (error) {
-    console.error('Email verification error:', error);
+    console.log('Email verification error:', error);
     return {
       success: false,
       error: {code: 'Network', message: 'Network error'},

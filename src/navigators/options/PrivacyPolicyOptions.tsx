@@ -17,9 +17,7 @@ const PrivacyPolicyOptions = ({
   navigation: PrivacyPolicyScreenNavigationProp;
 }) => ({
   headerLeft: () => (
-    <Pressable
-      onPress={() => navigation.replace('Entry')}
-      style={{padding: 10}}>
+    <Pressable onPress={() => navigation.goBack()} style={{padding: 10}}>
       <BackSvg />
     </Pressable>
   ),

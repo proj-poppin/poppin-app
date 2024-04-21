@@ -1,6 +1,6 @@
 import React from 'react';
 import {Pressable, Text, StyleSheet, View} from 'react-native';
-import globalColors from '../styles/color/globalColors.ts';
+import globalColors from '../../../styles/color/globalColors.ts';
 
 // isSelected와 같은 선택 상태를 props로 받음
 const OptionSingleButton = ({id, title, onPress, isSelected}) => {

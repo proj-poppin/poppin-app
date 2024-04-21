@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-// DownSvg import 구문 제거
 import globalColors from '../styles/color/globalColors.ts';
 import RequiredTextLabel from './RequiredTextLabel.tsx';
 
@@ -38,7 +37,6 @@ const TextInputWithSvgIconInRight = ({
           onBlur={() => setIsFocused(false)}
         />
         <TouchableOpacity style={styles.iconButton} onPress={onIconPress}>
-          {/* IconComponent를 사용하여 동적으로 아이콘 표시 */}
           {IconComponent}
         </TouchableOpacity>
       </View>

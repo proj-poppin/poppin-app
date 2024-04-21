@@ -21,5 +21,6 @@ export type AuthNavigatorParamList = {
   SignUpNickNameSocial: undefined;
   SignUpSucceed: undefined;
   PasswordReset: undefined;
+  PopUpDetail: {id: number};
 };
 // src/types/AuthNavigatorParamList.ts

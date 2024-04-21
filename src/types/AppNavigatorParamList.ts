@@ -10,5 +10,6 @@ export type AppNavigatorParamList = {
   OperatorRegister: undefined;
   MemberDelete: undefined;
   PreferenceSetting: undefined;
+  PopUpDetail: {id: number};
 };
 // Path: src/types/RootStackParamList.ts

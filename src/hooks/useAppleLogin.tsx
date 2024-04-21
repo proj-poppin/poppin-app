@@ -58,10 +58,10 @@ export const useAppleLogin = () => {
           throw new Error("Apple login didn't provide an identityToken.");
         }
       } else {
-        console.error('Apple login failed:', credentialState);
+        console.log('Apple login failed:', credentialState);
       }
     } catch (err) {
-      console.error('Failed to login with Apple:', err);
+      console.log('Failed to login with Apple:', err);
     }
   };
 

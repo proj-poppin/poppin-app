@@ -15,6 +15,8 @@ import OperatorRegisterScreen from '../pages/myPage/OperatorRegisterScreen.tsx';
 import MemberDeleteScreen from '../pages/myPage/MemberDeleteScreen.tsx';
 import {AppNavigatorParamList} from '../types/AppNavigatorParamList.ts';
 import AppBarLeftPressableIconButton from '../components/molecules/pressable_icon/AppbarLeftPressableIconButton.tsx';
+import PopUpDetailScreen from '../pages/find/PopUpDetailScreen.tsx';
+import PopUpDetailOptions from './options/PopUpDetailOptions.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -35,6 +37,11 @@ function AppNavigator() {
         name="MainTabNavigator"
         component={MainTabNavigator}
         options={DefaultNoHeaderOptions}
+      />
+      <Stack.Screen
+        name={'PopUpDetail'}
+        component={PopUpDetailScreen}
+        options={PopUpDetailOptions}
       />
       <Stack.Screen
         name="ProfileEdit"

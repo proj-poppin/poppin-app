@@ -24,17 +24,15 @@ const emailVerification = async (
       return {
         success: true,
         data: {authCode: response.data.data.authCode},
-        error: null,
       };
     } else {
       return {
         success: false,
-        data: null,
         error: response.data.error,
       };
     }
   } catch (error) {
-    console.error('Email verification error:', error);
+    console.log('Email verification error:', error);
     return {
       success: false,
       data: {authCode: ''},

@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Pressable, Text, StyleSheet} from 'react-native';
-import globalColors from '../styles/color/globalColors.ts';
-import Text18B from '../styles/texts/body_large/Text18B.ts';
+import globalColors from '../../../styles/color/globalColors.ts';
+import Text18B from '../../../styles/texts/body_large/Text18B.ts';
 
 interface SelectButtonsGroupProps {
   titles: [string, string]; // 두 개의 선택지 타이틀

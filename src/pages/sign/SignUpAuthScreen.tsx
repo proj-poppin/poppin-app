@@ -4,7 +4,7 @@ import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import ResendButton from '../../components/molecules/pressable_text/ResendButton.tsx';
 import LabelText20B from '../../components/atoms/label/LabelText20B.tsx';
-import CompleteButton from '../../components/CompleteButton.tsx';
+import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import AuthCodeTextFormField from '../../components/molecules/form_field/AuthCodeTextFormField.tsx';
 import useAuthCode from '../../hooks/useAuthCode.tsx';
 import useEmailVerification from '../../hooks/useEmailVerification.tsx';

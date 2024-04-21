@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import OptionSingleButton from './OptionSingleButton.tsx';
-import OptionMultipleButton from './optionMultipleButton.tsx';
+import OptionSingleButton from './atoms/button/OptionSingleButton.tsx';
+import OptionMultipleButton from './atoms/button/optionMultipleButton.tsx';
 
 const PopupTypeOptions = ({onSelectOption, selectedPopUpType}) => {
   const options = [
@@ -18,6 +18,7 @@ const PopupTypeOptions = ({onSelectOption, selectedPopUpType}) => {
           id={index.toString()}
           title={option.label}
           onPress={() => onSelectOption(option.value)}
+          isSelected={undefined}
         />
       ))}
     </View>

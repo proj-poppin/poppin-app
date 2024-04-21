@@ -2,8 +2,6 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
-  Button,
-  Pressable,
   StyleSheet,
   Image,
   TouchableOpacity,
@@ -20,6 +18,7 @@ import RightSvg from '../../assets/icons/bigRight.svg';
 import CloseGraySvg from '../../assets/icons/closeGray.svg';
 import RequiredTextLabel from '../../components/RequiredTextLabel.tsx';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
+import kakaoCirclePng from '../../assets/icons/kakaoCircle.png';
 
 function MyProfileEditScreen({navigation}) {
   const [profileImage, setProfileImage] = useState(ProfileImg);
@@ -29,6 +28,7 @@ function MyProfileEditScreen({navigation}) {
   const [emailIcon, setEmailIcon] = useState(null);
   const [nickname, setNickname] = useState(user.nickname || 'test');
   const [isNicknameFocused, setIsNicknameFocused] = useState(false);
+  const [birthdate, setBirthdate] = useState(user.birthDate || '');
 
   // 닉네임 입력 필드의 포커스 상태 변경을 위한 핸들러
   const handleNicknameFocus = () => setIsNicknameFocused(true);
@@ -99,7 +99,9 @@ function MyProfileEditScreen({navigation}) {
           </Text>
           <View style={styles.emailInputContainer}>
             {/*{user.isSocialLogin && emailIcon}*/}
-            {!user.isSocialLogin && <KakaoSvg style={styles.socialIcon} />}
+            {!user.isSocialLogin && (
+              <Image source={kakaoCirclePng} style={styles.socialIcon} />
+            )}
             <TextInput
               style={styles.emailInput}
               value={email}
@@ -131,7 +133,7 @@ function MyProfileEditScreen({navigation}) {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              value="2021.09.30" // 임시 값
+              value={birthdate}
               editable={false} // 편집 불가능하게 설정
             />
           </View>

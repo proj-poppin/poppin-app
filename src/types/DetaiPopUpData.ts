@@ -22,8 +22,10 @@ export type Review = {
 };
 
 export type DetailPopUpData = {
+  isInstagram: boolean;
   id: number;
-  posterUrl: string;
+  // posterUrl: string;
+  images: string[];
   homepageLink: string;
   name: string;
   introduce: string;

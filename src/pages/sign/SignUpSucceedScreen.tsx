@@ -2,10 +2,10 @@
 import React from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import WelcomeSvg from '../../assets/icons/welcome.svg';
-import CompleteButton from '../../components/CompleteButton.tsx';
+import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import BlueDotsThreeSvg from '../../assets/icons/blueDotsThree.svg';
 import globalColors from '../../styles/color/globalColors.ts';
-import ActiveGreyNextButton from '../../components/ActiveGreyNextButton.tsx';
+import ActiveGreyNextButton from '../../components/atoms/button/ActiveGreyNextButton.tsx';
 
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text14M from '../../styles/texts/body_medium/Text14M.ts';

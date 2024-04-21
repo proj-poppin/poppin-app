@@ -1,8 +1,8 @@
 import React from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
-import CompleteButton from '../components/CompleteButton.tsx';
-import BackMiddleButton from '../components/BackMiddleButton.tsx';
-import NextMiddleButton from '../components/NextMiddleButton.tsx';
+import CompleteButton from '../components/atoms/button/CompleteButton.tsx';
+import BackMiddleButton from '../components/atoms/button/BackMiddleButton.tsx';
+import NextMiddleButton from '../components/atoms/button/NextMiddleButton.tsx';
 import globalColors from '../styles/color/globalColors.ts';
 import ProgressBarComponent from '../components/atoms/image/ProgressBarComponent.tsx';
 

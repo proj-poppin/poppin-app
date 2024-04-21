@@ -1,12 +1,12 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import DefaultImageSvg from '../assets/images/interestSample.svg';
-import globalColors from '../styles/color/globalColors.ts';
-import StarOnSvg from '../assets/icons/starOn.svg';
-import Text12B from '../styles/texts/label/Text12B.ts';
-import Text18B from '../styles/texts/body_large/Text18B.ts';
+import DefaultImageSvg from '../../../assets/images/interestSample.svg';
+import StarOnSvg from '../../../assets/icons/starOn.svg';
+import Text18B from '../../../styles/texts/body_large/Text18B.ts';
+import Text12B from '../../../styles/texts/label/Text12B.ts';
+import globalColors from '../../../styles/color/globalColors.ts';
 
-const InterestPopUpCard = ({
+const SampleInterestPopUpCard = ({
   Svg = DefaultImageSvg,
   title,
   date = null,
@@ -21,7 +21,6 @@ const InterestPopUpCard = ({
         <Svg width="120" height="120" />
       </View>
       <View style={styles.textContainer}>
-        {/* 상태와 별 아이콘이 같은 줄에 위치하도록 레이아웃 수정 */}
         <View style={styles.statusAndStarContainer}>
           {status && (
             <View style={styles.statusContainer}>
@@ -82,4 +81,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default InterestPopUpCard;
+export default SampleInterestPopUpCard;

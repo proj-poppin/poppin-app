@@ -1,24 +1,26 @@
 import React from 'react';
 import {Pressable, Text, ActivityIndicator, StyleSheet} from 'react-native';
-import globalColors from '../styles/color/globalColors.ts';
-import Text18B from '../styles/texts/body_large/Text18B.ts';
+import globalColors from '../../../styles/color/globalColors.ts';
+import Text18B from '../../../styles/texts/body_large/Text18B.ts';
 
-interface NextMiddleButtonProps {
+interface CompleteButtonProps {
   onPress: () => void;
+  onDisabledPress?: () => void;
   title: string;
   loading?: boolean;
   disabled?: boolean;
   alwaysActive?: boolean;
-  buttonWidth?: number | string;
+  buttonWidth?: number | string; // 너비 조절을 위한 옵셔널 프로퍼티
 }
 
-const NextMiddleButton: React.FC<NextMiddleButtonProps> = ({
+const CompleteButton: React.FC<CompleteButtonProps> = ({
   onPress,
+  onDisabledPress,
   title,
-  loading = false,
-  disabled = false,
+  loading,
+  disabled,
   alwaysActive = false,
-  buttonWidth = '50%',
+  buttonWidth = '100%', // 기본값 '100%'
 }) => (
   <Pressable
     style={({pressed}) => [
@@ -29,16 +31,17 @@ const NextMiddleButton: React.FC<NextMiddleButtonProps> = ({
           : disabled && !alwaysActive
           ? globalColors.component
           : globalColors.blue,
-        width: buttonWidth,
+        width: buttonWidth, // 너비를 동적으로 조절
       },
       disabled && !alwaysActive && styles.disabledButton,
     ]}
     onPress={() => {
       if (!disabled || alwaysActive) {
         onPress();
+      } else {
+        onDisabledPress?.();
       }
-    }}
-    disabled={disabled && !alwaysActive}>
+    }}>
     {loading ? (
       <ActivityIndicator color={globalColors.white} />
     ) : (
@@ -60,21 +63,17 @@ const NextMiddleButton: React.FC<NextMiddleButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    width: '55%',
     height: 52,
     borderRadius: 25,
+    marginTop: 35,
+    marginBottom: 10,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    marginTop: 35,
-    marginBottom: 10,
-  },
-  text: {
-    // 이제 이 스타일은 필요 없으므로 제거합니다.
   },
   disabledButton: {
     backgroundColor: globalColors.component,
   },
 });
 
-export default NextMiddleButton;
+export default CompleteButton;

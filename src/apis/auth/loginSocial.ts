@@ -29,16 +29,14 @@ const loginSocial = async (
       // API 응답이 success=false인 경우
       return {
         success: false,
-        data: null,
         error: response.data.error,
       };
     }
   } catch (error) {
-    console.error('Error fetching hot list:', error);
+    console.log(`${type} login error:`, error);
     // 네트워크 에러 또는 기타 예외 처리
     return {
       success: false,
-      data: null,
       error: {
         code: 'NetworkError',
         message: 'Network error occurred',

@@ -19,7 +19,6 @@ const Tab = createBottomTabNavigator();
 function MainTabNavigator() {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
       screenOptions={({route}) => ({
         headerShown: false,
         tabBarIcon: ({focused}): React.ReactElement | null => {

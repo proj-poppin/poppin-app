@@ -1,18 +1,29 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
-import globalColors from '../../../styles/color/globalColors.ts';
 import StarOnSvg from '../../../assets/icons/starOn.svg';
-import Text12B from '../../../styles/texts/label/Text12B.ts';
 import Text18B from '../../../styles/texts/body_large/Text18B.ts';
+import Text12B from '../../../styles/texts/label/Text12B.ts';
+import globalColors from '../../../styles/color/globalColors.ts';
 
 interface InterestPopUpCardProps {
   image_url: string;
   name: string;
   close_date: string;
   open_date: string;
-  status: string;
+  status: 'TERMINATED' | 'OPERATING' | string; // Assuming status is a string that can have multiple predefined values or any string
   id: number;
 }
+
+const getStatusText = (status: string): string => {
+  switch (status) {
+    case 'TERMINATED':
+      return '운영 종료';
+    case 'OPERATING':
+      return '운영 중';
+    default:
+      return status.startsWith('D-') ? status : '상태 미정'; // Assuming default status if not matching any case
+  }
+};
 
 const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
   image_url,
@@ -23,19 +34,22 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
   id,
 }) => {
   const date = `${open_date} ~ ${close_date}`;
-  const formattedName = name.length > 15 ? `${name.substring(0, 15)}...` : name; // Adjust the character limit as needed
+  const formattedName = name.length > 15 ? `${name.substring(0, 15)}...` : name;
+  const statusText = getStatusText(status);
 
   return (
     <View style={styles.cardContainer}>
       <Image source={{uri: image_url}} style={styles.imageStyle} />
       <View style={styles.textContainer}>
+        <View style={styles.statusAndStarContainer}>
+          <View style={[styles.statusContainer]}>
+            <Text style={styles.statusText}>{statusText}</Text>
+          </View>
+          <StarOnSvg style={styles.starIcon} />
+        </View>
         <Text style={[Text18B.text, styles.title]}>{formattedName}</Text>
         <Text style={[Text12B.text, styles.date]}>{date}</Text>
       </View>
-      <View style={styles.statusContainer}>
-        <Text>{status}</Text>
-      </View>
-      <StarOnSvg style={styles.starIcon} />
     </View>
   );
 };
@@ -46,9 +60,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: 'hidden',
     padding: 10,
-    alignItems: 'center', // Adjust alignment as per UI requirements
+    alignItems: 'center',
     backgroundColor: globalColors.white,
-    marginBottom: 10, // Add space between the cards
+    marginBottom: 10,
   },
   imageStyle: {
     width: 120,
@@ -58,7 +72,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   title: {
     marginBottom: 2,
@@ -66,16 +80,23 @@ const styles = StyleSheet.create({
   date: {
     color: globalColors.warmGray,
   },
+  statusAndStarContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   statusContainer: {
     backgroundColor: globalColors.purpleLight,
-    borderRadius: 5,
-    paddingVertical: 2,
-    paddingHorizontal: 4,
+    borderRadius: 10,
+    padding: 6,
+  },
+  statusText: {
+    color: globalColors.black,
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   starIcon: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
+    // Assuming no style changes needed here
   },
 });
 

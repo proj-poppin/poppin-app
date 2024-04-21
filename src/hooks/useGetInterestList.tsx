@@ -18,7 +18,7 @@ const useGetInterestList = () => {
   );
 
   useEffect(() => {
-    const fetchHotList = async () => {
+    const fetchInterestList = async () => {
       setInterestListState(prevState => ({...prevState, loading: true}));
       try {
         const response = await getInterestList();
@@ -51,7 +51,7 @@ const useGetInterestList = () => {
       }
     };
 
-    fetchHotList();
+    fetchInterestList().then();
   }, []);
 
   return interestListState;

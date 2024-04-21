@@ -49,7 +49,7 @@ const useSignUp = () => {
         });
         console.log('SignUp successful:', signUpResult.data);
       } else {
-        console.error('SignUp failed:', signUpResult.error);
+        console.log('SignUp failed:', signUpResult.error);
         // Update the state with the encountered error
         setSignUpStatus({
           ...signUpStatus,
@@ -57,7 +57,7 @@ const useSignUp = () => {
         });
       }
     } catch (error) {
-      console.error('SignUp error:', error);
+      console.log('SignUp error:', error);
       setSignUpStatus({
         ...signUpStatus,
         success: false,

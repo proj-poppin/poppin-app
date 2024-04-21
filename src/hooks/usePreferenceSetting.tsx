@@ -41,7 +41,7 @@ const usePreferenceSetting = () => {
       }
       return response;
     } catch (error) {
-      console.error('Error submitting preferences:', error);
+      console.log('Error submitting preferences:', error);
       return {
         success: false,
         error: {message: 'Failed to submit preferences'},

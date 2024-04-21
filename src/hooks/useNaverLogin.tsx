@@ -54,7 +54,7 @@ export const useNaverLogin = () => {
         throw new Error('Naver login failed.');
       }
     } catch (error: any) {
-      console.error('Failed to login with Naver:', error);
+      console.log('Failed to login with Naver:', error);
     }
   };
 

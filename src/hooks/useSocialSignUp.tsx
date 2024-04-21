@@ -31,7 +31,7 @@ function useSocialSignUp() {
         });
       }
     } catch (error) {
-      console.error('SignUp error with social account:', error);
+      console.log('SignUp error with social account:', error);
       setSignUpStatus({
         loading: false,
         error: 'An unexpected error occurred',

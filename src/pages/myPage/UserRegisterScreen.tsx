@@ -11,18 +11,17 @@ import React, {
 import LabelAndInputWithCloseSvg from '../../components/LabelAndInputWithCloseSvg.tsx';
 import {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import TextInputWithSvgIconInRight from '../../components/TextInputWithSvgIconInRight.tsx';
-import CompleteButton from '../../components/CompleteButton.tsx';
+import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import PreferenceOptionButtons from '../../components/PreferenceOptionButtons.tsx';
 import ImagePicker from 'react-native-image-crop-picker';
 import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
 import GoBackSvg from '../../assets/icons/goBack.svg';
 import ConfirmationModal from '../../components/ConfirmationModal.tsx';
 import ImageContainerRow from '../../components/ImageContainerRow.tsx';
-import DownSvg from '../../assets/icons/down.svg';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
+import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 
 function UserRegisterScreen({navigation}) {
   const [storeName, setStoreName] = useState('');
@@ -109,7 +108,9 @@ function UserRegisterScreen({navigation}) {
 
   // 화면클릭시 모달 내려감
   const renderBackdrop = useCallback(
-    props => (
+    (
+      props: React.JSX.IntrinsicAttributes & BottomSheetDefaultBackdropProps,
+    ) => (
       <BottomSheetBackdrop
         {...props}
         pressBehavior="close"
@@ -176,13 +177,13 @@ function UserRegisterScreen({navigation}) {
         value={storeName}
         onChangeText={setStoreName}
       />
-      <View style={{height: 20}} />
-      <TextInputWithSvgIconInRight
-        label={'카테고리'}
-        value={selectedCategory} // 변경됨
-        onIconPress={handlePresentModal}
-        IconComponent={DownSvg}
-      />
+      {/*<View style={{height: 20}} />*/}
+      {/*<TextInputWithSvgIconInRight*/}
+      {/*  label={'카테고리'}*/}
+      {/*  value={selectedCategory} // 변경됨*/}
+      {/*  onIconPress={handlePresentModal}*/}
+      {/*  IconComponent={DownSvg}*/}
+      {/*/>*/}
       <View style={{height: 20}} />
       <LabelAndInputWithCloseSvg
         label={'정보를 접한 사이트 주소'}
@@ -314,3 +315,7 @@ const styles = StyleSheet.create({
 });
 
 export default UserRegisterScreen;
+
+/*
+카테고리부분은 에러로 잠시 주석처리
+ */

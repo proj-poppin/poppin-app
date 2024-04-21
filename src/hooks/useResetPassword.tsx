@@ -29,7 +29,7 @@ const useResetPassword = () => {
         });
       }
     } catch (error) {
-      console.error('Password reset error:', error);
+      console.log('Password reset error:', error);
       setResetPasswordStatus({
         ...resetPasswordStatus,
         success: false,

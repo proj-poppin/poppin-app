@@ -34,7 +34,7 @@ export const useKakaoLogin = () => {
         dispatch(userSlice.actions.setAccessToken(accessToken));
       }
     } catch (err) {
-      console.error('Failed to login with Kakao:', err);
+      console.log('Failed to login with Kakao:', err);
     }
   };
 

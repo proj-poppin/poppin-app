@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import CalendarSvg from '../../assets/icons/calendar.svg';
 import globalColors from '../../styles/color/globalColors.ts';
 import DownBlackSvg from '../../assets/icons/downBlack.svg';
@@ -27,9 +27,6 @@ type MarkedDates = {
     dots?: Array<{color: string; selectedDotColor: string}>;
   };
 };
-
-import InterestSampleSvg from '../../assets/images/interestSample.svg';
-
 import DividerLine from '../../components/DividerLine.tsx';
 import InterestPopUpCard from '../../components/molecules/card/InterestPopUpCard.tsx';
 import LoadingPoppinSvg from '../../assets/icons/loadingPoppin.svg';
@@ -50,11 +47,44 @@ function LikesScreen() {
   const [dates, setDates] = useState('');
   const isLoggedIn = true;
 
+  const [selectedPopUpType, setSelectedPopUpType] = useState('');
+  const [selectedOrderType, setSelectedOrderType] = useState('');
+
   const {
     data: interestList,
     loading: newInterestLoading,
     error: interestPopUpError,
   } = useGetInterestList();
+
+  // 선택된 팝업 타입에 따른 필터링 로직
+  const filteredInterestList = useMemo(() => {
+    switch (selectedPopUpType) {
+      case '오픈 예정인 팝업':
+        return interestList?.filter(item => item.status.startsWith('D-'));
+      case '운영 중인 팝업':
+        return interestList?.filter(item => item.status === 'OPERATING');
+      case '운영 종료 팝업':
+        return interestList?.filter(item => item.status === 'TERMINATED');
+      default:
+        return interestList;
+    }
+  }, [interestList, selectedPopUpType]);
+
+  const sortedInterestList = useMemo(() => {
+    switch (selectedOrderType) {
+      case '오픈일순':
+        return [...filteredInterestList].sort(
+          (a, b) => new Date(a.open_date) - new Date(b.open_date),
+        );
+      case '마감일순':
+      case '저장순': // '저장순'이 '마감일순'과 동일하게 처리되어야 한다면 이와 같이 할 수 있습니다.
+        return [...filteredInterestList].sort(
+          (a, b) => new Date(a.close_date) - new Date(b.close_date),
+        );
+      default:
+        return filteredInterestList;
+    }
+  }, [filteredInterestList, selectedOrderType]);
 
   // BottomSheetModal ref
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -149,6 +179,31 @@ function LikesScreen() {
     }, 2000);
   }, [dispatch]);
 
+  if (!isLoggedIn) {
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: globalColors.white,
+        paddingHorizontal: 10,
+      }}>
+      <View style={styles.headerContainer}>
+        <Text style={Text24B.text}>관심 팝업</Text>
+      </View>
+      <View style={styles.center}>
+        <LoadingPoppinSvg />
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <NotLogginBox
+            text1={'로그인하고'}
+            text2={'관심 팝업을 저장해보세요!'}
+            buttonText={'로그인 하러 가기'}
+            onPress={() => console.log('로그인하러 가기')}
+            isNeedBox={false}
+          />
+        </View>
+      </View>
+    </SafeAreaView>;
+  }
+
   return isLoggedIn ? (
     <DismissKeyboardView>
       <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
@@ -207,28 +262,23 @@ function LikesScreen() {
               <View style={styles.dropdownContainer}>
                 <CustomSelectDropdown
                   data={popUpTypes}
-                  onSelect={(selectedItem, index) =>
-                    console.log(selectedItem, index)
-                  }
+                  onSelect={selectedItem => {
+                    setSelectedPopUpType(selectedItem);
+                  }}
                   buttonWidth={150}
-                  iconComponent={<DownBlackSvg style={styles.dropdownIcon} />}
-                  buttonTextAfterSelection={(selectedItem, index) =>
-                    selectedItem
-                  }
-                  buttonTextStyle={undefined}
+                  iconComponent={<DownBlackSvg />}
+                  buttonTextAfterSelection={selectedItem => selectedItem}
                 />
                 <View style={{width: 100}} />
                 <CustomSelectDropdown
+                  buttonTextStyle={undefined}
                   data={orderTypes}
-                  onSelect={(selectedItem, index) =>
-                    console.log(selectedItem, index)
-                  }
-                  buttonWidth={100}
-                  iconComponent={<OrderSvg style={styles.dropdownIcon} />}
-                  buttonTextAfterSelection={(selectedItem, index) =>
-                    selectedItem
-                  }
-                  buttonTextStyle={Text12B.text}
+                  onSelect={selectedItem => {
+                    setSelectedOrderType(selectedItem);
+                  }}
+                  buttonWidth={150}
+                  iconComponent={<OrderSvg />}
+                  buttonTextAfterSelection={selectedItem => selectedItem}
                 />
               </View>
               <Text
@@ -240,19 +290,25 @@ function LikesScreen() {
                 1월 15일
               </Text>
               <DividerLine height={1} />
-              {interestList?.map(
-                ({image_url, name, close_date, open_date, status, id}) => (
-                  <InterestPopUpCard
-                    key={id}
-                    image_url={image_url}
-                    name={name}
-                    close_date={close_date}
-                    open_date={open_date}
-                    status={status}
-                    id={id}
-                  />
-                ),
-              )}
+              <View style={styles.listContainer}>
+                {sortedInterestList?.length > 0 ? (
+                  sortedInterestList?.map(item => (
+                    <InterestPopUpCard
+                      key={item.id}
+                      image_url={item.image_url}
+                      name={item.name}
+                      close_date={item.close_date}
+                      open_date={item.open_date}
+                      status={item.status}
+                      id={item.id}
+                    />
+                  ))
+                ) : (
+                  <Text style={styles.noItemsText}>
+                    조건에 맞는 팝업이 없습니다.
+                  </Text>
+                )}
+              </View>
               <DividerLine height={3} />
               <View />
             </View>
@@ -364,6 +420,14 @@ const styles = StyleSheet.create({
   dropdownStyle: {
     borderRadius: 10, // 모서리 둥글기 적용
     // 필요한 경우 여기에 추가 스타일 설정
+  },
+
+  listContainer: {
+    flex: 1,
+  },
+  noItemsText: {
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
 

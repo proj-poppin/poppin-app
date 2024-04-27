@@ -17,9 +17,12 @@
 ### 2. 개발을 종료할 때
 1. 해당 Issue를 언급하며 PR을 보냅니다.
    - 이때 PR Title은 다음을 따릅니다
-   - **새로운 기능 개발 : ✨Feature - 변경사항(#해당 PR번호)** ex)✨Feature - FCM 연동 완료(#해당 PR번호)
-   - **기능 리팩토링 : 🎨Refactor - 변경사항(#해당 PR번호)** ex)🎨Refactor - 폴더 이름 변경 및 연동 테스트 완료(#해당 PR번호)
-   -  **버그 픽스 : ❗Bug - 변경사항(#해당 PR번호)** ex)❗Bug - 폴더 이름 변경 및 연동 테스트 완료(#해당 PR번호)
+   - **새로운 기능 개발 : ✨Feature - 변경사항(#해당 PR번호)**
+       - ex)✨Feature - FCM 연동 완료(#해당 PR번호)
+   - **기능 리팩토링 : 🎨Refactor - 변경사항(#해당 PR번호)**
+       -  ex)🎨Refactor - 폴더 이름 변경 및 연동 테스트 완료(#해당 PR번호)
+   -  **버그 픽스 : ❗Bug - 변경사항(#해당 PR번호)**
+       -  ex)❗Bug - 폴더 이름 변경 및 연동 테스트 완료(#해당 PR번호)
 2. 프론트엔드 팀원들의 `Code Review & approve` 이후 마지막으로 Approve한 사람은 ***Confirm Merge***를 합니다.
 
 

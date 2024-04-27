@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import socialSignUp from '../apis/auth/socialSignUp.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import setAccessTokenAndRefreshToken from '../utils/function/setAccessTokenAndRefreshToken.ts';
 
 function useSocialSignUp() {
   const [signUpStatus, setSignUpStatus] = useState({
@@ -19,8 +20,13 @@ function useSocialSignUp() {
       const response = await socialSignUp(provider, nickname, birthDate);
       if (response.success) {
         const {accessToken, refreshToken} = response.data;
-        await EncryptedStorage.setItem('accessToken', accessToken);
-        await EncryptedStorage.setItem('refreshToken', refreshToken);
+        // await EncryptedStorage.setItem('accessToken', accessToken);
+        // await EncryptedStorage.setItem('refreshToken', refreshToken);
+        setAccessTokenAndRefreshToken({
+          accessToken,
+          refreshToken,
+        });
+
         console.log('SignUp successful with social account!!!:', response.data);
         setSignUpStatus({loading: false, error: null, success: true});
       } else {

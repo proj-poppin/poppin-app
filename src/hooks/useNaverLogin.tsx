@@ -5,6 +5,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../redux/slices/user.ts';
 import NaverLogin from '@react-native-seoul/naver-login';
 import loginSocial from '../apis/auth/loginSocial.ts';
+import setAccessTokenAndRefreshToken from '../utils/function/setAccessTokenAndRefreshToken.ts';
 
 const consumerKey = Config.NAVER_CONSUMER_KEY ?? '';
 const consumerSecret = Config.NAVER_SECRECT_KEY ?? '';
@@ -37,10 +38,15 @@ export const useNaverLogin = () => {
 
         if (loginResult.success && loginResult.data?.refreshToken) {
           const {accessToken, refreshToken} = loginResult.data;
-          await EncryptedStorage.setItem('accessToken', accessToken);
-          await EncryptedStorage.setItem('refreshToken', refreshToken);
+          // await EncryptedStorage.setItem('accessToken', accessToken);
+          // await EncryptedStorage.setItem('refreshToken', refreshToken);
+          setAccessTokenAndRefreshToken({
+            accessToken,
+            refreshToken,
+          });
+
           dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
-          dispatch(userSlice.actions.setAccessToken(accessToken));
+          // dispatch(userSlice.actions.setAccessToken(accessToken));
         } else {
           // 신규 유저라면 닉네입 입력 화면으로 이동
           setNaverLoginStatus({newUser: true});

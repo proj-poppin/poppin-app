@@ -3,9 +3,10 @@ import {Pressable} from 'react-native';
 import CloseSvg from '../../assets/icons/close.svg';
 import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 
 type SignInEmailScreenNavigationProp = NativeStackNavigationProp<
-  AuthNavigatorParamList,
+  AppNavigatorParamList,
   'Entry'
 >;
 
@@ -17,7 +18,9 @@ export const EntryScreenOptions = ({
   headerTitle: '',
   headerLeft: () => (
     <Pressable
-      onPress={() => navigation.replace('MainTabNavigator')}
+      onPress={() => {
+        navigation.replace('MainTabNavigator');
+      }}
       style={{padding: 10}}>
       <CloseSvg />
     </Pressable>

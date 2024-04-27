@@ -5,6 +5,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import {useAppDispatch} from '../redux/stores';
 import userSlice from '../redux/slices/user.ts';
 import {RootState} from '../redux/stores/reducer.ts';
+import setAccessTokenAndRefreshToken from '../utils/function/setAccessTokenAndRefreshToken.ts';
 
 const useSignUp = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -39,9 +40,14 @@ const useSignUp = () => {
 
       if (signUpResult.success && signUpResult.data) {
         const {accessToken, refreshToken} = signUpResult.data; // Ensuring data exists before destructuring
-        await EncryptedStorage.setItem('accessToken', accessToken);
-        await EncryptedStorage.setItem('refreshToken', refreshToken);
-        dispatch(userSlice.actions.setAccessToken(accessToken));
+        setAccessTokenAndRefreshToken({
+          accessToken,
+          refreshToken,
+        });
+
+        // await EncryptedStorage.setItem('accessToken', accessToken);
+        // await EncryptedStorage.setItem('refreshToken', refreshToken);
+        // dispatch(userSlice.actions.setAccessToken(accessToken));
         setSignUpStatus({
           ...signUpStatus,
           success: true,

@@ -5,6 +5,7 @@ import loginSocial from '../apis/auth/loginSocial.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../redux/slices/user.ts';
 import {useAppDispatch} from '../redux/stores';
+import setAccessTokenAndRefreshToken from '../utils/function/setAccessTokenAndRefreshToken.ts';
 
 // Google 로그인을 위한 커스텀 훅 설정
 GoogleSignin.configure({
@@ -34,15 +35,21 @@ export const useGoogleLogin = () => {
       // 기존 유저라면 로그인, 신규 유저라면 닉네임 입력 화면으로 이동
       if (loginResult.success && loginResult.data?.refreshToken) {
         const {accessToken, refreshToken} = loginResult.data;
-        await EncryptedStorage.setItem('refreshToken', refreshToken);
-        await EncryptedStorage.setItem('accessToken', accessToken);
+        // await EncryptedStorage.setItem('refreshToken', refreshToken);
+        // await EncryptedStorage.setItem('accessToken', accessToken);
+        setAccessTokenAndRefreshToken({
+          accessToken,
+          refreshToken,
+        });
+
         dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
-        dispatch(userSlice.actions.setAccessToken(accessToken));
+        // dispatch(userSlice.actions.setAccessToken(accessToken));
       } else {
         // 신규 유저라면 닉네입 입력 화면으로 이동
         setGoogleLoginStatus({newUser: true});
         const accessToken = loginResult.data!.accessToken;
         console.log('naya');
+        // TODO 이 부분은 왜 accessToken만 있는지 확인 필요
         await EncryptedStorage.setItem('accessToken', accessToken);
         dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
         dispatch(userSlice.actions.setAccessToken(accessToken));

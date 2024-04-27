@@ -4,6 +4,7 @@ import loginSocial from '../apis/auth/loginSocial.ts';
 import {useAppDispatch} from '../redux/stores';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../redux/slices/user.ts';
+import setAccessTokenAndRefreshToken from '../utils/function/setAccessTokenAndRefreshToken.ts';
 
 // useKakaoLogin 커스텀 훅 수정
 export const useKakaoLogin = () => {
@@ -20,10 +21,15 @@ export const useKakaoLogin = () => {
       // 기존 유저라면 로그인
       if (loginResult.success && loginResult.data?.refreshToken) {
         const {accessToken, refreshToken} = loginResult.data;
-        await EncryptedStorage.setItem('accessToken', accessToken);
-        await EncryptedStorage.setItem('refreshToken', refreshToken);
+        // await EncryptedStorage.setItem('accessToken', accessToken);
+        // await EncryptedStorage.setItem('refreshToken', refreshToken);
+        setAccessTokenAndRefreshToken({
+          accessToken,
+          refreshToken,
+        });
+
         dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
-        dispatch(userSlice.actions.setAccessToken(accessToken));
+        // dispatch(userSlice.actions.setAccessToken(accessToken));
       } else {
         // 신규 유저라면 닉네입 입력 화면으로 이동
         setKakaoLoginStatus({newUser: true});

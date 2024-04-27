@@ -1,3 +1,8 @@
+// 초기 개발시 login 상태에 따라 navigator 분리를 위해 추가했으나
+// navigator 단에서 분리할 필요가 없다고 판단되어 AppNavigator로 통합
+// 이에 따라 현재는 사용처 없음
+// 2024/04/26
+
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MainTabNavigator from './MainTabNavigator.tsx';

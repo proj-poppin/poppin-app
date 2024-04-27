@@ -5,6 +5,7 @@ import loginSocial from '../apis/auth/loginSocial.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../redux/slices/user.ts';
 import {useAppDispatch} from '../redux/stores';
+import setAccessTokenAndRefreshToken from '../utils/function/setAccessTokenAndRefreshToken.ts';
 
 export const useAppleLogin = () => {
   const dispatch = useAppDispatch();
@@ -42,14 +43,19 @@ export const useAppleLogin = () => {
 
           if (loginResult.success && loginResult.data?.refreshToken) {
             const {accessToken, refreshToken} = loginResult.data;
-            await EncryptedStorage.setItem('accessToken', accessToken);
-            await EncryptedStorage.setItem('refreshToken', refreshToken);
-            dispatch(userSlice.actions.setAccessToken(accessToken));
+            // await EncryptedStorage.setItem('accessToken', accessToken);
+            // await EncryptedStorage.setItem('refreshToken', refreshToken);
+            // dispatch(userSlice.actions.setAccessToken(accessToken));
+            setAccessTokenAndRefreshToken({
+              accessToken,
+              refreshToken,
+            });
           } else {
             // 신규 유저라면 닉네입 입력 화면으로 이동
             setAppleLoginStatus({newUser: true});
             const accessToken = loginResult.data!.accessToken;
             console.log('naya');
+            // TODO 이 부분은 왜 accessToken만 있는지 확인 필요
             await EncryptedStorage.setItem('accessToken', accessToken);
             dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
             dispatch(userSlice.actions.setAccessToken(accessToken));

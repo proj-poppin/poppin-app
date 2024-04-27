@@ -1,6 +1,13 @@
-# Poppin-App
+ <div><img src="https://capsule-render.vercel.app/api?type=waving&color=0:00BAFD,100:E473CB&text=POPPIN" /></div>
 
-취향에 맞는 팝업을 PIN!, 팝핀(POPPIN)의 프론트엔드 Repository 입니다.
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fproj-poppin%2Fpoppin-app&count_bg=%2300BAFD&title_bg=%23E473CB&icon=player-dot-me.svg&icon_color=%23FFFFFF&title=%ED%8C%9D%ED%95%80&edge_flat=false)](https://hits.seeyoufarm.com)
+
+## 👋🏻 TEAM MEMBER
+ |이름|역할|이메일|기술
+ |----|---|---|---|
+ |[이도형](https://github.com/puretension)|FrontEnd(Android/iOS)|rlrlfhtm5@gmail.com|React-Native|
+ |[윤동혁](https://github.com/hyukyyy)|Frontend(Android/iOS)|rlrlfhtm5@gmail.com|React-Native|
+ |[안소희](https://github.com/sohee-an)|Frontend(Android/iOS)|rlrlfhtm5@gmail.com|React-Native|
 
 ## Github Branch
 
@@ -59,3 +66,5 @@
 | 🔀 | :twisted_rightwards_arrows | Merge branches |
 | 💡 | :bulb | Add/modify comments |
 | 🗃 | :card_file_box | Database-related changes |
+
+

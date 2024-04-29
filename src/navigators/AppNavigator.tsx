@@ -17,6 +17,25 @@ import {AppNavigatorParamList} from '../types/AppNavigatorParamList.ts';
 import AppBarLeftPressableIconButton from '../components/molecules/pressable_icon/AppbarLeftPressableIconButton.tsx';
 import PopUpDetailScreen from '../pages/find/PopUpDetailScreen.tsx';
 import PopUpDetailOptions from './options/PopUpDetailOptions.tsx';
+import EntryScreen from '../pages/sign/EntryScreen.tsx';
+import {EntryScreenOptions} from './options/EntryScreenOptions.tsx';
+import PrivacyPolicyScreen from '../pages/sign/PrivacyPolicyScreen.tsx';
+import PrivacyPolicyOptions from './options/PopUpDetailOptions.tsx';
+import ServicePolicyScreen from '../pages/sign/ServicePolicyScreen.tsx';
+import ServicePolicyOptions from './options/ServicePolicyOptions.tsx';
+import SignUpSocialNickNameScreen from '../pages/sign/SignUpSocialNickNameScreen.tsx';
+import SignUpNickNameSocialOptions from './options/SignUpNickNameSocialOptions.tsx';
+import SignUpEmailScreen from '../pages/sign/SignUpEmailScreen.tsx';
+import SignUpEmailOptions from './options/SignUpEmailOptions.tsx';
+import SignUpAuthScreen from '../pages/sign/SignUpAuthScreen.tsx';
+import SignUpAuthOptions from './options/SignUpAuthOptions.tsx';
+import SignUpNickNameScreen from '../pages/sign/SignUpNickNameScreen.tsx';
+import SignUpNickNameOptions from './options/SignUpNickNameOptions.tsx';
+import SignUpSucceedScreen from '../pages/sign/SignUpSucceedScreen.tsx';
+import BasicLoginScreen from '../pages/sign/BasicLoginScreen.tsx';
+import BasicLoginOptions from './options/BasicLoginOptions.tsx';
+import PasswordResetScreen from '../pages/sign/PasswordResetScreen.tsx';
+import {PasswordResetOptions} from './options/PasswordResetOptions.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -33,6 +52,59 @@ const DefaultNoHeaderOptions = {
 function AppNavigator() {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen
+        name="Entry"
+        component={EntryScreen}
+        options={EntryScreenOptions}
+      />
+      <Stack.Screen
+        name="PrivacyPolicy"
+        component={PrivacyPolicyScreen}
+        options={PrivacyPolicyOptions}
+      />
+      <Stack.Screen
+        name="ServicePolicy"
+        component={ServicePolicyScreen}
+        options={ServicePolicyOptions}
+      />
+      <Stack.Screen
+        name="BasicLogin"
+        component={BasicLoginScreen}
+        options={BasicLoginOptions}
+      />
+      <Stack.Screen
+        name="PasswordReset"
+        component={PasswordResetScreen}
+        options={PasswordResetOptions}
+      />
+
+      <Stack.Screen
+        name="SignUpNickNameSocial"
+        component={SignUpSocialNickNameScreen}
+        options={SignUpNickNameSocialOptions}
+      />
+      <Stack.Screen
+        name="SignUpEmail"
+        component={SignUpEmailScreen}
+        options={SignUpEmailOptions}
+      />
+      <Stack.Screen
+        name="SignUpAuthCode"
+        component={SignUpAuthScreen}
+        options={SignUpAuthOptions}
+      />
+      <Stack.Screen
+        name="SignUpNickName"
+        component={SignUpNickNameScreen}
+        options={SignUpNickNameOptions}
+      />
+
+      <Stack.Screen
+        name="SignUpSucceed"
+        component={SignUpSucceedScreen}
+        options={DefaultNoHeaderOptions}
+      />
+
       <Stack.Screen
         name="MainTabNavigator"
         component={MainTabNavigator}

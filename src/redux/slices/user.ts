@@ -11,6 +11,7 @@ const initialState = {
   agreedToPrivacyPolicy: true,
   agreedToServiceTerms: true,
   accessToken: '',
+  refreshToken: '',
   phoneToken: '',
   money: 0,
   isSocialLogin: false,
@@ -50,6 +51,11 @@ const userSlice = createSlice({
     setAccessToken(state, action) {
       state.accessToken = action.payload;
     },
+    setAccessTokenAndRefreshToken(state, action) {
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
+    },
+
     setMoney(state, action) {
       state.money = action.payload;
     },

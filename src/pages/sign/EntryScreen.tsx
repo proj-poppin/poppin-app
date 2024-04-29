@@ -12,11 +12,11 @@ import BasicLoginButton from '../../assets/icons/social_login/basicLoginButton.s
 import ToSignUpTextLine from '../../components/molecules/pressable_text/ToSignUpTextLine.tsx';
 import TermsAndPrivacyPolicyAgreement from '../../components/molecules/pressable_text/PressableUnderlineText.tsx';
 import {useNavigation} from '@react-navigation/native';
-import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 
 export type EntryScreenNavigationProp = NativeStackNavigationProp<
-  AuthNavigatorParamList,
+  AppNavigatorParamList,
   'Entry'
 >;
 

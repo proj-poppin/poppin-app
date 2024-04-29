@@ -22,7 +22,6 @@ export default function HomeHeader({navigation}: any) {
 
   return isLoggedIn ? (
     <View style={styles.container}>
-      <HomeHeader />
       <HomeMainTitle
         text1={`안녕하세요, ${userNickname}님`}
         text2={'취향저격 팝업을 알려드릴게요'}
@@ -48,7 +47,6 @@ export default function HomeHeader({navigation}: any) {
     </View>
   ) : (
     <View style={styles.container}>
-      <HomeHeader />
       <NotLogginBox
         text1={'로그인하고'}
         text2={'팝업 추천을 받아보세요!'}

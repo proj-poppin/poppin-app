@@ -4,6 +4,7 @@ import PoppinSvg from '../../../assets/icons/poppin.svg';
 import AlarmOffSvg from '../../../assets/icons/alarmOff.svg';
 import HeaderInfoSvg from '../../../assets/icons/headerInfo.svg';
 import InfoSvg from '../../../assets/icons/info.svg';
+
 const HomeHeader = () => {
   const [showInfo, setShowInfo] = useState(false);
 

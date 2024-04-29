@@ -25,7 +25,7 @@ import UpSvg from '../../assets/icons/up.svg';
 import HotListCard from '../../components/molecules/card/HotListCard.tsx';
 import useGetClosingList from '../../hooks/useGetClosingList.tsx';
 import HotListNoticeSvg from '../../assets/images/hotListNotice.svg';
-import HomeHeader from '../../components/HomeHeader.tsx';
+import HomeLoginHeader from '../../components/HomeLoginHeader.tsx';
 
 // @ts-ignore
 function HomeScreen({navigation}) {
@@ -87,7 +87,7 @@ function HomeScreen({navigation}) {
   return (
     <DismissKeyboardView>
       <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
-        <HomeHeader />
+        <HomeLoginHeader />
         <DividerLine />
         <View style={styles.bottomContainer}>
           <View style={styles.middleContainer}>

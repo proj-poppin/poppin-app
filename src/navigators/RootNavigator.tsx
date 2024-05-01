@@ -9,7 +9,6 @@ import getUser from '../apis/user/getUser.ts';
 import LoadingScreen from '../pages/splash/LoadingScreen.tsx';
 import userSlice from '../redux/slices/user.ts';
 import useIsLoggedIn from '../hooks/useIsLoggedIn.tsx';
-import AuthNavigator from './AuthNavigator.tsx';
 
 const RootNavigator = () => {
   const dispatch = useDispatch();

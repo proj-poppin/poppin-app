@@ -1,11 +1,8 @@
 import {useState, useCallback} from 'react';
 import {useSelector} from 'react-redux';
-import basicSignUp from '../apis/auth/basicSignUp.ts';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import {useAppDispatch} from '../redux/stores';
-import userSlice from '../redux/slices/user.ts';
-import {RootState} from '../redux/stores/reducer.ts';
-import setAccessTokenAndRefreshToken from '../utils/function/setAccessTokenAndRefreshToken.ts';
+import basicSignUp from '../apis/auth/basicSignUp';
+import {RootState} from '../redux/stores/reducer';
+import useSetAccessTokenAndRefreshToken from './useSetAccessTokenAndRefreshToken.ts';
 
 const useSignUp = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -14,7 +11,7 @@ const useSignUp = () => {
     error: null,
     newUser: false,
   });
-  const dispatch = useAppDispatch();
+  const setTokens = useSetAccessTokenAndRefreshToken(); // 커스텀 훅 호출
 
   const handleSignUp = useCallback(async () => {
     const {
@@ -39,37 +36,31 @@ const useSignUp = () => {
       );
 
       if (signUpResult.success && signUpResult.data) {
-        const {accessToken, refreshToken} = signUpResult.data; // Ensuring data exists before destructuring
-        setAccessTokenAndRefreshToken({
-          accessToken,
-          refreshToken,
-        });
+        const {accessToken, refreshToken} = signUpResult.data;
+        await setTokens({accessToken, refreshToken});
 
-        // await EncryptedStorage.setItem('accessToken', accessToken);
-        // await EncryptedStorage.setItem('refreshToken', refreshToken);
-        // dispatch(userSlice.actions.setAccessToken(accessToken));
-        setSignUpStatus({
-          ...signUpStatus,
+        setSignUpStatus(prevState => ({
+          ...prevState,
           success: true,
           error: null,
-        });
+        }));
         console.log('SignUp successful:', signUpResult.data);
       } else {
         console.log('SignUp failed:', signUpResult.error);
-        // Update the state with the encountered error
-        setSignUpStatus({
-          ...signUpStatus,
+        setSignUpStatus(prevState => ({
+          ...prevState,
           success: false,
-        });
+        }));
       }
     } catch (error) {
       console.log('SignUp error:', error);
-      setSignUpStatus({
-        ...signUpStatus,
+      setSignUpStatus(prevState => ({
+        ...prevState,
         success: false,
-      });
+      }));
     }
-  }, [user, dispatch, signUpStatus]);
+  }, [user, setTokens]);
+
   return {
     handleSignUp,
     signUpStatus,

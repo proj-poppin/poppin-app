@@ -4,7 +4,7 @@ import loginSocial from '../apis/auth/loginSocial.ts';
 import {useAppDispatch} from '../redux/stores';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../redux/slices/user.ts';
-import setAccessTokenAndRefreshToken from '../utils/function/setAccessTokenAndRefreshToken.ts';
+import useSetAccessTokenAndRefreshToken from './useSetAccessTokenAndRefreshToken.ts';
 
 // useKakaoLogin 커스텀 훅 수정
 export const useKakaoLogin = () => {
@@ -12,6 +12,7 @@ export const useKakaoLogin = () => {
     newUser: false,
   });
   const dispatch = useAppDispatch();
+  const setTokens = useSetAccessTokenAndRefreshToken(); // 커스텀 훅 호출
 
   const signInWithKakao = async () => {
     try {
@@ -23,10 +24,7 @@ export const useKakaoLogin = () => {
         const {accessToken, refreshToken} = loginResult.data;
         // await EncryptedStorage.setItem('accessToken', accessToken);
         // await EncryptedStorage.setItem('refreshToken', refreshToken);
-        setAccessTokenAndRefreshToken({
-          accessToken,
-          refreshToken,
-        });
+        await setTokens({accessToken, refreshToken});
 
         dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
         // dispatch(userSlice.actions.setAccessToken(accessToken));
@@ -34,7 +32,6 @@ export const useKakaoLogin = () => {
         // 신규 유저라면 닉네입 입력 화면으로 이동
         setKakaoLoginStatus({newUser: true});
         const accessToken = loginResult.data!.accessToken;
-        console.log('naya');
         await EncryptedStorage.setItem('accessToken', accessToken);
         dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
         dispatch(userSlice.actions.setAccessToken(accessToken));

@@ -7,8 +7,17 @@ import useGetTasteList from '../hooks/useGetTasteList';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux/stores/reducer';
 import HomeHeader from './organisms/header/HomeHeader';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AppNavigatorParamList} from '../types/AppNavigatorParamList.ts';
+import {useNavigation} from '@react-navigation/native';
 
-export default function HomeLoginHeader({navigation}: any) {
+export type EntryScreenNavigationProp = NativeStackNavigationProp<
+  AppNavigatorParamList,
+  'Entry'
+>;
+
+export default function HomeLoginHeader() {
+  const navigation = useNavigation<EntryScreenNavigationProp>();
   const isLoggedIn = useIsLoggedIn();
   const userNickname = useSelector((state: RootState) => state.user.nickname);
   const handlePress = () => {

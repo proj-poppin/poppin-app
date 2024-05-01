@@ -5,7 +5,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../redux/slices/user.ts';
 import NaverLogin from '@react-native-seoul/naver-login';
 import loginSocial from '../apis/auth/loginSocial.ts';
-import setAccessTokenAndRefreshToken from '../utils/function/setAccessTokenAndRefreshToken.ts';
+import useSetAccessTokenAndRefreshToken from './useSetAccessTokenAndRefreshToken.ts';
 
 const consumerKey = Config.NAVER_CONSUMER_KEY ?? '';
 const consumerSecret = Config.NAVER_SECRECT_KEY ?? '';
@@ -17,6 +17,7 @@ export const useNaverLogin = () => {
   const [naverLoginStatus, setNaverLoginStatus] = useState({
     newUser: false,
   });
+  const setTokens = useSetAccessTokenAndRefreshToken();
   const signInWithNaver = async () => {
     try {
       const {failureResponse, successResponse} = await NaverLogin.login({
@@ -38,20 +39,12 @@ export const useNaverLogin = () => {
 
         if (loginResult.success && loginResult.data?.refreshToken) {
           const {accessToken, refreshToken} = loginResult.data;
-          // await EncryptedStorage.setItem('accessToken', accessToken);
-          // await EncryptedStorage.setItem('refreshToken', refreshToken);
-          setAccessTokenAndRefreshToken({
-            accessToken,
-            refreshToken,
-          });
-
+          await setTokens({accessToken, refreshToken});
           dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
-          // dispatch(userSlice.actions.setAccessToken(accessToken));
         } else {
           // 신규 유저라면 닉네입 입력 화면으로 이동
           setNaverLoginStatus({newUser: true});
           const accessToken = loginResult.data!.accessToken;
-          console.log('naya');
           await EncryptedStorage.setItem('accessToken', accessToken);
           dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
           dispatch(userSlice.actions.setAccessToken(accessToken));

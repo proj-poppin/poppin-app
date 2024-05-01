@@ -15,7 +15,12 @@ const useLogout = () => {
       const result = await logout();
       if (result && result.success) {
         console.log('result success:', result.success);
-        dispatch(userSlice.actions.setAccessToken(''));
+        dispatch(
+          userSlice.actions.setAccessTokenAndRefreshToken({
+            accessToken: '',
+            refreshToken: '',
+          }),
+        );
         dispatch(userSlice.actions.resetUser());
         setLogoutStatus({success: true, error: null});
         console.log('Logout successful');

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MainTabNavigator from './MainTabNavigator.tsx';
 import MyProfileEditScreen from '../pages/myPage/ProfileEditScreen.tsx';
@@ -36,6 +36,11 @@ import BasicLoginScreen from '../pages/sign/BasicLoginScreen.tsx';
 import BasicLoginOptions from './options/BasicLoginOptions.tsx';
 import PasswordResetScreen from '../pages/sign/PasswordResetScreen.tsx';
 import {PasswordResetOptions} from './options/PasswordResetOptions.tsx';
+import useIsLoggedIn from '../hooks/useIsLoggedIn.tsx';
+import {useSelector} from 'react-redux';
+import {RootState} from '../redux/stores/reducer.ts';
+import PreferenceScreen from '../pages/preference/PreferenceScreen.tsx';
+import PreferenceSettingOptions from './options/PreferenceSettingOptions.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -50,13 +55,35 @@ const DefaultNoHeaderOptions = {
 };
 
 function AppNavigator() {
+  const isLoggedIn = useIsLoggedIn();
+  const isFinishedPreferenceSetting = useSelector(
+    (state: RootState) => state.user.isFinishedPreferenceSetting,
+  );
+
+  useEffect(() => {
+    console.log(
+      'isLoggedIn / isFinishedPreferenceSetting : ',
+      isLoggedIn,
+      isFinishedPreferenceSetting,
+    );
+  }, []);
+
   return (
     <Stack.Navigator screenOptions={screenOptions}>
+      {(!isLoggedIn || !isFinishedPreferenceSetting) && (
+        <Stack.Screen
+          name="Entry"
+          component={EntryScreen}
+          options={EntryScreenOptions}
+        />
+      )}
+
       <Stack.Screen
-        name="Entry"
-        component={EntryScreen}
-        options={EntryScreenOptions}
+        name="MainTabNavigator"
+        component={MainTabNavigator}
+        options={DefaultNoHeaderOptions}
       />
+
       <Stack.Screen
         name="PrivacyPolicy"
         component={PrivacyPolicyScreen}
@@ -76,6 +103,11 @@ function AppNavigator() {
         name="PasswordReset"
         component={PasswordResetScreen}
         options={PasswordResetOptions}
+      />
+      <Stack.Screen
+        name="PreferenceSetting"
+        component={PreferenceScreen}
+        options={PreferenceSettingOptions}
       />
 
       <Stack.Screen
@@ -105,11 +137,6 @@ function AppNavigator() {
         options={DefaultNoHeaderOptions}
       />
 
-      <Stack.Screen
-        name="MainTabNavigator"
-        component={MainTabNavigator}
-        options={DefaultNoHeaderOptions}
-      />
       <Stack.Screen
         name={'PopUpDetail'}
         component={PopUpDetailScreen}

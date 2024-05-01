@@ -8,15 +8,10 @@ import SplashScreen from 'react-native-splash-screen';
 import getUser from '../apis/user/getUser.ts';
 import LoadingScreen from '../pages/splash/LoadingScreen.tsx';
 import userSlice from '../redux/slices/user.ts';
-import useIsLoggedIn from '../hooks/useIsLoggedIn.tsx';
 
 const RootNavigator = () => {
   const dispatch = useDispatch();
-  useIsLoggedIn();
   const [initialLoading, setInitialLoading] = useState(true);
-  const isFinishedPreferenceSetting = useSelector(
-    (state: RootState) => state.user.isFinishedPreferenceSetting,
-  );
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -69,8 +64,6 @@ const RootNavigator = () => {
       background: 'white',
     },
   };
-
-  console.log('isFinishedPreferenceSetting:', isFinishedPreferenceSetting);
 
   return (
     <NavigationContainer theme={MyTheme}>

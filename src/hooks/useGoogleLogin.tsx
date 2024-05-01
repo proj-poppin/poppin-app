@@ -5,7 +5,7 @@ import loginSocial from '../apis/auth/loginSocial.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../redux/slices/user.ts';
 import {useAppDispatch} from '../redux/stores';
-import setAccessTokenAndRefreshToken from '../utils/function/setAccessTokenAndRefreshToken.ts';
+import useSetAccessTokenAndRefreshToken from './useSetAccessTokenAndRefreshToken.ts';
 
 // Google 로그인을 위한 커스텀 훅 설정
 GoogleSignin.configure({
@@ -18,6 +18,7 @@ export const useGoogleLogin = () => {
   const [googleLoginStatus, setGoogleLoginStatus] = useState({
     newUser: false,
   });
+  const setTokens = useSetAccessTokenAndRefreshToken();
 
   const signInWithGoogle = async () => {
     try {
@@ -37,10 +38,7 @@ export const useGoogleLogin = () => {
         const {accessToken, refreshToken} = loginResult.data;
         // await EncryptedStorage.setItem('refreshToken', refreshToken);
         // await EncryptedStorage.setItem('accessToken', accessToken);
-        setAccessTokenAndRefreshToken({
-          accessToken,
-          refreshToken,
-        });
+        await setTokens({accessToken, refreshToken});
 
         dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
         // dispatch(userSlice.actions.setAccessToken(accessToken));

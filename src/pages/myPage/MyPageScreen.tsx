@@ -30,8 +30,7 @@ import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import Text14B from '../../styles/texts/body_medium/Text14B.ts';
 import useLogout from '../../hooks/useLogout.tsx';
 import useGetUser from '../../hooks/useGetUser.tsx';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../redux/stores/reducer.ts';
+import useIsLoggedIn from '../../hooks/useIsLoggedIn.tsx';
 
 function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
@@ -85,7 +84,7 @@ function MyPageScreen({navigation}) {
       : navigation.navigate('Entry');
   };
 
-  const isLoggedIn = !!user?.email;
+  const isLoggedIn = useIsLoggedIn();
 
   console.log('isLoggedIn', isLoggedIn);
 

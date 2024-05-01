@@ -137,7 +137,7 @@ function HomeScreen({navigation}) {
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             style={styles.popUpScrollView}>
-            {closingList?.map(item => (
+            {newList?.map(item => (
               <TouchableOpacity
                 key={item.id} // `key` should be here
                 onPress={() =>

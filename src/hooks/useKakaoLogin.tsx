@@ -5,6 +5,7 @@ import {useAppDispatch} from '../redux/stores';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../redux/slices/user.ts';
 import useSetAccessTokenAndRefreshToken from './useSetAccessTokenAndRefreshToken.ts';
+import {useNavigation} from '@react-navigation/native';
 
 // useKakaoLogin 커스텀 훅 수정
 export const useKakaoLogin = () => {
@@ -12,6 +13,8 @@ export const useKakaoLogin = () => {
     newUser: false,
   });
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
+
   const setTokens = useSetAccessTokenAndRefreshToken(); // 커스텀 훅 호출
 
   const signInWithKakao = async () => {
@@ -22,12 +25,10 @@ export const useKakaoLogin = () => {
       // 기존 유저라면 로그인
       if (loginResult.success && loginResult.data?.refreshToken) {
         const {accessToken, refreshToken} = loginResult.data;
-        // await EncryptedStorage.setItem('accessToken', accessToken);
-        // await EncryptedStorage.setItem('refreshToken', refreshToken);
         await setTokens({accessToken, refreshToken});
 
         dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
-        // dispatch(userSlice.actions.setAccessToken(accessToken));
+        navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
       } else {
         // 신규 유저라면 닉네입 입력 화면으로 이동
         setKakaoLoginStatus({newUser: true});

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import useSetAccessToken, {AccessToken} from '../hooks/useSetAccessToken.ts';
+// import useSetAccessToken, {AccessToken} from '../hooks/useSetAccessToken.ts';
 
 const apiInstance = axios.create({
   baseURL: Config.API_URL,
@@ -9,9 +9,9 @@ const apiInstance = axios.create({
 
 apiInstance.interceptors.request.use(
   async config => {
-    const setAccessToken = useSetAccessToken();
+    // const setAccessToken = useSetAccessToken();
     const accessToken = await EncryptedStorage.getItem('accessToken');
-    await setAccessToken(<AccessToken>{accessToken}); // 일단 이렇게 accessToken 저장
+    // await setAccessToken(<AccessToken>{accessToken}); // 일단 이렇게 accessToken 저장
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }

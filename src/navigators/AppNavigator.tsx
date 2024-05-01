@@ -36,9 +36,6 @@ import BasicLoginScreen from '../pages/sign/BasicLoginScreen.tsx';
 import BasicLoginOptions from './options/BasicLoginOptions.tsx';
 import PasswordResetScreen from '../pages/sign/PasswordResetScreen.tsx';
 import {PasswordResetOptions} from './options/PasswordResetOptions.tsx';
-import useIsLoggedIn from '../hooks/useIsLoggedIn.tsx';
-import {useSelector} from 'react-redux';
-import {RootState} from '../redux/stores/reducer.ts';
 import PreferenceScreen from '../pages/preference/PreferenceScreen.tsx';
 import PreferenceSettingOptions from './options/PreferenceSettingOptions.tsx';
 
@@ -55,33 +52,18 @@ const DefaultNoHeaderOptions = {
 };
 
 function AppNavigator() {
-  const isLoggedIn = useIsLoggedIn();
-  const isFinishedPreferenceSetting = useSelector(
-    (state: RootState) => state.user.isFinishedPreferenceSetting,
-  );
-
-  useEffect(() => {
-    console.log(
-      'isLoggedIn / isFinishedPreferenceSetting : ',
-      isLoggedIn,
-      isFinishedPreferenceSetting,
-    );
-  }, []);
-
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      {(!isLoggedIn || !isFinishedPreferenceSetting) && (
-        <Stack.Screen
-          name="Entry"
-          component={EntryScreen}
-          options={EntryScreenOptions}
-        />
-      )}
-
       <Stack.Screen
         name="MainTabNavigator"
         component={MainTabNavigator}
         options={DefaultNoHeaderOptions}
+      />
+
+      <Stack.Screen
+        name="Entry"
+        component={EntryScreen}
+        options={EntryScreenOptions}
       />
 
       <Stack.Screen

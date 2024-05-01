@@ -2,6 +2,7 @@ import {useState, useCallback} from 'react';
 import {useAppDispatch} from '../redux/stores';
 import userSlice from '../redux/slices/user';
 import logout from '../apis/auth/logout';
+import EncryptedStorage from 'react-native-encrypted-storage/lib/typescript/EncryptedStorage';
 
 const useLogout = () => {
   const dispatch = useAppDispatch();
@@ -14,16 +15,18 @@ const useLogout = () => {
     try {
       const result = await logout();
       if (result && result.success) {
-        console.log('result success:', result.success);
         dispatch(
           userSlice.actions.setAccessTokenAndRefreshToken({
             accessToken: '',
             refreshToken: '',
           }),
         );
+
+        await EncryptedStorage.setItem('accessToken', '');
+        await EncryptedStorage.setItem('refreshtoken', '');
+
         dispatch(userSlice.actions.resetUser());
         setLogoutStatus({success: true, error: null});
-        console.log('Logout successful');
         return setLogoutStatus({success: true, error: null});
       }
     } catch (error) {

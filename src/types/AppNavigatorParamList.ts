@@ -21,5 +21,6 @@ export type AppNavigatorParamList = {
   MemberDelete: undefined;
   PreferenceSetting: undefined;
   PopUpDetail: {id: number};
+  AlarmScreen: undefined;
 };
 // Path: src/types/RootStackParamList.ts

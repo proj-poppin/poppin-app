@@ -36,6 +36,8 @@ import BasicLoginScreen from '../pages/sign/BasicLoginScreen.tsx';
 import BasicLoginOptions from './options/BasicLoginOptions.tsx';
 import PasswordResetScreen from '../pages/sign/PasswordResetScreen.tsx';
 import {PasswordResetOptions} from './options/PasswordResetOptions.tsx';
+import AlarmScreen from '../pages/Alarm/AlarmScreen.tsx';
+import AlarmOptions from './options/AlarmOptions.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -203,6 +205,11 @@ function AppNavigator() {
           headerLeft: AppBarLeftPressableIconButton,
           // 기타 헤더 스타일링 옵션
         })}
+      />
+      <Stack.Screen
+        name="AlarmScreen"
+        component={AlarmScreen}
+        options={AlarmOptions}
       />
     </Stack.Navigator>
   );

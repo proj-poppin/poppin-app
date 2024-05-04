@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* PoppinProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* PoppinProjectTests.m */; };
+		049881452BE257F500583D6A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 049881442BE257F500583D6A /* GoogleService-Info.plist */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -24,7 +25,6 @@
 		B68F0F55F7FB4DEB96FEBC50 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = AA04ED485BD04171B1B2DA3B /* Pretendard-SemiBold.otf */; };
 		B714F6DC2B72E27400F2D72C /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = B714F6DB2B72E27400F2D72C /* main.jsbundle */; };
 		B72CF4CB2B72D779004120DB /* SwiftBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72CF4CA2B72D779004120DB /* SwiftBridge.swift */; };
-		B77304C42B8C48560008733F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B7495B2D2B752801000D8E15 /* GoogleService-Info.plist */; };
 		D9AE3F6F75964519BF90E7A1 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7A6679867A3E4CC7BEF9B2F6 /* Pretendard-Medium.otf */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +42,7 @@
 		00E356EE1AD99517003FC87E /* PoppinProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PoppinProjectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* PoppinProjectTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PoppinProjectTests.m; sourceTree = "<group>"; };
+		049881442BE257F500583D6A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0E6D0F751C004B078A5C290E /* Pretendard-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Light.otf"; path = "../src/assets/fonts/Pretendard-Light.otf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* PoppinProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PoppinProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = PoppinProject/AppDelegate.h; sourceTree = "<group>"; };
@@ -65,7 +66,6 @@
 		B71C37D7F7C7B31902ADB574 /* Pods_PoppinProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoppinProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B72CF4C92B72D779004120DB /* PoppinProject-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PoppinProject-Bridging-Header.h"; sourceTree = "<group>"; };
 		B72CF4CA2B72D779004120DB /* SwiftBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftBridge.swift; sourceTree = "<group>"; };
-		B7495B2D2B752801000D8E15 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B749CD2D2B75594E00C8EB35 /* PoppinProject.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = PoppinProject.entitlements; path = PoppinProject/PoppinProject.entitlements; sourceTree = "<group>"; };
 		B751CB172B746DE0002A5E08 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C2625EFB1A34469F99CB311C /* Pretendard-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Bold.otf"; path = "../src/assets/fonts/Pretendard-Bold.otf"; sourceTree = "<group>"; };
@@ -114,7 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				B749CD2D2B75594E00C8EB35 /* PoppinProject.entitlements */,
-				B7495B2D2B752801000D8E15 /* GoogleService-Info.plist */,
+				049881442BE257F500583D6A /* GoogleService-Info.plist */,
 				B714F6DB2B72E27400F2D72C /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -300,7 +300,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B77304C42B8C48560008733F /* GoogleService-Info.plist in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				69C1627D6096426BB4610972 /* Pretendard-Black.otf in Resources */,
@@ -313,6 +312,7 @@
 				4E0F9F7D80C74B73BC4F8B1C /* Pretendard-Regular.otf in Resources */,
 				B68F0F55F7FB4DEB96FEBC50 /* Pretendard-SemiBold.otf in Resources */,
 				38193E0556CA44628660A527 /* Pretendard-Thin.otf in Resources */,
+				049881452BE257F500583D6A /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -498,6 +498,9 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -516,6 +519,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PoppinProject.app/PoppinProject";
 			};
 			name = Debug;
@@ -526,7 +530,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = PoppinProjectTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -541,6 +548,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PoppinProject.app/PoppinProject";
 			};
 			name = Release;
@@ -552,8 +560,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PoppinProject/PoppinProject.entitlements;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = KSL7J6B67H;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PoppinProject/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "팝핀";
@@ -570,6 +579,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.bubble.poppinproject;
 				PRODUCT_NAME = PoppinProject;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "PoppinProject-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -584,8 +594,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PoppinProject/PoppinProject.entitlements;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = KSL7J6B67H;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = PoppinProject/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "팝핀";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
@@ -601,6 +612,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.bubble.poppinproject;
 				PRODUCT_NAME = PoppinProject;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "PoppinProject-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -688,7 +700,11 @@
 					"-DFOLLY_USE_LIBCPP=1",
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl",
+					"-ld_classic",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -768,7 +784,11 @@
 					"-DFOLLY_USE_LIBCPP=1",
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl",
+					"-ld_classic",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

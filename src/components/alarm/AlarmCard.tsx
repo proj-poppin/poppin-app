@@ -1,6 +1,9 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import globalColors from '../../styles/color/globalColors';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useNavigation} from '@react-navigation/native';
 
 type Props = {
   elem: {
@@ -13,40 +16,53 @@ type Props = {
   };
   type: string;
 };
+
+type NoticeDetailScreenNavigationProp = NativeStackNavigationProp<
+  AppNavigatorParamList,
+  'NoticeDetail'
+>;
 const AlarmCard = ({type, elem}: Props) => {
+  const navigation = useNavigation<NoticeDetailScreenNavigationProp>();
   return (
-    <View
-      style={[
-        styles.container,
-        {backgroundColor: elem.isRead ? 'white' : globalColors.purpleLight},
-      ]}>
-      <View style={styles.leftWrapper}>
-        <View style={styles.imgWrapper}></View>
-      </View>
-      <View style={styles.contentsWrapper}>
-        <View style={{height: '80%', display: 'flex', gap: 5}}>
-          <Text
-            style={[
-              styles.title,
-              type !== 'notice' && {
-                color: elem.isRead ? globalColors.stroke2 : 'black',
-              },
-            ]}>
-            {elem.title}
-          </Text>
-          <Text
-            style={[
-              styles.content,
-              type !== 'notice' && {
-                color: elem.isRead ? globalColors.stroke2 : 'black',
-              },
-            ]}>
-            {elem.content}
-          </Text>
+    <Pressable
+      onPress={
+        type === 'notice'
+          ? () => navigation.navigate('NoticeDetail', {nid: elem.id})
+          : null
+      }>
+      <View
+        style={[
+          styles.container,
+          {backgroundColor: elem.isRead ? 'white' : globalColors.purpleLight},
+        ]}>
+        <View style={styles.leftWrapper}>
+          <View style={styles.imgWrapper}></View>
         </View>
-        <Text style={styles.time}>{elem.createdAt}</Text>
+        <View style={styles.contentsWrapper}>
+          <View style={{height: '80%', display: 'flex', gap: 5}}>
+            <Text
+              style={[
+                styles.title,
+                type !== 'notice' && {
+                  color: elem.isRead ? globalColors.stroke2 : 'black',
+                },
+              ]}>
+              {elem.title}
+            </Text>
+            <Text
+              style={[
+                styles.content,
+                type !== 'notice' && {
+                  color: elem.isRead ? globalColors.stroke2 : 'black',
+                },
+              ]}>
+              {elem.content}
+            </Text>
+          </View>
+          <Text style={styles.time}>{elem.createdAt}</Text>
+        </View>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import AlarmCard from '../../components/alarm/AlarmCard';
@@ -10,7 +9,7 @@ function AlarmTab() {
   return (
     <View>
       {PopupDummydata.map(item => {
-        return <AlarmCard type="popup" elem={item} />;
+        return <AlarmCard key={item.id} type="popup" elem={item} />;
       })}
     </View>
   );
@@ -20,7 +19,7 @@ function NoticeTab() {
   return (
     <View>
       {NoticeDummydata.map(item => {
-        return <AlarmCard type="notice" elem={item} />;
+        return <AlarmCard key={item.id} type="notice" elem={item} />;
       })}
     </View>
   );

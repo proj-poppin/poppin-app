@@ -60,6 +60,11 @@ function AppNavigator() {
         options={EntryScreenOptions}
       />
       <Stack.Screen
+        name="Alarm"
+        component={AlarmScreen}
+        options={AlarmOptions}
+      />
+      <Stack.Screen
         name="PrivacyPolicy"
         component={PrivacyPolicyScreen}
         options={PrivacyPolicyOptions}
@@ -205,11 +210,6 @@ function AppNavigator() {
           headerLeft: AppBarLeftPressableIconButton,
           // 기타 헤더 스타일링 옵션
         })}
-      />
-      <Stack.Screen
-        name="AlarmScreen"
-        component={AlarmScreen}
-        options={AlarmOptions}
       />
     </Stack.Navigator>
   );

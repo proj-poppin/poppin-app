@@ -1,9 +1,9 @@
 import React from 'react';
 import {Pressable, Text, View} from 'react-native';
 import BackSvg from '../../assets/icons/goBack.svg';
+import SettingSvg from '../../assets/icons/setting.svg';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
-import MenuSvg from '../../assets/detail/menu.svg';
 
 type PrivacyPolicyScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
@@ -17,7 +17,9 @@ const AlarmOptions = ({
   navigation: PrivacyPolicyScreenNavigationProp;
 }) => ({
   headerLeft: () => (
-    <Pressable onPress={() => navigation.goBack()} style={{padding: 10}}>
+    <Pressable
+      onPress={() => navigation.goBack()}
+      style={{padding: 10, backgroundColor: 'yellow'}}>
       <BackSvg />
     </Pressable>
   ),
@@ -25,7 +27,7 @@ const AlarmOptions = ({
   headerRight: () => (
     <Pressable onPress={() => navigation.goBack()} style={{padding: 10}}>
       <View>
-        <Text>hi</Text>
+        <SettingSvg />
       </View>
     </Pressable>
   ),

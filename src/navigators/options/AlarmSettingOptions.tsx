@@ -22,13 +22,6 @@ const AlarmSettingOptions = ({
     </Pressable>
   ),
   headerTitle: '알림 설정',
-  // headerRight: () => (
-  //   <Pressable onPress={() => navigation.goBack()} style={{padding: 10}}>
-  //     <View>
-  //       <SettingSvg />
-  //     </View>
-  //   </Pressable>
-  // ),
 });
 
 export default AlarmSettingOptions;

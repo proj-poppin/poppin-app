@@ -24,7 +24,7 @@ function NoticeDetailScreen() {
         공지사항이 있어요 공지사항이 있어요 공지사항이 있어요 공지사항이 있어요
       </Text>
       <Text style={styles.time}>02.01</Text>
-      <Image source={{uri: dummyuri}} style={{width: '100%', height: 300}} />
+      <Image source={{uri: dummyuri}} style={styles.noticeImg} />
     </View>
   );
 }
@@ -45,5 +45,9 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 10,
     color: 'gray',
+  },
+  noticeImg: {
+    width: '100%',
+    height: 300,
   },
 });

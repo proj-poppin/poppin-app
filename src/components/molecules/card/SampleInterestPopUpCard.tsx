@@ -1,50 +1,38 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import DefaultImageSvg from '../../../assets/images/interestSample.svg';
 import StarOnSvg from '../../../assets/icons/starOn.svg';
 import Text18B from '../../../styles/texts/body_large/Text18B.ts';
 import Text12B from '../../../styles/texts/label/Text12B.ts';
 import globalColors from '../../../styles/color/globalColors.ts';
-import DividerLine from '../../DividerLine.tsx';
 
-const SampleInterestPopUpCard = ({item}: any) => {
+const SampleInterestPopUpCard = ({
+  Svg = DefaultImageSvg,
+  title,
+  date = null,
+  status = '', // 상태 텍스트
+}) => {
   const formattedTitle =
-    item.title.length > 11 ? `${item.title.substring(0, 11)}...` : item.title;
+    title.length > 20 ? `${title.substring(0, 20)}...` : title;
 
   return (
-    <>
-      <View style={styles.cardContainer}>
-        <View style={styles.svgContainer}>
-          <DefaultImageSvg width="120" height="120" />
-          <View style={styles.deadlineWrapper}>
-            <Text style={styles.deadlineText}>종료 D-1</Text>
-          </View>
-        </View>
-        <View style={styles.textContainer}>
-          <View style={styles.statusAndStarContainer}>
-            <Text style={[Text18B.text, styles.title]}>{formattedTitle}</Text>
-            <StarOnSvg style={styles.starIcon} />
-          </View>
-
-          <Text style={styles.location}>{item.location}</Text>
-          {item.date && (
-            <Text style={[Text12B.text, styles.date]}>{item.date}</Text>
-          )}
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <View style={styles.tagsWrapper}>
-              {item.tags.map((tag: any, index: number) => {
-                return (
-                  <View key={index} style={styles.tagWrapper}>
-                    <Text style={styles.tag}>{tag.tag}</Text>
-                  </View>
-                );
-              })}
-            </View>
-          </ScrollView>
-        </View>
+    <View style={styles.cardContainer}>
+      <View style={styles.svgContainer}>
+        <Svg width="120" height="120" />
       </View>
-      <DividerLine height={1} />
-    </>
+      <View style={styles.textContainer}>
+        <View style={styles.statusAndStarContainer}>
+          {status && (
+            <View style={styles.statusContainer}>
+              <Text style={styles.statusText}>{status}</Text>
+            </View>
+          )}
+          <StarOnSvg style={styles.starIcon} />
+        </View>
+        <Text style={[Text18B.text, styles.title]}>{formattedTitle}</Text>
+        {date && <Text style={[Text12B.text, styles.date]}>{date}</Text>}
+      </View>
+    </View>
   );
 };
 
@@ -63,13 +51,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: 'hidden',
     marginRight: 10,
-    position: 'relative',
   },
   textContainer: {
     flex: 1,
-    padding: 10,
-    height: '100%',
-    gap: 5,
   },
   statusAndStarContainer: {
     flexDirection: 'row',
@@ -91,43 +75,9 @@ const styles = StyleSheet.create({
   title: {
     marginBottom: 5,
   },
-  location: {
-    color: globalColors.stroke2,
-  },
-  date: {
-    color: globalColors.stroke2,
-    marginBottom: 10,
-  },
+  date: {},
   starIcon: {
     // 필요한 경우 크기나 마진 조정
-  },
-  tagsWrapper: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 10,
-  },
-  deadlineWrapper: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    position: 'absolute',
-    top: 5,
-    left: 5,
-    padding: 5,
-    borderRadius: 100,
-  },
-  deadlineText: {
-    color: 'white',
-    fontSize: 10,
-  },
-  tagWrapper: {
-    backgroundColor: 'gray',
-    borderRadius: 100,
-    width: 'auto',
-    height: 28,
-    padding: 8,
-  },
-  tag: {
-    fontSize: 11,
   },
 });
 

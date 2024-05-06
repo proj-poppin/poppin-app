@@ -17,8 +17,8 @@ import OrderSvg from '../../assets/icons/order.svg';
 import Text24B from '../../styles/texts/headline/Text24B.ts';
 import FilterSettingButton from '../../components/atoms/button/FilterSettingButton.tsx';
 import Text14M from '../../styles/texts/body_medium/Text14M.ts';
-import SampleInterestPopUpCard from '../../components/molecules/card/SampleInterestPopUpCard.tsx';
 import {dummydata} from './dummydata.tsx';
+import FindCard from '../../components/findPopup/FindCard.tsx';
 
 const findOrderTypes = [
   '최근 오픈 순',
@@ -48,29 +48,11 @@ function OperatingTab() {
         />
       </View>
       <DividerLine height={1} />
-      {/* <SampleInterestPopUpCard
-        Svg={InterestSampleSvg}
-        title="팝업 스토어 이름1"
-        date="2024.01.01-2024.02.02"
-        status={'운영 중'}
-      /> */}
-      {/* <DividerLine height={1} /> */}
+
       {dummydata.map(item => {
-        return <SampleInterestPopUpCard key={item.id} item={item} />;
+        return <FindCard key={item.id} item={item} />;
       })}
-      {/* <SampleInterestPopUpCard
-        Svg={InterestSampleSvg}
-        title="팝업 스토어 이름1"
-        date="2024.01.01-2024.02.02"
-        status={'운영 중'}
-      />
-      <DividerLine height={1} />
-      <SampleInterestPopUpCard
-        Svg={InterestSampleSvg}
-        title="팝업 스토어 이름1"
-        date="2024.01.01-2024.02.02"
-        status={'운영 중'}
-      /> */}
+
       <DividerLine height={1} />
     </ScrollView>
   );
@@ -98,26 +80,8 @@ function UpcomingTab() {
       <DividerLine height={1} />
 
       {dummydata.map(item => {
-        return <SampleInterestPopUpCard key={item.id} item={item} />;
+        return <FindCard key={item.id} item={item} />;
       })}
-      {/* <SampleInterestPopUpCard
-        Svg={InterestSampleSvg}
-        title="팝업 스토어 이름1"
-        date="2024.01.01-2024.02.02"
-        status={'운영 중'}
-      />
-      <SampleInterestPopUpCard
-        Svg={InterestSampleSvg}
-        title="팝업 스토어 이름1"
-        date="2024.01.01-2024.02.02"
-        status={'운영 중'}
-      />
-      <SampleInterestPopUpCard
-        Svg={InterestSampleSvg}
-        title="팝업 스토어 이름1"
-        date="2024.01.01-2024.02.02"
-        status={'운영 중'}
-      /> */}
     </ScrollView>
   );
 }
@@ -142,7 +106,7 @@ function ClosedTab() {
       </View>
       <DividerLine height={1} />
       {dummydata.map(item => {
-        return <SampleInterestPopUpCard key={item.id} item={item} />;
+        return <FindCard key={item.id} item={item} />;
       })}
       {/* 
       <SampleInterestPopUpCard

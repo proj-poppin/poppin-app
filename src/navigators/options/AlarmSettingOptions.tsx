@@ -21,7 +21,7 @@ const AlarmSettingOptions = ({
       <BackSvg />
     </Pressable>
   ),
-  headerTitle: '알림 세팅',
+  headerTitle: '알림 설정',
   // headerRight: () => (
   //   <Pressable onPress={() => navigation.goBack()} style={{padding: 10}}>
   //     <View>

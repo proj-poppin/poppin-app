@@ -23,13 +23,14 @@ type NoticeDetailScreenNavigationProp = NativeStackNavigationProp<
 >;
 const AlarmCard = ({type, elem}: Props) => {
   const navigation = useNavigation<NoticeDetailScreenNavigationProp>();
+
+  const handlePress = () => {
+    if (type === 'notice') {
+      navigation.navigate('NoticeDetail', {nid: elem.id});
+    }
+  };
   return (
-    <Pressable
-      onPress={
-        type === 'notice'
-          ? () => navigation.navigate('NoticeDetail', {nid: elem.id})
-          : null
-      }>
+    <Pressable onPress={handlePress}>
       <View
         style={[
           styles.container,
@@ -39,7 +40,7 @@ const AlarmCard = ({type, elem}: Props) => {
           <View style={styles.imgWrapper}></View>
         </View>
         <View style={styles.contentsWrapper}>
-          <View style={{height: '80%', display: 'flex', gap: 5}}>
+          <View style={styles.titleWrapper}>
             <Text
               style={[
                 styles.title,
@@ -93,6 +94,11 @@ const styles = StyleSheet.create({
   },
   contentsWrapper: {
     width: '80%',
+    display: 'flex',
+    gap: 5,
+  },
+  titleWrapper: {
+    height: '80%',
     display: 'flex',
     gap: 5,
   },

@@ -18,6 +18,7 @@ import Text24B from '../../styles/texts/headline/Text24B.ts';
 import FilterSettingButton from '../../components/atoms/button/FilterSettingButton.tsx';
 import Text14M from '../../styles/texts/body_medium/Text14M.ts';
 import SampleInterestPopUpCard from '../../components/molecules/card/SampleInterestPopUpCard.tsx';
+import {dummydata} from './dummydata.tsx';
 
 const findOrderTypes = [
   '최근 오픈 순',
@@ -47,7 +48,17 @@ function OperatingTab() {
         />
       </View>
       <DividerLine height={1} />
-      <SampleInterestPopUpCard
+      {/* <SampleInterestPopUpCard
+        Svg={InterestSampleSvg}
+        title="팝업 스토어 이름1"
+        date="2024.01.01-2024.02.02"
+        status={'운영 중'}
+      /> */}
+      {/* <DividerLine height={1} /> */}
+      {dummydata.map(item => {
+        return <SampleInterestPopUpCard key={item.id} item={item} />;
+      })}
+      {/* <SampleInterestPopUpCard
         Svg={InterestSampleSvg}
         title="팝업 스토어 이름1"
         date="2024.01.01-2024.02.02"
@@ -59,14 +70,7 @@ function OperatingTab() {
         title="팝업 스토어 이름1"
         date="2024.01.01-2024.02.02"
         status={'운영 중'}
-      />
-      <DividerLine height={1} />
-      <SampleInterestPopUpCard
-        Svg={InterestSampleSvg}
-        title="팝업 스토어 이름1"
-        date="2024.01.01-2024.02.02"
-        status={'운영 중'}
-      />
+      /> */}
       <DividerLine height={1} />
     </ScrollView>
   );
@@ -92,7 +96,11 @@ function UpcomingTab() {
       </View>
 
       <DividerLine height={1} />
-      <SampleInterestPopUpCard
+
+      {dummydata.map(item => {
+        return <SampleInterestPopUpCard key={item.id} item={item} />;
+      })}
+      {/* <SampleInterestPopUpCard
         Svg={InterestSampleSvg}
         title="팝업 스토어 이름1"
         date="2024.01.01-2024.02.02"
@@ -109,7 +117,7 @@ function UpcomingTab() {
         title="팝업 스토어 이름1"
         date="2024.01.01-2024.02.02"
         status={'운영 중'}
-      />
+      /> */}
     </ScrollView>
   );
 }
@@ -133,6 +141,10 @@ function ClosedTab() {
         />
       </View>
       <DividerLine height={1} />
+      {dummydata.map(item => {
+        return <SampleInterestPopUpCard key={item.id} item={item} />;
+      })}
+      {/* 
       <SampleInterestPopUpCard
         Svg={InterestSampleSvg}
         title="팝업 스토어 이름1"
@@ -150,7 +162,7 @@ function ClosedTab() {
         title="팝업 스토어 이름1"
         date="2024.01.01-2024.02.02"
         status={'운영 중'}
-      />
+      /> */}
     </ScrollView>
   );
 }
@@ -218,6 +230,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     marginTop: 15,
     marginHorizontal: 0,
+    marginLeft: 16,
+    marginRight: 16,
   },
   filterContainer: {
     flexDirection: 'row',

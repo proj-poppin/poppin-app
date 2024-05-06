@@ -106,7 +106,7 @@ function ClosedTab() {
       </View>
       <DividerLine height={1} />
       {dummydata.map(item => {
-        return <FindCard key={item.id} item={item} />;
+        return <FindCard type="close" key={item.id} item={item} />;
       })}
       {/* 
       <SampleInterestPopUpCard

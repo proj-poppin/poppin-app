@@ -1,13 +1,14 @@
 import React from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import DefaultImageSvg from '../../../assets/images/interestSample.svg';
-import StarOnSvg from '../../../assets/icons/starOn.svg';
+import DefaultImageSvg from '../../assets/images/interestSample.svg';
+import StarOnSvg from '../../assets/icons/starOn.svg';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12B from '../../styles/texts/label/Text12B.ts';
 import globalColors from '../../styles/color/globalColors.ts';
 import DividerLine from '../DividerLine.tsx';
 
-const FindCard = ({item}: any) => {
+// api 연결 전이다 보니 타입은 일단 any로 했습니다.
+const FindCard = ({item, type}: any) => {
   const formattedTitle =
     item.title.length > 11 ? `${item.title.substring(0, 11)}...` : item.title;
 
@@ -16,9 +17,15 @@ const FindCard = ({item}: any) => {
       <View style={styles.cardContainer}>
         <View style={styles.svgContainer}>
           <DefaultImageSvg width="120" height="120" />
-          <View style={styles.deadlineWrapper}>
-            <Text style={styles.deadlineText}>종료 D-1</Text>
-          </View>
+          {type === 'close' ? (
+            <View style={styles.closeWrapper}>
+              <Text style={styles.closeText}>팝업 종료</Text>
+            </View>
+          ) : (
+            <View style={styles.deadlineWrapper}>
+              <Text style={styles.deadlineText}>종료 D-1</Text>
+            </View>
+          )}
         </View>
         <View style={styles.textContainer}>
           <View style={styles.statusAndStarContainer}>
@@ -128,6 +135,20 @@ const styles = StyleSheet.create({
   },
   tag: {
     fontSize: 11,
+  },
+  closeWrapper: {
+    width: 120,
+    height: 120,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeText: {
+    color: 'white',
   },
 });
 

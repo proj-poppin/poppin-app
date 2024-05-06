@@ -32,8 +32,10 @@ const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: 'column',
     borderRadius: 16,
-    overflow: 'hidden',
-    margin: 10,
+    // 혹시 overflow에 hidden을 하신 이유가 있으실까요 ? 이걸 적으니 카드에 그림자 css가 안먹혀서요
+    // overflow: 'hidden',
+    // margin: 10,
+    marginRight: 10,
     backgroundColor: 'white',
     width: 180,
 

@@ -205,15 +205,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 5,
   },
   textAndQuestionContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   popUpScrollView: {
-    marginTop: 15,
+    marginTop: 13,
     paddingHorizontal: 5, // 스크롤뷰의 좌우 패딩
+    marginBottom: 28,
   },
   questionContainer: {
     position: 'relative',

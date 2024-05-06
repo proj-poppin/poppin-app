@@ -8,6 +8,9 @@ import SplashScreen from 'react-native-splash-screen';
 import getUser from '../apis/user/getUser.ts';
 import LoadingScreen from '../pages/splash/LoadingScreen.tsx';
 import userSlice from '../redux/slices/user.ts';
+import useIsLoggedIn from '../hooks/useIsLoggedIn.tsx';
+import messaging from '@react-native-firebase/messaging';
+
 
 const RootNavigator = () => {
   const dispatch = useDispatch();
@@ -51,6 +54,23 @@ const RootNavigator = () => {
     };
 
     initializeApp();
+  }, [dispatch]);
+
+  useEffect(() => {
+    async function getToken() {
+      try {
+        if (!messaging().isDeviceRegisteredForRemoteMessages) {
+          await messaging().registerDeviceForRemoteMessages();
+        }
+        const token = await messaging().getToken();
+        console.log('phone token', token);
+        // dispatch(userSlice.actions.setPhoneToken(token));
+        // return axios.post(`${Config.API_URL}/phonetoken`, {token});
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getToken();
   }, [dispatch]);
 
   if (initialLoading) {

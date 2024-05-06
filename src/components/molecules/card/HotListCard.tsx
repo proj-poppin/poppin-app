@@ -25,13 +25,14 @@ const styles = StyleSheet.create({
     padding: 10, // 안쪽 여백
     marginVertical: 10, // 수직 마진
     marginRight: 8, // 오른쪽 마진
+    marginBottom: 28,
     alignItems: 'flex-start', // 왼쪽 정렬
   },
   longTextBadgeItem: {
     color: 'black', // 텍스트 색상
     fontSize: 14, // 폰트 사이즈
 
-    marginBottom: 4, // 아래쪽 마진
+    marginBottom: 12, // 아래쪽 마진
   },
 });
 

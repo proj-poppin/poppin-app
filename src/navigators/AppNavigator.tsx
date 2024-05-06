@@ -38,6 +38,12 @@ import PasswordResetScreen from '../pages/sign/PasswordResetScreen.tsx';
 import {PasswordResetOptions} from './options/PasswordResetOptions.tsx';
 import PreferenceScreen from '../pages/preference/PreferenceScreen.tsx';
 import PreferenceSettingOptions from './options/PreferenceSettingOptions.tsx';
+import AlaramSettingScreen from '../pages/Alarm/AlaramSettingScreen.tsx';
+import AlarmScreen from '../pages/Alarm/AlarmScreen.tsx';
+import AlarmOptions from './options/AlarmOptions.tsx';
+import AlarmSettingOptions from './options/AlarmSettingOptions.tsx';
+import NoticeDetailScreen from '../pages/Notice/NoticeDetailScreen.tsx';
+import {NoticeDetailOptions} from './options/NoticeDetailOptions.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -66,6 +72,16 @@ function AppNavigator() {
         options={EntryScreenOptions}
       />
 
+      <Stack.Screen
+        name="Alarm"
+        component={AlarmScreen}
+        options={AlarmOptions}
+      />
+      <Stack.Screen
+        name="AlarmSetting"
+        component={AlaramSettingScreen}
+        options={AlarmSettingOptions}
+      />
       <Stack.Screen
         name="PrivacyPolicy"
         component={PrivacyPolicyScreen}
@@ -123,6 +139,11 @@ function AppNavigator() {
         name={'PopUpDetail'}
         component={PopUpDetailScreen}
         options={PopUpDetailOptions}
+      />
+      <Stack.Screen
+        name={'NoticeDetail'}
+        component={NoticeDetailScreen}
+        options={NoticeDetailOptions}
       />
       <Stack.Screen
         name="ProfileEdit"

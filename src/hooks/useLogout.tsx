@@ -2,7 +2,7 @@ import {useState, useCallback} from 'react';
 import {useAppDispatch} from '../redux/stores';
 import userSlice from '../redux/slices/user';
 import logout from '../apis/auth/logout';
-import EncryptedStorage from 'react-native-encrypted-storage/lib/typescript/EncryptedStorage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 const useLogout = () => {
   const dispatch = useAppDispatch();

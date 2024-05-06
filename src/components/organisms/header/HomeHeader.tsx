@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import PoppinSvg from '../../../assets/icons/poppin.svg';
 import AlarmOffSvg from '../../../assets/icons/alarmOff.svg';
 import HeaderInfoSvg from '../../../assets/icons/headerInfo.svg';
 import InfoSvg from '../../../assets/icons/info.svg';
+import {useNavigation} from '@react-navigation/native';
+import {EntryScreenNavigationProp} from '../../HomeLoginHeader';
 
-const HomeHeader = () => {
+const HomeHeader = ({onClickAlarm}: any) => {
   const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
@@ -21,6 +23,10 @@ const HomeHeader = () => {
   const toggleInfo = () => {
     setShowInfo(prev => !prev); // Toggle the visibility of HeaderInfoSvg
   };
+  const navigation = useNavigation<EntryScreenNavigationProp>();
+  const goToAlarmScreen = () => {
+    navigation.navigate('Alarm');
+  };
 
   return (
     <View style={styles.container}>
@@ -29,7 +35,7 @@ const HomeHeader = () => {
         <TouchableOpacity onPress={toggleInfo} style={styles.iconTouchable}>
           <InfoSvg style={{marginRight: 20}} />
         </TouchableOpacity>
-        <AlarmOffSvg style={styles.alarmStyle} />
+        <AlarmOffSvg style={styles.alarmStyle} onPress={goToAlarmScreen} />
         {showInfo && <HeaderInfoSvg style={styles.headerInfoSvg} />}
       </View>
     </View>

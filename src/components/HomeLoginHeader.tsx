@@ -1,4 +1,10 @@
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import useIsLoggedIn from '../hooks/useIsLoggedIn';
 import HomeMainTitle from './organisms/header/HomeMainTitle';
 import RowPopUpCard from './molecules/card/RowPopUpCard';
@@ -30,9 +36,13 @@ export default function HomeLoginHeader() {
     error: newTastePopUpError,
   } = useGetTasteList();
 
+  const goToAlarmScreen = () => {
+    navigation.navigate('Alarm');
+  };
+
   return isLoggedIn ? (
     <View style={styles.container}>
-      <HomeHeader />
+      <HomeHeader onClickAlarm={goToAlarmScreen} />
       <HomeMainTitle
         text1={`안녕하세요, ${userNickname}님`}
         text2={'취향저격 팝업을 알려드릴게요'}
@@ -58,7 +68,8 @@ export default function HomeLoginHeader() {
     </View>
   ) : (
     <View style={styles.container}>
-      <HomeHeader />
+      <HomeHeader onClickAlarm={goToAlarmScreen} />
+
       <NotLogginBox
         text1={'로그인하고'}
         text2={'팝업 추천을 받아보세요!'}

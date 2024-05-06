@@ -36,16 +36,14 @@ import BasicLoginScreen from '../pages/sign/BasicLoginScreen.tsx';
 import BasicLoginOptions from './options/BasicLoginOptions.tsx';
 import PasswordResetScreen from '../pages/sign/PasswordResetScreen.tsx';
 import {PasswordResetOptions} from './options/PasswordResetOptions.tsx';
-
+import PreferenceScreen from '../pages/preference/PreferenceScreen.tsx';
+import PreferenceSettingOptions from './options/PreferenceSettingOptions.tsx';
+import AlaramSettingScreen from '../pages/Alarm/AlaramSettingScreen.tsx';
 import AlarmScreen from '../pages/Alarm/AlarmScreen.tsx';
 import AlarmOptions from './options/AlarmOptions.tsx';
-import AlaramSettingScreen from '../pages/Alarm/AlaramSettingScreen.tsx';
 import AlarmSettingOptions from './options/AlarmSettingOptions.tsx';
 import NoticeDetailScreen from '../pages/Notice/NoticeDetailScreen.tsx';
 import {NoticeDetailOptions} from './options/NoticeDetailOptions.tsx';
-import PreferenceScreen from '../pages/preference/PreferenceScreen.tsx';
-import PreferenceSettingOptions from './options/PreferenceSettingOptions.tsx';
-
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 

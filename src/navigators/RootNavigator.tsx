@@ -11,13 +11,10 @@ import userSlice from '../redux/slices/user.ts';
 import useIsLoggedIn from '../hooks/useIsLoggedIn.tsx';
 import messaging from '@react-native-firebase/messaging';
 
+
 const RootNavigator = () => {
   const dispatch = useDispatch();
-  useIsLoggedIn();
   const [initialLoading, setInitialLoading] = useState(true);
-  const isFinishedPreferenceSetting = useSelector(
-    (state: RootState) => state.user.isFinishedPreferenceSetting,
-  );
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -87,8 +84,6 @@ const RootNavigator = () => {
       background: 'white',
     },
   };
-
-  console.log('isFinishedPreferenceSetting:', isFinishedPreferenceSetting);
 
   return (
     <NavigationContainer theme={MyTheme}>

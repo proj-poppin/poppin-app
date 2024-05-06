@@ -6,6 +6,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../redux/slices/user.ts';
 import {useAppDispatch} from '../redux/stores';
 import useSetAccessTokenAndRefreshToken from './useSetAccessTokenAndRefreshToken.ts';
+import {useNavigation} from '@react-navigation/native';
 
 // Google 로그인을 위한 커스텀 훅 설정
 GoogleSignin.configure({
@@ -19,6 +20,7 @@ export const useGoogleLogin = () => {
     newUser: false,
   });
   const setTokens = useSetAccessTokenAndRefreshToken();
+  const navigation = useNavigation();
 
   const signInWithGoogle = async () => {
     try {
@@ -41,7 +43,7 @@ export const useGoogleLogin = () => {
         await setTokens({accessToken, refreshToken});
 
         dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
-        // dispatch(userSlice.actions.setAccessToken(accessToken));
+        navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
       } else {
         // 신규 유저라면 닉네입 입력 화면으로 이동
         setGoogleLoginStatus({newUser: true});

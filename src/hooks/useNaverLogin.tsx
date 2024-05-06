@@ -6,6 +6,7 @@ import userSlice from '../redux/slices/user.ts';
 import NaverLogin from '@react-native-seoul/naver-login';
 import loginSocial from '../apis/auth/loginSocial.ts';
 import useSetAccessTokenAndRefreshToken from './useSetAccessTokenAndRefreshToken.ts';
+import {useNavigation} from '@react-navigation/native';
 
 const consumerKey = Config.NAVER_CONSUMER_KEY ?? '';
 const consumerSecret = Config.NAVER_SECRECT_KEY ?? '';
@@ -14,6 +15,8 @@ const serviceUrlScheme = Config.NAVER_URL;
 
 export const useNaverLogin = () => {
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
+
   const [naverLoginStatus, setNaverLoginStatus] = useState({
     newUser: false,
   });
@@ -41,6 +44,9 @@ export const useNaverLogin = () => {
           const {accessToken, refreshToken} = loginResult.data;
           await setTokens({accessToken, refreshToken});
           dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
+          navigation.reset({
+            routes: [{name: 'MainTabNavigator' as never}],
+          });
         } else {
           // 신규 유저라면 닉네입 입력 화면으로 이동
           setNaverLoginStatus({newUser: true});

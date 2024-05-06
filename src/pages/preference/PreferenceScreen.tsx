@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {Pressable, ScrollView, Text, View} from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 import {useNavigation} from '@react-navigation/native';
@@ -12,6 +12,9 @@ import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
 import {useAppDispatch} from '../../redux/stores';
 import userSlice from '../../redux/slices/user.ts';
 import usePreferenceSetting from '../../hooks/usePreferenceSetting.tsx';
+import {RootState} from '../../redux/stores/reducer.ts';
+import {useSelector} from 'react-redux';
+import useIsLoggedIn from '../../hooks/useIsLoggedIn.tsx';
 
 type PreferenceScreenNavigationProp = NativeStackNavigationProp<
   AuthNavigatorParamList,
@@ -29,14 +32,25 @@ function PreferenceScreen() {
 
   const handleSkipComplete = () => {
     dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
-    console.log('skip complete');
     setModalVisible(false);
   };
 
+  const isLoggedIn = useIsLoggedIn();
+  const isFinishedPreferenceSetting = useSelector(
+    (state: RootState) => state.user.isFinishedPreferenceSetting,
+  );
+  useEffect(() => {
+    navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
+  }, [isLoggedIn, isFinishedPreferenceSetting]);
+
   const handleComplete = () => {
-    dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
-    submitPreferences().then(r => console.log(r));
     setModalVisible(false);
+    submitPreferences().then(response => {
+      if (response.success) {
+        dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
+        navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
+      }
+    });
   };
 
   useLayoutEffect(() => {

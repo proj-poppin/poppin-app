@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MainTabNavigator from './MainTabNavigator.tsx';
 import MyProfileEditScreen from '../pages/myPage/ProfileEditScreen.tsx';
@@ -36,12 +36,16 @@ import BasicLoginScreen from '../pages/sign/BasicLoginScreen.tsx';
 import BasicLoginOptions from './options/BasicLoginOptions.tsx';
 import PasswordResetScreen from '../pages/sign/PasswordResetScreen.tsx';
 import {PasswordResetOptions} from './options/PasswordResetOptions.tsx';
+
 import AlarmScreen from '../pages/Alarm/AlarmScreen.tsx';
 import AlarmOptions from './options/AlarmOptions.tsx';
 import AlaramSettingScreen from '../pages/Alarm/AlaramSettingScreen.tsx';
 import AlarmSettingOptions from './options/AlarmSettingOptions.tsx';
 import NoticeDetailScreen from '../pages/Notice/NoticeDetailScreen.tsx';
 import {NoticeDetailOptions} from './options/NoticeDetailOptions.tsx';
+import PreferenceScreen from '../pages/preference/PreferenceScreen.tsx';
+import PreferenceSettingOptions from './options/PreferenceSettingOptions.tsx';
+
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -59,10 +63,17 @@ function AppNavigator() {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen
+        name="MainTabNavigator"
+        component={MainTabNavigator}
+        options={DefaultNoHeaderOptions}
+      />
+
+      <Stack.Screen
         name="Entry"
         component={EntryScreen}
         options={EntryScreenOptions}
       />
+
       <Stack.Screen
         name="Alarm"
         component={AlarmScreen}
@@ -93,6 +104,11 @@ function AppNavigator() {
         component={PasswordResetScreen}
         options={PasswordResetOptions}
       />
+      <Stack.Screen
+        name="PreferenceSetting"
+        component={PreferenceScreen}
+        options={PreferenceSettingOptions}
+      />
 
       <Stack.Screen
         name="SignUpNickNameSocial"
@@ -121,11 +137,6 @@ function AppNavigator() {
         options={DefaultNoHeaderOptions}
       />
 
-      <Stack.Screen
-        name="MainTabNavigator"
-        component={MainTabNavigator}
-        options={DefaultNoHeaderOptions}
-      />
       <Stack.Screen
         name={'PopUpDetail'}
         component={PopUpDetailScreen}

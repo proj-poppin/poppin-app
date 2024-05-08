@@ -24,5 +24,6 @@ export type AppNavigatorParamList = {
   Alarm: undefined;
   AlarmSetting: undefined;
   NoticeDetail: {nid: number};
+  findInputScreen: undefined;
 };
 // Path: src/types/RootStackParamList.ts

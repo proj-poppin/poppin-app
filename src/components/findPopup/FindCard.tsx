@@ -10,7 +10,7 @@ import DividerLine from '../DividerLine.tsx';
 // api 연결 전이다 보니 타입은 일단 any로 했습니다.
 const FindCard = ({item, type}: any) => {
   const formattedTitle =
-    item.title.length > 11 ? `${item.title.substring(0, 11)}...` : item.title;
+    item.title.length > 20 ? `${item.title.substring(0, 20)}...` : item.title;
 
   return (
     <>

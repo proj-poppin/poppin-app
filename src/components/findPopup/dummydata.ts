@@ -18,7 +18,7 @@ export const dummydata = [
     id: 2,
     title: '팝업스토어 이름 제목2',
     location: '서울시 성복구',
-    datetime: '2024.01.01~2024.02.02',
+    date: '2024.01.01~2024.02.02',
     tags: [
       {id: 1, tag: '식품/음료'},
       {id: 2, tag: '마켓형'},

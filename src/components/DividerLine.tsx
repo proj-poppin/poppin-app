@@ -3,8 +3,8 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import globalColors from '../styles/color/globalColors.ts';
 
-const DividerLine = ({height = 15}) => {
-  return <View style={[styles.divider, {height}]} />;
+const DividerLine = ({height = 1, style}: any) => {
+  return <View style={[styles.divider, {height}, style]} />;
 };
 
 const styles = StyleSheet.create({

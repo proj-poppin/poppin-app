@@ -44,6 +44,7 @@ import AlarmOptions from './options/AlarmOptions.tsx';
 import AlarmSettingOptions from './options/AlarmSettingOptions.tsx';
 import NoticeDetailScreen from '../pages/Notice/NoticeDetailScreen.tsx';
 import {NoticeDetailOptions} from './options/NoticeDetailOptions.tsx';
+import FindInputScreen from '../pages/find/FindInputScreen.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -64,6 +65,11 @@ function AppNavigator() {
         name="MainTabNavigator"
         component={MainTabNavigator}
         options={DefaultNoHeaderOptions}
+      />
+      <Stack.Screen
+        name="findInputScreen"
+        component={FindInputScreen}
+        options={{headerShown: false}}
       />
 
       <Stack.Screen

@@ -4,24 +4,13 @@ import globalColors from '../../styles/color/globalColors';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';
-
-type Props = {
-  elem: {
-    id: number;
-    icon: string;
-    title: string;
-    content: string;
-    createdAt: string;
-    isRead: boolean;
-  };
-  type: string;
-};
+import {TAlarmProps} from '../../types/alarm/AlarmCard';
 
 type NoticeDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
   'NoticeDetail'
 >;
-const AlarmCard = ({type, elem}: Props) => {
+const AlarmCard = ({type, elem}: TAlarmProps) => {
   const navigation = useNavigation<NoticeDetailScreenNavigationProp>();
 
   const handlePress = () => {

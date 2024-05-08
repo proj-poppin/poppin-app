@@ -112,15 +112,11 @@ function HomeScreen({navigation}) {
               </TouchableOpacity>
             </View>
           </View>
-          {isDropdownOpen ? (
-            <HotListCard
-              textList={hotList?.slice(0, 5).map(item => item.name) || []} // If hotList is defined, map over it; otherwise, use an empty array
-            />
-          ) : (
-            <HotListCard
-              textList={hotList?.slice(0, 1).map(item => item.name) || []} // Same as above
-            />
-          )}
+
+          <HotListCard
+            isDropdownOpen={isDropdownOpen}
+            textList={hotList?.slice(0, 5).map(item => item.name) || []} // If hotList is defined, map over it; otherwise, use an empty array
+          />
 
           <View style={styles.middleContainer}>
             <Text style={Text18B.text}>새로 오픈</Text>
@@ -209,6 +205,7 @@ const styles = StyleSheet.create({
   textAndQuestionContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 12,
   },
   popUpScrollView: {
     marginTop: 13,

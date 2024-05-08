@@ -13,7 +13,7 @@ const SampleInterestPopUpCard = ({
   status = '', // 상태 텍스트
 }) => {
   const formattedTitle =
-    title.length > 11 ? `${title.substring(0, 11)}...` : title;
+    title.length > 20 ? `${title.substring(0, 20)}...` : title;
 
   return (
     <View style={styles.cardContainer}>

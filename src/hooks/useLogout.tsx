@@ -22,9 +22,6 @@ const useLogout = () => {
           }),
         );
 
-        await EncryptedStorage.setItem('accessToken', '');
-        await EncryptedStorage.setItem('refreshtoken', '');
-
         dispatch(userSlice.actions.resetUser());
         setLogoutStatus({success: true, error: null});
         return setLogoutStatus({success: true, error: null});

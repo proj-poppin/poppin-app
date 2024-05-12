@@ -7,10 +7,17 @@ import Text12B from '../../styles/texts/label/Text12B.ts';
 import globalColors from '../../styles/color/globalColors.ts';
 import DividerLine from '../DividerLine.tsx';
 
-// api 연결 전이다 보니 타입은 일단 any로 했습니다.
 const FindCard = ({item, type}: any) => {
   const formattedTitle =
     item.title.length > 20 ? `${item.title.substring(0, 20)}...` : item.title;
+  const getTagBackgroundColor = (tagId: number) => {
+    // Check the range of tag ID and return the corresponding color
+    if (tagId >= 15 && tagId <= 17) {
+      return globalColors.redLight;
+    } else {
+      return globalColors.blueLight;
+    }
+  };
 
   return (
     <>
@@ -32,7 +39,6 @@ const FindCard = ({item, type}: any) => {
             <Text style={[Text18B.text, styles.title]}>{formattedTitle}</Text>
             <StarOnSvg style={styles.starIcon} />
           </View>
-
           <Text style={styles.location}>{item.location}</Text>
           {item.date && (
             <Text style={[Text12B.text, styles.date]}>{item.date}</Text>
@@ -41,7 +47,12 @@ const FindCard = ({item, type}: any) => {
             <View style={styles.tagsWrapper}>
               {item.tags.map((tag: any, index: number) => {
                 return (
-                  <View key={index} style={styles.tagWrapper}>
+                  <View
+                    key={index}
+                    style={[
+                      styles.tagWrapper,
+                      {backgroundColor: getTagBackgroundColor(tag.tagId)},
+                    ]}>
                     <Text style={styles.tag}>{tag.tag}</Text>
                   </View>
                 );
@@ -127,7 +138,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   tagWrapper: {
-    backgroundColor: 'gray',
     borderRadius: 100,
     width: 'auto',
     height: 28,

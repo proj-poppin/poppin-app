@@ -31,6 +31,7 @@ import Text14B from '../../styles/texts/body_medium/Text14B.ts';
 import useLogout from '../../hooks/useLogout.tsx';
 import useGetUser from '../../hooks/useGetUser.tsx';
 import useIsLoggedIn from '../../hooks/useIsLoggedIn.tsx';
+import logout from '../../apis/auth/logout.ts';
 
 function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
@@ -55,7 +56,7 @@ function MyPageScreen({navigation}) {
   };
 
   const onLogoutClick = () => {
-    showLogoutConfirmation();
+    isLoggedIn ? showLogoutConfirmation() : navigation.navigate('Entry');
   };
 
   useEffect(() => {

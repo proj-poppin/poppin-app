@@ -40,7 +40,7 @@ import PrivacyPolicyScreen from '../pages/sign/PrivacyPolicyScreen.tsx';
 import PrivacyPolicyOptions from './options/PrivacyPolicyOptions.tsx';
 import ServicePolicyScreen from '../pages/sign/ServicePolicyScreen.tsx';
 import ServicePolicyOptions from './options/ServicePolicyOptions.tsx';
-import PopUpDetailScreen from '../pages/find/PopUpDetailScreen.tsx';
+import PopUpDetailScreen from '../pages/detail/PopUpDetailScreen.tsx';
 import PopUpDetailOptions from './options/PopUpDetailOptions.tsx';
 
 const Stack = createNativeStackNavigator<AuthNavigatorParamList>();

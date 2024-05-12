@@ -9,8 +9,6 @@ import React, {
   useState,
 } from 'react';
 import LabelAndInputWithCloseSvg from '../../components/LabelAndInputWithCloseSvg.tsx';
-import {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import PreferenceOptionButtons from '../../components/PreferenceOptionButtons.tsx';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -21,6 +19,8 @@ import ImageContainerRow from '../../components/ImageContainerRow.tsx';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
+import {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 
 function UserRegisterScreen({navigation}) {

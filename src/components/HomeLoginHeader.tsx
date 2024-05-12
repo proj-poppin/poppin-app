@@ -16,6 +16,7 @@ import HomeHeader from './organisms/header/HomeHeader';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../types/AppNavigatorParamList.ts';
 import {useNavigation} from '@react-navigation/native';
+import useGetUser from '../hooks/useGetUser.tsx';
 
 export type EntryScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
@@ -25,7 +26,7 @@ export type EntryScreenNavigationProp = NativeStackNavigationProp<
 export default function HomeLoginHeader() {
   const navigation = useNavigation<EntryScreenNavigationProp>();
   const isLoggedIn = useIsLoggedIn();
-  const userNickname = useSelector((state: RootState) => state.user.nickname);
+  const {data: user, loading, error} = useGetUser();
   const handlePress = () => {
     navigation.replace('Entry');
   };
@@ -44,7 +45,7 @@ export default function HomeLoginHeader() {
     <View style={styles.container}>
       <HomeHeader onClickAlarm={goToAlarmScreen} />
       <HomeMainTitle
-        text1={`안녕하세요, ${userNickname}님`}
+        text1={`안녕하세요, ${user?.nickname}님`}
         text2={'취향저격 팝업을 알려드릴게요'}
       />
       <ScrollView

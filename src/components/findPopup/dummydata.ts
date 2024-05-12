@@ -7,11 +7,11 @@ export const dummydata = [
     date: '2024.01.01~2024.02.02',
     img: InterestSampleSvg,
     tags: [
-      {id: 1, tag: '식품/음료'},
-      {id: 2, tag: '마켓형'},
-      {id: 3, tag: '전시형'},
-      {id: 4, tag: '체험형'},
-      {id: 5, tag: '영화/드라마/예능'},
+      {id: 1, tag: '식품/음료', tagId: 1},
+      {id: 2, tag: '마켓형', tagId: 15},
+      {id: 3, tag: '전시형', tagId: 16},
+      {id: 4, tag: '체험형', tagId: 17},
+      {id: 5, tag: '영화/드라마/예능', tagId: 2},
     ],
   },
   {
@@ -20,11 +20,11 @@ export const dummydata = [
     location: '서울시 성복구',
     date: '2024.01.01~2024.02.02',
     tags: [
-      {id: 1, tag: '식품/음료'},
-      {id: 2, tag: '마켓형'},
-      {id: 3, tag: '전시형'},
-      {id: 4, tag: '체험형'},
-      {id: 5, tag: '영화/드라마/예능'},
+      {id: 1, tag: '식품/음료', tagId: 1},
+      {id: 2, tag: '마켓형', tagId: 15},
+      {id: 3, tag: '전시형', tagId: 16},
+      {id: 4, tag: '체험형', tagId: 17},
+      {id: 5, tag: '영화/드라마/예능', tagId: 2},
     ],
   },
 ];

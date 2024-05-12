@@ -38,9 +38,9 @@ const HotListCard: React.FC<HotListCardProps> = ({
 
 const styles = StyleSheet.create({
   longTextBadgeContainer: {
-    backgroundColor: globalColors.hotList,
+    backgroundColor: globalColors.redLight,
     borderRadius: 10,
-    borderColor: globalColors.hotList,
+    borderColor: globalColors.redLight,
     padding: 10,
     marginVertical: 10,
     marginRight: 8,

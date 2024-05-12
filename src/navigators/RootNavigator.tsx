@@ -11,7 +11,6 @@ import userSlice from '../redux/slices/user.ts';
 import useIsLoggedIn from '../hooks/useIsLoggedIn.tsx';
 import messaging from '@react-native-firebase/messaging';
 
-
 const RootNavigator = () => {
   const dispatch = useDispatch();
   const [initialLoading, setInitialLoading] = useState(true);
@@ -38,9 +37,11 @@ const RootNavigator = () => {
       // 토큰을 사용하여 사용자 정보 조회
       try {
         const userResponse = await getUser();
+        console.log(userResponse);
         if (userResponse.success) {
           // 사용자 정보 조회 성공, 메인 화면으로
           console.log('User info fetched successfully.');
+          console.log(userResponse.data);
           dispatch(userSlice.actions.getUser(userResponse.data));
         } else {
           throw new Error('User info fetch failed.');
@@ -53,7 +54,7 @@ const RootNavigator = () => {
       }
     };
 
-    initializeApp();
+    initializeApp().then();
   }, [dispatch]);
 
   useEffect(() => {

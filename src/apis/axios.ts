@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import useIsLoggedIn from '../hooks/useIsLoggedIn.tsx';
 
 const apiInstance = axios.create({
   baseURL: Config.API_URL,
@@ -32,6 +33,8 @@ apiInstance.interceptors.response.use(
     ) {
       originalRequest._retry = true;
 
+      console.log('refresh Start!!!!!!!!!:', originalRequest);
+      const isLoggedIn = useIsLoggedIn();
       try {
         const originalRefreshToken = await EncryptedStorage.getItem(
           'refreshToken',
@@ -45,8 +48,12 @@ apiInstance.interceptors.response.use(
           },
         );
         if (response.data.success) {
-          const {accessToken} = response.data.data;
+          console.log('kiki');
+          console.log(response);
+          const {accessToken} = response.data.data.accessToken;
+          const {refreshToken} = response.data.data.refreshToken;
           await EncryptedStorage.setItem('accessToken', accessToken);
+          await EncryptedStorage.setItem('refreshToken', refreshToken);
 
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return axios(originalRequest);

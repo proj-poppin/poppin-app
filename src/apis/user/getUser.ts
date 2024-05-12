@@ -10,10 +10,10 @@ export interface GetUserData {
 const getUser = async (): Promise<CommonResponse<GetUserData>> => {
   try {
     const response = await apiInstance.get('/api/v1/user');
-    console.log('Sign up response:', response.data);
+    console.log('getUser response:', response.data);
 
     if (response.data.success) {
-      console.log('Sign up successful', response.data);
+      console.log('getUser response successful', response.data);
       return response.data;
     } else {
       // API 응답이 success=false인 경우

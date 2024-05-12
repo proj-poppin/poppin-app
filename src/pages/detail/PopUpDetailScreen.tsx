@@ -29,6 +29,26 @@ import DividerLine from '../../components/DividerLine.tsx';
 import {useState} from 'react';
 import useAddInterestPopUp from '../../hooks/useAddInterestPopUp.tsx';
 import useDeleteInterestPopUp from '../../hooks/useDeleteInterestPopUp.tsx';
+import HorizontalBarChart from '../../components/HorizontalBarChart.tsx';
+import Text18B from '../../styles/texts/body_large/Text18B.ts';
+import Text18R from '../../styles/texts/body_large/Text18R.ts';
+import Text18M from '../../styles/texts/body_large/Text18M.ts';
+import Text16B from '../../styles/texts/body_medium_large/Text16B.ts';
+import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
+import VerticalDividerLine from '../../components/organisms/VerticalDividerLine.tsx';
+import PercentageButton from '../../components/findPopup/percentageButton.tsx';
+import ReviewProfileSvg from '../../assets/detail/reviewProfile.svg';
+import VerifiedReviewSvg from '../../assets/detail/verifiedReview.svg';
+import WriteReviewSvg from '../../assets/detail/writeReview.svg';
+import SvgWithNameBoxLabel from '../../components/SvgWithNameBoxLabel.tsx';
+import ReasonItem from '../../components/ReasonItem.tsx';
+import OrderSvg from '../../assets/icons/order.svg';
+import Text24B from '../../styles/texts/headline/Text24B.ts';
+import PressableUnderlineText from '../../components/molecules/pressable_text/PressableUnderlineText.tsx';
+import UnderlinedTextButton from '../../components/UnderlineTextButton.tsx';
+import InterestSampleSvg from '../../assets/images/interestSample.svg';
+import ImageContainerRow from '../../components/ImageContainerRow.tsx';
+import LikeReviewSvg from '../../assets/detail/likesReview.svg';
 
 const PopUpDetailScreen = ({route}) => {
   const {id} = route.params;
@@ -49,6 +69,12 @@ const PopUpDetailScreen = ({route}) => {
     loading: deletingInterestLoading,
     success: deletingInterestSuccess,
   } = useDeleteInterestPopUp();
+
+  const [isOnlyVerifiedReview, setIsOnlyVerifiedReview] = useState(false);
+
+  const handleIsOnlyVerifiedReview = () => {
+    setIsOnlyVerifiedReview(!isOnlyVerifiedReview);
+  };
 
   const handleToggleInterest = async () => {
     console.log('handleToggleInterest:', isInterested);
@@ -89,7 +115,7 @@ const PopUpDetailScreen = ({route}) => {
             <Pressable
               onPress={() => handleOpenLink(detailPopUpData.homepageLink)}>
               {detailPopUpData.isInstagram ? (
-                <ButtonInstagramSvg />
+                <ButtonWebSvg />
               ) : (
                 <ButtonWebSvg />
               )}
@@ -122,7 +148,7 @@ const PopUpDetailScreen = ({route}) => {
               <Text style={[Text14B.text, {color: globalColors.purple}]}>
                 기간:
               </Text>
-              <Text style={Text14R.text}>
+              <Text style={Text14M.text}>
                 {`${detailPopUpData.openDate} ~ ${detailPopUpData.closeDate}`}
               </Text>
             </View>
@@ -130,7 +156,7 @@ const PopUpDetailScreen = ({route}) => {
               <Text style={[Text14B.text, {color: globalColors.purple}]}>
                 운영 시간:
               </Text>
-              <Text style={Text14R.text}>
+              <Text style={Text14M.text}>
                 {`${detailPopUpData.openTime} ~ ${detailPopUpData.closeTime}`}
               </Text>
             </View>
@@ -139,7 +165,7 @@ const PopUpDetailScreen = ({route}) => {
               <Text style={[Text14B.text, {color: globalColors.purple}]}>
                 주소:
               </Text>
-              <Text style={Text14R.text}>{detailPopUpData.address}</Text>
+              <Text style={Text14M.text}>{detailPopUpData.address}</Text>
             </View>
           </View>
 
@@ -171,6 +197,81 @@ const PopUpDetailScreen = ({route}) => {
           <Text style={[Text20B.text, {color: globalColors.purple}]}>
             방문자 데이터
           </Text>
+          <View style={styles.reviewContainer}>
+            <View style={styles.reviewRowSection}>
+              <Text style={[Text16B.text, {color: globalColors.font}]}>
+                팝업 만족도
+              </Text>
+              <Text style={[Text16M.text]}>
+                방문자의 83%가 이 팝업에 만족하고 있어요!
+              </Text>
+            </View>
+            <View style={styles.reviewRowSection}>
+              <Text style={[Text16B.text, {color: globalColors.font}]}>
+                혼잡도
+              </Text>
+              <View style={styles.reviewChartSection}>
+                <Text style={[Text18B.text]}>평일</Text>
+                <View style={styles.chartRowSection}>
+                  <Text style={[Text18M.text]}>오전</Text>
+                  <VerticalDividerLine />
+                  <HorizontalBarChart percentage={45} />
+                  <PercentageButton percentage={45} />
+                </View>
+                <View style={styles.chartRowSection}>
+                  <Text style={[Text18M.text]}>오전</Text>
+                  <VerticalDividerLine />
+                  <HorizontalBarChart percentage={55} />
+                  <PercentageButton percentage={55} />
+                </View>
+                <Text style={[Text18B.text]}>주말</Text>
+                <View style={styles.chartRowSection}>
+                  <Text style={[Text18M.text]}>오전</Text>
+                  <VerticalDividerLine />
+                  <HorizontalBarChart percentage={90} />
+                  <PercentageButton percentage={90} />
+                </View>
+                <View style={styles.chartRowSection}>
+                  <Text style={[Text18M.text]}>오전</Text>
+                  <VerticalDividerLine />
+                  <HorizontalBarChart percentage={45} />
+                  <PercentageButton percentage={45} />
+                </View>
+              </View>
+            </View>
+            <DividerLine height={10} />
+            <View style={styles.iconContainer}>
+              <Text style={[Text20B.text, {color: globalColors.purple}]}>
+                방문 후기
+              </Text>
+              <SvgWithNameBoxLabel
+                Icon={WriteReviewSvg}
+                label="방문후기 작성하기"
+              />
+            </View>
+            <View style={styles.rowBetweenContainer}>
+              <View style={styles.recentReviewHeader}>
+                <ReasonItem
+                  isSelected={isOnlyVerifiedReview}
+                  onClicked={handleIsOnlyVerifiedReview}
+                />
+                <Text>인증된 방문 후기만 보기</Text>
+              </View>
+              <View style={styles.recentReviewHeader}>
+                <Text>추천순</Text>
+                <OrderSvg />
+              </View>
+            </View>
+            <View style={styles.rowBetweenContainer}>
+              <View style={styles.recentReviewHeader}>
+                <ReviewProfileSvg />
+                <Text style={Text20B.text}>콩나물 부침개</Text>
+                <VerifiedReviewSvg />
+                <SvgWithNameBoxLabel Icon={LikeReviewSvg} label="00" />
+              </View>
+              <UnderlinedTextButton label={'신고하기'} onClicked={() => {}} />
+            </View>
+          </View>
         </View>
       </ScrollView>
       <View style={styles.bottomBar}>
@@ -190,6 +291,22 @@ const PopUpDetailScreen = ({route}) => {
 };
 
 const styles = StyleSheet.create({
+  reviewContainer: {
+    flexDirection: 'column',
+    gap: 10,
+  },
+  reviewRowSection: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  chartRowSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  reviewChartSection: {
+    flexDirection: 'column',
+    columnGap: 20,
+  },
   leftButtonText: {
     marginLeft: 10,
     padding: 10,
@@ -223,10 +340,19 @@ const styles = StyleSheet.create({
     color: globalColors.font,
     marginBottom: 16,
   },
+  rowBetweenContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   iconContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  recentReviewHeader: {
+    gap: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   socialIcons: {
     flexDirection: 'row',

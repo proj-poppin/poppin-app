@@ -15,7 +15,7 @@ import OperatorRegisterScreen from '../pages/myPage/OperatorRegisterScreen.tsx';
 import MemberDeleteScreen from '../pages/myPage/MemberDeleteScreen.tsx';
 import {AppNavigatorParamList} from '../types/AppNavigatorParamList.ts';
 import AppBarLeftPressableIconButton from '../components/molecules/pressable_icon/AppbarLeftPressableIconButton.tsx';
-import PopUpDetailScreen from '../pages/find/PopUpDetailScreen.tsx';
+import PopUpDetailScreen from '../pages/detail/PopUpDetailScreen.tsx';
 import PopUpDetailOptions from './options/PopUpDetailOptions.tsx';
 import EntryScreen from '../pages/sign/EntryScreen.tsx';
 import {EntryScreenOptions} from './options/EntryScreenOptions.tsx';
@@ -38,8 +38,8 @@ import PasswordResetScreen from '../pages/sign/PasswordResetScreen.tsx';
 import {PasswordResetOptions} from './options/PasswordResetOptions.tsx';
 import PreferenceScreen from '../pages/preference/PreferenceScreen.tsx';
 import PreferenceSettingOptions from './options/PreferenceSettingOptions.tsx';
-import AlaramSettingScreen from '../pages/Alarm/AlaramSettingScreen.tsx';
-import AlarmScreen from '../pages/Alarm/AlarmScreen.tsx';
+import AlarmSettingScreen from '../pages/alarm/AlaramSettingScreen.tsx';
+import AlarmScreen from '../pages/alarm/AlarmScreen.tsx';
 import AlarmOptions from './options/AlarmOptions.tsx';
 import AlarmSettingOptions from './options/AlarmSettingOptions.tsx';
 import NoticeDetailScreen from '../pages/Notice/NoticeDetailScreen.tsx';
@@ -85,7 +85,7 @@ function AppNavigator() {
       />
       <Stack.Screen
         name="AlarmSetting"
-        component={AlaramSettingScreen}
+        component={AlarmSettingScreen}
         options={AlarmSettingOptions}
       />
       <Stack.Screen

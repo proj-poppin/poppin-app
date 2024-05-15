@@ -5,10 +5,7 @@ import CustomSelectDropdown from '../../../components/CustomDropDown.tsx';
 import OrderSvg from '../../../assets/icons/order.svg';
 import Text14M from '../../../styles/texts/body_medium/Text14M.ts';
 import {dummydata} from '../../../components/findPopup/dummydata.ts';
-import {
-  POPUUP_TYPES,
-  findOrderTypes,
-} from '../../../components/findPopup/constants.ts';
+import {POPUUP_TYPES} from '../../../components/findPopup/constants.ts';
 import FindCard from '../../../components/findPopup/FindCard.tsx';
 import CategorySelectButton from '../../../components/findPopup/CategorySelectButton.tsx';
 import FilterSettingButton from '../../../components/atoms/button/FilterSettingButton.tsx';
@@ -18,11 +15,13 @@ import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescri
 import globalColors from '../../../styles/color/globalColors.ts';
 import NextMiddleButton from '../../../components/atoms/button/NextMiddleButton.tsx';
 import BackMiddleButton from '../../../components/atoms/button/BackMiddleButton.tsx';
+import {findOrderTypes} from '../FindScreen.tsx';
 
 type TFilter = {id: number; name: string; selected: boolean};
 
-function OperationTab() {
+function OperationTab({onOrderSelect, onCategoryClick, onPresentModal}: any) {
   const [selectedTags, setSelectedTags] = useState<TFilter[]>(POPUUP_TYPES);
+
   const [isSettingApplied, setIsSettingApplied] = useState(false);
   const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
     useState(false);
@@ -69,6 +68,7 @@ function OperationTab() {
     ) => (
       <BottomSheetBackdrop
         {...props}
+        onPress={handleBackdropPress}
         pressBehavior="close"
         appearsOnIndex={0}
         disappearsOnIndex={-1}
@@ -80,18 +80,25 @@ function OperationTab() {
     console.log('handleSheetChanges', index);
   }, []);
 
+  const handleBackdropPress = () => {
+    if (!isSettingApplied) {
+      bottomSheetModalRef.current?.close();
+    }
+  };
+
   return (
     <>
       <ScrollView>
         <View style={styles.headerContainer}>
           <FilterSettingButton
-            onPress={handlePresentModal}
+            onPress={onPresentModal}
             isSetting={isSettingApplied}
           />
           <CustomSelectDropdown
             data={findOrderTypes}
-            onSelect={(selectedItem: any, index: any) =>
-              console.log(selectedItem, index)
+            onSelect={
+              (selectedItem: any, index: any) => onOrderSelect(index)
+              // console.log(selectedItem, index)
             }
             buttonWidth={120}
             iconComponent={<OrderSvg style={styles.dropdownIcon} />}
@@ -103,7 +110,7 @@ function OperationTab() {
         </View>
         <DividerLine height={1} />
         {dummydata.map(item => {
-          return <FindCard type="close" key={item.id} item={item} />;
+          return <FindCard key={item.id} item={item} />;
         })}
         <DividerLine height={1} />
       </ScrollView>
@@ -163,13 +170,18 @@ function OperationTab() {
           </ScrollView>
           <View style={styles.buttonsWrapper}>
             <BackMiddleButton
-              onPress={() => {}}
+              onPress={() => {
+                setIsSettingApplied(false);
+                setSelectedTags(availableTags);
+                bottomSheetModalRef.current?.close();
+              }}
               title={'초기화'}
               buttonWidth={'30%'}
             />
             <NextMiddleButton
               onPress={() => {
                 setIsSettingApplied(true);
+                onCategoryClick(selectedTags);
                 bottomSheetModalRef.current?.close();
               }}
               disabled={!isOneMoreCategorySelected}

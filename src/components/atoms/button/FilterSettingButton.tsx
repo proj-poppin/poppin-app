@@ -4,7 +4,7 @@ import FilterSvg from '../../../assets/icons/filter.svg';
 import globalColors from '../../../styles/color/globalColors';
 
 interface FilterSettingsButtonProps {
-  onPress: () => void;
+  onPress: any;
   isSetting: boolean;
 }
 

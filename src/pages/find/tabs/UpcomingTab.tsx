@@ -5,10 +5,7 @@ import CustomSelectDropdown from '../../../components/CustomDropDown.tsx';
 import OrderSvg from '../../../assets/icons/order.svg';
 import Text14M from '../../../styles/texts/body_medium/Text14M.ts';
 import {dummydata} from '../../../components/findPopup/dummydata.ts';
-import {
-  POPUUP_TYPES,
-  findOrderTypes,
-} from '../../../components/findPopup/constants.ts';
+import {POPUUP_TYPES} from '../../../components/findPopup/constants.ts';
 import FindCard from '../../../components/findPopup/FindCard.tsx';
 import CategorySelectButton from '../../../components/findPopup/CategorySelectButton.tsx';
 import FilterSettingButton from '../../../components/atoms/button/FilterSettingButton.tsx';
@@ -18,15 +15,17 @@ import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescri
 import globalColors from '../../../styles/color/globalColors.ts';
 import NextMiddleButton from '../../../components/atoms/button/NextMiddleButton.tsx';
 import BackMiddleButton from '../../../components/atoms/button/BackMiddleButton.tsx';
+import {findOrderTypes} from '../FindScreen.tsx';
 
 type TFilter = {id: number; name: string; selected: boolean};
 
-function UpcomingTab() {
-  const [selectedTags, setSelectedTags] = useState<TFilter[]>(POPUUP_TYPES);
+function UpcomingTab({onOrderSelect, onCategoryClick, availableTags}: any) {
+  const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
   const [isSettingApplied, setIsSettingApplied] = useState(false);
   const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
     useState(false);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  console.log('hi222');
 
   useEffect(() => {
     const isSelected = selectedTags.some(tag => tag.selected);

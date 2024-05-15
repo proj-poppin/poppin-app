@@ -19,7 +19,7 @@ type Item = {
 // Define types for the props
 interface CategorySelectButtonProps {
   item: Item;
-  onClick: (id: string) => void;
+  onClick: (item: any) => void;
   selected: boolean;
   tagDeleteClick: (id: string) => void;
 }
@@ -31,7 +31,7 @@ const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
   tagDeleteClick,
 }) => {
   return (
-    <Pressable onPress={() => onClick(item.id)}>
+    <Pressable onPress={() => onClick(item)}>
       <View style={[styles.tag, item.selected && styles.selectedTag]}>
         <Text>{item.name}</Text>
         {selected && (

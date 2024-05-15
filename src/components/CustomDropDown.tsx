@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import globalColors from '../styles/color/globalColors.ts';
@@ -16,7 +16,7 @@ const CustomSelectDropdown = ({
 
   return (
     <SelectDropdown
-      data={data}
+      data={data.map((item: any) => item.label)}
       onSelect={onSelect}
       buttonTextAfterSelection={buttonTextAfterSelection}
       rowTextForSelection={(item, index) => item}
@@ -29,7 +29,7 @@ const CustomSelectDropdown = ({
       renderCustomizedButtonChild={(selectedItem, index) => (
         <View style={styles.buttonInnerContainer}>
           <Text style={[Text14M.text, buttonTextStyle]}>
-            {selectedItem || '선택'}
+            {selectedItem || data[0].label}
           </Text>
           {iconComponent}
         </View>

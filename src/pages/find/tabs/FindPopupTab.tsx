@@ -1,37 +1,11 @@
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {ScrollView, StyleSheet} from 'react-native';
+import React from 'react';
 import DividerLine from '../../../components/DividerLine.tsx';
-import CustomSelectDropdown from '../../../components/CustomDropDown.tsx';
-import OrderSvg from '../../../assets/icons/order.svg';
-import Text14M from '../../../styles/texts/body_medium/Text14M.ts';
 import {dummydata} from '../../../components/findPopup/dummydata.ts';
-import {POPUUP_TYPES} from '../../../components/findPopup/constants.ts';
 import FindCard from '../../../components/findPopup/FindCard.tsx';
-import CategorySelectButton from '../../../components/findPopup/CategorySelectButton.tsx';
-import FilterSettingButton from '../../../components/atoms/button/FilterSettingButton.tsx';
-import {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 import globalColors from '../../../styles/color/globalColors.ts';
-import NextMiddleButton from '../../../components/atoms/button/NextMiddleButton.tsx';
-import BackMiddleButton from '../../../components/atoms/button/BackMiddleButton.tsx';
-import {findOrderTypes} from '../FindScreen.tsx';
-
-type TFilter = {id: number; name: string; selected: boolean};
 
 function FindPopupTab({type}: any) {
-  // const [selectedTags, setSelectedTags] = useState<TFilter[]>(POPUUP_TYPES);
-
-  // const [isSettingApplied, setIsSettingApplied] = useState(false);
-  // const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
-  //   useState(false);
-  // const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
-  // useEffect(() => {
-  //   const isSelected = selectedTags.some(tag => tag.selected);
-  //   setIsOneMoreCategorySelected(isSelected);
-  // }, [selectedTags]);
-
   return (
     <ScrollView>
       <DividerLine height={1} />

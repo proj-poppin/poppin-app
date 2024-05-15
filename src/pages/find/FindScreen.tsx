@@ -65,8 +65,6 @@ function FindScreen({navigation}: any) {
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  // console.log('findPopupListData', findPopupListData);
-
   const {
     data: findPopupListData,
     loading: findPopupListLoading,
@@ -436,8 +434,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: '#fff',
     elevation: 2,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 17,
+    paddingRight: 17,
   },
   tabItem: {
     flex: 1,
@@ -446,7 +444,7 @@ const styles = StyleSheet.create({
   },
 
   activeTabItem: {
-    borderBottomWidth: 3, // 선택된 탭 아래에 선 추가
+    borderBottomWidth: 5, // 선택된 탭 아래에 선 추가
     flex: 1,
     alignItems: 'center',
     padding: 16,

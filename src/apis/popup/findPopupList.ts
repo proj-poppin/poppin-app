@@ -10,7 +10,7 @@ export type TFilterparmas = {
   taste: string;
   size: number;
 };
-const getFindPopUpList = async (params: TFilterparmas) => {
+const getFindPopUpList = async (params: any) => {
   try {
     const response = await apiInstance.get('/api/v1/popup/guest/', {
       params: params,

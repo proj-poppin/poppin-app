@@ -24,17 +24,13 @@ import {BottomSheetBackdrop, BottomSheetView} from '@gorhom/bottom-sheet';
 import FindFilterBottomSheet from '../../components/findPopup/FindFilterBackdrop.tsx';
 import CategorySelectButton from '../../components/findPopup/CategorySelectButton.tsx';
 import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
-
-import ClosedTab from './tabs/ClosedTab.tsx';
-import UpcomingTab from './tabs/UpcomingTab.tsx';
-import OperatingTab from './tabs/OperationTab.tsx';
 import BackMiddleButton from '../../components/atoms/button/BackMiddleButton.tsx';
 import NextMiddleButton from '../../components/atoms/button/NextMiddleButton.tsx';
 import {POPUUP_TYPES} from '../../components/findPopup/constants.ts';
-import FindPopupTab from './tabs/FindPopupTab.tsx';
+import FindPopupTab from './FindPopupTab.tsx';
 import useGetFindPopupList from '../../hooks/findpopup/useGetFindPopupList.tsx';
 
-export const findOrderTypes = [
+export const FINDORDER_TYPES = [
   {label: '최근 오픈 순', value: 'OPEN'},
   {label: '종료 임박 순', value: 'CLOSE'},
   {label: '조회 순', value: 'VIEW'},
@@ -57,7 +53,7 @@ function FindScreen({navigation}: any) {
   const [size, setSize] = useState(10);
   const [selectedTab, setSelectedTab] = useState('운영 중'); // 'operating', 'upcoming', 'closed'
   const [selectedOrder, setSelectedOrder] = useState('OPEN');
-
+  const [searchKeyword, setSearchKeyword] = useState('안녕');
   const [isSettingApplied, setIsSettingApplied] = useState(false);
   const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
     useState(false);
@@ -69,11 +65,17 @@ function FindScreen({navigation}: any) {
     loading: findPopupListLoading,
     error: findPopupListError,
   } = useGetFindPopupList(
+    page,
+    size,
     selectedTab === '운영 중'
       ? 'NOTYET'
       : selectedTab === '오픈 예정'
       ? 'OPERATING'
       : 'TERMINATING',
+
+    selectedOrder,
+    availableTags,
+    searchKeyword,
   );
 
   // const {
@@ -112,7 +114,7 @@ function FindScreen({navigation}: any) {
   };
 
   const handleOrderSelect = (value: any) => {
-    const orderValue = findOrderTypes[value].value;
+    const orderValue = FINDORDER_TYPES[value].value;
     console.log('orderValue', orderValue);
     setSelectedOrder(orderValue);
   };
@@ -234,7 +236,7 @@ function FindScreen({navigation}: any) {
                   isSetting={isSettingApplied}
                 />
                 <CustomSelectDropdown
-                  data={findOrderTypes}
+                  data={FINDORDER_TYPES}
                   onSelect={
                     (selectedItem: any, index: any) => handleOrderSelect(index)
                     // console.log(selectedItem, index)

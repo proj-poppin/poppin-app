@@ -9,8 +9,14 @@ interface GetClosingState {
   data: GetPopUpListResponse[] | null;
 }
 
-const useGetFindPopupList = (filterParams: any) => {
-  console.log('filter', filterParams);
+const useGetFindPopupList = (
+  page: number,
+  size: number,
+  selectedTab: string,
+  selectedOrder: any,
+  availableTags: any,
+  searchKeyword: string,
+) => {
   const [getListState, setGetListState] = useState<GetClosingState>({
     loading: false,
     error: null,
@@ -20,6 +26,26 @@ const useGetFindPopupList = (filterParams: any) => {
   useEffect(() => {
     const fetcFindPopupList = async () => {
       setGetListState(prevState => ({...prevState, loading: true}));
+      const selectedCategoryString = availableTags
+        .slice(0, 14)
+        .map(item => (item.selected ? '1' : '0'))
+        .join('');
+
+      const selectedTypeString = availableTags
+        .slice(14, availableTags.length)
+        .map(item => (item.selected ? '1' : '0'))
+        .join('');
+
+      const filterParams = {
+        page,
+        size,
+        selectedTab,
+        searchKeyword,
+        selectedCategoryString,
+        selectedTypeString,
+      };
+      console.log('selectedTypeString', selectedTypeString);
+      console.log('selectedCategoryString', selectedCategoryString);
       try {
         const response = await getFindPopUpList(filterParams);
         if (response.success) {
@@ -43,7 +69,7 @@ const useGetFindPopupList = (filterParams: any) => {
       }
     };
     fetcFindPopupList();
-  }, [filterParams]);
+  }, [page, size, selectedOrder, selectedTab, availableTags]);
 
   return getListState;
 };

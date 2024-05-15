@@ -59,30 +59,31 @@ function FindInputScreen({navigation}: any) {
               <NoKeyword />
             </View>
           ) : (
-            keywordsTrace.map(keyword => {
-              return (
-                <>
-                  <View
-                    key={keyword.id}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      flexDirection: 'row',
-                    }}>
-                    <Text>{keyword.keyword}</Text>
-                    <Pressable onPress={() => handleClickKeyword(keyword.id)}>
-                      <InputCancel />
-                    </Pressable>
-                  </View>
-                  <View>
-                    <Text
-                      style={{textAlign: 'right', color: globalColors.stroke2}}>
-                      전체 삭제하기
-                    </Text>
-                  </View>
-                </>
-              );
-            })
+            <>
+              {keywordsTrace.map(keyword => {
+                return (
+                  <>
+                    <View
+                      key={keyword.id}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                      }}>
+                      <Text>{keyword.keyword}</Text>
+                      <Pressable onPress={() => handleClickKeyword(keyword.id)}>
+                        <InputCancel />
+                      </Pressable>
+                    </View>
+                  </>
+                );
+              })}
+              <View>
+                <Text style={{textAlign: 'right', color: globalColors.stroke2}}>
+                  전체 삭제하기
+                </Text>
+              </View>
+            </>
           )}
         </View>
       </View>

@@ -115,7 +115,7 @@ function HomeScreen({navigation}) {
 
           <HotListCard
             isDropdownOpen={isDropdownOpen}
-            textList={hotList?.slice(0, 5).map(item => item.name) || []} // If hotList is defined, map over it; otherwise, use an empty array
+            textList={hotList?.slice(0, 5).map(item => item.name) || []}
           />
 
           <View style={styles.middleContainer}>

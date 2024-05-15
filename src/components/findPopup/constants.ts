@@ -17,10 +17,3 @@ export const POPUUP_TYPES = [
   {id: 16, name: '🖼️전시형', selected: false},
   {id: 17, name: '🏃체험형', selected: false},
 ];
-
-export const findOrderTypes = [
-  '최근 오픈 순',
-  '종료 임박 순',
-  '조회 순',
-  '최신 업로드 순',
-];

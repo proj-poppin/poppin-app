@@ -8,18 +8,17 @@ import {
 } from 'react-native';
 import globalColors from '../../styles/color/globalColors';
 import TestSvg from '../../assets/icons/categoryButtonClose.svg';
+import LinearGradient from 'react-native-linear-gradient';
 
-// Define a type for the item prop
 type Item = {
   id: string;
   name: string;
   selected?: boolean;
 };
 
-// Define types for the props
 interface CategorySelectButtonProps {
   item: Item;
-  onClick: (id: string) => void;
+  onClick: (item: any) => void;
   selected: boolean;
   tagDeleteClick: (id: string) => void;
 }
@@ -30,16 +29,41 @@ const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
   selected,
   tagDeleteClick,
 }) => {
+  if (selected) {
+    return (
+      <Pressable onPress={() => onClick(item)}>
+        <LinearGradient
+          colors={globalColors.blueToPurpleGradient}
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 1}}
+          style={styles.gradientBorder}>
+          <View style={styles.innerContent}>
+            <Text>{item.name}</Text>
+            <TouchableOpacity onPress={() => tagDeleteClick(item.id)}>
+              <TestSvg />
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
+      </Pressable>
+    );
+  }
   return (
-    <Pressable onPress={() => onClick(item.id)}>
-      <View style={[styles.tag, item.selected && styles.selectedTag]}>
-        <Text>{item.name}</Text>
-        {selected && (
-          <TouchableOpacity onPress={() => tagDeleteClick(item.id)}>
-            <TestSvg />
-          </TouchableOpacity>
-        )}
-      </View>
+    <Pressable onPress={() => onClick(item)}>
+      {item.selected ? (
+        <LinearGradient
+          colors={globalColors.blueToPurpleGradient}
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 1}}
+          style={styles.gradientBorder}>
+          <View style={styles.innerContent}>
+            <Text>{item.name}</Text>
+          </View>
+        </LinearGradient>
+      ) : (
+        <View style={styles.tag}>
+          <Text>{item.name}</Text>
+        </View>
+      )}
     </Pressable>
   );
 };
@@ -66,6 +90,20 @@ const styles = StyleSheet.create({
     borderColor: globalColors.blue,
     flexDirection: 'row',
     gap: 5,
+    alignItems: 'center',
+  },
+  gradientBorder: {
+    borderRadius: 30,
+    padding: 2,
+  },
+  innerContent: {
+    borderRadius: 28,
+    backgroundColor: globalColors.blueLight,
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 14,
+    paddingRight: 14,
+    flexDirection: 'row',
     alignItems: 'center',
   },
 });

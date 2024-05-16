@@ -15,7 +15,7 @@ const getFindPopUpList = async (params: any) => {
       params: params,
     });
 
-    // console.log('getFindPopupList response:', response.data);
+    console.log('getFindPopupList response:', response.data);
 
     if (response.data.success) {
       return response.data;

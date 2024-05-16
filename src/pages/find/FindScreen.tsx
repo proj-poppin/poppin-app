@@ -28,7 +28,6 @@ import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescri
 import BackMiddleButton from '../../components/atoms/button/BackMiddleButton.tsx';
 import NextMiddleButton from '../../components/atoms/button/NextMiddleButton.tsx';
 import {POPUUP_TYPES} from '../../components/findPopup/constants.ts';
-import useGetFindPopupList from '../../hooks/findpopup/useGetFindPopupList.tsx';
 import NotyetTab from './tab/NotyetTab.tsx';
 import OperationTab from './tab/OperatonTab.tsx';
 import ClosedTab from './tab/ClosedTab.tsx';
@@ -53,8 +52,7 @@ type TFilter = {id: number; name: string; selected: boolean};
 function FindScreen({navigation, route}: any) {
   const [availableTags, setAvailableTags] = useState<TFilter[]>(POPUUP_TYPES);
   const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
-  const [page, setPage] = useState(0);
-  const [size, setSize] = useState(10);
+
   const [selectedTab, setSelectedTab] = useState('운영 중');
   const [selectedOrder, setSelectedOrder] = useState('OPEN');
   const [searchKeyword, setSearchKeyword] = useState('안녕');
@@ -71,33 +69,26 @@ function FindScreen({navigation, route}: any) {
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const {
-    data: findPopupListData,
-    loading: findPopupListLoading,
-    error: findPopupListError,
-  } = useGetFindPopupList(
-    page,
-    size,
-    selectedTab === '운영 중'
-      ? 'NOTYET'
-      : selectedTab === '오픈 예정'
-      ? 'OPERATING'
-      : 'TERMINATING',
+  // const {
+  //   data: findPopupListData,
+  //   loading: findPopupListLoading,
+  //   error: findPopupListError,
+  // } = useGetFindPopupList(
+  //   page,
+  //   size,
+  //   selectedTab === '운영 중'
+  //     ? 'NOTYET'
+  //     : selectedTab === '오픈 예정'
+  //     ? 'OPERATING'
+  //     : 'TERMINATING',
 
-    selectedOrder,
-    availableTags,
-    searchKeyword,
-  );
-
-  // console.log('findPopupListData', findPopupListData);
-  console.log('sele', selectedTab);
-
-  // console.log('ava', availableTags);
+  //   selectedOrder,
+  //   availableTags,
+  //   searchKeyword,
+  // );
 
   const handleTabPress = (tab: string) => {
     setSelectedTab(tab);
-
-    setSelectedOrder('OPEN');
   };
 
   const handleCategoryClick = () => {
@@ -211,7 +202,7 @@ function FindScreen({navigation, route}: any) {
         )}
 
         <Tab.Navigator
-          initialRouteName={selectedTab}
+          initialRouteName={'운영 중'}
           // tabBar={props => (
           //   <View style={styles.tabBar}>
 
@@ -242,7 +233,7 @@ function FindScreen({navigation, route}: any) {
               <View style={styles.tabBarContainer}>
                 <View style={styles.tabBar}>
                   {state.routes.map((route, index) => {
-                    console.log('route', route);
+                    // console.log('route', route);
                     return (
                       <TouchableOpacity
                         key={route.key}
@@ -250,6 +241,7 @@ function FindScreen({navigation, route}: any) {
                           styles.tabItem,
                           {
                             borderBottomWidth: state.index === index ? 5 : 0,
+                            borderColor: globalColors.blue,
                           },
                         ]}
                         onPress={() => {
@@ -298,21 +290,27 @@ function FindScreen({navigation, route}: any) {
           <Tab.Screen name="운영 중">
             {() => (
               <NotyetTab
-                data={selectedTab === '운영 중' ? findPopupListData : []}
+                selectedOrder={selectedOrder}
+                availableTags={availableTags}
+                searchKeyword={searchKeyword}
               />
             )}
           </Tab.Screen>
           <Tab.Screen name="오픈 예정">
             {() => (
               <OperationTab
-                data={selectedTab === '오픈 예정' ? findPopupListData : []}
+                selectedOrder={selectedOrder}
+                availableTags={availableTags}
+                searchKeyword={searchKeyword}
               />
             )}
           </Tab.Screen>
           <Tab.Screen name="운영 종료">
             {() => (
               <ClosedTab
-                data={selectedTab === '운영 종료' ? findPopupListData : []}
+                selectedOrder={selectedOrder}
+                availableTags={availableTags}
+                searchKeyword={searchKeyword}
                 type="close"
               />
             )}

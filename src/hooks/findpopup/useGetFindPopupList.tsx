@@ -5,7 +5,7 @@ import getFindPopUpList from '../../apis/popup/findPopupList.ts';
 interface GetClosingState {
   loading: boolean;
   error: Error | null;
-  data: GetPopUpListResponse[] | null;
+  data: any | null;
 }
 type TFilter = {id: number; name: string; selected: boolean};
 const useGetFindPopupList = (
@@ -19,7 +19,7 @@ const useGetFindPopupList = (
   const [getListState, setGetListState] = useState<GetClosingState>({
     loading: false,
     error: null,
-    data: null,
+    data: [],
   });
 
   useEffect(() => {
@@ -48,7 +48,11 @@ const useGetFindPopupList = (
       try {
         const response = await getFindPopUpList(filterParams);
         if (response.success) {
-          setGetListState({loading: false, error: null, data: response.data});
+          setGetListState(prevState => ({
+            loading: false,
+            error: null,
+            data: [...prevState.data, ...response.data],
+          }));
         } else {
           setGetListState({
             loading: false,

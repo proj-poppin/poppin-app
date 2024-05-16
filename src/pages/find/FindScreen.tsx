@@ -47,7 +47,7 @@ const TabNames: {[key: string]: string} = {
 
 const Tab = createMaterialTopTabNavigator();
 
-type TFilter = {id: number; name: string; selected: boolean};
+type TFilter = {id: string; name: string; selected: boolean};
 
 function FindScreen({navigation, route}: any) {
   const [availableTags, setAvailableTags] = useState<TFilter[]>(POPUUP_TYPES);
@@ -55,7 +55,7 @@ function FindScreen({navigation, route}: any) {
 
   const [selectedTab, setSelectedTab] = useState('운영 중');
   const [selectedOrder, setSelectedOrder] = useState('OPEN');
-  const [searchKeyword, setSearchKeyword] = useState('안녕');
+  const [searchKeyword, setSearchKeyword] = useState('');
   const [isSettingApplied, setIsSettingApplied] = useState(false);
   const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
     useState(false);
@@ -68,24 +68,6 @@ function FindScreen({navigation, route}: any) {
   }, [route]);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
-  // const {
-  //   data: findPopupListData,
-  //   loading: findPopupListLoading,
-  //   error: findPopupListError,
-  // } = useGetFindPopupList(
-  //   page,
-  //   size,
-  //   selectedTab === '운영 중'
-  //     ? 'NOTYET'
-  //     : selectedTab === '오픈 예정'
-  //     ? 'OPERATING'
-  //     : 'TERMINATING',
-
-  //   selectedOrder,
-  //   availableTags,
-  //   searchKeyword,
-  // );
 
   const handleTabPress = (tab: string) => {
     setSelectedTab(tab);
@@ -127,7 +109,7 @@ function FindScreen({navigation, route}: any) {
       });
     });
   };
-  const tagDeleteClick = (tid: number) => {
+  const tagDeleteClick = (tid: string) => {
     setSelectedTags(prev => {
       return prev.map(item => {
         if (item.id === tid) {
@@ -202,30 +184,6 @@ function FindScreen({navigation, route}: any) {
 
         <Tab.Navigator
           initialRouteName={'운영 중'}
-          // tabBar={props => (
-          //   <View style={styles.tabBar}>
-
-          //     {props.state.routes.map((route, index) => (
-          //       <TouchableOpacity
-          //         key={index}
-          //         style={[
-          //           styles.tabItem,
-          //           {borderBottomWidth: props.state.index === index ? 5 : 0},
-          //         ]}
-          //         onPress={() => handleTabPress(props, route.name)}>
-          //         <Text
-          //           style={[
-          //             props.state.index === index
-          //               ? styles.activeTab
-          //               : styles.inactiveTab,
-          //           ]}>
-          //           {route.name}
-          //         </Text>
-          //       </TouchableOpacity>
-          //     ))}
-          //   </View>
-          // )}
-
           // 탭이 선택될 때의 동작 구현
           tabBar={({state, descriptors, navigation}) => {
             return (

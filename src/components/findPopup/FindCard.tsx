@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, Text, StyleSheet, ScrollView, Image} from 'react-native';
-import DefaultImageSvg from '../../assets/images/interestSample.svg';
 import StarOnSvg from '../../assets/icons/starOn.svg';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12B from '../../styles/texts/label/Text12B.ts';
@@ -22,6 +21,7 @@ const FindCard = ({item, type}: any) => {
   };
 
   const remainingDays = calculateRemainingDays(item.closeDate);
+
   return (
     <>
       <View style={styles.cardContainer}>

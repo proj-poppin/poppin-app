@@ -10,8 +10,8 @@ import useGetFindPopupList from '../../../hooks/findpopup/useGetFindPopupList.ts
 
 function ClosedTab({type, selectedOrder, availableTags, searchKeyword}: any) {
   const [page, setPage] = useState(0);
-  const [size, setSize] = useState(10);
-  console.log('sss', selectedOrder);
+  const [size, setSize] = useState(5);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const {
     data: findPopupListData,
@@ -25,8 +25,19 @@ function ClosedTab({type, selectedOrder, availableTags, searchKeyword}: any) {
     availableTags,
     searchKeyword,
   );
+
+  const handleScroll = (event: any) => {
+    const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
+    const isEndReached =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height;
+    if (isEndReached && !loadingMore) {
+      setLoadingMore(true);
+
+      setPage(page + 1);
+    }
+  };
   return (
-    <ScrollView>
+    <ScrollView onScroll={handleScroll} style={{marginBottom: 100}}>
       <DividerLine height={1} />
       {findPopupListData && findPopupListData.length > 0 ? (
         findPopupListData.map((item: any) => {

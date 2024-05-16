@@ -13,12 +13,14 @@ export type TFilterparmas = {
 const getFindPopUpList = async (
   params: any,
 ): Promise<CommonResponse<TfindPopupType>> => {
+  console.log('par', params);
+
   try {
     const response = await apiInstance.get('/api/v1/popup/guest/search', {
       params: params,
     });
 
-    // console.log('getFindPopupList response:', response.data);
+    console.log('getFindPopupList response:', response.data);
 
     if (response.data.success) {
       return response.data;

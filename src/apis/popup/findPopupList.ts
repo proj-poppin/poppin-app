@@ -1,3 +1,4 @@
+import {TfindPopupType} from '../../types/DetaiPopUpData.ts';
 import apiInstance from '../axios.ts';
 
 export type TFilterparmas = {
@@ -9,14 +10,15 @@ export type TFilterparmas = {
   taste: string;
   size: number;
 };
-const getFindPopUpList = async (params: any) => {
-  console.log('ppp', params);
+const getFindPopUpList = async (
+  params: any,
+): Promise<CommonResponse<TfindPopupType>> => {
   try {
     const response = await apiInstance.get('/api/v1/popup/guest/search', {
       params: params,
     });
 
-    console.log('getFindPopupList response:', response.data);
+    // console.log('getFindPopupList response:', response.data);
 
     if (response.data.success) {
       return response.data;

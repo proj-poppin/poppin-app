@@ -1,8 +1,6 @@
 import {useState, useEffect} from 'react';
 import {GetPopUpListResponse} from '../..//types/PopUpListData.ts';
 import getFindPopUpList from '../../apis/popup/findPopupList.ts';
-import {TFilterparmas} from '../../apis/popup/findPopupList.ts';
-import EncryptedStorage from 'react-native-encrypted-storage';
 
 interface GetClosingState {
   loading: boolean;

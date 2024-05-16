@@ -1,7 +1,6 @@
 import {ScrollView, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import DividerLine from '../../../components/DividerLine.tsx';
-import {dummydata} from '../../../components/findPopup/dummydata.ts';
 import FindCard from '../../../components/findPopup/FindCard.tsx';
 import FindPopupNoList from '../../../assets/images/findPopupNoList.svg';
 import NoListText from '../../../assets/images/findPopupText.svg';
@@ -16,7 +15,6 @@ function OperationTab({
 }: any) {
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(10);
-  console.log('sss', selectedOrder);
 
   const {
     data: findPopupListData,
@@ -30,7 +28,6 @@ function OperationTab({
     availableTags,
     searchKeyword,
   );
-  console.log('fin', findPopupListData);
 
   return (
     <ScrollView>

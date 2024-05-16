@@ -1,4 +1,5 @@
 import {
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -31,6 +32,7 @@ import useGetFindPopupList from '../../hooks/findpopup/useGetFindPopupList.tsx';
 import NotyetTab from './tab/NotyetTab.tsx';
 import OperationTab from './tab/OperatonTab.tsx';
 import ClosedTab from './tab/ClosedTab.tsx';
+import BackSvg from '../../assets/icons/goBack.svg';
 
 export const FINDORDER_TYPES = [
   {label: '최근 오픈 순', value: 'OPEN'},
@@ -63,6 +65,7 @@ function FindScreen({navigation, route}: any) {
   useEffect(() => {
     if (route.params) {
       const {searchText} = route.params;
+      setSearchKeyword(searchText);
     }
   }, [route]);
 
@@ -174,16 +177,38 @@ function FindScreen({navigation, route}: any) {
   return (
     <>
       <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
-        <View style={styles.headerContainer}>
-          <Text style={Text24B.text}>팝업 목록</Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('findInputScreen');
-            }}
-            style={styles.calendarViewContainer}>
-            <SearchBlueSvg />
-          </TouchableOpacity>
-        </View>
+        {searchKeyword !== '' ? (
+          <View style={styles.searchKeywordContainer}>
+            <Pressable
+              onPress={() => setSearchKeyword('')}
+              style={{padding: 10}}>
+              <BackSvg />
+            </Pressable>
+            <Pressable
+              onPress={() => navigation.navigate('findInputScreen')}
+              style={styles.searchInputWrapper}>
+              <Text>{searchKeyword}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('findInputScreen');
+                }}
+                style={styles.calendarViewContainer}>
+                <SearchBlueSvg />
+              </TouchableOpacity>
+            </Pressable>
+          </View>
+        ) : (
+          <View style={styles.headerContainer}>
+            <Text style={Text24B.text}>팝업 목록</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('findInputScreen');
+              }}
+              style={styles.calendarViewContainer}>
+              <SearchBlueSvg />
+            </TouchableOpacity>
+          </View>
+        )}
 
         <Tab.Navigator
           initialRouteName={selectedTab}
@@ -416,6 +441,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     marginLeft: 16,
     marginRight: 16,
+    height: 40,
   },
 
   dropdownContainer: {
@@ -562,6 +588,23 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     marginLeft: 16,
     marginRight: 16,
+  },
+  searchKeywordContainer: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchInputWrapper: {
+    width: '90%',
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 30,
+    padding: 10,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 

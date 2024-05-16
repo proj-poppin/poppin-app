@@ -28,12 +28,12 @@ const useGetFindPopupList = (
     const fetcFindPopupList = async () => {
       setGetListState(prevState => ({...prevState, loading: true}));
       const selectedCategoryString = availableTags
-        .slice(0, 14)
+        .slice(0, 13)
         .map(item => (item.selected ? '1' : '0'))
         .join('');
 
       const selectedTypeString = availableTags
-        .slice(14, availableTags.length)
+        .slice(13, availableTags.length)
         .map(item => (item.selected ? '1' : '0'))
         .join('');
 

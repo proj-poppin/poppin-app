@@ -10,6 +10,7 @@ export type TFilterparmas = {
   size: number;
 };
 const getFindPopUpList = async (params: any) => {
+  console.log('ppp', params);
   try {
     const response = await apiInstance.get('/api/v1/popup/guest/search', {
       params: params,

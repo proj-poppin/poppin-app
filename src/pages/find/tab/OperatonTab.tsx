@@ -30,6 +30,7 @@ function OperationTab({
     availableTags,
     searchKeyword,
   );
+  console.log('fin', findPopupListData);
 
   return (
     <ScrollView>

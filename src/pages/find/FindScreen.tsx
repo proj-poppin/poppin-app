@@ -97,7 +97,6 @@ function FindScreen({navigation, route}: any) {
 
   const handleOrderSelect = (value: any) => {
     const orderValue = FINDORDER_TYPES[value].value;
-    console.log('orderValue', orderValue);
     setSelectedOrder(orderValue);
   };
 

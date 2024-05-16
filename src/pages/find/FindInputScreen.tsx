@@ -1,28 +1,69 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, Pressable, SafeAreaView, StyleSheet} from 'react-native';
 import {Text, View} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import SearchInput from '../../assets/images/searchInput.svg';
 import BackSvg from '../../assets/icons/goBack.svg';
 import globalColors from '../../styles/color/globalColors';
-import {dummydata} from './dummydata';
 import InputCancel from '../../assets/icons/inputCancel.svg';
 import DividerLine from '../../components/DividerLine';
 import NoKeyword from '../../assets/images/noKeyword.svg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+type TkewordRecord = {
+  id: number;
+  keyword: string;
+};
 function FindInputScreen({navigation}: any) {
   const [text, setText] = useState('');
-  const [keywordsTrace, setKeywordsTrace] = useState(dummydata);
+  const [keywordsRecord, setKeywordRecord] = useState<TkewordRecord[]>([]);
 
   const onChangeText = (inputText: string) => {
     setText(inputText);
   };
 
-  const handleSubmit = () => {
-    Alert.alert('Submitted Text', text);
+  const handleSubmit = async () => {
+    if (text.trim()) {
+      const newKeyword = {id: Date.now(), keyword: text};
+      const updatedKeywords = [newKeyword, ...keywordsRecord];
+      setKeywordRecord(updatedKeywords);
+      await AsyncStorage.setItem('@keywords', JSON.stringify(updatedKeywords));
+      setText('');
+      navigation.navigate('Find', {searchText: text});
+    } else {
+      Alert.alert('검색어를 입력해주세요.');
+    }
   };
 
-  const handleClickKeyword = (kid: number) => {};
+  const handleAllRecordDelete = async () => {
+    await AsyncStorage.setItem('@keywords', JSON.stringify([]));
+    setKeywordRecord([]);
+  };
+
+  const handleClickKeyword = async (kid: number) => {
+    const filterKeywors = keywordsRecord.filter(item => item.id !== kid);
+    setKeywordRecord(filterKeywors);
+    await AsyncStorage.setItem('@keywords', JSON.stringify(filterKeywors));
+  };
+
+  useEffect(() => {
+    const fetchKeywords = async () => {
+      try {
+        const storedKeywords = await AsyncStorage.getItem('@keywords');
+        console.log('ssss', storedKeywords);
+
+        if (storedKeywords !== null) {
+          setKeywordRecord(JSON.parse(storedKeywords));
+        } else {
+          setKeywordRecord([]);
+        }
+      } catch (e) {
+        console.error('Failed to fetch the data from storage', e);
+      }
+    };
+
+    fetchKeywords();
+  }, []);
   return (
     <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
       <View style={styles.inputWrapper}>
@@ -37,7 +78,7 @@ function FindInputScreen({navigation}: any) {
           value={text}
           placeholder="텍스트를 입력하세요."
         />
-        <Pressable style={styles.searchIcon}>
+        <Pressable style={styles.searchIcon} onPress={handleSubmit}>
           <SearchInput />
         </Pressable>
       </View>
@@ -51,16 +92,21 @@ function FindInputScreen({navigation}: any) {
           최근 검색어
         </Text>
         <View style={styles.keywordWrapper}>
-          {keywordsTrace.length < 0 ? (
+          {keywordsRecord.length === 0 ? (
             <View>
-              <Text style={{color: globalColors.stroke2, marginBottom: 20}}>
+              <Text
+                style={{
+                  color: globalColors.stroke2,
+                  marginTop: 10,
+                  marginBottom: 20,
+                }}>
                 최근 검색어가 없어요.
               </Text>
               <NoKeyword />
             </View>
           ) : (
             <>
-              {keywordsTrace.map(keyword => {
+              {keywordsRecord.map(keyword => {
                 return (
                   <>
                     <View
@@ -78,11 +124,11 @@ function FindInputScreen({navigation}: any) {
                   </>
                 );
               })}
-              <View>
+              <Pressable onPress={handleAllRecordDelete}>
                 <Text style={{textAlign: 'right', color: globalColors.stroke2}}>
                   전체 삭제하기
                 </Text>
-              </View>
+              </Pressable>
             </>
           )}
         </View>
@@ -97,6 +143,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     width: '100%',
     height: 70,
+
     paddingLeft: 10,
     paddingRight: 10,
     display: 'flex',
@@ -105,7 +152,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
 
-    marginBottom: 40,
+    marginBottom: 20,
   },
   backbutton: {
     padding: 10,

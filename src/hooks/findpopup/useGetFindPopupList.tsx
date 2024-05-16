@@ -2,19 +2,20 @@ import {useState, useEffect} from 'react';
 import {GetPopUpListResponse} from '../..//types/PopUpListData.ts';
 import getFindPopUpList from '../../apis/popup/findPopupList.ts';
 import {TFilterparmas} from '../../apis/popup/findPopupList.ts';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 interface GetClosingState {
   loading: boolean;
   error: Error | null;
   data: GetPopUpListResponse[] | null;
 }
-
+type TFilter = {id: number; name: string; selected: boolean};
 const useGetFindPopupList = (
   page: number,
   size: number,
   selectedTab: string,
-  selectedOrder: any,
-  availableTags: any,
+  selectedOrder: string,
+  availableTags: TFilter[],
   searchKeyword: string,
 ) => {
   const [getListState, setGetListState] = useState<GetClosingState>({
@@ -39,13 +40,13 @@ const useGetFindPopupList = (
       const filterParams = {
         page,
         size,
-        selectedTab,
-        searchKeyword,
-        selectedCategoryString,
-        selectedTypeString,
+        oper: selectedTab,
+        text: searchKeyword,
+        order: selectedOrder,
+        prepered: selectedCategoryString,
+        taste: selectedTypeString,
       };
-      console.log('selectedTypeString', selectedTypeString);
-      console.log('selectedCategoryString', selectedCategoryString);
+
       try {
         const response = await getFindPopUpList(filterParams);
         if (response.success) {

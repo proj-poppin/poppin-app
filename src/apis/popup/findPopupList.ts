@@ -1,5 +1,4 @@
 import apiInstance from '../axios.ts';
-import {DetailPopUpData} from '../../types/DetaiPopUpData.ts';
 
 export type TFilterparmas = {
   text: string;
@@ -12,10 +11,11 @@ export type TFilterparmas = {
 };
 const getFindPopUpList = async (params: any) => {
   try {
-    const response = await apiInstance.get('/api/v1/popup/guest/', {
+    const response = await apiInstance.get('/api/v1/popup/guest/search', {
       params: params,
     });
-    console.log('getFindPopupList response:', response.data);
+
+    // console.log('getFindPopupList response:', response.data);
 
     if (response.data.success) {
       return response.data;

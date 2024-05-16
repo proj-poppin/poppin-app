@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, Image} from 'react-native';
 import DefaultImageSvg from '../../assets/images/interestSample.svg';
 import StarOnSvg from '../../assets/icons/starOn.svg';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
@@ -9,7 +9,7 @@ import DividerLine from '../DividerLine.tsx';
 
 const FindCard = ({item, type}: any) => {
   const formattedTitle =
-    item.title.length > 20 ? `${item.title.substring(0, 20)}...` : item.title;
+    item.name.length > 20 ? `${item.title.substring(0, 20)}...` : item.title;
   const getTagBackgroundColor = (tagId: number) => {
     // Check the range of tag ID and return the corresponding color
     if (tagId >= 15 && tagId <= 17) {
@@ -23,7 +23,7 @@ const FindCard = ({item, type}: any) => {
     <>
       <View style={styles.cardContainer}>
         <View style={styles.svgContainer}>
-          <DefaultImageSvg width="120" height="120" />
+          <Image src={item.posterUrl} style={{width: 120, height: 120}} />
           {type === 'close' ? (
             <View style={styles.closeWrapper}>
               <Text style={styles.closeText}>팝업 종료</Text>
@@ -39,12 +39,14 @@ const FindCard = ({item, type}: any) => {
             <Text style={[Text18B.text, styles.title]}>{formattedTitle}</Text>
             <StarOnSvg style={styles.starIcon} />
           </View>
-          <Text style={styles.location}>{item.location}</Text>
-          {item.date && (
-            <Text style={[Text12B.text, styles.date]}>{item.date}</Text>
-          )}
+          <Text style={styles.location}>{item.address}</Text>
+          {/* {item.date && ( */}
+          <Text style={[Text12B.text, styles.date]}>
+            {item.openDate}~{item.closeDate}
+          </Text>
+          {/* )} */}
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <View style={styles.tagsWrapper}>
+            {/* <View style={styles.tagsWrapper}>
               {item.tags.map((tag: any, index: number) => {
                 return (
                   <View
@@ -57,7 +59,7 @@ const FindCard = ({item, type}: any) => {
                   </View>
                 );
               })}
-            </View>
+            </View> */}
           </ScrollView>
         </View>
       </View>

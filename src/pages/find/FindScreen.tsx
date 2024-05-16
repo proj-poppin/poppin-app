@@ -27,8 +27,10 @@ import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescri
 import BackMiddleButton from '../../components/atoms/button/BackMiddleButton.tsx';
 import NextMiddleButton from '../../components/atoms/button/NextMiddleButton.tsx';
 import {POPUUP_TYPES} from '../../components/findPopup/constants.ts';
-import FindPopupTab from './FindPopupTab.tsx';
 import useGetFindPopupList from '../../hooks/findpopup/useGetFindPopupList.tsx';
+import NotyetTab from './tab/NotyetTab.tsx';
+import OperationTab from './tab/OperatonTab.tsx';
+import ClosedTab from './tab/ClosedTab.tsx';
 
 export const FINDORDER_TYPES = [
   {label: '최근 오픈 순', value: 'OPEN'},
@@ -46,17 +48,23 @@ const Tab = createMaterialTopTabNavigator();
 
 type TFilter = {id: number; name: string; selected: boolean};
 
-function FindScreen({navigation}: any) {
+function FindScreen({navigation, route}: any) {
   const [availableTags, setAvailableTags] = useState<TFilter[]>(POPUUP_TYPES);
   const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(10);
-  const [selectedTab, setSelectedTab] = useState('운영 중'); // 'operating', 'upcoming', 'closed'
+  const [selectedTab, setSelectedTab] = useState('운영 중');
   const [selectedOrder, setSelectedOrder] = useState('OPEN');
   const [searchKeyword, setSearchKeyword] = useState('안녕');
   const [isSettingApplied, setIsSettingApplied] = useState(false);
   const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
     useState(false);
+
+  useEffect(() => {
+    if (route.params) {
+      const {searchText} = route.params;
+    }
+  }, [route]);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -78,38 +86,18 @@ function FindScreen({navigation}: any) {
     searchKeyword,
   );
 
-  // const {
-  //   data: findPopupListData,
-  //   loading: findPopupListLoading,
-  //   error: findPopupListError,
-  // } = useGetFindPopupList({
-  //   text: '',
-  //   prepared: '00100000100100',
-  //   page: page,
-  //   size: size,
-  //   oper:
-  //     selectedTab === '운영 중'
-  //       ? 'NOTYET'
-  //       : selectedTab === '오픈 예정'
-  //       ? 'OPERATING'
-  //       : 'TERMINATING',
-  //   order: selectedOrder,
-  //   taste: '001',
-  // });
-
-  console.log('selectedTab', selectedTab);
+  // console.log('findPopupListData', findPopupListData);
+  console.log('sele', selectedTab);
 
   // console.log('ava', availableTags);
 
   const handleTabPress = (tab: string) => {
-    const tabValue = TabNames[tab];
     setSelectedTab(tab);
-    console.log('탭', tab);
+
     setSelectedOrder('OPEN');
   };
 
   const handleCategoryClick = () => {
-    console.log('sss!!!!!', selectedTags);
     setAvailableTags(selectedTags);
   };
 
@@ -198,69 +186,111 @@ function FindScreen({navigation}: any) {
         </View>
 
         <Tab.Navigator
-          initialRouteName="운영 중"
+          initialRouteName={selectedTab}
+          // tabBar={props => (
+          //   <View style={styles.tabBar}>
+
+          //     {props.state.routes.map((route, index) => (
+          //       <TouchableOpacity
+          //         key={index}
+          //         style={[
+          //           styles.tabItem,
+          //           {borderBottomWidth: props.state.index === index ? 5 : 0},
+          //         ]}
+          //         onPress={() => handleTabPress(props, route.name)}>
+          //         <Text
+          //           style={[
+          //             props.state.index === index
+          //               ? styles.activeTab
+          //               : styles.inactiveTab,
+          //           ]}>
+          //           {route.name}
+          //         </Text>
+          //       </TouchableOpacity>
+          //     ))}
+          //   </View>
+          // )}
+
           // 탭이 선택될 때의 동작 구현
-          tabBar={({state, descriptors, navigation}) => (
-            <View style={styles.tabBarContainer}>
-              <View style={styles.tabBar}>
-                {state.routes.map((route, index) => (
-                  <TouchableOpacity
-                    key={route.key}
-                    style={
-                      selectedTab === route.name
-                        ? styles.activeTabItem
-                        : styles.tabItem
+          tabBar={({state, descriptors, navigation}) => {
+            return (
+              <View style={styles.tabBarContainer}>
+                <View style={styles.tabBar}>
+                  {state.routes.map((route, index) => {
+                    console.log('route', route);
+                    return (
+                      <TouchableOpacity
+                        key={route.key}
+                        style={[
+                          styles.tabItem,
+                          {
+                            borderBottomWidth: state.index === index ? 5 : 0,
+                          },
+                        ]}
+                        onPress={() => {
+                          handleTabPress(route.name);
+                          navigation.navigate(route.name);
+                        }}>
+                        <Text
+                          style={
+                            selectedTab === route.name
+                              ? styles.activeTab
+                              : styles.inactiveTab
+                          }>
+                          {route.name === '운영 중'
+                            ? '운영 중'
+                            : route.name === '오픈 예정'
+                            ? '오픈 예정'
+                            : '운영 종료'}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+                <View style={styles.filterContainer}>
+                  <FilterSettingButton
+                    onPress={handlePresentModal}
+                    isSetting={isSettingApplied}
+                  />
+                  <CustomSelectDropdown
+                    data={FINDORDER_TYPES}
+                    onSelect={
+                      (selectedItem: any, index: any) =>
+                        handleOrderSelect(index)
+                      // console.log(selectedItem, index)
                     }
-                    onPress={() => {
-                      handleTabPress(route.name);
-                      navigation.navigate(route.name);
-                    }}>
-                    <Text
-                      style={
-                        selectedTab === route.name
-                          ? styles.activeTab
-                          : styles.inactiveTab
-                      }>
-                      {route.name === '운영 중'
-                        ? '운영 중'
-                        : route.name === '오픈 예정'
-                        ? '오픈 예정'
-                        : '운영 종료'}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                    buttonWidth={120}
+                    iconComponent={<OrderSvg style={styles.dropdownIcon} />}
+                    buttonTextAfterSelection={(selectedItem: any, index: any) =>
+                      selectedItem
+                    }
+                    buttonTextStyle={Text14M.text}
+                  />
+                </View>
               </View>
-              <View style={styles.filterContainer}>
-                <FilterSettingButton
-                  onPress={handlePresentModal}
-                  isSetting={isSettingApplied}
-                />
-                <CustomSelectDropdown
-                  data={FINDORDER_TYPES}
-                  onSelect={
-                    (selectedItem: any, index: any) => handleOrderSelect(index)
-                    // console.log(selectedItem, index)
-                  }
-                  buttonWidth={120}
-                  iconComponent={<OrderSvg style={styles.dropdownIcon} />}
-                  buttonTextAfterSelection={(selectedItem: any, index: any) =>
-                    selectedItem
-                  }
-                  buttonTextStyle={Text14M.text}
-                />
-              </View>
-            </View>
-          )}>
+            );
+          }}>
           <Tab.Screen name="운영 중">
             {() => (
-              <>
-                <FindPopupTab />
-              </>
+              <NotyetTab
+                data={selectedTab === '운영 중' ? findPopupListData : []}
+              />
             )}
           </Tab.Screen>
-          <Tab.Screen name="오픈 예정">{() => <FindPopupTab />}</Tab.Screen>
+          <Tab.Screen name="오픈 예정">
+            {() => (
+              <OperationTab
+                data={selectedTab === '오픈 예정' ? findPopupListData : []}
+              />
+            )}
+          </Tab.Screen>
           <Tab.Screen name="운영 종료">
-            {() => <FindPopupTab type="close" />}
+            {() => (
+              <ClosedTab
+                data={selectedTab === '운영 종료' ? findPopupListData : []}
+                type="close"
+              />
+            )}
           </Tab.Screen>
         </Tab.Navigator>
       </SafeAreaView>

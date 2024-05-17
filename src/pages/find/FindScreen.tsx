@@ -27,7 +27,7 @@ import CategorySelectButton from '../../components/findPopup/CategorySelectButto
 import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 import BackMiddleButton from '../../components/atoms/button/BackMiddleButton.tsx';
 import NextMiddleButton from '../../components/atoms/button/NextMiddleButton.tsx';
-import {POPUUP_TYPES} from '../../components/findPopup/constants.ts';
+import {POP_UP_TYPES} from '../../components/findPopup/constants.ts';
 import NotyetTab from './tab/NotyetTab.tsx';
 import OperationTab from './tab/OperatonTab.tsx';
 import ClosedTab from './tab/ClosedTab.tsx';
@@ -47,12 +47,11 @@ const TabNames: {[key: string]: string} = {
 
 const Tab = createMaterialTopTabNavigator();
 
-type TFilter = {id: string; name: string; selected: boolean};
+type TFilter = {id: number; label: string; name: string; selected: boolean};
 
 function FindScreen({navigation, route}: any) {
-  const [availableTags, setAvailableTags] = useState<TFilter[]>(POPUUP_TYPES);
+  const [availableTags, setAvailableTags] = useState<TFilter[]>(POP_UP_TYPES);
   const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
-
   const [selectedTab, setSelectedTab] = useState('운영 중');
   const [selectedOrder, setSelectedOrder] = useState('OPEN');
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -109,7 +108,7 @@ function FindScreen({navigation, route}: any) {
       });
     });
   };
-  const tagDeleteClick = (tid: string) => {
+  const tagDeleteClick = (tid: number) => {
     setSelectedTags(prev => {
       return prev.map(item => {
         if (item.id === tid) {
@@ -299,7 +298,7 @@ function FindScreen({navigation, route}: any) {
             </View>
             <Text style={styles.popType}>팝업 유형</Text>
             <View style={styles.popWrapper}>
-              {selectedTags.slice(14, POPUUP_TYPES.length).map(item => {
+              {selectedTags.slice(14, POP_UP_TYPES.length).map(item => {
                 return (
                   <CategorySelectButton
                     key={item.id}

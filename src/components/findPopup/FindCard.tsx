@@ -5,7 +5,7 @@ import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12B from '../../styles/texts/label/Text12B.ts';
 import globalColors from '../../styles/color/globalColors.ts';
 import DividerLine from '../DividerLine.tsx';
-import {POPUUP_TYPES} from './constants.ts';
+import {POP_UP_TYPES} from './constants.ts';
 
 const FindCard = ({item, type}: any) => {
   const formattedTitle =
@@ -51,7 +51,7 @@ const FindCard = ({item, type}: any) => {
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             {Object.entries(item.prefered).map(([key, value]) => {
               if (value) {
-                const matchingTag = POPUUP_TYPES.find(tag => tag.id === key);
+                const matchingTag = POP_UP_TYPES.find(tag => tag.name === key);
 
                 if (matchingTag) {
                   return (
@@ -61,7 +61,7 @@ const FindCard = ({item, type}: any) => {
                         styles.tagWrapper,
                         {backgroundColor: globalColors.redLight},
                       ]}>
-                      <Text style={styles.tag}>{matchingTag.name}</Text>
+                      <Text style={styles.tag}>{matchingTag.label}</Text>
                     </View>
                   );
                 }
@@ -69,7 +69,7 @@ const FindCard = ({item, type}: any) => {
             })}
             {Object.entries(item.taste).map(([key, value]) => {
               if (value) {
-                const matchingTag = POPUUP_TYPES.find(tag => tag.id === key);
+                const matchingTag = POP_UP_TYPES.find(tag => tag.name === key);
 
                 if (matchingTag) {
                   return (
@@ -79,7 +79,7 @@ const FindCard = ({item, type}: any) => {
                         styles.tagWrapper,
                         {backgroundColor: globalColors.blueLight},
                       ]}>
-                      <Text style={styles.tag}>{matchingTag.name}</Text>
+                      <Text style={styles.tag}>{matchingTag.label}</Text>
                     </View>
                   );
                 }

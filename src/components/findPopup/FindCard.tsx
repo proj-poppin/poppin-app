@@ -1,36 +1,39 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import DefaultImageSvg from '../../assets/images/interestSample.svg';
+import {View, Text, StyleSheet, ScrollView, Image} from 'react-native';
 import StarOnSvg from '../../assets/icons/starOn.svg';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12B from '../../styles/texts/label/Text12B.ts';
 import globalColors from '../../styles/color/globalColors.ts';
 import DividerLine from '../DividerLine.tsx';
+import {POP_UP_TYPES} from './constants.ts';
 
 const FindCard = ({item, type}: any) => {
   const formattedTitle =
-    item.title.length > 20 ? `${item.title.substring(0, 20)}...` : item.title;
-  const getTagBackgroundColor = (tagId: number) => {
-    // Check the range of tag ID and return the corresponding color
-    if (tagId >= 15 && tagId <= 17) {
-      return globalColors.redLight;
-    } else {
-      return globalColors.blueLight;
-    }
+    item.name.length > 20 ? `${item.title.substring(0, 20)}...` : item.title;
+  const calculateRemainingDays = (serverDate: string) => {
+    const closeDate = new Date(serverDate);
+
+    const currentDate = new Date();
+
+    const timeDifference = closeDate.getTime() - currentDate.getTime();
+    const remainingDays = Math.ceil(timeDifference / (1000 * 3600 * 24));
+    return remainingDays;
   };
+
+  const remainingDays = calculateRemainingDays(item.closeDate);
 
   return (
     <>
       <View style={styles.cardContainer}>
         <View style={styles.svgContainer}>
-          <DefaultImageSvg width="120" height="120" />
+          <Image src={item.posterUrl} style={{width: 120, height: 120}} />
           {type === 'close' ? (
             <View style={styles.closeWrapper}>
               <Text style={styles.closeText}>팝업 종료</Text>
             </View>
           ) : (
             <View style={styles.deadlineWrapper}>
-              <Text style={styles.deadlineText}>종료 D-1</Text>
+              <Text style={styles.deadlineText}>종료 D-{remainingDays}</Text>
             </View>
           )}
         </View>
@@ -39,25 +42,49 @@ const FindCard = ({item, type}: any) => {
             <Text style={[Text18B.text, styles.title]}>{formattedTitle}</Text>
             <StarOnSvg style={styles.starIcon} />
           </View>
-          <Text style={styles.location}>{item.location}</Text>
-          {item.date && (
-            <Text style={[Text12B.text, styles.date]}>{item.date}</Text>
-          )}
+          <Text style={styles.location}>{item.address}</Text>
+
+          <Text style={[Text12B.text, styles.date]}>
+            {item.openDate}~{item.closeDate}
+          </Text>
+
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <View style={styles.tagsWrapper}>
-              {item.tags.map((tag: any, index: number) => {
-                return (
-                  <View
-                    key={index}
-                    style={[
-                      styles.tagWrapper,
-                      {backgroundColor: getTagBackgroundColor(tag.tagId)},
-                    ]}>
-                    <Text style={styles.tag}>{tag.tag}</Text>
-                  </View>
-                );
-              })}
-            </View>
+            {Object.entries(item.prefered).map(([key, value]) => {
+              if (value) {
+                const matchingTag = POP_UP_TYPES.find(tag => tag.name === key);
+
+                if (matchingTag) {
+                  return (
+                    <View
+                      key={key}
+                      style={[
+                        styles.tagWrapper,
+                        {backgroundColor: globalColors.redLight},
+                      ]}>
+                      <Text style={styles.tag}>{matchingTag.label}</Text>
+                    </View>
+                  );
+                }
+              }
+            })}
+            {Object.entries(item.taste).map(([key, value]) => {
+              if (value) {
+                const matchingTag = POP_UP_TYPES.find(tag => tag.name === key);
+
+                if (matchingTag) {
+                  return (
+                    <View
+                      key={key}
+                      style={[
+                        styles.tagWrapper,
+                        {backgroundColor: globalColors.blueLight},
+                      ]}>
+                      <Text style={styles.tag}>{matchingTag.label}</Text>
+                    </View>
+                  );
+                }
+              }
+            })}
           </ScrollView>
         </View>
       </View>

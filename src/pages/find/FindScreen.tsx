@@ -1,4 +1,5 @@
 import {
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -26,9 +27,11 @@ import CategorySelectButton from '../../components/findPopup/CategorySelectButto
 import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 import BackMiddleButton from '../../components/atoms/button/BackMiddleButton.tsx';
 import NextMiddleButton from '../../components/atoms/button/NextMiddleButton.tsx';
-import {POPUUP_TYPES} from '../../components/findPopup/constants.ts';
-import FindPopupTab from './FindPopupTab.tsx';
-import useGetFindPopupList from '../../hooks/findpopup/useGetFindPopupList.tsx';
+import {POP_UP_TYPES} from '../../components/findPopup/constants.ts';
+import NotyetTab from './tab/NotyetTab.tsx';
+import OperationTab from './tab/OperatonTab.tsx';
+import ClosedTab from './tab/ClosedTab.tsx';
+import BackSvg from '../../assets/icons/goBack.svg';
 
 export const FINDORDER_TYPES = [
   {label: '최근 오픈 순', value: 'OPEN'},
@@ -44,78 +47,37 @@ const TabNames: {[key: string]: string} = {
 
 const Tab = createMaterialTopTabNavigator();
 
-type TFilter = {id: number; name: string; selected: boolean};
+type TFilter = {id: number; label: string; name: string; selected: boolean};
 
-function FindScreen({navigation}: any) {
-  const [availableTags, setAvailableTags] = useState<TFilter[]>(POPUUP_TYPES);
+function FindScreen({navigation, route}: any) {
+  const [availableTags, setAvailableTags] = useState<TFilter[]>(POP_UP_TYPES);
   const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
-  const [page, setPage] = useState(0);
-  const [size, setSize] = useState(10);
-  const [selectedTab, setSelectedTab] = useState('운영 중'); // 'operating', 'upcoming', 'closed'
+  const [selectedTab, setSelectedTab] = useState('운영 중');
   const [selectedOrder, setSelectedOrder] = useState('OPEN');
-  const [searchKeyword, setSearchKeyword] = useState('안녕');
+  const [searchKeyword, setSearchKeyword] = useState('');
   const [isSettingApplied, setIsSettingApplied] = useState(false);
   const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
     useState(false);
 
+  useEffect(() => {
+    if (route.params) {
+      const {searchText} = route.params;
+      setSearchKeyword(searchText);
+    }
+  }, [route]);
+
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const {
-    data: findPopupListData,
-    loading: findPopupListLoading,
-    error: findPopupListError,
-  } = useGetFindPopupList(
-    page,
-    size,
-    selectedTab === '운영 중'
-      ? 'NOTYET'
-      : selectedTab === '오픈 예정'
-      ? 'OPERATING'
-      : 'TERMINATING',
-
-    selectedOrder,
-    availableTags,
-    searchKeyword,
-  );
-
-  // const {
-  //   data: findPopupListData,
-  //   loading: findPopupListLoading,
-  //   error: findPopupListError,
-  // } = useGetFindPopupList({
-  //   text: '',
-  //   prepared: '00100000100100',
-  //   page: page,
-  //   size: size,
-  //   oper:
-  //     selectedTab === '운영 중'
-  //       ? 'NOTYET'
-  //       : selectedTab === '오픈 예정'
-  //       ? 'OPERATING'
-  //       : 'TERMINATING',
-  //   order: selectedOrder,
-  //   taste: '001',
-  // });
-
-  console.log('selectedTab', selectedTab);
-
-  // console.log('ava', availableTags);
-
   const handleTabPress = (tab: string) => {
-    const tabValue = TabNames[tab];
     setSelectedTab(tab);
-    console.log('탭', tab);
-    setSelectedOrder('OPEN');
   };
 
   const handleCategoryClick = () => {
-    console.log('sss!!!!!', selectedTags);
     setAvailableTags(selectedTags);
   };
 
   const handleOrderSelect = (value: any) => {
     const orderValue = FINDORDER_TYPES[value].value;
-    console.log('orderValue', orderValue);
     setSelectedOrder(orderValue);
   };
 
@@ -186,81 +148,128 @@ function FindScreen({navigation}: any) {
   return (
     <>
       <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
-        <View style={styles.headerContainer}>
-          <Text style={Text24B.text}>팝업 목록</Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('findInputScreen');
-            }}
-            style={styles.calendarViewContainer}>
-            <SearchBlueSvg />
-          </TouchableOpacity>
-        </View>
+        {searchKeyword !== '' ? (
+          <View style={styles.searchKeywordContainer}>
+            <Pressable
+              onPress={() => setSearchKeyword('')}
+              style={{padding: 10}}>
+              <BackSvg />
+            </Pressable>
+            <Pressable
+              onPress={() => navigation.navigate('findInputScreen')}
+              style={styles.searchInputWrapper}>
+              <Text>{searchKeyword}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('findInputScreen');
+                }}
+                style={styles.calendarViewContainer}>
+                <SearchBlueSvg />
+              </TouchableOpacity>
+            </Pressable>
+          </View>
+        ) : (
+          <View style={styles.headerContainer}>
+            <Text style={Text24B.text}>팝업 목록</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('findInputScreen');
+              }}
+              style={styles.calendarViewContainer}>
+              <SearchBlueSvg />
+            </TouchableOpacity>
+          </View>
+        )}
 
         <Tab.Navigator
-          initialRouteName="운영 중"
+          initialRouteName={'운영 중'}
           // 탭이 선택될 때의 동작 구현
-          tabBar={({state, descriptors, navigation}) => (
-            <View style={styles.tabBarContainer}>
-              <View style={styles.tabBar}>
-                {state.routes.map((route, index) => (
-                  <TouchableOpacity
-                    key={route.key}
-                    style={
-                      selectedTab === route.name
-                        ? styles.activeTabItem
-                        : styles.tabItem
+          tabBar={({state, descriptors, navigation}) => {
+            return (
+              <View style={styles.tabBarContainer}>
+                <View style={styles.tabBar}>
+                  {state.routes.map((route, index) => {
+                    // console.log('route', route);
+                    return (
+                      <TouchableOpacity
+                        key={route.key}
+                        style={[
+                          styles.tabItem,
+                          {
+                            borderBottomWidth: state.index === index ? 5 : 0,
+                            borderColor: globalColors.blue,
+                          },
+                        ]}
+                        onPress={() => {
+                          handleTabPress(route.name);
+                          navigation.navigate(route.name);
+                        }}>
+                        <Text
+                          style={
+                            selectedTab === route.name
+                              ? styles.activeTab
+                              : styles.inactiveTab
+                          }>
+                          {route.name === '운영 중'
+                            ? '운영 중'
+                            : route.name === '오픈 예정'
+                            ? '오픈 예정'
+                            : '운영 종료'}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+                <View style={styles.filterContainer}>
+                  <FilterSettingButton
+                    onPress={handlePresentModal}
+                    isSetting={isSettingApplied}
+                  />
+                  <CustomSelectDropdown
+                    data={FINDORDER_TYPES}
+                    onSelect={
+                      (selectedItem: any, index: any) =>
+                        handleOrderSelect(index)
+                      // console.log(selectedItem, index)
                     }
-                    onPress={() => {
-                      handleTabPress(route.name);
-                      navigation.navigate(route.name);
-                    }}>
-                    <Text
-                      style={
-                        selectedTab === route.name
-                          ? styles.activeTab
-                          : styles.inactiveTab
-                      }>
-                      {route.name === '운영 중'
-                        ? '운영 중'
-                        : route.name === '오픈 예정'
-                        ? '오픈 예정'
-                        : '운영 종료'}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                    buttonWidth={120}
+                    iconComponent={<OrderSvg style={styles.dropdownIcon} />}
+                    buttonTextAfterSelection={(selectedItem: any, index: any) =>
+                      selectedItem
+                    }
+                    buttonTextStyle={Text14M.text}
+                  />
+                </View>
               </View>
-              <View style={styles.filterContainer}>
-                <FilterSettingButton
-                  onPress={handlePresentModal}
-                  isSetting={isSettingApplied}
-                />
-                <CustomSelectDropdown
-                  data={FINDORDER_TYPES}
-                  onSelect={
-                    (selectedItem: any, index: any) => handleOrderSelect(index)
-                    // console.log(selectedItem, index)
-                  }
-                  buttonWidth={120}
-                  iconComponent={<OrderSvg style={styles.dropdownIcon} />}
-                  buttonTextAfterSelection={(selectedItem: any, index: any) =>
-                    selectedItem
-                  }
-                  buttonTextStyle={Text14M.text}
-                />
-              </View>
-            </View>
-          )}>
+            );
+          }}>
           <Tab.Screen name="운영 중">
             {() => (
-              <>
-                <FindPopupTab />
-              </>
+              <NotyetTab
+                selectedOrder={selectedOrder}
+                availableTags={availableTags}
+                searchKeyword={searchKeyword}
+              />
             )}
           </Tab.Screen>
-          <Tab.Screen name="오픈 예정">{() => <FindPopupTab />}</Tab.Screen>
+          <Tab.Screen name="오픈 예정">
+            {() => (
+              <OperationTab
+                selectedOrder={selectedOrder}
+                availableTags={availableTags}
+                searchKeyword={searchKeyword}
+              />
+            )}
+          </Tab.Screen>
           <Tab.Screen name="운영 종료">
-            {() => <FindPopupTab type="close" />}
+            {() => (
+              <ClosedTab
+                selectedOrder={selectedOrder}
+                availableTags={availableTags}
+                searchKeyword={searchKeyword}
+                type="close"
+              />
+            )}
           </Tab.Screen>
         </Tab.Navigator>
       </SafeAreaView>
@@ -289,7 +298,7 @@ function FindScreen({navigation}: any) {
             </View>
             <Text style={styles.popType}>팝업 유형</Text>
             <View style={styles.popWrapper}>
-              {selectedTags.slice(14, POPUUP_TYPES.length).map(item => {
+              {selectedTags.slice(14, POP_UP_TYPES.length).map(item => {
                 return (
                   <CategorySelectButton
                     key={item.id}
@@ -386,6 +395,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     marginLeft: 16,
     marginRight: 16,
+    height: 40,
   },
 
   dropdownContainer: {
@@ -532,6 +542,23 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     marginLeft: 16,
     marginRight: 16,
+  },
+  searchKeywordContainer: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchInputWrapper: {
+    width: '90%',
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 30,
+    padding: 10,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 

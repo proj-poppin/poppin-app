@@ -1,55 +1,58 @@
 import {useState, useEffect} from 'react';
 import {GetPopUpListResponse} from '../..//types/PopUpListData.ts';
 import getFindPopUpList from '../../apis/popup/findPopupList.ts';
-import {TFilterparmas} from '../../apis/popup/findPopupList.ts';
 
 interface GetClosingState {
   loading: boolean;
   error: Error | null;
-  data: GetPopUpListResponse[] | null;
+  data: any | null;
 }
-
+type TFilter = {id: number; name: string; selected: boolean};
 const useGetFindPopupList = (
   page: number,
   size: number,
   selectedTab: string,
-  selectedOrder: any,
-  availableTags: any,
+  selectedOrder: string,
+  availableTags: TFilter[],
   searchKeyword: string,
 ) => {
   const [getListState, setGetListState] = useState<GetClosingState>({
     loading: false,
     error: null,
-    data: null,
+    data: [],
   });
 
   useEffect(() => {
     const fetcFindPopupList = async () => {
       setGetListState(prevState => ({...prevState, loading: true}));
       const selectedCategoryString = availableTags
-        .slice(0, 14)
+        .slice(0, 13)
         .map(item => (item.selected ? '1' : '0'))
         .join('');
 
       const selectedTypeString = availableTags
-        .slice(14, availableTags.length)
+        .slice(13, availableTags.length)
         .map(item => (item.selected ? '1' : '0'))
         .join('');
 
       const filterParams = {
         page,
         size,
-        selectedTab,
-        searchKeyword,
-        selectedCategoryString,
-        selectedTypeString,
+        oper: selectedTab,
+        text: searchKeyword,
+        order: selectedOrder,
+        prepered: selectedCategoryString,
+        taste: selectedTypeString,
       };
-      console.log('selectedTypeString', selectedTypeString);
-      console.log('selectedCategoryString', selectedCategoryString);
+
       try {
         const response = await getFindPopUpList(filterParams);
         if (response.success) {
-          setGetListState({loading: false, error: null, data: response.data});
+          setGetListState(prevState => ({
+            loading: false,
+            error: null,
+            data: [...prevState.data, ...response.data],
+          }));
         } else {
           setGetListState({
             loading: false,

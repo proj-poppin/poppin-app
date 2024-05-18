@@ -12,7 +12,7 @@ function NoList() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        paddingTop: 70,
+        paddingTop: 50,
       }}>
       <Text style={{fontSize: 20, marginBottom: 20}}>
         조건에 해당하는 팝업 이벤트가 없어요😥

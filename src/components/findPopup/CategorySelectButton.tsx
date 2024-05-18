@@ -20,7 +20,7 @@ interface CategorySelectButtonProps {
   item: Item;
   onClick: (item: any) => void;
   selected: boolean;
-  tagDeleteClick: (id: string) => void;
+  tagDeleteClick: (id: number) => void;
 }
 
 const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({

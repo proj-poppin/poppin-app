@@ -8,8 +8,9 @@ import DividerLine from '../DividerLine.tsx';
 import {POP_UP_TYPES} from './constants.ts';
 
 const FindCard = ({item, type}: any) => {
+  console.log('imte', item.name);
   const formattedTitle =
-    item.name.length > 20 ? `${item.title.substring(0, 20)}...` : item.title;
+    item.name.length > 20 ? `${item.title.substring(0, 20)}...` : item.name;
   const calculateRemainingDays = (serverDate: string) => {
     const closeDate = new Date(serverDate);
 

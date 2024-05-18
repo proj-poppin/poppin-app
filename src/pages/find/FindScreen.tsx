@@ -331,8 +331,8 @@ function FindScreen({navigation, route}: any) {
             <BackMiddleButton
               onPress={() => {
                 setIsSettingApplied(false);
-                setAvailableTags(POPUUP_TYPES);
-                setSelectedTags(POPUUP_TYPES);
+                setAvailableTags(POP_UP_TYPES);
+                setSelectedTags(POP_UP_TYPES);
                 bottomSheetModalRef.current?.close();
               }}
               title={'초기화'}

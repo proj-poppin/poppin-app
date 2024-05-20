@@ -4,6 +4,10 @@ import rootReducer from './reducer.ts';
 
 const store = configureStore({
   reducer: rootReducer, // rootReducer에 모든 리듀서 결합
+  middleware: defaultMiddleware =>
+    defaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 export default store;
 

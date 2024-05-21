@@ -45,13 +45,6 @@ function FindScreen({navigation, route}: FindScreenProps) {
   const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
     useState(false);
 
-  useEffect(() => {
-    if (route.params) {
-      const {searchText} = route.params;
-      setSearchKeyword(searchText);
-    }
-  }, [route]);
-
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const handleTabPress = (tab: string) => {
@@ -66,11 +59,6 @@ function FindScreen({navigation, route}: FindScreenProps) {
     const orderValue = FIND_ORDER_TYPES[value].value;
     setSelectedOrder(orderValue);
   };
-
-  useEffect(() => {
-    const isSelected = selectedTags.some(tag => tag.selected);
-    setIsOneMoreCategorySelected(isSelected);
-  }, [selectedTags]);
 
   // variables
   const snapPoints = useMemo(() => ['77%'], []);
@@ -93,6 +81,21 @@ function FindScreen({navigation, route}: FindScreenProps) {
       prev.map(item => (item.id === tid ? {...item, selected: false} : item)),
     );
   };
+
+  /**
+   * useEffect
+   */
+  useEffect(() => {
+    if (route.params) {
+      const {searchText} = route.params;
+      setSearchKeyword(searchText);
+    }
+  }, [route]);
+
+  useEffect(() => {
+    const isSelected = selectedTags.some(tag => tag.selected);
+    setIsOneMoreCategorySelected(isSelected);
+  }, [selectedTags]);
 
   return (
     <>

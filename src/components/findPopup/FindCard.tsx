@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: 'hidden',
     padding: 10,
-    alignItems: 'flex-start', // SVG와 텍스트 컨테이너를 위쪽으로 정렬
+    alignItems: 'flex-start',
     backgroundColor: globalColors.white,
   },
   svgContainer: {

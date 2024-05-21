@@ -51,12 +51,12 @@ const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
           end={{x: 1, y: 1}}
           style={styles.gradientBorder}>
           <View style={styles.innerContent}>
-            <Text>{item.name}</Text>
+            <Text>{item.label}</Text>
           </View>
         </LinearGradient>
       ) : (
         <View style={styles.tag}>
-          <Text>{item.name}</Text>
+          <Text>{item.label}</Text>
         </View>
       )}
     </Pressable>

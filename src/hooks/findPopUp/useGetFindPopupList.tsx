@@ -24,13 +24,14 @@ const useGetFindPopupList = (
   useEffect(() => {
     const fetcFindPopupList = async () => {
       setGetListState(prevState => ({...prevState, loading: true}));
+
       const selectedCategoryString = availableTags
-        .slice(0, 13)
+        .slice(0, 14)
         .map(item => (item.selected ? '1' : '0'))
         .join('');
 
       const selectedTypeString = availableTags
-        .slice(13, availableTags.length)
+        .slice(14, availableTags.length)
         .map(item => (item.selected ? '1' : '0'))
         .join('');
 
@@ -43,9 +44,11 @@ const useGetFindPopupList = (
         prepered: selectedCategoryString,
         taste: selectedTypeString,
       };
+      console.log('order', selectedOrder);
 
       try {
         const response = await getFindPopUpList(filterParams);
+
         if (response.success) {
           setGetListState(prevState => ({
             loading: false,

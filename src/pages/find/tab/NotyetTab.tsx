@@ -20,7 +20,7 @@ function NotyetTab({type, selectedOrder, availableTags, searchKeyword}: any) {
   } = useGetFindPopupList(
     page,
     size,
-    'NOTYET',
+    'OPERATING',
     selectedOrder,
     availableTags,
     searchKeyword,

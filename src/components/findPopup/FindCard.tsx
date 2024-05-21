@@ -1,15 +1,24 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Pressable,
+} from 'react-native';
 import StarOnSvg from '../../assets/icons/starOn.svg';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12B from '../../styles/texts/label/Text12B.ts';
 import globalColors from '../../styles/color/globalColors.ts';
 import DividerLine from '../DividerLine.tsx';
+import Favorite from '../../assets/icons/favorite.svg';
 import {POP_UP_TYPES} from './constants.ts';
+import usePostBookmarkPopup from '../../hooks/findPopUp/usePostBookmarkPopup.tsx';
 
 const FindCard = ({item, type}: any) => {
   const formattedTitle =
-    item.name.length > 20 ? `${item.title.substring(0, 20)}...` : item.title;
+    item.name.length > 20 ? `${item.name.substring(0, 20)}...` : item.name;
   const calculateRemainingDays = (serverDate: string) => {
     const closeDate = new Date(serverDate);
 
@@ -20,7 +29,14 @@ const FindCard = ({item, type}: any) => {
     return remainingDays;
   };
 
+  const {addInterest} = usePostBookmarkPopup();
+  // console.log('item?.isInterested ', item?.isInterested);
+
   const remainingDays = calculateRemainingDays(item.closeDate);
+
+  const handleFavoriteClick = (popupId: number) => {
+    addInterest(popupId);
+  };
 
   return (
     <>
@@ -40,7 +56,13 @@ const FindCard = ({item, type}: any) => {
         <View style={styles.textContainer}>
           <View style={styles.statusAndStarContainer}>
             <Text style={[Text18B.text, styles.title]}>{formattedTitle}</Text>
-            <StarOnSvg style={styles.starIcon} />
+            <Pressable onPress={() => handleFavoriteClick(item.id)}>
+              {item?.isInterested && item.isInterested ? (
+                <StarOnSvg style={styles.starIcon} />
+              ) : (
+                <Favorite style={styles.starIcon} />
+              )}
+            </Pressable>
           </View>
           <Text style={styles.location}>{item.address}</Text>
 

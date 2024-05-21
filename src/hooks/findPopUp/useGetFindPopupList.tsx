@@ -1,5 +1,7 @@
 import {useState, useEffect} from 'react';
 import getFindPopUpList from '../../apis/popup/findPopupList.ts';
+import getPublicFindPopUpList from '../../apis/popup/public_findPopupList.ts';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 interface GetClosingState {
   loading: boolean;
@@ -44,10 +46,14 @@ const useGetFindPopupList = (
         prepered: selectedCategoryString,
         taste: selectedTypeString,
       };
-      console.log('order', selectedOrder);
 
       try {
-        const response = await getFindPopUpList(filterParams);
+        const accessToken = await EncryptedStorage.getItem('accessToken');
+        const response = accessToken
+          ? await getFindPopUpList(filterParams)
+          : await getPublicFindPopUpList(filterParams);
+
+        // const response = await getFindPopUpList(filterParams);
 
         if (response.success) {
           setGetListState(prevState => ({

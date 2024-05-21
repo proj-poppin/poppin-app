@@ -23,7 +23,7 @@ function OperationTab({
   } = useGetFindPopupList(
     page,
     size,
-    'OPERATING',
+    'NOTYET',
     selectedOrder,
     availableTags,
     searchKeyword,

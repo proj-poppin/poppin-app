@@ -2,7 +2,6 @@ import {ScrollView} from 'react-native';
 import React, {useState} from 'react';
 import DividerLine from '../../../components/DividerLine.tsx';
 import FindCard from '../../../components/findPopup/FindCard.tsx';
-
 import useGetFindPopupList from '../../../hooks/findPopUp/useGetFindPopupList.tsx';
 import NotList from '../../../components/findPopup/NotList.tsx';
 

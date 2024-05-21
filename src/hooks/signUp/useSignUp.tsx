@@ -1,8 +1,8 @@
 import {useState, useCallback} from 'react';
 import {useSelector} from 'react-redux';
-import basicSignUp from '../apis/auth/basicSignUp';
-import {RootState} from '../redux/stores/reducer';
-import useSetAccessTokenAndRefreshToken from './useSetAccessTokenAndRefreshToken.ts';
+import basicSignUp from '../../apis/auth/basicSignUp.ts';
+import {RootState} from '../../redux/stores/reducer.ts';
+import useSetAccessTokenAndRefreshToken from '../auth/useSetAccessTokenAndRefreshToken.ts';
 
 const useSignUp = () => {
   const user = useSelector((state: RootState) => state.user);

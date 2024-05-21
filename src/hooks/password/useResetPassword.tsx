@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import resetPassword from '../apis/auth/resetPassword.ts';
+import resetPassword from '../../apis/auth/resetPassword.ts';
 
 const useResetPassword = () => {
   const [resetPasswordStatus, setResetPasswordStatus] = useState({

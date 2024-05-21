@@ -1,15 +1,15 @@
 import {useState, useEffect} from 'react';
-import {GetPopUpListResponse} from '../types/PopUpListData.ts';
-import getNewList from '../apis/popup/newList.ts';
+import {GetPopUpListResponse} from '../../types/PopUpListData.ts';
+import getClosingList from '../../apis/popup/closingList.ts';
 
-interface GetNewState {
+interface GetClosingState {
   loading: boolean;
   error: Error | null;
   data: GetPopUpListResponse[] | null;
 }
 
-const useGetNewList = () => {
-  const [getListState, setGetListState] = useState<GetNewState>({
+const useGetClosingList = () => {
+  const [getListState, setGetListState] = useState<GetClosingState>({
     loading: false,
     error: null,
     data: null,
@@ -19,7 +19,7 @@ const useGetNewList = () => {
     const fetchHotList = async () => {
       setGetListState(prevState => ({...prevState, loading: true}));
       try {
-        const response = await getNewList();
+        const response = await getClosingList();
         if (response.success) {
           setGetListState({loading: false, error: null, data: response.data});
         } else {
@@ -40,11 +40,10 @@ const useGetNewList = () => {
         });
       }
     };
-
     fetchHotList();
   }, []);
 
   return getListState;
 };
 
-export default useGetNewList;
+export default useGetClosingList;

@@ -1,5 +1,4 @@
 import {useState, useEffect} from 'react';
-import {GetPopUpListResponse} from '../..//types/PopUpListData.ts';
 import getFindPopUpList from '../../apis/popup/findPopupList.ts';
 
 interface GetClosingState {

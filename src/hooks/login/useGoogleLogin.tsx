@@ -1,11 +1,11 @@
 import {useState} from 'react';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import Config from 'react-native-config';
-import loginSocial from '../apis/auth/loginSocial.ts';
+import loginSocial from '../../apis/auth/loginSocial.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import userSlice from '../redux/slices/user.ts';
-import {useAppDispatch} from '../redux/stores';
-import useSetAccessTokenAndRefreshToken from './useSetAccessTokenAndRefreshToken.ts';
+import userSlice from '../../redux/slices/user.ts';
+import {useAppDispatch} from '../../redux/stores';
+import useSetAccessTokenAndRefreshToken from '../auth/useSetAccessTokenAndRefreshToken.ts';
 import {useNavigation} from '@react-navigation/native';
 
 // Google 로그인을 위한 커스텀 훅 설정
@@ -38,8 +38,6 @@ export const useGoogleLogin = () => {
       // 기존 유저라면 로그인, 신규 유저라면 닉네임 입력 화면으로 이동
       if (loginResult.success && loginResult.data?.refreshToken) {
         const {accessToken, refreshToken} = loginResult.data;
-        // await EncryptedStorage.setItem('refreshToken', refreshToken);
-        // await EncryptedStorage.setItem('accessToken', accessToken);
         await setTokens({accessToken, refreshToken});
 
         dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
@@ -48,14 +46,12 @@ export const useGoogleLogin = () => {
         // 신규 유저라면 닉네입 입력 화면으로 이동
         setGoogleLoginStatus({newUser: true});
         const accessToken = loginResult.data!.accessToken;
-        console.log('naya');
-        // TODO 이 부분은 왜 accessToken만 있는지 확인 필요
         await EncryptedStorage.setItem('accessToken', accessToken);
         dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
         dispatch(userSlice.actions.setAccessToken(accessToken));
       }
     } catch (err) {
-      console.log('Failed to login with Google:', err);
+      console.log('Failed to login with Kakao:', err);
     }
   };
 

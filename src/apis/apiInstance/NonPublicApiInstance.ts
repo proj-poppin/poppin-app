@@ -1,15 +1,16 @@
 import axios from 'axios';
 import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import useIsLoggedIn from '../hooks/useIsLoggedIn.tsx';
+import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 
-const apiInstance = axios.create({
+const nonPublicApiInstance = axios.create({
   baseURL: Config.API_URL,
 });
 
-apiInstance.interceptors.request.use(
+nonPublicApiInstance.interceptors.request.use(
   async config => {
     const accessToken = await EncryptedStorage.getItem('accessToken');
+
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -20,7 +21,7 @@ apiInstance.interceptors.request.use(
   },
 );
 
-apiInstance.interceptors.response.use(
+nonPublicApiInstance.interceptors.response.use(
   response => {
     return response;
   },
@@ -33,13 +34,10 @@ apiInstance.interceptors.response.use(
     ) {
       originalRequest._retry = true;
 
-      console.log('refresh Start!!!!!!!!!:', originalRequest);
-      const isLoggedIn = useIsLoggedIn();
       try {
         const originalRefreshToken = await EncryptedStorage.getItem(
           'refreshToken',
         );
-        console.log('refresh Start:', originalRefreshToken);
         const response = await axios.post(
           `${Config.API_URL}/api/v1/auth/refresh`,
           {},
@@ -47,13 +45,14 @@ apiInstance.interceptors.response.use(
             headers: {Authorization: `Bearer ${originalRefreshToken}`},
           },
         );
+        console.log('🤨🤨🤨🤨🤨🤨🤨🤨🤨');
+
         if (response.data.success) {
-          console.log('kiki');
-          console.log(response);
-          const {accessToken} = response.data.data.accessToken;
-          const {refreshToken} = response.data.data.refreshToken;
+          const {accessToken, refreshToken} = response.data.data;
           await EncryptedStorage.setItem('accessToken', accessToken);
           await EncryptedStorage.setItem('refreshToken', refreshToken);
+          console.log('🎨🎨🎨🎨🎨🎨accessToken:', accessToken);
+          console.log('🎨🎨🎨🎨🎨🎨refreshToken:', refreshToken);
 
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return axios(originalRequest);
@@ -65,4 +64,4 @@ apiInstance.interceptors.response.use(
   },
 );
 
-export default apiInstance;
+export default nonPublicApiInstance;

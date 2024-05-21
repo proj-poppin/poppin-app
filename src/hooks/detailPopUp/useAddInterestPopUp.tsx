@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import addInterestPopUp from '../apis/popup/addInterestPopUp.ts';
+import addInterestPopUp from '../../apis/popup/addInterestPopUp.ts';
 
 interface AddInterestState {
   loading: boolean;
@@ -16,18 +16,14 @@ const useAddInterestPopUp = () => {
 
   const addInterest = async (popUpId: number) => {
     setAddInterestState({loading: true, error: null, success: null});
-    console.log('why why why', popUpId);
     try {
       const response = await addInterestPopUp(popUpId);
       if (response.success) {
-        console.log('addInterestPopUp response:', response.data);
         setAddInterestState({loading: false, error: null, success: true});
       } else {
-        console.log('why why why', response);
         throw new Error(response.error?.message || 'Failed to add interest');
       }
     } catch (error) {
-      console.log('why why why', error);
       setAddInterestState({
         loading: false,
         error:

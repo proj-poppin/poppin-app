@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
-import {GetInterestPopUpListResponse} from '../types/PopUpListData.ts';
-import getInterestList from '../apis/popup/getInterestList.ts'; // 업데이트된 타입을 import
+import {GetInterestPopUpListResponse} from '../../types/PopUpListData.ts';
+import getInterestList from '../../apis/popup/getInterestList.ts'; // 업데이트된 타입을 import
 
 interface InterestListState {
   loading: boolean;

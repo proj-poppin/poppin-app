@@ -1,15 +1,15 @@
 import {useState, useEffect} from 'react';
-import {GetPopUpListResponse} from '../types/PopUpListData.ts';
-import getClosingList from '../apis/popup/closingList.ts';
+import getHotList from '../../apis/popup/hotList.ts';
+import {GetPopUpListResponse} from '../../types/PopUpListData.ts';
 
-interface GetClosingState {
+interface HotListState {
   loading: boolean;
   error: Error | null;
   data: GetPopUpListResponse[] | null;
 }
 
-const useGetClosingList = () => {
-  const [getListState, setGetListState] = useState<GetClosingState>({
+const useGetHotList = () => {
+  const [hotListState, setHotListState] = useState<HotListState>({
     loading: false,
     error: null,
     data: null,
@@ -17,20 +17,20 @@ const useGetClosingList = () => {
 
   useEffect(() => {
     const fetchHotList = async () => {
-      setGetListState(prevState => ({...prevState, loading: true}));
+      setHotListState(prevState => ({...prevState, loading: true}));
       try {
-        const response = await getClosingList();
+        const response = await getHotList();
         if (response.success) {
-          setGetListState({loading: false, error: null, data: response.data});
+          setHotListState({loading: false, error: null, data: response.data!}); // API 응답에 따라 'data'나 'result'로 접근 가능
         } else {
-          setGetListState({
+          setHotListState({
             loading: false,
             error: new Error(response.error?.message || 'Unknown error'),
             data: null,
           });
         }
       } catch (error: any) {
-        setGetListState({
+        setHotListState({
           loading: false,
           error:
             error instanceof Error
@@ -40,10 +40,11 @@ const useGetClosingList = () => {
         });
       }
     };
+
     fetchHotList();
   }, []);
 
-  return getListState;
+  return hotListState;
 };
 
-export default useGetClosingList;
+export default useGetHotList;

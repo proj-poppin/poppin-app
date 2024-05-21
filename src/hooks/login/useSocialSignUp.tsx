@@ -1,7 +1,6 @@
 import {useState} from 'react';
-import socialSignUp from '../apis/auth/socialSignUp.ts';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import useSetAccessTokenAndRefreshToken from './useSetAccessTokenAndRefreshToken.ts';
+import socialSignUp from '../../apis/auth/socialSignUp.ts';
+import useSetAccessTokenAndRefreshToken from '../auth/useSetAccessTokenAndRefreshToken.ts';
 
 function useSocialSignUp() {
   const [signUpStatus, setSignUpStatus] = useState({

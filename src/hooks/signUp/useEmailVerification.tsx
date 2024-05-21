@@ -1,5 +1,5 @@
 import {useState, useCallback} from 'react';
-import emailVerification from '../apis/auth/emailVerification.ts';
+import emailVerification from '../../apis/auth/emailVerification.ts';
 
 const useEmailVerification = (email: string) => {
   const [authCode, setAuthCode] = useState<string>('');

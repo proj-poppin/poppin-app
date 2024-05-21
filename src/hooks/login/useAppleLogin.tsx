@@ -1,11 +1,11 @@
 import {useState} from 'react';
 import appleAuth from '@invertase/react-native-apple-authentication';
 import {Alert, Platform} from 'react-native';
-import loginSocial from '../apis/auth/loginSocial.ts';
+import loginSocial from '../../apis/auth/loginSocial.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import userSlice from '../redux/slices/user.ts';
-import {useAppDispatch} from '../redux/stores';
-import useSetAccessTokenAndRefreshToken from './useSetAccessTokenAndRefreshToken.ts';
+import userSlice from '../../redux/slices/user.ts';
+import {useAppDispatch} from '../../redux/stores';
+import useSetAccessTokenAndRefreshToken from '../auth/useSetAccessTokenAndRefreshToken.ts';
 
 export const useAppleLogin = () => {
   const dispatch = useAppDispatch();

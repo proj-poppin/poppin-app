@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import getUser, {GetUserData} from '../apis/user/getUser.ts';
+import getUser, {GetUserData} from '../../apis/user/getUser.ts';
 
 interface UserState {
   loading: boolean;

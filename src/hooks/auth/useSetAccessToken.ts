@@ -1,7 +1,7 @@
 import {useCallback} from 'react';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useDispatch} from 'react-redux';
-import userSlice from '../redux/slices/user.ts';
+import userSlice from '../../redux/slices/user.ts';
 
 export interface AccessToken {
   accessToken: string;

@@ -1,7 +1,7 @@
 import {useState, useCallback} from 'react';
-import basicLogin from '../apis/auth/basicLogin.ts';
+import basicLogin from '../../apis/auth/basicLogin.ts';
 import {useDispatch} from 'react-redux';
-import userSlice from '../redux/slices/user.ts';
+import userSlice from '../../redux/slices/user.ts';
 import {useNavigation} from '@react-navigation/native';
 
 const useBasicLogin = () => {

@@ -1,14 +1,14 @@
 import {useCallback} from 'react';
-import preferenceSetting from '../apis/auth/preferenceSetting.ts';
-import {PreferenceData} from '../types/PreferenceData.ts';
+import preferenceSetting from '../../apis/auth/preferenceSetting.ts';
+import {PreferenceData} from '../../types/PreferenceData.ts';
 import {useSelector} from 'react-redux';
-import {useAppDispatch} from '../redux/stores';
-import {RootState} from '../redux/stores/reducer.ts';
+import {useAppDispatch} from '../../redux/stores';
+import {RootState} from '../../redux/stores/reducer.ts';
 import {
   resetPreferences,
   setPreference,
-} from '../redux/slices/preferenceSlice.ts';
-import userSlice from '../redux/slices/user.ts';
+} from '../../redux/slices/preferenceSlice.ts';
+import userSlice from '../../redux/slices/user.ts';
 
 const usePreferenceSetting = () => {
   const dispatch = useAppDispatch();

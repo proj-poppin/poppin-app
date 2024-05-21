@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
-import {DetailPopUpData} from '../types/DetaiPopUpData.ts';
-import getDetailPopUp from '../apis/popup/detailPopUp.ts';
+import {DetailPopUpData} from '../../types/DetaiPopUpData.ts';
+import getDetailPopUp from '../../apis/popup/detailPopUp.ts';
 
 interface DetailPopUpState {
   loading: boolean;

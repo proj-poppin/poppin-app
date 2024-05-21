@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import getDeletePopUp from '../apis/popup/deleteInterestPopUp.ts';
+import getDeletePopUp from '../../apis/popup/deleteInterestPopUp.ts';
 
 interface DeleteInterestState {
   loading: boolean;

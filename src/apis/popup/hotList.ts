@@ -1,11 +1,11 @@
-import apiInstance from '../axios.ts';
+import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 import {GetPopUpListResponse} from '../../types/PopUpListData.ts';
 
 const getHotList = async (): Promise<
   CommonResponse<GetPopUpListResponse[]>
 > => {
   try {
-    const response = await apiInstance.get('/api/v1/popup/hot-list');
+    const response = await nonPublicApiInstance.get('/api/v1/popup/hot-list');
 
     if (response.data.success) {
       console.log('Hot list fetched successfully', response.data);

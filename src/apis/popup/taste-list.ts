@@ -1,11 +1,11 @@
-import apiInstance from '../axios.ts';
+import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 import {GetTastePopUpListResponse} from '../../types/PopUpListData.ts';
 
 const getTasteList = async (): Promise<
   CommonResponse<GetTastePopUpListResponse>
 > => {
   try {
-    const response = await apiInstance.get('/api/v1/popup/taste-list');
+    const response = await nonPublicApiInstance.get('/api/v1/popup/taste-list');
     if (response.data.success) {
       return {
         success: true,

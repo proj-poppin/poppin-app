@@ -14,20 +14,19 @@ import DownSvg from '../../assets/icons/down.svg';
 import RightSvg from '../../assets/icons/smallright.svg';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
-import useGetUser from '../../hooks/useGetUser.tsx';
-import useGetHotList from '../../hooks/useGetHotList.tsx';
-import useGetNewList from '../../hooks/useGetNewList.tsx';
-import useGetDetailPopUp from '../../hooks/useGetDetailPopUp.tsx';
+import useGetUser from '../../hooks/auth/useGetUser.tsx';
+import useGetHotList from '../../hooks/popUpList/useGetHotList.tsx';
+import useGetNewList from '../../hooks/popUpList/useGetNewList.tsx';
+import useGetDetailPopUp from '../../hooks/detailPopUp/useGetDetailPopUp.tsx';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import RowPopUpCard from '../../components/molecules/card/RowPopUpCard.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import UpSvg from '../../assets/icons/up.svg';
 import HotListCard from '../../components/molecules/card/HotListCard.tsx';
-import useGetClosingList from '../../hooks/useGetClosingList.tsx';
+import useGetClosingList from '../../hooks/popUpList/useGetClosingList.tsx';
 import HotListNoticeSvg from '../../assets/images/hotListNotice.svg';
 import HomeLoginHeader from '../../components/HomeLoginHeader.tsx';
 
-// @ts-ignore
 function HomeScreen({navigation}) {
   const [showNotice, setShowNotice] = useState(false);
 
@@ -167,9 +166,7 @@ function HomeScreen({navigation}) {
             {closingList?.map(item => (
               <TouchableOpacity
                 key={item.id} // `key` should be here
-                onPress={() =>
-                  navigation.navigate('PopUpDetail', {id: item.id})
-                }>
+                onPress={() => navigation.navigate('PopUpDetail', {id: 1})}>
                 <RowPopUpCard
                   key={item.id}
                   id={item.id}

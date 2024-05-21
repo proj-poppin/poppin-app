@@ -66,6 +66,7 @@ const userSlice = createSlice({
       state.nickname = '';
       state.email = '';
       state.accessToken = '';
+      state.refreshToken = '';
       state.phoneToken = '';
       state.money = 0;
       state.isSocialLogin = false;

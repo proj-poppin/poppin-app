@@ -1,23 +1,31 @@
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import globalColors from '../styles/color/globalColors.ts';
+import {CongestionRate} from '../types/CongestionRate.ts';
 
-// Define the props type for better type checking
 interface HorizontalBarChartProps {
-  percentage: number;
+  congestionRatio: number;
+  congestionRate: CongestionRate;
 }
 
-const HorizontalBarChart = ({percentage}: HorizontalBarChartProps) => {
-  const filledWidth = `${percentage}%`; // Calculate the filled part
-  const unfilledWidth = `${100 - percentage}%`; // Calculate the unfilled part
+const HorizontalBarChart = ({
+  congestionRatio,
+  congestionRate,
+}: HorizontalBarChartProps) => {
+  const filledWidth = `${congestionRatio}%`;
+  const unfilledWidth = `${100 - congestionRatio}%`;
 
-  // Function to determine the color based on the percentage
-  const getColorForPercentage = (percentage: number) => {
-    if (percentage <= 50) {
-      return globalColors.blue;
-    } else if (percentage > 50 && percentage <= 75) {
-      return globalColors.font;
-    } else {
-      return globalColors.red;
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const getColorForCongestionRate = (congestionRate: CongestionRate) => {
+    switch (congestionRate) {
+      case CongestionRate.Low:
+        return globalColors.blue;
+      case CongestionRate.Medium:
+        return globalColors.chartNormal;
+      case CongestionRate.High:
+        return globalColors.red;
+      default:
+        return globalColors.chartNormal;
     }
   };
 
@@ -28,7 +36,7 @@ const HorizontalBarChart = ({percentage}: HorizontalBarChartProps) => {
           styles.filledSection,
           {
             width: filledWidth,
-            backgroundColor: getColorForPercentage(percentage),
+            backgroundColor: getColorForCongestionRate(congestionRate),
           },
         ]}
       />

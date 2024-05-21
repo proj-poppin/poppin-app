@@ -7,20 +7,15 @@ import {
   View,
 } from 'react-native';
 import globalColors from '../../styles/color/globalColors';
-import TestSvg from '../../assets/icons/categoryButtonClose.svg';
+import CategoryButtonDeleteSvg from '../../assets/icons/categoryButtonClose.svg';
 import LinearGradient from 'react-native-linear-gradient';
-
-type Item = {
-  id: string;
-  name: string;
-  selected?: boolean;
-};
+import {TFilter} from './constants.ts';
 
 interface CategorySelectButtonProps {
-  item: Item;
-  onClick: (item: any) => void;
+  item: TFilter;
+  onClick: (item: TFilter) => void;
   selected: boolean;
-  tagDeleteClick: (id: string) => void;
+  tagDeleteClick: (id: number) => void;
 }
 
 const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
@@ -40,7 +35,7 @@ const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
           <View style={styles.innerContent}>
             <Text>{item.name}</Text>
             <TouchableOpacity onPress={() => tagDeleteClick(item.id)}>
-              <TestSvg />
+              <CategoryButtonDeleteSvg />
             </TouchableOpacity>
           </View>
         </LinearGradient>

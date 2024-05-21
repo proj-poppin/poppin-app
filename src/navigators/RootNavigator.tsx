@@ -8,20 +8,21 @@ import SplashScreen from 'react-native-splash-screen';
 import getUser from '../apis/user/getUser.ts';
 import LoadingScreen from '../pages/splash/LoadingScreen.tsx';
 import userSlice from '../redux/slices/user.ts';
-import useIsLoggedIn from '../hooks/useIsLoggedIn.tsx';
 import messaging from '@react-native-firebase/messaging';
 
 const RootNavigator = () => {
   const dispatch = useDispatch();
   const [initialLoading, setInitialLoading] = useState(true);
-
+  const isFinishedPreferenceSetting = useSelector(
+    (state: RootState) => state.user.isFinishedPreferenceSetting,
+  );
   useEffect(() => {
     const initializeApp = async () => {
       const accessToken = await EncryptedStorage.getItem('accessToken');
       const refreshToken = await EncryptedStorage.getItem('refreshToken');
 
       // 토큰이 없을 경우, 로그인 화면으로
-      if (accessToken && refreshToken) {
+      if (accessToken && refreshToken && isFinishedPreferenceSetting) {
         dispatch(
           userSlice.actions.setAccessTokenAndRefreshToken({
             accessToken,

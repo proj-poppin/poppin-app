@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import addBookmarkPopup from '../../apis/popup/bookmarkpopup.ts';
+import addInterestPopUp from '../../apis/popup/addInterestPopUp.ts';
 
 interface AddInterestState {
   loading: boolean;
@@ -17,7 +17,7 @@ const usePostBookmarkPopup = () => {
   const addInterest = async (popUpId: number) => {
     setAddInterestState({loading: true, error: null, success: null});
     try {
-      const response = await addBookmarkPopup(popUpId);
+      const response = await addInterestPopUp(popUpId);
       if (response.success) {
         setAddInterestState({loading: false, error: null, success: true});
       } else {

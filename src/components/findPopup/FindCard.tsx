@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     width: 'auto',
     height: 28,
     padding: 8,
+    marginLeft: 8,
   },
   tag: {
     fontSize: 11,

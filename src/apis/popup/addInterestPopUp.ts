@@ -1,16 +1,20 @@
-import NonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
-
-const addInterestPopUp = async (popUpId: number) => {
+import nonPublicApiInstance from '../../apis/apiInstance/NonPublicApiInstance';
+export interface AddRecommendReviewResponse {
+  success: boolean;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+const addInterestPopup = async (popupId: number) => {
   try {
-    const response = await NonPublicApiInstance.post(
-      '/api/v1/interest/add-interest',
-      {
-        popupId: popUpId,
-      },
+    const response = await nonPublicApiInstance.post(
+      `/api/v1/interest/add-interest`,
+      {popupId},
     );
+    console.log('addbookmarkpopup response:', response.data);
 
     if (response.data.success) {
-      console.log('addInterestPopUp response:', response.data);
       return response.data;
     } else {
       return {
@@ -30,4 +34,4 @@ const addInterestPopUp = async (popUpId: number) => {
   }
 };
 
-export default addInterestPopUp;
+export default addInterestPopup;

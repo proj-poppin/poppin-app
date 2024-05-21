@@ -208,6 +208,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
           <Tab.Screen name="운영 종료">
             {() => (
               <ClosedTab
+                type="close"
                 selectedOrder={selectedOrder}
                 availableTags={availableTags}
                 searchKeyword={searchKeyword}
@@ -441,7 +442,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 60,
     flexDirection: 'row',
-    gap: 10,
+    gap: 15,
     padding: 10,
   },
   buttonsWrapper: {

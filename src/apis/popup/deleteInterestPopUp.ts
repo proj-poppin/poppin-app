@@ -1,6 +1,6 @@
 import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 
-const getDeletePopUp = async (popupId: number) => {
+const deleteInterestPopUp = async (popupId: number) => {
   try {
     const response = await nonPublicApiInstance.delete(
       '/api/v1/interest/remove-interest',
@@ -29,4 +29,4 @@ const getDeletePopUp = async (popupId: number) => {
   }
 };
 
-export default getDeletePopUp;
+export default deleteInterestPopUp;

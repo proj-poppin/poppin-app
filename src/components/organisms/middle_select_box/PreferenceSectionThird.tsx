@@ -3,19 +3,14 @@ import {View, Text, StyleSheet} from 'react-native';
 import MainTitle from '../header/MainTitle.tsx';
 import OptionMultipleButton from '../../atoms/button/optionMultipleButton.tsx';
 import globalColors from '../../../styles/color/globalColors.ts';
+import {
+  preferenceOptionsThird,
+  PreferenceCategories,
+} from '../../../constants/PreferenceTypes.ts';
 
-const PreferenceSectionThird = ({updatePreference, preferences}) => {
-  // 훅에서 updatePreferences 함수 사용
-
-  const options = [
-    {title: '나 혼자 방문해요', key: 'solo'},
-    {title: '친구와 방문해요', key: 'withFriend'},
-    {title: '가족과 방문해요', key: 'withFamily'},
-    {title: '연인과 방문해요', key: 'withLover'},
-  ];
-
+const PreferenceSectionThird = ({updatePreference, preferences, nickname}) => {
   const handlePress = (key: string, isSelected: boolean) => {
-    updatePreference('whoWith', key, isSelected);
+    updatePreference(PreferenceCategories.WHO_WITH, key, isSelected);
     console.log('key:', key);
     console.log('preferences:', preferences);
   };
@@ -23,7 +18,7 @@ const PreferenceSectionThird = ({updatePreference, preferences}) => {
   return (
     <View>
       <MainTitle
-        text1={'OO님은'}
+        text1={`${nickname}님은`}
         text2={'주로 누구와 팝업에 방문하시나요?'}
         isNeedCenter={true}
       />
@@ -31,7 +26,7 @@ const PreferenceSectionThird = ({updatePreference, preferences}) => {
         <Text style={styles.noteText}>*복수 선택 가능</Text>
       </View>
       <View style={styles.optionsContainer}>
-        {options.map((option, index) => (
+        {preferenceOptionsThird.map((option, index) => (
           <OptionMultipleButton
             key={index}
             id={option.key}

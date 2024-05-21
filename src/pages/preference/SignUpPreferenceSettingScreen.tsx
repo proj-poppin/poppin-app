@@ -8,20 +8,20 @@ import PreferenceSectionFirst from '../../components/organisms/middle_select_box
 import PreferenceSectionSecond from '../../components/organisms/middle_select_box/PreferenceSectionSecond.tsx';
 import PreferenceSectionThird from '../../components/organisms/middle_select_box/PreferenceSectionThird.tsx';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
 import {useAppDispatch} from '../../redux/stores';
 import userSlice from '../../redux/slices/user.ts';
-import usePreferenceSetting from '../../hooks/usePreferenceSetting.tsx';
+import usePreferenceSetting from '../../hooks/password/usePreferenceSetting.tsx';
 import {RootState} from '../../redux/stores/reducer.ts';
 import {useSelector} from 'react-redux';
-import useIsLoggedIn from '../../hooks/useIsLoggedIn.tsx';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 
 type PreferenceScreenNavigationProp = NativeStackNavigationProp<
-  AuthNavigatorParamList,
-  'PreferenceSetting'
+  AppNavigatorParamList,
+  'SignUpPreferenceSetting'
 >;
 
-function PreferenceScreen() {
+function SignUpPreferenceSettingScreen({route}) {
+  const {nickname} = route.params;
   const {preferences, updatePreference, submitPreferences} =
     usePreferenceSetting();
   const [step, setStep] = useState<number>(1);
@@ -31,17 +31,27 @@ function PreferenceScreen() {
   const dispatch = useAppDispatch();
 
   const handleSkipComplete = () => {
-    dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
     setModalVisible(false);
+    dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
   };
 
-  const isLoggedIn = useIsLoggedIn();
   const isFinishedPreferenceSetting = useSelector(
     (state: RootState) => state.user.isFinishedPreferenceSetting,
   );
+  console.log(
+    '🍉🍉🍉isFinishedPreferenceSetting in screen',
+    isFinishedPreferenceSetting,
+  );
+
   useEffect(() => {
-    navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
-  }, [isLoggedIn, isFinishedPreferenceSetting]);
+    console.log(
+      '✅✅✅✅✅isFinishedPreferenceSetting in SignUpPreferenceSettingScreen',
+      isFinishedPreferenceSetting,
+    );
+    if (isFinishedPreferenceSetting) {
+      navigation.navigate('MainTabNavigator');
+    }
+  }, [isFinishedPreferenceSetting, navigation]);
 
   const handleComplete = () => {
     setModalVisible(false);
@@ -73,6 +83,7 @@ function PreferenceScreen() {
           <PreferenceSectionFirst
             updatePreference={updatePreference}
             preferences={preferences}
+            nickname={nickname}
           />
         );
       case 2:
@@ -80,6 +91,7 @@ function PreferenceScreen() {
           <PreferenceSectionSecond
             updatePreference={updatePreference}
             preferences={preferences}
+            nickname={nickname}
           />
         );
       case 3:
@@ -87,6 +99,7 @@ function PreferenceScreen() {
           <PreferenceSectionThird
             updatePreference={updatePreference}
             preferences={preferences}
+            nickname={nickname}
           />
         );
       default:
@@ -104,11 +117,11 @@ function PreferenceScreen() {
       <ScrollView>{renderSection()}</ScrollView>
       <SkipModal
         isVisible={modalVisible}
-        onClose={() => handleSkipComplete()}
-        onSetNow={() => setModalVisible(false)}
+        onClose={() => setModalVisible(false)}
+        onSetNow={handleSkipComplete}
       />
     </ProgressBarLayout>
   );
 }
 
-export default PreferenceScreen;
+export default SignUpPreferenceSettingScreen;

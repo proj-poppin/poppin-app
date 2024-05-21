@@ -3,26 +3,14 @@ import {View, Text, StyleSheet} from 'react-native';
 import OptionMultipleButton from '../../atoms/button/optionMultipleButton.tsx';
 import MainTitle from '../header/MainTitle.tsx';
 import globalColors from '../../../styles/color/globalColors.ts';
+import {
+  preferenceOptionsSecond,
+  PreferenceCategories,
+} from '../../../constants/PreferenceTypes.ts';
 
-const PreferenceSectionSecond = ({updatePreference, preferences}) => {
-  const options = [
-    {title: '💄 패션/뷰티', key: 'fashionBeauty'},
-    {title: '🥰 캐릭터', key: 'characters'},
-    {title: '🍽️ 식품/음료', key: 'foodBeverage'},
-    {title: '📚 웹툰/애니메이션', key: 'webtoonAni'},
-    {title: '🛋️ 인테리어/소품', key: 'interiorThings'},
-    {title: '🎬 영화/드라마/예능', key: 'movie'},
-    {title: '🎼 뮤지컬/연극', key: 'musical'},
-    {title: '⚽ 스포츠', key: 'sports'},
-    {title: '🎮 게임', key: 'game'},
-    {title: '💻 IT/테크', key: 'itTech'},
-    {title: '🎤 K-POP', key: 'kpop'},
-    {title: '🍷 주류', key: 'alcohol'},
-    {title: '🪴 동물/식물', key: 'animalPlant'},
-  ];
-
+const PreferenceSectionSecond = ({updatePreference, preferences, nickname}) => {
   const handlePress = (key: string, isSelected: boolean) => {
-    updatePreference('taste', key, isSelected);
+    updatePreference(PreferenceCategories.TASTE, key, isSelected);
     console.log('key:', key);
     console.log('preferences:', preferences);
   };
@@ -30,7 +18,7 @@ const PreferenceSectionSecond = ({updatePreference, preferences}) => {
   return (
     <View>
       <MainTitle
-        text1={'OO님의'}
+        text1={`${nickname}님의`}
         text2={'관심사가 궁금해요'}
         isNeedCenter={true}
       />
@@ -38,7 +26,7 @@ const PreferenceSectionSecond = ({updatePreference, preferences}) => {
         <Text style={styles.noteText}>*복수 선택 가능</Text>
       </View>
       <View style={styles.optionsContainer}>
-        {options.map((option, index) => (
+        {preferenceOptionsSecond.map((option, index) => (
           <OptionMultipleButton
             key={index}
             id={option.key}

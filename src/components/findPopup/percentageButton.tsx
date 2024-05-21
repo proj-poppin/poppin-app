@@ -1,19 +1,25 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import globalColors from '../../styles/color/globalColors';
+import {CongestionRate} from '../../types/CongestionRate.ts';
+import {getColorAndLabelForCongestionRate} from '../../utils/function/getColorAndLabelForCongestionRate.ts';
 
 // Define types for the props
 interface PercentageButtonProps {
-  percentage: number;
+  congestionRate: CongestionRate;
+  congestionRatio: number;
 }
 
-const PercentageButton: React.FC<PercentageButtonProps> = ({percentage}) => {
-  const {color, label} = getColorAndLabelForPercentage(percentage);
+const PercentageButton: React.FC<PercentageButtonProps> = ({
+  congestionRate,
+  congestionRatio,
+}) => {
+  const {color, label} = getColorAndLabelForCongestionRate(congestionRate);
 
   return (
     <View style={[styles.tag, {borderColor: color}]}>
       <Text style={[styles.text, {color: color}]}>
-        {`${percentage}% ${label}`}
+        {`${congestionRatio}% ${label}`}
       </Text>
     </View>
   );
@@ -37,14 +43,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
-// Color logic and label based on the percentage
-const getColorAndLabelForPercentage = (percentage: number) => {
-  if (percentage <= 50) {
-    return {color: globalColors.blue, label: '여유'};
-  } else if (percentage > 50 && percentage <= 75) {
-    return {color: globalColors.font, label: '보통'};
-  } else {
-    return {color: globalColors.red, label: '혼잡'};
-  }
-};

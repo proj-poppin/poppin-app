@@ -1,4 +1,4 @@
-import apiInstance from '../axios.ts';
+import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 
 // 회원가입을 시도하는 함수
 const socialSignUp = async (
@@ -7,7 +7,7 @@ const socialSignUp = async (
   birthDate: string,
 ) => {
   try {
-    const response = await apiInstance.post('/api/v1/auth/register', {
+    const response = await nonPublicApiInstance.post('/api/v1/auth/register', {
       provider,
       nickname,
       birthDate,

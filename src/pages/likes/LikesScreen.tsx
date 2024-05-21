@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   TouchableOpacity,
   View,
@@ -17,10 +17,10 @@ import DismissKeyboardView from '../../components/DismissKeyboardView';
 import Text24B from '../../styles/texts/headline/Text24B';
 import CalendarView from './CalendarView';
 import ListView from './ListView';
-import LoadingLoopSvg from '../../assets/likes/loadingLoop.svg';
 import NoLikesSvg from '../../assets/likes/noLikes.svg';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import NotLogginBox from '../../components/NotLogginBox.tsx';
+import {useFocusEffect} from '@react-navigation/native';
 
 const popUpTypes = ['오픈 예정인 팝업', '운영 중인 팝업', '운영 종료 팝업'];
 const orderTypes = ['오픈일순', '마감일순', '저장순'];
@@ -31,7 +31,20 @@ function LikesScreen({navigation}) {
   const [selectedDate, setSelectedDate] = useState<Record<string, any>>({});
   const [isCalendarView, setIsCalendarView] = useState(false);
 
-  const {data: interestList} = useGetInterestList();
+  const {data: interestList, refetch} = useGetInterestList();
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+      console.log('🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎');
+      dispatch(loadingSlice.actions.setLoading({isLoading: true}));
+      setTimeout(() => {
+        dispatch(loadingSlice.actions.setLoading({isLoading: false}));
+      }, 2000);
+    }, [dispatch, refetch]),
+  );
+
+  console.log(interestList);
 
   const dispatch = useAppDispatch();
 

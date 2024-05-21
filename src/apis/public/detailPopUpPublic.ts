@@ -1,11 +1,12 @@
 import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 import {DetailPopUpData} from '../../types/DetailPopUpData.ts';
+import PublicApiInstance from '../apiInstance/PublicApiInstance.ts';
 
-const getDetailPopUp = async (
+const getDetailPopUpPublic = async (
   popUpId: number,
 ): Promise<CommonResponse<DetailPopUpData>> => {
   try {
-    const response = await nonPublicApiInstance.get('/api/v1/popup/detail', {
+    const response = await PublicApiInstance.get('/api/v1/popup/guest/detail', {
       params: {popupId: popUpId},
     });
 
@@ -29,4 +30,4 @@ const getDetailPopUp = async (
   }
 };
 
-export default getDetailPopUp;
+export default getDetailPopUpPublic;

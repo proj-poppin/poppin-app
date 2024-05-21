@@ -9,7 +9,7 @@ export type AuthNavigatorParamList = {
   ReviewWrite: undefined;
   OperatorRegister: undefined;
   MemberDelete: undefined;
-  PreferenceSetting: undefined;
+  SignUpPreferenceSetting: undefined;
   Entry: undefined;
   BasicLogin: undefined;
   SignUp: undefined;

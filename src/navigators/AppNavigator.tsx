@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MainTabNavigator from './MainTabNavigator.tsx';
 import MyProfileEditScreen from '../pages/myPage/ProfileEditScreen.tsx';
@@ -20,7 +20,6 @@ import PopUpDetailOptions from './options/PopUpDetailOptions.tsx';
 import EntryScreen from '../pages/sign/EntryScreen.tsx';
 import {EntryScreenOptions} from './options/EntryScreenOptions.tsx';
 import PrivacyPolicyScreen from '../pages/sign/PrivacyPolicyScreen.tsx';
-import PrivacyPolicyOptions from './options/PopUpDetailOptions.tsx';
 import ServicePolicyScreen from '../pages/sign/ServicePolicyScreen.tsx';
 import ServicePolicyOptions from './options/ServicePolicyOptions.tsx';
 import SignUpSocialNickNameScreen from '../pages/sign/SignUpSocialNickNameScreen.tsx';
@@ -36,7 +35,7 @@ import BasicLoginScreen from '../pages/sign/BasicLoginScreen.tsx';
 import BasicLoginOptions from './options/BasicLoginOptions.tsx';
 import PasswordResetScreen from '../pages/sign/PasswordResetScreen.tsx';
 import {PasswordResetOptions} from './options/PasswordResetOptions.tsx';
-import PreferenceScreen from '../pages/preference/PreferenceScreen.tsx';
+import SignUpPreferenceSettingScreen from '../pages/preference/SignUpPreferenceSettingScreen.tsx';
 import PreferenceSettingOptions from './options/PreferenceSettingOptions.tsx';
 import AlarmSettingScreen from '../pages/alarm/AlaramSettingScreen.tsx';
 import AlarmScreen from '../pages/alarm/AlarmScreen.tsx';
@@ -45,6 +44,11 @@ import AlarmSettingOptions from './options/AlarmSettingOptions.tsx';
 import NoticeDetailScreen from '../pages/Notice/NoticeDetailScreen.tsx';
 import {NoticeDetailOptions} from './options/NoticeDetailOptions.tsx';
 import FindInputScreen from '../pages/find/FindInputScreen.tsx';
+import ReportScreen from '../pages/report/ReportScreen.tsx';
+import ReportOptions from './options/ReportOptions.tsx';
+import PopUpEditRequestScreen from '../pages/detail/PopUpEditRequestScreen.tsx';
+import PopUpEditRequestOptions from './options/PopUpEditRequestOptions.tsx';
+import PrivacyPolicyOptions from './options/PrivacyPolicyOptions.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -109,8 +113,8 @@ function AppNavigator() {
         options={PasswordResetOptions}
       />
       <Stack.Screen
-        name="PreferenceSetting"
-        component={PreferenceScreen}
+        name="SignUpPreferenceSetting"
+        component={SignUpPreferenceSettingScreen}
         options={PreferenceSettingOptions}
       />
 
@@ -140,11 +144,20 @@ function AppNavigator() {
         component={SignUpSucceedScreen}
         options={DefaultNoHeaderOptions}
       />
-
       <Stack.Screen
         name={'PopUpDetail'}
         component={PopUpDetailScreen}
         options={PopUpDetailOptions}
+      />
+      <Stack.Screen
+        name={'Report'}
+        component={ReportScreen}
+        options={ReportOptions}
+      />
+      <Stack.Screen
+        name={'PopUpEditRequest'}
+        component={PopUpEditRequestScreen}
+        options={PopUpEditRequestOptions}
       />
       <Stack.Screen
         name={'NoticeDetail'}

@@ -1,11 +1,13 @@
-import apiInstance from '../axios.ts';
+import NonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 
 const addInterestPopUp = async (popUpId: number) => {
   try {
-    console.log('why why why$$$$$$$$$', popUpId);
-    const response = await apiInstance.post('/api/v1/interest/add-interest', {
-      popupId: popUpId,
-    });
+    const response = await NonPublicApiInstance.post(
+      '/api/v1/interest/add-interest',
+      {
+        popupId: popUpId,
+      },
+    );
 
     if (response.data.success) {
       console.log('addInterestPopUp response:', response.data);

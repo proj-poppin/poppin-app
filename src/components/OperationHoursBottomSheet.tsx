@@ -9,11 +9,12 @@ import {
 } from 'react-native';
 import globalColors from '../styles/color/globalColors.ts';
 import DatePicker from 'react-native-date-picker';
-import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import DividerLine from './DividerLine.tsx';
 import CompleteButton from './atoms/button/CompleteButton.tsx';
 import Text18B from '../styles/texts/body_large/Text18B.ts';
 import Text18R from '../styles/texts/body_large/Text18R.ts';
+import useBackdrop from '../hooks/common/useBackDrop.tsx';
 
 interface Times {
   start: string;
@@ -29,13 +30,9 @@ const OperationHoursBottomSheet = () => {
   const [tempTime, setTempTime] = useState(new Date());
   const [selectionMode, setSelectionMode] = useState('start');
   const handleTimeConfirm = (time: Date) => {
-    console.log(time);
-
-    // 시간과 분을 가져옵니다.
     const hours = time.getHours();
     const minutes = time.getMinutes();
 
-    // 오전/오후 구분
     const period = hours < 12 ? '오전' : '오후';
     const adjustedHour = hours % 12 === 0 ? 12 : hours % 12;
 
@@ -46,12 +43,11 @@ const OperationHoursBottomSheet = () => {
       formattedTime += `시 ${minutes.toString().padStart(2, '0')}분`;
     }
 
-    // 'times' 상태를 업데이트합니다.
     setTimes(prevTimes => ({
       ...prevTimes,
-      [selectionMode]: formattedTime, // 'start' 또는 'end' 기반으로 업데이트
+      [selectionMode]: formattedTime,
     }));
-    bottomSheetModalRef.current?.dismiss(); // 바텀 시트 닫기
+    bottomSheetModalRef.current?.dismiss();
   };
 
   const showTimePicker = (type: 'start' | 'end') => {
@@ -63,15 +59,6 @@ const OperationHoursBottomSheet = () => {
     color: selectionMode === type ? globalColors.calendar : 'black',
   });
 
-  // 바깥 화면 터치 시 바텀 시트를 내리도록 설정
-  const renderBackdrop = (props: any) => (
-    <BottomSheetBackdrop
-      {...props}
-      disappearsOnIndex={-1}
-      appearsOnIndex={0}
-      pressBehavior="close"
-    />
-  );
   const handleComplete = () => {
     handleTimeConfirm(tempTime); // 임시 시간을 최종 시간으로 설정
     bottomSheetModalRef.current?.dismiss(); // 바텀 시트 닫기
@@ -120,7 +107,7 @@ const OperationHoursBottomSheet = () => {
         ref={bottomSheetModalRef}
         index={0}
         snapPoints={['60%']}
-        backdropComponent={renderBackdrop}>
+        backdropComponent={useBackdrop}>
         <View style={styles.sheetTitleContainer}>
           <Text style={[Text18B.text, {textAlign: 'center'}]}>
             팝업의 운영 기간을 알려주세요

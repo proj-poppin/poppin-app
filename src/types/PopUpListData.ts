@@ -11,6 +11,7 @@ export type GetTastePopUpListResponse = {
 };
 
 export type GetInterestPopUpListResponse = {
+  saved_count: any;
   id: number;
   image_url: string;
   status: string;

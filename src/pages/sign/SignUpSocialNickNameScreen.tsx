@@ -4,9 +4,9 @@ import globalColors from '../../styles/color/globalColors.ts';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
-import useSignUpNickName from '../../hooks/useSignUpNickName.tsx';
+import useSignUpNickName from '../../hooks/signUp/useSignUpNickName.tsx';
 import SignUpOrderHeader from '../../components/organisms/header/SignUpOrderHeader.tsx';
-import useSocialSignUp from '../../hooks/useSocialSignUp.tsx';
+import useSocialSignUp from '../../hooks/login/useSocialSignUp.tsx';
 type SignUpSocialNickNameScreenRouteParams = {
   type: 'KAKAO' | 'GOOGLE' | 'NAVER' | 'APPLE';
 };

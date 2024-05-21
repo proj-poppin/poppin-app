@@ -8,10 +8,10 @@ import AuthCodeTextFormField from '../../components/molecules/form_field/AuthCod
 import PasswordCheckTextFormField from '../../components/molecules/form_field/PasswordCheckTextFormField.tsx';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import ResendButton from '../../components/molecules/pressable_text/ResendButton.tsx';
-import useAuthCode from '../../hooks/useAuthCode.tsx';
-import useSignUpEmail from '../../hooks/useSignUpEmail.tsx';
-import useResetPassword from '../../hooks/useResetPassword.tsx';
-import usePasswordEmailVerification from '../../hooks/usePasswordEmailVerification.tsx';
+import useAuthCode from '../../hooks/signUp/useAuthCode.tsx';
+import useSignUpEmail from '../../hooks/signUp/useSignUpEmail.tsx';
+import useResetPassword from '../../hooks/password/useResetPassword.tsx';
+import usePasswordEmailVerification from '../../hooks/password/usePasswordEmailVerification.tsx';
 
 type PasswordResetScreenProps = {
   navigation: any;

@@ -1,4 +1,4 @@
-import axios from '../axios.ts';
+import axios from '../apiInstance/NonPublicApiInstance.ts';
 import Config from 'react-native-config';
 
 // 회원가입을 시도하는 함수

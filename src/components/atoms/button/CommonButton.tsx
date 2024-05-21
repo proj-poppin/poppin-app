@@ -9,7 +9,6 @@ import {
 import globalColors from '../../../styles/color/globalColors.ts';
 import Text18B from '../../../styles/texts/body_large/Text18B.ts';
 import RealTimeInfoSvg from '../../../assets/detail/realTimeInfo.svg';
-import Text12B from '../../../styles/texts/label/Text12B.ts';
 import Text14B from '../../../styles/texts/body_medium/Text14B.ts';
 
 interface CommonButtonProps {
@@ -45,9 +44,6 @@ const CommonButton: React.FC<CommonButtonProps> = ({
       {
         borderColor: borderColor,
         borderWidth: disabled && !alwaysActive ? 0 : 1,
-        backgroundColor: pressed
-          ? globalColors.buttonPressed
-          : globalColors.white,
         width: buttonWidth,
       },
       disabled && !alwaysActive && styles.disabledButton,

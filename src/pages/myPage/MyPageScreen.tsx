@@ -28,9 +28,9 @@ import Text13R from '../../styles/texts/label/Text12R.ts';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import Text14B from '../../styles/texts/body_medium/Text14B.ts';
-import useLogout from '../../hooks/useLogout.tsx';
-import useGetUser from '../../hooks/useGetUser.tsx';
-import useIsLoggedIn from '../../hooks/useIsLoggedIn.tsx';
+import useLogout from '../../hooks/auth/useLogout.tsx';
+import useGetUser from '../../hooks/auth/useGetUser.tsx';
+import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import logout from '../../apis/auth/logout.ts';
 
 function MyPageScreen({navigation}) {

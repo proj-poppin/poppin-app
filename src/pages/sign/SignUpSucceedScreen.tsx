@@ -1,5 +1,4 @@
-// SignUpSucceedScreen.js
-import React from 'react';
+import React, {useEffect} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import WelcomeSvg from '../../assets/icons/welcome.svg';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
@@ -11,16 +10,28 @@ import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text14M from '../../styles/texts/body_medium/Text14M.ts';
 import {useAppDispatch} from '../../redux/stores';
 import userSlice from '../../redux/slices/user.ts';
-import usePreferenceSetting from '../../hooks/usePreferenceSetting.tsx';
+import usePreferenceSetting from '../../hooks/password/usePreferenceSetting.tsx';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../redux/stores/reducer.ts';
 
 function SignUpSucceedScreen({route, navigation}) {
-  const disPatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const {nickname} = route.params;
   const {resetPreference} = usePreferenceSetting();
   const handleOnComplete = () => {
     resetPreference();
-    navigation.navigate('PreferenceSetting');
+    navigation.navigate('SignUpPreferenceSetting', {nickname});
   };
+
+  const isFinishedPreferenceSetting = useSelector(
+    (state: RootState) => state.user.isFinishedPreferenceSetting,
+  );
+
+  useEffect(() => {
+    if (isFinishedPreferenceSetting) {
+      navigation.navigate('MainTabNavigator');
+    }
+  }, [isFinishedPreferenceSetting, navigation]);
 
   return (
     <View style={styles.container}>
@@ -45,9 +56,10 @@ function SignUpSucceedScreen({route, navigation}) {
       </ScrollView>
       <View style={styles.buttonContainer}>
         <ActiveGreyNextButton
-          onPress={() =>
-            disPatch(userSlice.actions.setIsFinishedPreferenceProcess(true))
-          }
+          onPress={() => {
+            dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
+            navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
+          }}
           title="다음에 하기"
         />
       </View>

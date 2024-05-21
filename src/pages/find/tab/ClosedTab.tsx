@@ -5,7 +5,7 @@ import FindCard from '../../../components/findPopup/FindCard.tsx';
 import FindPopupNoList from '../../../assets/images/findPopupNoList.svg';
 import NoListText from '../../../assets/images/findPopupText.svg';
 import globalColors from '../../../styles/color/globalColors.ts';
-import useGetFindPopupList from '../../../hooks/findpopup/useGetFindPopupList.tsx';
+import useGetFindPopupList from '../../../hooks/findPopUp/useGetFindPopupList.tsx';
 
 function ClosedTab({type, selectedOrder, availableTags, searchKeyword}: any) {
   const [page, setPage] = useState(0);

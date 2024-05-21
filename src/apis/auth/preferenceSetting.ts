@@ -1,10 +1,10 @@
 // 사용자 선호도 데이터 타입 정의
-import apiInstance from '../axios.ts';
+import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 import {PreferenceData} from '../../types/PreferenceData.ts';
 
 const preferenceSetting = async (preferences: PreferenceData) => {
   try {
-    const response = await apiInstance.post(
+    const response = await nonPublicApiInstance.post(
       '/api/v1/user/popup-taste',
       preferences,
     );

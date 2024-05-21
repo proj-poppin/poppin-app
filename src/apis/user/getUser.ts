@@ -1,4 +1,4 @@
-import apiInstance from '../axios.ts';
+import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 
 export interface GetUserData {
   userImageUrl: string;
@@ -9,11 +9,8 @@ export interface GetUserData {
 }
 const getUser = async (): Promise<CommonResponse<GetUserData>> => {
   try {
-    const response = await apiInstance.get('/api/v1/user');
-    console.log('getUser response:', response.data);
-
+    const response = await nonPublicApiInstance.get('/api/v1/user');
     if (response.data.success) {
-      console.log('getUser response successful', response.data);
       return response.data;
     } else {
       // API 응답이 success=false인 경우

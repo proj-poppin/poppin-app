@@ -5,18 +5,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import useIsLoggedIn from '../hooks/useIsLoggedIn';
+import useIsLoggedIn from '../hooks/auth/useIsLoggedIn.tsx';
 import HomeMainTitle from './organisms/header/HomeMainTitle';
 import RowPopUpCard from './molecules/card/RowPopUpCard';
 import NotLogginBox from './NotLogginBox';
-import useGetTasteList from '../hooks/useGetTasteList';
-import {useSelector} from 'react-redux';
-import {RootState} from '../redux/stores/reducer';
+import useGetTasteList from '../hooks/popUpList/useGetTasteList.tsx';
 import HomeHeader from './organisms/header/HomeHeader';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../types/AppNavigatorParamList.ts';
 import {useNavigation} from '@react-navigation/native';
-import useGetUser from '../hooks/useGetUser.tsx';
+import useGetUser from '../hooks/auth/useGetUser.tsx';
 
 export type EntryScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,

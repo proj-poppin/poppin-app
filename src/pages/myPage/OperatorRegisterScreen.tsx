@@ -1,4 +1,5 @@
 import {
+  Alert,
   Modal,
   ScrollView,
   StyleSheet,
@@ -30,9 +31,34 @@ import SelectButtonsGroup from '../../components/atoms/button/SelectButtonGroup.
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
+import axios from 'axios';
+import Config from 'react-native-config';
 
 function OperatorRegisterScreen({navigation}) {
   const [step, setStep] = useState<number>(1);
+  const getCoordinates = async address => {
+    // TODO: 서버, 웹이랑 논의후 위도경도 데이터 필요하면 쓰는걸로!
+    // const API_KEY = Config.KAKAO_API_KEY;
+    // const url = `https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(
+    //   address,
+    // )}`;
+    //
+    // try {
+    //   const response = await axios.get(url, {
+    //     headers: {Authorization: `KakaoAK ${API_KEY}`},
+    //   });
+    //   const {documents} = response.data;
+    //   if (documents.length > 0) {
+    //     const {y: latitude, x: longitude} = documents[0];
+    //     console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+    //     Alert.alert('위도 및 경도', `위도: ${latitude}, 경도: ${longitude}`);
+    //   } else {
+    //     console.log('해당 주소에 대한 결과가 없습니다.');
+    //   }
+    // } catch (error) {
+    //   console.error('Geocoding error:', error);
+    // }
+  };
 
   const [companyName, setCompanyName] = useState<string>('');
   const [operatorEmail, setOperatorEmail] = useState<string>('');
@@ -473,6 +499,7 @@ function OperatorRegisterScreen({navigation}) {
                 onSelected={data => {
                   setPostalAddress(data.address); // 선택된 주소를 상태에 저장
                   setIsPostalSearchModalVisible(false); // 모달을 닫습니다.
+                  getCoordinates(data.address).then();
                 }}
                 onError={error => console.log(error)}
               />

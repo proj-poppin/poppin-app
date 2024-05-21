@@ -6,8 +6,8 @@ import ResendButton from '../../components/molecules/pressable_text/ResendButton
 import LabelText20B from '../../components/atoms/label/LabelText20B.tsx';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import AuthCodeTextFormField from '../../components/molecules/form_field/AuthCodeTextFormField.tsx';
-import useAuthCode from '../../hooks/useAuthCode.tsx';
-import useEmailVerification from '../../hooks/useEmailVerification.tsx';
+import useAuthCode from '../../hooks/signUp/useAuthCode.tsx';
+import useEmailVerification from '../../hooks/signUp/useEmailVerification.tsx';
 import {useEffect} from 'react';
 import {useSelector} from 'react-redux';
 

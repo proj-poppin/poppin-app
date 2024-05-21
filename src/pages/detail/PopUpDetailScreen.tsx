@@ -1,105 +1,233 @@
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Image,
   Linking,
+  PermissionsAndroid,
+  Platform,
+  Pressable,
+  ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import useGetDetailPopUp from '../../hooks/useGetDetailPopUp.tsx';
-import ButtonInstagramSvg from '../../assets/detail/buttonInstagram.svg';
-import ButtonWebSvg from '../../assets/detail/buttonWeb.svg';
-import MenuSvg from '../../assets/detail/menu.svg';
+import useGetDetailPopUp from '../../hooks/detailPopUp/useGetDetailPopUp.tsx';
 import ShareSvg from '../../assets/detail/share.svg';
 import StarOffSvg from '../../assets/detail/starOff.svg';
 import StarOnSvg from '../../assets/detail/starOn.svg';
-import HyperLinkSvg from '../../assets/detail/hyperLink.svg';
 import MapSvg from '../../assets/detail/map.svg';
-import {ScrollView} from 'react-native';
-import {Pressable} from 'react-native';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import globalColors from '../../styles/color/globalColors.ts';
 import DetailDividerLine from '../../assets/detail/detailDivider.svg';
 import Text14B from '../../styles/texts/body_medium/Text14B.ts';
 import Text14M from '../../styles/texts/body_medium/Text14M.ts';
-import CommonButton from '../../components/atoms/button/CommonButton.tsx';
+import RealTimeVisitorsViewButton from '../../components/atoms/button/CommonButton.tsx';
 import DividerLine from '../../components/DividerLine.tsx';
-import {useState} from 'react';
-import useAddInterestPopUp from '../../hooks/useAddInterestPopUp.tsx';
-import useDeleteInterestPopUp from '../../hooks/useDeleteInterestPopUp.tsx';
-import HorizontalBarChart from '../../components/HorizontalBarChart.tsx';
-import Text18B from '../../styles/texts/body_large/Text18B.ts';
-import Text18R from '../../styles/texts/body_large/Text18R.ts';
-import Text18M from '../../styles/texts/body_large/Text18M.ts';
-import Text16B from '../../styles/texts/body_medium_large/Text16B.ts';
-import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
-import VerticalDividerLine from '../../components/organisms/VerticalDividerLine.tsx';
-import PercentageButton from '../../components/findPopup/percentageButton.tsx';
+import useAddInterestPopUp from '../../hooks/detailPopUp/useAddInterestPopUp.tsx';
+import useDeleteInterestPopUp from '../../hooks/detailPopUp/useDeleteInterestPopUp.tsx';
 import ReviewProfileSvg from '../../assets/detail/reviewProfile.svg';
 import VerifiedReviewSvg from '../../assets/detail/verifiedReview.svg';
 import WriteReviewSvg from '../../assets/detail/writeReview.svg';
 import SvgWithNameBoxLabel from '../../components/SvgWithNameBoxLabel.tsx';
-import ReasonItem from '../../components/ReasonItem.tsx';
-import OrderSvg from '../../assets/icons/order.svg';
-import Text24B from '../../styles/texts/headline/Text24B.ts';
-import PressableUnderlineText from '../../components/molecules/pressable_text/PressableUnderlineText.tsx';
 import UnderlinedTextButton from '../../components/UnderlineTextButton.tsx';
-import InterestSampleSvg from '../../assets/images/interestSample.svg';
-import ImageContainerRow from '../../components/ImageContainerRow.tsx';
 import LikeReviewSvg from '../../assets/detail/likesReview.svg';
+import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
+import OrderSvg from '../../assets/icons/order.svg';
+import ReasonItem from '../../components/ReasonItem.tsx';
+import CongestionSection from '../../components/organisms/section/CongestionSection.tsx';
+import {VisitorDataDetail} from '../../types/DetailPopUpData.ts';
+import WebSvg from '../../assets/detail/web.svg';
+import InstagramTestSvg from '../../assets/detail/instagramTest.svg';
+import ToastComponent from '../../components/atoms/toast/ToastComponent.tsx';
+import VisitButton from '../../components/atoms/button/VisitButton.tsx';
+import VisitModalSvg from '../../assets/detail/visitModal.svg';
+import CustomModal from '../../components/atoms/modal/CustomModal.tsx';
+import Geolocation from 'react-native-geolocation-service';
+import useAddRecommendReview from '../../hooks/detailPopUp/useAddRecommendReview.tsx';
+import {useNavigation} from '@react-navigation/native';
+
+async function requestPermissions() {
+  if (Platform.OS === 'ios') {
+    const auth = await Geolocation.requestAuthorization('whenInUse');
+    if (auth === 'granted') {
+      return true;
+    } else if (auth === 'denied') {
+      Alert.alert(
+        'Permission Denied',
+        'Location permission is required. Please enable it in the app settings.',
+        [
+          {text: 'Cancel', style: 'cancel'},
+          {
+            text: 'Open Settings',
+            onPress: () => Linking.openURL('app-settings:'),
+          },
+        ],
+      );
+    }
+    return false;
+  } else if (Platform.OS === 'android') {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'Location Permission',
+        message: 'App needs access to your location',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      return true;
+    } else if (granted === PermissionsAndroid.RESULTS.DENIED) {
+      // User denied permission without checking 'Don't ask again'
+      return false;
+    } else if (granted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      // User denied permission and checked 'Don't ask again'
+      Alert.alert(
+        'Permission Denied',
+        'Location permission is required. Please enable it in the app settings.',
+        [
+          {text: 'Cancel', style: 'cancel'},
+          {text: 'Open Settings', onPress: () => Linking.openSettings()},
+        ],
+      );
+    }
+    return false;
+  }
+  return false;
+}
 
 const PopUpDetailScreen = ({route}) => {
+  const navigation = useNavigation();
   const {id} = route.params;
   const {data: detailPopUpData, loading, error} = useGetDetailPopUp(id);
   const firstImageUrl =
     detailPopUpData?.images?.[0] ??
     'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/4/1.jpg';
-  const firstId = detailPopUpData?.id;
-  const [isInterested, setIsInterested] = useState(false); // Replace with actual state based on API response if needed
-
-  const {
-    addInterest,
-    loading: addingInterestLoading,
-    success: addingInterestSuccess,
-  } = useAddInterestPopUp();
-  const {
-    deleteInterest,
-    loading: deletingInterestLoading,
-    success: deletingInterestSuccess,
-  } = useDeleteInterestPopUp();
+  const [isInterested, setIsInterested] = useState(false);
+  const [isShowToast, setIsShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const {addRecommendCount} = useAddRecommendReview();
+  const {addInterest} = useAddInterestPopUp();
+  const {deleteInterest} = useDeleteInterestPopUp();
 
   const [isOnlyVerifiedReview, setIsOnlyVerifiedReview] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+
+  useEffect(() => {
+    if (detailPopUpData) {
+      setIsInterested(detailPopUpData.isInterested);
+      setToastMessage('이 팝업이 근처에 있어요!!');
+      setIsShowToast(true);
+    }
+  }, [detailPopUpData]);
 
   const handleIsOnlyVerifiedReview = () => {
     setIsOnlyVerifiedReview(!isOnlyVerifiedReview);
   };
 
-  const handleToggleInterest = async () => {
-    console.log('handleToggleInterest:', isInterested);
-    if (isInterested) {
-      await deleteInterest(id);
-    } else {
-      console.log('addInterest:', id);
-      await addInterest(id);
+  const handleVisitPress = async () => {
+    const hasPermission = await requestPermissions();
+    if (hasPermission) {
+      Geolocation.getCurrentPosition(
+        position => {
+          const {latitude, longitude} = position.coords;
+          setLatitude(latitude);
+          setLongitude(longitude);
+          console.log('Current Location:', latitude, longitude);
+          console.log('사용자 허용상태: ', hasPermission);
+          Alert.alert(
+            'Current Location',
+            `Latitude: ${latitude}, Longitude: ${longitude}`,
+          );
+        },
+        error => {
+          console.log(error.code, error.message);
+          Alert.alert('Error', 'Failed to get your location');
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      );
     }
-    setIsInterested(!isInterested);
   };
 
-  if (loading) {
-    return <ActivityIndicator />;
-  }
-
-  if (error || !detailPopUpData) {
-    return <Text>Error loading details...</Text>;
-  }
+  const handleToggleInterest = async () => {
+    if (isInterested) {
+      await deleteInterest(id);
+      setToastMessage('관심팝업에서 삭제되었어요!');
+    } else {
+      await addInterest(id);
+      setToastMessage('관심팝업에 저장되었어요!');
+    }
+    setIsShowToast(true);
+    setIsInterested(!isInterested);
+  };
 
   const handleOpenLink = url => {
     if (url) {
       Linking.openURL(url).then(r => console.log('Link opened:', r));
     }
   };
+
+  const handleRecommendPress = async (reviewId: number) => {
+    try {
+      const response = await addRecommendCount(detailPopUpData?.id!, reviewId);
+      if (response.success) {
+        detailPopUpData!.review = detailPopUpData!.review.map(review => {
+          if (review.reviewId === reviewId) {
+            return {...review, recommendCnt: review.recommendCnt + 1};
+          }
+          return review;
+        });
+      } else if (response.error && response.error.code === '40020') {
+        Alert.alert('이미 추천한 리뷰입니다.');
+      } else {
+        setToastMessage('리뷰 추천에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Recommend error:', error);
+      setToastMessage('리뷰 추천에 실패했습니다.');
+    }
+    setIsShowToast(true);
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={globalColors.purple} />
+      </View>
+    );
+  }
+
+  if (error || !detailPopUpData) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={globalColors.purple} />
+      </View>
+    );
+  }
+
+  const visitorDataDefault: VisitorDataDetail = {
+    congestionRate: '여유',
+    congestionRatio: 30,
+  };
+
+  const weekdayAm =
+    detailPopUpData.visitorData?.weekdayAm || visitorDataDefault;
+  const weekdayPm =
+    detailPopUpData.visitorData?.weekdayPm || visitorDataDefault;
+  const weekendAm =
+    detailPopUpData.visitorData?.weekendAm || visitorDataDefault;
+  const weekendPm =
+    detailPopUpData.visitorData?.weekendPm || visitorDataDefault;
+
+  const filteredReviews = isOnlyVerifiedReview
+    ? detailPopUpData.review.filter(review => review.isCertificated)
+    : detailPopUpData.review;
 
   return (
     <>
@@ -115,12 +243,23 @@ const PopUpDetailScreen = ({route}) => {
             <Pressable
               onPress={() => handleOpenLink(detailPopUpData.homepageLink)}>
               {detailPopUpData.isInstagram ? (
-                <ButtonWebSvg />
+                <SvgWithNameBoxLabel
+                  Icon={InstagramTestSvg}
+                  label="공식 인스타그램"
+                  isBold={false}
+                />
               ) : (
-                <ButtonWebSvg />
+                <SvgWithNameBoxLabel
+                  Icon={WebSvg}
+                  label="공식 페이지"
+                  isBold={false}
+                />
               )}
             </Pressable>
             <View style={styles.socialIcons}>
+              <Pressable onPress={() => {}}>
+                <MapSvg style={{paddingHorizontal: 20}} />
+              </Pressable>
               <Pressable onPress={handleToggleInterest}>
                 {isInterested ? <StarOnSvg /> : <StarOffSvg />}
               </Pressable>
@@ -129,38 +268,39 @@ const PopUpDetailScreen = ({route}) => {
               </Pressable>
             </View>
           </View>
+          {isShowToast && (
+            <ToastComponent
+              height={40}
+              onClose={() => setIsShowToast(false)}
+              message={toastMessage}
+            />
+          )}
           <DetailDividerLine />
           <View style={styles.iconContainer}>
             <Text style={[Text20B.text, {color: globalColors.purple}]}>
               상세 정보
             </Text>
-            <View style={styles.socialIcons}>
-              <Pressable onPress={() => {}}>
-                <HyperLinkSvg />
-              </Pressable>
-              <Pressable onPress={() => {}}>
-                <MapSvg style={{paddingHorizontal: 20}} />
-              </Pressable>
-            </View>
+            <View style={styles.socialIcons} />
           </View>
           <View style={styles.detailSection}>
             <View style={styles.detailRow}>
               <Text style={[Text14B.text, {color: globalColors.purple}]}>
                 기간:
               </Text>
-              <Text style={Text14M.text}>
-                {`${detailPopUpData.openDate} ~ ${detailPopUpData.closeDate}`}
-              </Text>
+              <Text
+                style={
+                  Text14M.text
+                }>{`${detailPopUpData.openDate} ~ ${detailPopUpData.closeDate}`}</Text>
             </View>
             <View style={styles.detailRow}>
               <Text style={[Text14B.text, {color: globalColors.purple}]}>
                 운영 시간:
               </Text>
-              <Text style={Text14M.text}>
-                {`${detailPopUpData.openTime} ~ ${detailPopUpData.closeTime}`}
-              </Text>
+              <Text
+                style={
+                  Text14M.text
+                }>{`${detailPopUpData.openTime} ~ ${detailPopUpData.closeTime}`}</Text>
             </View>
-
             <View style={styles.detailRow}>
               <Text style={[Text14B.text, {color: globalColors.purple}]}>
                 주소:
@@ -168,13 +308,11 @@ const PopUpDetailScreen = ({route}) => {
               <Text style={Text14M.text}>{detailPopUpData.address}</Text>
             </View>
           </View>
-
           <View style={styles.detailSection}>
             <View style={styles.detailRow}>
               <Text style={Text14M.text}>입장료 : </Text>
-              <Text style={Text14M.text}>
-                {`${detailPopUpData.entranceFee}`}
-              </Text>
+              <Text
+                style={Text14M.text}>{`${detailPopUpData.entranceFee}`}</Text>
             </View>
             <View style={styles.detailRow}>
               <Text style={Text14M.text}>이용 가능 연령 : </Text>
@@ -194,103 +332,125 @@ const PopUpDetailScreen = ({route}) => {
             </View>
           </View>
           <DividerLine height={10} />
-          <Text style={[Text20B.text, {color: globalColors.purple}]}>
-            방문자 데이터
-          </Text>
-          <View style={styles.reviewContainer}>
-            <View style={styles.reviewRowSection}>
-              <Text style={[Text16B.text, {color: globalColors.font}]}>
-                팝업 만족도
-              </Text>
-              <Text style={[Text16M.text]}>
-                방문자의 83%가 이 팝업에 만족하고 있어요!
-              </Text>
-            </View>
-            <View style={styles.reviewRowSection}>
-              <Text style={[Text16B.text, {color: globalColors.font}]}>
-                혼잡도
-              </Text>
-              <View style={styles.reviewChartSection}>
-                <Text style={[Text18B.text]}>평일</Text>
-                <View style={styles.chartRowSection}>
-                  <Text style={[Text18M.text]}>오전</Text>
-                  <VerticalDividerLine />
-                  <HorizontalBarChart percentage={45} />
-                  <PercentageButton percentage={45} />
-                </View>
-                <View style={styles.chartRowSection}>
-                  <Text style={[Text18M.text]}>오전</Text>
-                  <VerticalDividerLine />
-                  <HorizontalBarChart percentage={55} />
-                  <PercentageButton percentage={55} />
-                </View>
-                <Text style={[Text18B.text]}>주말</Text>
-                <View style={styles.chartRowSection}>
-                  <Text style={[Text18M.text]}>오전</Text>
-                  <VerticalDividerLine />
-                  <HorizontalBarChart percentage={90} />
-                  <PercentageButton percentage={90} />
-                </View>
-                <View style={styles.chartRowSection}>
-                  <Text style={[Text18M.text]}>오전</Text>
-                  <VerticalDividerLine />
-                  <HorizontalBarChart percentage={45} />
-                  <PercentageButton percentage={45} />
-                </View>
-              </View>
-            </View>
-            <DividerLine height={10} />
-            <View style={styles.iconContainer}>
-              <Text style={[Text20B.text, {color: globalColors.purple}]}>
-                방문 후기
-              </Text>
-              <SvgWithNameBoxLabel
-                Icon={WriteReviewSvg}
-                label="방문후기 작성하기"
+          <View style={{paddingTop: 40, paddingLeft: 20, paddingBottom: 10}}>
+            <Text style={[Text20B.text, {color: globalColors.purple}]}>
+              방문자 데이터
+            </Text>
+          </View>
+          <View style={styles.visitorDataContainer}>
+            <CongestionSection
+              satisfyPercent={detailPopUpData.viewCnt}
+              title="혼잡도"
+              data={{weekdayAm, weekdayPm, weekendAm, weekendPm}}
+            />
+          </View>
+          <DividerLine height={10} />
+          <View style={styles.iconContainer}>
+            <Text style={[Text20B.text, {color: globalColors.purple}]}>
+              방문 후기
+            </Text>
+            <SvgWithNameBoxLabel
+              Icon={WriteReviewSvg}
+              label="방문후기 작성하기"
+            />
+          </View>
+          <View style={styles.rowBetweenContainer}>
+            <View style={styles.recentReviewHeader}>
+              <ReasonItem
+                isSelected={isOnlyVerifiedReview}
+                onClicked={handleIsOnlyVerifiedReview}
               />
+              <Text>인증된 방문 후기만 보기</Text>
             </View>
-            <View style={styles.rowBetweenContainer}>
-              <View style={styles.recentReviewHeader}>
-                <ReasonItem
-                  isSelected={isOnlyVerifiedReview}
-                  onClicked={handleIsOnlyVerifiedReview}
-                />
-                <Text>인증된 방문 후기만 보기</Text>
-              </View>
-              <View style={styles.recentReviewHeader}>
-                <Text>추천순</Text>
-                <OrderSvg />
-              </View>
-            </View>
-            <View style={styles.rowBetweenContainer}>
-              <View style={styles.recentReviewHeader}>
-                <ReviewProfileSvg />
-                <Text style={Text20B.text}>콩나물 부침개</Text>
-                <VerifiedReviewSvg />
-                <SvgWithNameBoxLabel Icon={LikeReviewSvg} label="00" />
-              </View>
-              <UnderlinedTextButton label={'신고하기'} onClicked={() => {}} />
+            <View style={styles.recentReviewHeader}>
+              <Text>추천순</Text>
+              <OrderSvg />
             </View>
           </View>
+          {filteredReviews.map(review => (
+            <View key={review.reviewId} style={styles.colCloseContainer}>
+              <View style={styles.rowBetweenContainer}>
+                <View style={styles.recentReviewHeader}>
+                  <ReviewProfileSvg />
+                  <View style={styles.colCloseContainer}>
+                    <View style={styles.rowCloseContainer}>
+                      <Text style={Text20B.text}>{review.nickname}</Text>
+                      {review.isCertificated && (
+                        <VerifiedReviewSvg style={styles.verifiedReviewSvg} />
+                      )}
+                    </View>
+                    <Text style={styles.reviewText}>
+                      리뷰 {review.totalReviewWrite}개
+                    </Text>
+                  </View>
+                </View>
+                <UnderlinedTextButton
+                  label={'신고하기'}
+                  onClicked={() => {
+                    navigation.navigate('Report');
+                  }}
+                />
+              </View>
+              <ScrollView horizontal style={styles.imageScroll}>
+                {review.imageUrls.map((url, index) => (
+                  <Image
+                    key={index}
+                    source={{uri: url}}
+                    style={styles.reviewImage}
+                  />
+                ))}
+              </ScrollView>
+              <Text style={styles.reviewText}>{review.text}</Text>
+              <Pressable onPress={() => handleRecommendPress(review.reviewId)}>
+                <View style={styles.recommendContainer}>
+                  <SvgWithNameBoxLabel
+                    Icon={LikeReviewSvg}
+                    label={`${review.recommendCnt}`}
+                  />
+                </View>
+              </Pressable>
+            </View>
+          ))}
         </View>
       </ScrollView>
       <View style={styles.bottomBar}>
-        <CommonButton
+        <RealTimeVisitorsViewButton
           onPress={() => {}}
           title={'실시간 방문자 수'}
           isRealTimeInfo={true}
-          // cnt={detailPopUpData.realTimeVisit}
-          cnt={100}
+          cnt={detailPopUpData.realTimeVisit}
           borderColor={globalColors.warmGray}
         />
         <View style={{width: 20}} />
-        <CommonButton onPress={() => {}} title={'방문 하기'} />
+        <VisitButton
+          onPress={handleVisitPress}
+          isInstagram={false}
+          title={detailPopUpData.isInstagram ? '방문하기' : '방문완료'}
+        />
       </View>
+      <CustomModal
+        isVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        SvgIcon={VisitModalSvg}
+        content="해당 팝업의 50m 이내에 있으면 방문하기 버튼이 활성화 됩니다!"
+        checkText="OK"
+      />
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  visitorDataContainer: {
+    margin: 10,
+    borderColor: globalColors.component,
+    borderWidth: 1.0,
+    borderRadius: 15,
+    padding: 20,
+  },
+  recommendContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
   reviewContainer: {
     flexDirection: 'column',
     gap: 10,
@@ -331,9 +491,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   introduce: {
-    ...Text14R.text,
-    color: globalColors.font,
-    marginBottom: 8,
+    marginTop: 15,
+    ...Text14M.text,
   },
   link: {
     ...Text14R.text,
@@ -345,9 +504,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   iconContainer: {
+    marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 20,
   },
   recentReviewHeader: {
     gap: 10,
@@ -366,13 +527,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   additionalInfo: {
-    // 추가 정보 섹션 스타일
     marginBottom: 16,
   },
   detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 4, // 각 항목 사이의 간격을 위해 설정
+    marginVertical: 4,
   },
   bottomBar: {
     position: 'absolute',
@@ -403,7 +563,35 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  // Add additional styles as needed
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  colCloseContainer: {
+    flexDirection: 'column',
+    marginVertical: 10,
+  },
+  rowCloseContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  imageScroll: {
+    flexDirection: 'row',
+    marginVertical: 10,
+  },
+  reviewImage: {
+    width: 100,
+    height: 100,
+    marginRight: 10,
+  },
+  reviewText: {
+    ...Text16M.text,
+    marginVertical: 5,
+  },
+  verifiedReviewSvg: {
+    marginLeft: 5,
+  },
 });
 
 export default PopUpDetailScreen;

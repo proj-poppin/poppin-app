@@ -1,4 +1,4 @@
-// Text16B.ts
+// Text14R.ts
 import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({

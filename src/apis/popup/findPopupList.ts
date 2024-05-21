@@ -1,5 +1,5 @@
-import {TfindPopupType} from '../../types/DetaiPopUpData.ts';
-import apiInstance from '../axios.ts';
+import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
+import {TfindPopupType} from '../../types/FindPopUpData.ts';
 
 export type TFilterparmas = {
   text: string;
@@ -16,9 +16,12 @@ const getFindPopUpList = async (
   console.log('par', params);
 
   try {
-    const response = await apiInstance.get('/api/v1/popup/guest/search', {
-      params: params,
-    });
+    const response = await nonPublicApiInstance.get(
+      '/api/v1/popup/guest/search',
+      {
+        params: params,
+      },
+    );
 
     console.log('getFindPopupList response:', response.data);
 

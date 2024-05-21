@@ -1,4 +1,10 @@
-export const POP_UP_TYPES = [
+export type TFilter = {
+  id: number;
+  label: string;
+  name: string;
+  selected: boolean;
+};
+export const POP_UP_TYPES: TFilter[] = [
   {id: 1, name: 'fashionBeauty', label: '패션/뷰티', selected: false},
   {id: 2, name: 'characters', label: '캐릭터', selected: false},
   {id: 3, name: 'foodBeverage', label: '식품/음료', selected: false},

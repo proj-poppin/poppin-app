@@ -9,10 +9,10 @@ import LabelText20B from '../../components/atoms/label/LabelText20B.tsx';
 import CommonTextFormField from '../../components/molecules/form_field/CommonTextFormField.tsx';
 import TermsAndPrivacyPolicyAgreement from '../../components/molecules/pressable_text/PressableUnderlineText.tsx';
 import SignUpOrderHeader from '../../components/organisms/header/SignUpOrderHeader.tsx';
-import useSignUpEmail from '../../hooks/useSignUpEmail.tsx';
+import useSignUpEmail from '../../hooks/signUp/useSignUpEmail.tsx';
 import {useDispatch} from 'react-redux';
 import userSlice from '../../redux/slices/user.ts';
-import useEmailVerification from '../../hooks/useEmailVerification.tsx';
+import useEmailVerification from '../../hooks/signUp/useEmailVerification.tsx';
 
 type SignUpEmailScreenProps = {
   navigation: any;

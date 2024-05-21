@@ -1,14 +1,13 @@
-import apiInstance from '../axios.ts';
-import {DetailPopUpData} from '../../types/DetaiPopUpData.ts';
+import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
+import {DetailPopUpData} from '../../types/DetailPopUpData.ts';
 
 const getDetailPopUp = async (
   popUpId: number,
 ): Promise<CommonResponse<DetailPopUpData>> => {
   try {
-    const response = await apiInstance.get('/api/v1/popup/detail', {
+    const response = await nonPublicApiInstance.get('/api/v1/popup/detail', {
       params: {popupId: popUpId},
     });
-    console.log('getDetailPopUp response:', response.data);
 
     if (response.data.success) {
       return response.data;

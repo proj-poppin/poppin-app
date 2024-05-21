@@ -3,17 +3,14 @@ import {View, Text, StyleSheet} from 'react-native';
 import MainTitle from '../header/MainTitle.tsx';
 import OptionMultipleButton from '../../atoms/button/optionMultipleButton.tsx';
 import globalColors from '../../../styles/color/globalColors.ts';
+import {
+  preferenceOptionsFirst,
+  PreferenceCategories,
+} from '../../../constants/PreferenceTypes.ts';
 
-const PreferenceSectionFirst = ({updatePreference, preferences}) => {
-  const options = [
-    {title: '🛍️ 소비형', key: 'market'},
-    {title: '🖼️ 전시형', key: 'display'},
-    {title: '🏃 체험형', key: 'experience'},
-    {title: '무료 체험이었으면 좋겠어요', key: 'wantFree'},
-  ];
-
+const PreferenceSectionFirst = ({updatePreference, preferences, nickname}) => {
   const handlePress = (key: string, isSelected: boolean) => {
-    updatePreference('preference', key, isSelected);
+    updatePreference(PreferenceCategories.PREFERENCE, key, isSelected);
     console.log('key:', key);
     console.log('preferences:', preferences);
   };
@@ -21,7 +18,7 @@ const PreferenceSectionFirst = ({updatePreference, preferences}) => {
   return (
     <View>
       <MainTitle
-        text1={'OO님이'}
+        text1={`${nickname}님이`}
         text2={'선호하시는 팝업을 알려주세요'}
         isNeedCenter={true}
       />
@@ -29,7 +26,7 @@ const PreferenceSectionFirst = ({updatePreference, preferences}) => {
         <Text style={styles.noteText}>*복수 선택 가능</Text>
       </View>
       <View style={styles.optionsContainer}>
-        {options.map((option, index) => (
+        {preferenceOptionsFirst.map((option, index) => (
           <OptionMultipleButton
             key={index}
             id={option.key}

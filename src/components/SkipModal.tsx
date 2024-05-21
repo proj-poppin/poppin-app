@@ -1,4 +1,3 @@
-// SkipModal.js
 import React from 'react';
 import {Modal, View, Text, Pressable, StyleSheet} from 'react-native';
 import SkipSvg from '../assets/images/skip.svg';
@@ -6,7 +5,17 @@ import globalColors from '../styles/color/globalColors.ts';
 import Text18B from '../styles/texts/body_large/Text18B.ts';
 import Text14M from '../styles/texts/body_medium/Text14M.ts';
 
-const SkipModal = ({isVisible, onClose, onSetNow}) => {
+interface SkipModalProps {
+  isVisible: boolean;
+  onClose: () => void;
+  onSetNow: () => void;
+}
+
+const SkipModal: React.FC<SkipModalProps> = ({
+  isVisible,
+  onClose,
+  onSetNow,
+}) => {
   return (
     <Modal
       animationType="fade"
@@ -20,14 +29,14 @@ const SkipModal = ({isVisible, onClose, onSetNow}) => {
             {'취향을 설정하면 맞춤 팝업 정보를\n받아볼 수 있어요!'}
           </Text>
           <View style={{flexDirection: 'row', marginTop: 20}}>
-            <Pressable style={styles.buttonSkip} onPress={onClose}>
+            <Pressable style={styles.buttonSkip} onPress={onSetNow}>
               {({pressed}) => (
                 <Text
                   style={[
                     Text14M.text,
                     {
                       color: pressed ? 'gray' : globalColors.font,
-                    }, // 조건부 색상 적용
+                    },
                   ]}>
                   건너뛰기
                 </Text>
@@ -43,7 +52,7 @@ const SkipModal = ({isVisible, onClose, onSetNow}) => {
               }}>
               |
             </Text>
-            <Pressable onPress={onSetNow} style={styles.buttonSetNow}>
+            <Pressable onPress={onClose} style={styles.buttonSetNow}>
               {({pressed}) => (
                 <Text
                   style={[
@@ -52,7 +61,7 @@ const SkipModal = ({isVisible, onClose, onSetNow}) => {
                       color: pressed
                         ? globalColors.buttonPressed
                         : globalColors.blue,
-                    }, // 조건부 색상 적용
+                    },
                   ]}>
                   지금 설정하기
                 </Text>

@@ -1,55 +1,41 @@
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import globalColors from '../../styles/color/globalColors.ts';
+import globalColors from '../../styles/color/globalColors';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import SearchBlueSvg from '../../assets/icons/searchBlue.svg';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import InterestSampleSvg from '../../assets/images/interestSample.svg';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import DividerLine from '../../components/DividerLine.tsx';
-import CustomSelectDropdown from '../../components/CustomDropDown.tsx';
+import DividerLine from '../../components/DividerLine';
+import CustomSelectDropdown from '../../components/CustomDropDown';
 import OrderSvg from '../../assets/icons/order.svg';
-import Text24B from '../../styles/texts/headline/Text24B.ts';
-import FilterSettingButton from '../../components/atoms/button/FilterSettingButton.tsx';
-import Text14M from '../../styles/texts/body_medium/Text14M.ts';
-import FindCard from '../../components/findPopup/FindCard.tsx';
-import FindFilterBackdrop from '../../components/findPopup/FindFilterBackdrop.tsx';
-import {BottomSheetBackdrop, BottomSheetView} from '@gorhom/bottom-sheet';
-import FindFilterBottomSheet from '../../components/findPopup/FindFilterBackdrop.tsx';
-import CategorySelectButton from '../../components/findPopup/CategorySelectButton.tsx';
-import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
-import BackMiddleButton from '../../components/atoms/button/BackMiddleButton.tsx';
-import NextMiddleButton from '../../components/atoms/button/NextMiddleButton.tsx';
-import {POP_UP_TYPES} from '../../components/findPopup/constants.ts';
-import NotyetTab from './tab/NotyetTab.tsx';
-import OperationTab from './tab/OperatonTab.tsx';
-import ClosedTab from './tab/ClosedTab.tsx';
+import Text24B from '../../styles/texts/headline/Text24B';
+import FilterSettingButton from '../../components/atoms/button/FilterSettingButton';
+import Text14M from '../../styles/texts/body_medium/Text14M';
+import CategorySelectButton from '../../components/findPopup/CategorySelectButton';
+import BackMiddleButton from '../../components/atoms/button/BackMiddleButton';
+import NextMiddleButton from '../../components/atoms/button/NextMiddleButton';
+import {POP_UP_TYPES, TFilter} from '../../components/findPopup/constants';
+import NotyetTab from './tab/NotyetTab';
+import OperationTab from './tab/OperatonTab';
+import ClosedTab from './tab/ClosedTab';
 import BackSvg from '../../assets/icons/goBack.svg';
+import useBackdrop from '../../hooks/common/useBackDrop.tsx';
 
-export const FINDORDER_TYPES = [
+export const FIND_ORDER_TYPES = [
   {label: '최근 오픈 순', value: 'OPEN'},
   {label: '종료 임박 순', value: 'CLOSE'},
   {label: '조회 순', value: 'VIEW'},
   {label: '최신 업로드 순', value: 'UPLOAD'},
 ];
-const TabNames: {[key: string]: string} = {
-  '운영 중': 'NOTYET',
-  '오픈 예정': 'OPERATING',
-  '운영 종료': 'TERMINATING',
-};
 
 const Tab = createMaterialTopTabNavigator();
 
-type TFilter = {id: number; label: string; name: string; selected: boolean};
+type FindScreenProps = {
+  navigation: any;
+  route: any;
+};
 
-function FindScreen({navigation, route}: any) {
+function FindScreen({navigation, route}: FindScreenProps) {
   const [availableTags, setAvailableTags] = useState<TFilter[]>(POP_UP_TYPES);
   const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
   const [selectedTab, setSelectedTab] = useState('운영 중');
@@ -77,7 +63,7 @@ function FindScreen({navigation, route}: any) {
   };
 
   const handleOrderSelect = (value: any) => {
-    const orderValue = FINDORDER_TYPES[value].value;
+    const orderValue = FIND_ORDER_TYPES[value].value;
     setSelectedOrder(orderValue);
   };
 
@@ -89,60 +75,23 @@ function FindScreen({navigation, route}: any) {
   // variables
   const snapPoints = useMemo(() => ['77%'], []);
 
-  const handlePresentModal = useCallback(
-    (action: () => void) => {
-      setSelectedTags(availableTags);
-      bottomSheetModalRef.current?.present();
-    },
-    [availableTags],
-  );
+  const handlePresentModal = useCallback(() => {
+    setSelectedTags(availableTags);
+    bottomSheetModalRef.current?.present();
+  }, [availableTags]);
 
-  const handleClick = (selectedTag: any) => {
-    setSelectedTags(prev => {
-      return prev.map(item => {
-        if (item.id === selectedTag.id) {
-          return {...item, selected: !item.selected};
-        } else {
-          return item;
-        }
-      });
-    });
+  const handleClick = (selectedTag: TFilter) => {
+    setSelectedTags(prev =>
+      prev.map(item =>
+        item.id === selectedTag.id ? {...item, selected: !item.selected} : item,
+      ),
+    );
   };
+
   const tagDeleteClick = (tid: number) => {
-    setSelectedTags(prev => {
-      return prev.map(item => {
-        if (item.id === tid) {
-          return {...item, selected: false};
-        } else {
-          return item;
-        }
-      });
-    });
-  };
-  // 화면클릭시 모달 내려감
-  const renderBackdrop = useCallback(
-    (
-      props: React.JSX.IntrinsicAttributes & BottomSheetDefaultBackdropProps,
-    ) => (
-      <BottomSheetBackdrop
-        {...props}
-        onPress={handleBackdropPress}
-        pressBehavior="close"
-        appearsOnIndex={0}
-        disappearsOnIndex={-1}
-      />
-    ),
-    [],
-  );
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
-  }, []);
-
-  const handleBackdropPress = () => {
-    if (!isSettingApplied) {
-      bottomSheetModalRef.current?.close();
-      setSelectedTags(availableTags);
-    }
+    setSelectedTags(prev =>
+      prev.map(item => (item.id === tid ? {...item, selected: false} : item)),
+    );
   };
 
   return (
@@ -159,39 +108,33 @@ function FindScreen({navigation, route}: any) {
               onPress={() => navigation.navigate('findInputScreen')}
               style={styles.searchInputWrapper}>
               <Text>{searchKeyword}</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('findInputScreen');
-                }}
+              <Pressable
+                onPress={() => navigation.navigate('findInputScreen')}
                 style={styles.calendarViewContainer}>
                 <SearchBlueSvg />
-              </TouchableOpacity>
+              </Pressable>
             </Pressable>
           </View>
         ) : (
           <View style={styles.headerContainer}>
             <Text style={Text24B.text}>팝업 목록</Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('findInputScreen');
-              }}
+            <Pressable
+              onPress={() => navigation.navigate('findInputScreen')}
               style={styles.calendarViewContainer}>
               <SearchBlueSvg />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         )}
 
         <Tab.Navigator
           initialRouteName={'운영 중'}
-          // 탭이 선택될 때의 동작 구현
-          tabBar={({state, descriptors, navigation}) => {
+          tabBar={({state, navigation}) => {
             return (
               <View style={styles.tabBarContainer}>
                 <View style={styles.tabBar}>
                   {state.routes.map((route, index) => {
-                    // console.log('route', route);
                     return (
-                      <TouchableOpacity
+                      <Pressable
                         key={route.key}
                         style={[
                           styles.tabItem,
@@ -216,7 +159,7 @@ function FindScreen({navigation, route}: any) {
                             ? '오픈 예정'
                             : '운영 종료'}
                         </Text>
-                      </TouchableOpacity>
+                      </Pressable>
                     );
                   })}
                 </View>
@@ -226,16 +169,14 @@ function FindScreen({navigation, route}: any) {
                     isSetting={isSettingApplied}
                   />
                   <CustomSelectDropdown
-                    data={FINDORDER_TYPES}
-                    onSelect={
-                      (selectedItem: any, index: any) =>
-                        handleOrderSelect(index)
-                      // console.log(selectedItem, index)
+                    data={FIND_ORDER_TYPES}
+                    onSelect={(selectedItem: any, index: any) =>
+                      handleOrderSelect(index)
                     }
                     buttonWidth={120}
                     iconComponent={<OrderSvg style={styles.dropdownIcon} />}
-                    buttonTextAfterSelection={(selectedItem: any, index: any) =>
-                      selectedItem
+                    buttonTextAfterSelection={(selectedItem: any) =>
+                      selectedItem.label
                     }
                     buttonTextStyle={Text14M.text}
                   />
@@ -267,7 +208,6 @@ function FindScreen({navigation, route}: any) {
                 selectedOrder={selectedOrder}
                 availableTags={availableTags}
                 searchKeyword={searchKeyword}
-                type="close"
               />
             )}
           </Tab.Screen>
@@ -277,62 +217,62 @@ function FindScreen({navigation, route}: any) {
         <BottomSheetModal
           ref={bottomSheetModalRef}
           index={0}
-          backdropComponent={renderBackdrop}
-          snapPoints={snapPoints}
-          onChange={handleSheetChanges}>
+          backdropComponent={useBackdrop}
+          snapPoints={snapPoints}>
           <View style={styles.contentContainer}>
             <Text style={styles.popupTitle}>
               찾고 싶은 팝업의 카테고리를 선택해 주세요
             </Text>
             <Text style={styles.popCat}>팝업 카테고리</Text>
             <View style={styles.popWrapper}>
-              {selectedTags.slice(0, 14).map(item => {
-                return (
-                  <CategorySelectButton
-                    key={item.id}
-                    item={item}
-                    onClick={handleClick}
-                  />
-                );
-              })}
+              {selectedTags.slice(0, 14).map(item => (
+                <CategorySelectButton
+                  key={item.id}
+                  item={item}
+                  onClick={handleClick}
+                  selected={item.selected}
+                  tagDeleteClick={tagDeleteClick}
+                />
+              ))}
             </View>
             <Text style={styles.popType}>팝업 유형</Text>
             <View style={styles.popWrapper}>
-              {selectedTags.slice(14, POP_UP_TYPES.length).map(item => {
-                return (
-                  <CategorySelectButton
-                    key={item.id}
-                    item={item}
-                    onClick={handleClick}
-                  />
-                );
-              })}
+              {selectedTags.slice(14, POP_UP_TYPES.length).map(item => (
+                <CategorySelectButton
+                  key={item.id}
+                  item={item}
+                  onClick={handleClick}
+                  selected={item.selected}
+                  tagDeleteClick={tagDeleteClick}
+                />
+              ))}
             </View>
           </View>
           <DividerLine height={2} />
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={16}>
             <View style={styles.popSelectedWrapper}>
-              {selectedTags.map(tag => {
-                if (tag.selected) {
-                  return (
-                    <CategorySelectButton
-                      onClick={() => {}}
-                      tagDeleteClick={tagDeleteClick}
-                      selected
-                      item={tag}
-                    />
-                  );
-                }
-                return null;
-              })}
+              {selectedTags.map(tag =>
+                tag.selected ? (
+                  <CategorySelectButton
+                    key={tag.id}
+                    item={tag}
+                    onClick={() => {}}
+                    selected={true}
+                    tagDeleteClick={tagDeleteClick}
+                  />
+                ) : null,
+              )}
             </View>
           </ScrollView>
           <View style={styles.buttonsWrapper}>
             <BackMiddleButton
               onPress={() => {
                 setIsSettingApplied(false);
-                setAvailableTags(POPUUP_TYPES);
-                setSelectedTags(POPUUP_TYPES);
+                setAvailableTags(POP_UP_TYPES);
+                setSelectedTags(POP_UP_TYPES);
                 bottomSheetModalRef.current?.close();
               }}
               title={'초기화'}
@@ -364,7 +304,6 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: 'gray',
   },
-
   titleContainer: {
     width: '100%',
     paddingHorizontal: 16,
@@ -397,7 +336,6 @@ const styles = StyleSheet.create({
     marginRight: 16,
     height: 40,
   },
-
   dropdownContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -421,7 +359,6 @@ const styles = StyleSheet.create({
   },
   dropdownButtonStyle: {
     backgroundColor: 'white', // 버튼 배경색을 흰색으로 설정
-    // 필요한 경우 여기에 다른 스타일 추가
   },
   rowTextStyle: {
     backgroundColor: globalColors.white,
@@ -453,7 +390,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
   },
-
   activeTabItem: {
     borderBottomWidth: 5, // 선택된 탭 아래에 선 추가
     flex: 1,
@@ -467,7 +403,6 @@ const styles = StyleSheet.create({
   inactiveTab: {
     color: 'gray',
   },
-  //
   modalContainer: {
     alignItems: 'center',
     justifyContent: 'center',

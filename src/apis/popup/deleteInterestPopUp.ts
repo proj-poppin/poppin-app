@@ -1,14 +1,13 @@
-import apiInstance from '../axios.ts';
+import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 
-const getDeletePopUp = async (popUpId: number) => {
+const getDeletePopUp = async (popupId: number) => {
   try {
-    const response = await apiInstance.delete(
+    const response = await nonPublicApiInstance.delete(
       '/api/v1/interest/remove-interest',
       {
-        params: {popup_id: popUpId},
+        params: {popupId: popupId},
       },
     );
-    console.log('@@@@@@@@getDeletePopUp response:', response.data);
 
     if (response.data.success) {
       return response.data;

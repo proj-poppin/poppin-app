@@ -1,9 +1,12 @@
 export type AppNavigatorParamList = {
+  Report: undefined;
+  PopUpEditRequest: undefined;
   Entry: undefined;
   BasicLogin: undefined;
   PasswordReset: undefined;
   PrivacyPolicy: undefined;
   ServicePolicy: undefined;
+  SignUpPreferenceSetting: undefined;
   SignUpNickNameSocial: undefined;
   SignUpEmail: undefined;
   SignUpAuthCode: undefined;

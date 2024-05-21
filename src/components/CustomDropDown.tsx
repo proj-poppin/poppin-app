@@ -1,10 +1,19 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
-import globalColors from '../styles/color/globalColors.ts';
-import Text14M from '../styles/texts/body_medium/Text14M.ts';
+import globalColors from '../styles/color/globalColors';
+import Text14M from '../styles/texts/body_medium/Text14M';
 
-const CustomSelectDropdown = ({
+type CustomSelectDropdownProps = {
+  data: {label: string}[];
+  onSelect: (selectedItem: string, index: number) => void;
+  buttonWidth: number;
+  iconComponent: JSX.Element;
+  buttonTextAfterSelection: (selectedItem: string, index: number) => string;
+  buttonTextStyle?: object;
+};
+
+const CustomSelectDropdown: React.FC<CustomSelectDropdownProps> = ({
   data,
   onSelect,
   buttonWidth,
@@ -12,23 +21,21 @@ const CustomSelectDropdown = ({
   buttonTextAfterSelection,
   buttonTextStyle,
 }) => {
-  const dropdownWidth = buttonWidth;
-
   return (
     <SelectDropdown
-      data={data.map((item: any) => item.label)}
+      data={data.map(item => item.label)}
       onSelect={onSelect}
       buttonTextAfterSelection={buttonTextAfterSelection}
       rowTextForSelection={(item, index) => item}
       dropdownStyle={[
         styles.dropdownStyle,
-        {width: dropdownWidth}, // 여기에서 넓이 조정
+        {width: buttonWidth}, // Set dropdown width dynamically
       ]}
       buttonStyle={[styles.dropdownButtonStyle, {width: buttonWidth}]}
       rowTextStyle={{color: globalColors.font, textAlign: 'center'}}
       renderCustomizedButtonChild={(selectedItem, index) => (
         <View style={styles.buttonInnerContainer}>
-          <Text style={[Text14M.text, buttonTextStyle]}>
+          <Text style={[Text14M.text, buttonTextStyle, styles.buttonText]}>
             {selectedItem || data[0].label}
           </Text>
           {iconComponent}
@@ -39,50 +46,25 @@ const CustomSelectDropdown = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-
-    backgroundColor: 'white',
-  },
-  labelSmallBlue: {
-    fontFamily: 'Pretandard-Regular',
-    fontSize: 12,
-    fontWeight: '400',
-    color: globalColors.blue,
-  },
-  middleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-    marginTop: 15,
-  },
-  calendarViewContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  calendarIcon: {
-    marginLeft: 5, //small gap between the text and the icon
-  },
   dropdownButtonStyle: {
-    backgroundColor: 'white', // 버튼 배경색을 흰색으로 설정
-    borderRadius: 20,
-    // 필요한 경우 여기에 다른 스타일 추가
-  },
-  rowTextStyle: {
-    backgroundColor: globalColors.white,
+    backgroundColor: 'white', // Set button background color to white
+    height: 40, // Set a fixed height for the button
+    justifyContent: 'center', // Center the content vertically
+    paddingHorizontal: 10, // Add some padding to the sides
   },
   buttonInnerContainer: {
-    flexDirection: 'row', // 텍스트와 아이콘을 가로로 배열
-    alignItems: 'center', // 세로 중앙 정렬
-    justifyContent: 'flex-start', // 내용물 사이의 공간 동일하게 배분
-  },
-  dropdownIcon: {
-    marginLeft: 5,
+    flexDirection: 'row', // Align text and icon horizontally
+    alignItems: 'center', // Center align vertically
+    gap: 5, // Add some space between text and icon
+    width: '100%', // Ensure the content takes full width
   },
   dropdownStyle: {
-    borderRadius: 210,
-    // 필요한 경우 여기에 추가 스타일 설정
+    borderRadius: 10, // Rounded corners for the dropdown
+  },
+  buttonText: {
+    color: globalColors.black, // Ensure text color is set to font color
+    fontWeight: '600',
+    fontSize: 16, // Set font size to 14
   },
 });
 

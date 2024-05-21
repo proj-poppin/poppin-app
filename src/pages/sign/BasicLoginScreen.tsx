@@ -4,7 +4,7 @@ import LabelText20B from '../../components/atoms/label/LabelText20B.tsx';
 import CommonTextFormField from '../../components/molecules/form_field/CommonTextFormField.tsx';
 import React from 'react';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
-import useBasicLogin from '../../hooks/useBasicLogin.tsx';
+import useBasicLogin from '../../hooks/login/useBasicLogin.tsx';
 import {StyleSheet, View} from 'react-native';
 import PressableGreyTextWord from '../../components/molecules/pressable_text/PressableGreyTextWord.tsx';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';

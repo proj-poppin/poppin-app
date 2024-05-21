@@ -3,7 +3,7 @@ import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
 
 type PreferenceSettingScreenNavigationProp = NativeStackNavigationProp<
   AuthNavigatorParamList,
-  'PreferenceSetting'
+  'SignUpPreferenceSetting'
 >;
 
 // Props 타입 정의

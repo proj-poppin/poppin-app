@@ -6,6 +6,7 @@ const colorSystem = {
   purpleLight: '#FAF4FC',
   main: '#14B4F9',
   black: '#000000',
+  chartNormal: '#D9D9D9',
   subBlack: '#343434',
   font: '#9F9F9F',
   icon: '#B8CAD2',

@@ -4,11 +4,11 @@ import globalColors from '../../styles/color/globalColors.ts';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
-import useSignUpNickName from '../../hooks/useSignUpNickName.tsx';
+import useSignUpNickName from '../../hooks/signUp/useSignUpNickName.tsx';
 import SignUpOrderHeader from '../../components/organisms/header/SignUpOrderHeader.tsx';
 import {useDispatch, useSelector} from 'react-redux';
 import userSlice from '../../redux/slices/user.ts';
-import useSignUp from '../../hooks/useSignUp.tsx';
+import useSignUp from '../../hooks/signUp/useSignUp.tsx';
 
 function SignUpNickNameScreen({navigation}) {
   const dispatch = useDispatch();

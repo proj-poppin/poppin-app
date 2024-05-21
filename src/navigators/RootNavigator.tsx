@@ -69,7 +69,7 @@ const RootNavigator = () => {
         // dispatch(userSlice.actions.setPhoneToken(token));
         // return axios.post(`${Config.API_URL}/phonetoken`, {token});
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     }
     getToken();

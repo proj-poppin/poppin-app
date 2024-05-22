@@ -2,19 +2,10 @@ import {ScrollView, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import DividerLine from '../../../components/DividerLine.tsx';
 import FindCard from '../../../components/findPopup/FindCard.tsx';
-import FindPopupNoList from '../../../assets/images/findPopupNoList.svg';
-import NoListText from '../../../assets/images/findPopupText.svg';
-import globalColors from '../../../styles/color/globalColors.ts';
 import useGetFindPopupList from '../../../hooks/findPopUp/useGetFindPopupList.tsx';
 import NotList from '../../../components/findPopup/NotList.tsx';
 
-function NotyetTab({
-  data,
-  type,
-  selectedOrder,
-  availableTags,
-  searchKeyword,
-}: any) {
+function NotyetTab({type, selectedOrder, availableTags, searchKeyword}: any) {
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(5);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -33,8 +24,6 @@ function NotyetTab({
     searchKeyword,
     triggerFetch,
   );
-  console.log('find!!!!!!', findPopupListData);
-  console.log('지금부터야!');
 
   const handleScroll = (event: any) => {
     const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;

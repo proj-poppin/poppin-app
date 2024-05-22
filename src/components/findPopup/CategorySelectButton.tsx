@@ -14,17 +14,18 @@ import {TFilter} from './constants.ts';
 interface CategorySelectButtonProps {
   item: TFilter;
   onClick: (item: TFilter) => void;
-  selected: boolean;
+
   tagDeleteClick: (id: number) => void;
+  seletedTag?: any;
 }
 
 const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
   item,
   onClick,
-  selected,
   tagDeleteClick,
+  seletedTag,
 }) => {
-  if (selected) {
+  if (seletedTag) {
     return (
       <Pressable onPress={() => onClick(item)}>
         <LinearGradient

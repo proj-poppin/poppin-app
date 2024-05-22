@@ -41,6 +41,7 @@ function OperationTab({
       setPage(prev => prev + 1);
     }
   };
+
   useEffect(() => {
     setPage(0);
     setTriggerFetch(prev => !prev);

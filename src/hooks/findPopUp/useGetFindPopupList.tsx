@@ -48,17 +48,13 @@ const useGetFindPopupList = (
         prepered: selectedCategoryString,
         taste: selectedTypeString,
       };
-      console.log('filter', filterParams);
 
       try {
         const accessToken = await EncryptedStorage.getItem('accessToken');
         console.log('accestoken', accessToken);
-        // const response = accessToken
-        //   ? await getFindPopUpList(filterParams)
-        //   : await getPublicFindPopUpList(filterParams);
-
-        const response = await getPublicFindPopUpList(filterParams);
-        console.log('page', page);
+        const response = accessToken
+          ? await getFindPopUpList(filterParams)
+          : await getPublicFindPopUpList(filterParams);
 
         if (response.success) {
           setGetListState(prevState => ({

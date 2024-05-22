@@ -35,8 +35,8 @@ const FindCard = ({item, type}: any) => {
   const remainingDays = calculateRemainingDays(item.closeDate);
 
   const handleFavoriteClick = (popupId: number) => {
-    const {addInterest} = usePostBookmarkPopup();
-    addInterest(popupId);
+    // const {addInterest} = usePostBookmarkPopup();
+    // addInterest(popupId);
   };
 
   return (

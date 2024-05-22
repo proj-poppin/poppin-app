@@ -10,6 +10,7 @@ const useSignUp = () => {
     success: false,
     error: null,
     newUser: false,
+    loading: false, // Add loading state
   });
   const setTokens = useSetAccessTokenAndRefreshToken(); // 커스텀 훅 호출
 
@@ -23,6 +24,11 @@ const useSignUp = () => {
       agreedToPrivacyPolicy,
       agreedToServiceTerms,
     } = user;
+
+    setSignUpStatus(prevState => ({
+      ...prevState,
+      loading: true, // Set loading to true when sign up starts
+    }));
 
     try {
       const signUpResult = await basicSignUp(
@@ -43,6 +49,7 @@ const useSignUp = () => {
           ...prevState,
           success: true,
           error: null,
+          loading: false, // Set loading to false when sign up is successful
         }));
         console.log('SignUp successful:', signUpResult.data);
       } else {
@@ -50,6 +57,7 @@ const useSignUp = () => {
         setSignUpStatus(prevState => ({
           ...prevState,
           success: false,
+          loading: false, // Set loading to false when sign up fails
         }));
       }
     } catch (error) {
@@ -57,6 +65,7 @@ const useSignUp = () => {
       setSignUpStatus(prevState => ({
         ...prevState,
         success: false,
+        loading: false, // Set loading to false when there is an error
       }));
     }
   }, [user, setTokens]);

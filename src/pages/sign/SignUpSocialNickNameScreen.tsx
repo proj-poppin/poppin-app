@@ -49,12 +49,14 @@ function SignUpSocialNickNameScreen({navigation, route}) {
         keyboardType="default"
         labelText={'닉네임'}
         errorText={nicknameError}
+        value={nickname} // Add value prop here
       />
       <LabelAndInput
         onChangeText={handleChangeBirthDate}
         placeholder="YYYY.MM.DD"
         keyboardType="default"
         labelText={'생년월일'}
+        value={birthDate} // Add value prop here
       />
       <CompleteButton
         title="완료"

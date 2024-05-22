@@ -37,7 +37,7 @@ import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
 import OrderSvg from '../../assets/icons/order.svg';
 import ReasonItem from '../../components/ReasonItem.tsx';
 import CongestionSection from '../../components/organisms/section/CongestionSection.tsx';
-import {VisitorDataDetail} from '../../types/DetailPopUpData.ts';
+import {VisitorDataDetail} from '../../types/DetailPopUpDataNonPublic.ts';
 import WebSvg from '../../assets/detail/web.svg';
 import InstagramTestSvg from '../../assets/detail/instagramTest.svg';
 import ToastComponent from '../../components/atoms/toast/ToastComponent.tsx';
@@ -47,6 +47,7 @@ import CustomModal from '../../components/atoms/modal/CustomModal.tsx';
 import Geolocation from 'react-native-geolocation-service';
 import useAddRecommendReview from '../../hooks/detailPopUp/useAddRecommendReview.tsx';
 import {useNavigation} from '@react-navigation/native';
+import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 
 async function requestPermissions() {
   if (Platform.OS === 'ios') {
@@ -100,9 +101,14 @@ async function requestPermissions() {
 }
 
 const PopUpDetailScreen = ({route}) => {
+  const isLoggedIn = useIsLoggedIn();
   const navigation = useNavigation();
   const {id} = route.params;
-  const {data: detailPopUpData, loading, error} = useGetDetailPopUp(id);
+  const {
+    data: detailPopUpData,
+    loading,
+    error,
+  } = useGetDetailPopUp(id, !isLoggedIn);
   const firstImageUrl =
     detailPopUpData?.images?.[0] ??
     'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/4/1.jpg';
@@ -425,7 +431,7 @@ const PopUpDetailScreen = ({route}) => {
         <VisitButton
           onPress={handleVisitPress}
           isInstagram={false}
-          title={detailPopUpData.isInstagram ? '방문하기' : '방문완료'}
+          title={detailPopUpData.isVisited ? '방문하기' : '방문완료'}
         />
       </View>
       <CustomModal

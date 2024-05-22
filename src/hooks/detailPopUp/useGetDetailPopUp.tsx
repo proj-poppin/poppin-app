@@ -1,15 +1,18 @@
 import {useState, useEffect} from 'react';
-import {DetailPopUpData} from '../../types/DetailPopUpData.ts';
+import {DetailPopUpDataNonPublic} from '../../types/DetailPopUpDataNonPublic.ts';
 import getDetailPopUp from '../../apis/popup/detailPopUp.ts';
+import getDetailPopUpPublic from '../../apis/public/detailPopUpPublic.ts';
 
 interface DetailPopUpState {
   loading: boolean;
-  data: DetailPopUpData | null;
+  data: DetailPopUpDataNonPublic | null;
   error: string | null;
 }
 
-// 팝업 ID를 입력으로 받는 커스텀 훅
-function useGetDetailPopUp(popUpId: number): DetailPopUpState {
+function useGetDetailPopUp(
+  popUpId: number,
+  isPublic: boolean,
+): DetailPopUpState {
   const [getDetailPopUpState, setGetDetailPopUpState] =
     useState<DetailPopUpState>({
       loading: false,
@@ -20,15 +23,22 @@ function useGetDetailPopUp(popUpId: number): DetailPopUpState {
   useEffect(() => {
     // 팝업 상세 정보를 가져오는 비동기 함수
     const fetchDetailPopUp = async () => {
-      // setState({...state, loading: true});
+      setGetDetailPopUpState({
+        loading: true,
+        data: null,
+        error: null,
+      });
       try {
-        const response = await getDetailPopUp(popUpId);
+        const response = isPublic
+          ? await getDetailPopUpPublic(popUpId)
+          : await getDetailPopUp(popUpId);
         if (response.success) {
           setGetDetailPopUpState({
             loading: false,
             data: response.data,
             error: null,
           });
+          console.log(response.data);
         } else {
           setGetDetailPopUpState({
             loading: false,
@@ -46,7 +56,7 @@ function useGetDetailPopUp(popUpId: number): DetailPopUpState {
     };
 
     fetchDetailPopUp();
-  }, [popUpId]);
+  }, [popUpId, isPublic]);
 
   return getDetailPopUpState;
 }

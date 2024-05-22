@@ -1,9 +1,9 @@
 import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
-import {DetailPopUpData} from '../../types/DetailPopUpData.ts';
+import {DetailPopUpDataNonPublic} from '../../types/DetailPopUpDataNonPublic.ts';
 
 const getDetailPopUp = async (
   popUpId: number,
-): Promise<CommonResponse<DetailPopUpData>> => {
+): Promise<CommonResponse<DetailPopUpDataNonPublic>> => {
   try {
     const response = await nonPublicApiInstance.get('/api/v1/popup/detail', {
       params: {popupId: popUpId},

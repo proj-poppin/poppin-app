@@ -8,7 +8,6 @@ const getClosingList = async (): Promise<
     const response = await nonPublicApiInstance.get(
       '/api/v1/popup/closing-list',
     );
-    console.log('Sign up response:', response.data);
 
     if (response.data.success) {
       console.log('getClosingList response:', response.data);

@@ -23,8 +23,6 @@ const getFindPopUpList = async (
       },
     );
 
-    console.log('getFindPopupList response:', response.data);
-
     if (response.data.success) {
       return response.data;
     } else {

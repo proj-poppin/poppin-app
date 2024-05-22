@@ -14,7 +14,6 @@ import {TFilter} from './constants.ts';
 interface CategorySelectButtonProps {
   item: TFilter;
   onClick: (item: TFilter) => void;
-
   tagDeleteClick: (id: number) => void;
   seletedTag?: any;
 }

@@ -10,6 +10,7 @@ function NotyetTab({type, selectedOrder, availableTags, searchKeyword}: any) {
   const [size, setSize] = useState(5);
   const [loadingMore, setLoadingMore] = useState(false);
   const [triggerFetch, setTriggerFetch] = useState(false);
+  console.log('sssearch', searchKeyword);
 
   const {
     data: findPopupListData,

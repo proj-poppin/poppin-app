@@ -41,6 +41,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
   const [selectedTab, setSelectedTab] = useState('운영 중');
   const [selectedOrder, setSelectedOrder] = useState('OPEN');
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [isRefetchSearchKeyword, setIsRefetchSearchKeyword] = useState(false);
   const [isSettingApplied, setIsSettingApplied] = useState(false);
   const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
     useState(false);
@@ -103,7 +104,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
         {searchKeyword !== '' ? (
           <View style={styles.searchKeywordContainer}>
             <Pressable
-              onPress={() => setSearchKeyword('')}
+              onPress={() => navigation.navigate('Find', {searchText: ''})}
               style={{padding: 10}}>
               <BackSvg />
             </Pressable>

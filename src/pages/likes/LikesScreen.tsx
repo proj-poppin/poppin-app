@@ -36,7 +36,6 @@ function LikesScreen({navigation}) {
   useFocusEffect(
     useCallback(() => {
       refetch();
-      console.log('🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎');
       dispatch(loadingSlice.actions.setLoading({isLoading: true}));
       setTimeout(() => {
         dispatch(loadingSlice.actions.setLoading({isLoading: false}));
@@ -117,11 +116,11 @@ function LikesScreen({navigation}) {
   const filteredInterestList = useMemo(() => {
     switch (selectedPopUpType) {
       case '오픈 예정인 팝업':
-        return interestList?.filter(item => item.status === 'upcoming');
+        return interestList?.filter(item => item.status === 'D-N');
       case '운영 중인 팝업':
-        return interestList?.filter(item => item.status === 'ongoing');
+        return interestList?.filter(item => item.status === 'OPERATING');
       case '운영 종료 팝업':
-        return interestList?.filter(item => item.status === 'finished');
+        return interestList?.filter(item => item.status === 'TERMINATED');
       default:
         return interestList;
     }
@@ -177,7 +176,7 @@ function LikesScreen({navigation}) {
           <NoLikesSvg />
           <View>
             <Text style={styles.text}>
-              {'저장한 팝업이 없어요🥺'} {'\n'}
+              {'저장한 팝업이 없어요🫤'} {'\n'}
               {'관심있는 팝업을 저장해 보세요.'}
             </Text>
           </View>

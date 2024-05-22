@@ -1,5 +1,5 @@
-import axios from '../apiInstance/NonPublicApiInstance.ts';
 import Config from 'react-native-config';
+import axios from 'axios';
 
 // 회원가입을 시도하는 함수
 const resetPassword = async (password: string, passwordConfirm: string) => {

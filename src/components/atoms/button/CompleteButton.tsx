@@ -43,7 +43,7 @@ const CompleteButton: React.FC<CompleteButtonProps> = ({
       }
     }}>
     {loading ? (
-      <ActivityIndicator color={globalColors.white} />
+      <ActivityIndicator color={globalColors.blue} />
     ) : (
       <Text
         style={[
@@ -54,6 +54,7 @@ const CompleteButton: React.FC<CompleteButtonProps> = ({
                 ? globalColors.font
                 : globalColors.white,
           },
+          loading && {color: globalColors.blue},
         ]}>
         {title}
       </Text>

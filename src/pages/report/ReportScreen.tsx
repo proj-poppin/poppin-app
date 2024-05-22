@@ -7,6 +7,7 @@ import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
+import Text12M from '../../styles/texts/label/Text12M.ts';
 
 const reasons = [
   '고의의 잘못된 내용이 혼동을 일으켜요',
@@ -38,7 +39,7 @@ function ReportScreen({navigation}) {
     return (
       <DismissKeyboardView style={styles.container}>
         <View style={styles.completeContainer}>
-          <Text style={Text20B.text}>회원 탈퇴 완료</Text>
+          <Text style={Text20B.text}>신고 완료</Text>
           <Text style={[Text12R.text, styles.completeText]}>
             그동안 Poppin을{'\n'}이용해주셔서 감사합니다.
           </Text>
@@ -56,12 +57,18 @@ function ReportScreen({navigation}) {
   return (
     <>
       <DismissKeyboardView style={styles.container}>
-        <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>
-          {'탈퇴하는 이유를 알려주세요'}
-        </Text>
-        <Text style={[Text12R.text, {color: globalColors.font}]}>
-          {'계정을 삭제하면 후기, 저장 등의 활동 정보가 모두 사라져요.'}
-        </Text>
+        <View
+          style={[{flexDirection: 'row'}, {marginTop: 40, marginBottom: 10}]}>
+          <Text style={[Text20B.text]}>{'신고 사유를 알려주세요'}</Text>
+          <Text
+            style={[
+              Text12M.text,
+              {color: globalColors.font},
+              {marginLeft: 15, marginTop: 5},
+            ]}>
+            {'*복수 선택 가능'}
+          </Text>
+        </View>
         <View style={styles.reasonContainer}>
           {reasons.map((reason, index) => (
             <View key={index}>

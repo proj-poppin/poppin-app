@@ -11,6 +11,7 @@ interface VisitButtonProps {
   alwaysActive?: boolean;
   buttonWidth?: number | string;
   isInstagram: boolean;
+  onCompletePress?: () => void;
 }
 
 const VisitButton: React.FC<VisitButtonProps> = ({
@@ -21,6 +22,7 @@ const VisitButton: React.FC<VisitButtonProps> = ({
   alwaysActive = false,
   buttonWidth = '50%',
   isInstagram,
+  onCompletePress,
 }) => {
   const isVisitComplete = title === '방문완료';
 

@@ -64,6 +64,12 @@ function FindInputScreen({navigation}: any) {
 
     fetchKeywords();
   }, []);
+
+  const handlekeywordClickSubmit = (text: string) => {
+    setText(text);
+    navigation.navigate('Find', {searchText: text});
+  };
+
   return (
     <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
       <View style={styles.inputWrapper}>
@@ -108,7 +114,8 @@ function FindInputScreen({navigation}: any) {
             <>
               {keywordsRecord.map(keyword => {
                 return (
-                  <>
+                  <Pressable
+                    onPress={() => handlekeywordClickSubmit(keyword.keyword)}>
                     <View
                       key={keyword.id}
                       style={{
@@ -121,7 +128,7 @@ function FindInputScreen({navigation}: any) {
                         <InputCancel />
                       </Pressable>
                     </View>
-                  </>
+                  </Pressable>
                 );
               })}
               <Pressable onPress={handleAllRecordDelete}>

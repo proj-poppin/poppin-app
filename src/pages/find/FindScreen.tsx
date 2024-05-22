@@ -20,6 +20,7 @@ import OperationTab from './tab/OperatonTab';
 import ClosedTab from './tab/ClosedTab';
 import BackSvg from '../../assets/icons/goBack.svg';
 import useBackdrop from '../../hooks/common/useBackDrop.tsx';
+import useGetFindPopupList from '../../hooks/findPopUp/useGetFindPopupList.tsx';
 
 export const FIND_ORDER_TYPES = [
   {label: '최근 오픈 순', value: 'OPEN'},
@@ -36,6 +37,8 @@ type FindScreenProps = {
 };
 
 function FindScreen({navigation, route}: FindScreenProps) {
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(5);
   const [availableTags, setAvailableTags] = useState<TFilter[]>(POP_UP_TYPES);
   const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
   const [selectedTab, setSelectedTab] = useState('운영 중');
@@ -46,6 +49,24 @@ function FindScreen({navigation, route}: FindScreenProps) {
     useState(false);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  // const getTabType = (tab: string) => {
+  //   if (tab === '운영중') return 'OPERATING';
+  //   if (tab === '오픈 예정') return 'NOTYET';
+  //   return 'TERMINATED';
+  // };
+
+  // const {
+  //   data: findPopupListData,
+  //   loading: findPopupListLoading,
+  //   error: findPopupListError,
+  // } = useGetFindPopupList(
+  //   page,
+  //   size,
+  //   getTabType,
+  //   selectedOrder,
+  //   availableTags,
+  //   searchKeyword,
+  // );
 
   const handleTabPress = (tab: string) => {
     setSelectedTab(tab);
@@ -187,25 +208,28 @@ function FindScreen({navigation, route}: FindScreenProps) {
               </View>
             );
           }}>
-          <Tab.Screen name="운영 중">
-            {() => (
-              <NotyetTab
-                selectedOrder={selectedOrder}
-                availableTags={availableTags}
-                searchKeyword={searchKeyword}
-              />
-            )}
-          </Tab.Screen>
-          <Tab.Screen name="오픈 예정">
+          {/* <Tab.Screen name="운영 중">
             {() => (
               <OperationTab
+                // data={selectedTab === '운영 중' ? findPopupListData : []}
+                selectedOrder={selectedOrder}
+                availableTags={availableTags}
+                searchKeyword={searchKeyword}
+              />
+            )}
+          </Tab.Screen> */}
+          <Tab.Screen name="오픈 예정">
+            {() => (
+              <NotyetTab
+                // data={selectedTab === '오픈 예정' ? findPopupListData : []}
+
                 selectedOrder={selectedOrder}
                 availableTags={availableTags}
                 searchKeyword={searchKeyword}
               />
             )}
           </Tab.Screen>
-          <Tab.Screen name="운영 종료">
+          {/* <Tab.Screen name="운영 종료">
             {() => (
               <ClosedTab
                 type="close"
@@ -214,7 +238,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
                 searchKeyword={searchKeyword}
               />
             )}
-          </Tab.Screen>
+          </Tab.Screen> */}
         </Tab.Navigator>
       </SafeAreaView>
       <View style={styles.modalContainer}>

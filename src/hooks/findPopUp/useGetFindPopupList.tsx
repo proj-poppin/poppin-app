@@ -12,10 +12,12 @@ type TFilter = {id: number; name: string; selected: boolean};
 const useGetFindPopupList = (
   page: number,
   size: number,
-  selectedTab: string,
+
+  selectedTab: any,
   selectedOrder: string,
   availableTags: TFilter[],
   searchKeyword: string,
+  triggerFetch: boolean,
 ) => {
   const [getListState, setGetListState] = useState<GetClosingState>({
     loading: false,
@@ -46,20 +48,26 @@ const useGetFindPopupList = (
         prepered: selectedCategoryString,
         taste: selectedTypeString,
       };
+      console.log('filter', filterParams);
 
       try {
         const accessToken = await EncryptedStorage.getItem('accessToken');
-        const response = accessToken
-          ? await getFindPopUpList(filterParams)
-          : await getPublicFindPopUpList(filterParams);
+        console.log('accestoken', accessToken);
+        // const response = accessToken
+        //   ? await getFindPopUpList(filterParams)
+        //   : await getPublicFindPopUpList(filterParams);
 
-        // const response = await getFindPopUpList(filterParams);
+        const response = await getPublicFindPopUpList(filterParams);
+        console.log('page', page);
 
         if (response.success) {
           setGetListState(prevState => ({
             loading: false,
             error: null,
-            data: [...prevState.data, ...response.data],
+            data:
+              page !== 0
+                ? [...prevState.data, ...response.data]
+                : response.data,
           }));
         } else {
           setGetListState({
@@ -80,7 +88,7 @@ const useGetFindPopupList = (
       }
     };
     fetcFindPopupList();
-  }, [page, size, selectedOrder, selectedTab, availableTags]);
+  }, [page, size, selectedOrder, selectedTab, availableTags, triggerFetch]);
 
   return getListState;
 };

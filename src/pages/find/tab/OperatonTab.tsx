@@ -1,5 +1,5 @@
 import {ScrollView, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import DividerLine from '../../../components/DividerLine.tsx';
 import FindCard from '../../../components/findPopup/FindCard.tsx';
 import useGetFindPopupList from '../../../hooks/findPopUp/useGetFindPopupList.tsx';
@@ -15,6 +15,7 @@ function OperationTab({
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(5);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [triggerFetch, setTriggerFetch] = useState(false);
 
   const {
     data: findPopupListData,
@@ -23,10 +24,11 @@ function OperationTab({
   } = useGetFindPopupList(
     page,
     size,
-    'NOTYET',
+    'OPERATING',
     selectedOrder,
     availableTags,
     searchKeyword,
+    triggerFetch,
   );
 
   const handleScroll = (event: any) => {
@@ -36,9 +38,13 @@ function OperationTab({
     if (isEndReached && !loadingMore) {
       setLoadingMore(true);
 
-      setPage(page + 1);
+      setPage(prev => prev + 1);
     }
   };
+  useEffect(() => {
+    setPage(0);
+    setTriggerFetch(prev => !prev);
+  }, [selectedOrder, availableTags, searchKeyword]);
 
   return (
     <ScrollView onScroll={handleScroll} style={{marginBottom: 100}}>

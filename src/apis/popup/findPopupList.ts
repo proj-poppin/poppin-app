@@ -27,7 +27,7 @@ const getFindPopUpList = async (
       };
     }
   } catch (error) {
-    console.log('Error fetching pop up detail:', error);
+    console.log('Error fetching popuplist:', error);
     return {
       success: false,
       error: {

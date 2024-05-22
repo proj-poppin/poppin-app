@@ -72,7 +72,9 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    justifyContent: 'space-between',
+    height: '100%',
+    gap: 10,
+    padding: 10,
   },
   title: {
     marginBottom: 2,

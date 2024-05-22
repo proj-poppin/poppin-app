@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
   Pressable,
+  TouchableOpacity,
 } from 'react-native';
 import StarOnSvg from '../../assets/icons/starOn.svg';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
@@ -15,8 +16,10 @@ import DividerLine from '../DividerLine.tsx';
 import Favorite from '../../assets/icons/favorite.svg';
 import {POP_UP_TYPES} from './constants.ts';
 import usePostBookmarkPopup from '../../hooks/findPopUp/usePostBookmarkPopup.tsx';
+import {useNavigation} from '@react-navigation/native';
 
 const FindCard = ({item, type}: any) => {
+  const navigation = useNavigation();
   const formattedTitle =
     item.name.length > 20 ? `${item.name.substring(0, 20)}...` : item.name;
   const calculateRemainingDays = (serverDate: string) => {
@@ -30,7 +33,6 @@ const FindCard = ({item, type}: any) => {
   };
 
   const {addInterest} = usePostBookmarkPopup();
-  // console.log('item?.isInterested ', item?.isInterested);
 
   const remainingDays = calculateRemainingDays(item.closeDate);
 
@@ -39,7 +41,8 @@ const FindCard = ({item, type}: any) => {
   };
 
   return (
-    <>
+    <TouchableOpacity
+      onPress={() => navigation.navigate('PopUpDetail', {id: item.id})}>
       <View style={styles.cardContainer}>
         <View style={styles.svgContainer}>
           <Image src={item.posterUrl} style={{width: 120, height: 120}} />
@@ -111,7 +114,7 @@ const FindCard = ({item, type}: any) => {
         </View>
       </View>
       <DividerLine height={1} />
-    </>
+    </TouchableOpacity>
   );
 };
 

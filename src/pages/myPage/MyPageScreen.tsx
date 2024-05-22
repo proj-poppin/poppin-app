@@ -223,10 +223,10 @@ function MyPageScreen({navigation}) {
             }}
           />
         </View>
-        <View style={styles.middleContainer}>
+        <Pressable style={styles.middleContainer} onPress={onLogoutClick}>
           <Text style={Text13R.text}>로그아웃</Text>
-          <RightSvg style={styles.svgStyle} onPress={onLogoutClick} />
-        </View>
+          <RightSvg style={styles.svgStyle} />
+        </Pressable>
         <View style={styles.modalContainer}>
           <BottomSheetModal
             ref={bottomSheetModalRef}

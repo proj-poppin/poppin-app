@@ -25,8 +25,6 @@ const basicSignUp = async (
       },
     );
 
-    console.log('Sign up response:', response.data);
-
     if (response.data.success) {
       console.log('Sign up successful', response.data);
       return response.data;

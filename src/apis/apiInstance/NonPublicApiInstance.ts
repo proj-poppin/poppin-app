@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
+import {performLogout} from './performLogout.tsx';
 
 const nonPublicApiInstance = axios.create({
   baseURL: Config.API_URL,
@@ -10,7 +10,6 @@ const nonPublicApiInstance = axios.create({
 nonPublicApiInstance.interceptors.request.use(
   async config => {
     const accessToken = await EncryptedStorage.getItem('accessToken');
-
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -27,7 +26,6 @@ nonPublicApiInstance.interceptors.response.use(
   },
   async error => {
     const originalRequest = error.config;
-    // Check for both 401 and 403 status codes
     if (
       (error.response?.status === 401 || error.response?.status === 403) &&
       !originalRequest._retry
@@ -45,19 +43,22 @@ nonPublicApiInstance.interceptors.response.use(
             headers: {Authorization: `Bearer ${originalRefreshToken}`},
           },
         );
-        console.log('🤨🤨🤨🤨🤨🤨🤨🤨🤨');
 
         if (response.data.success) {
           const {accessToken, refreshToken} = response.data.data;
           await EncryptedStorage.setItem('accessToken', accessToken);
           await EncryptedStorage.setItem('refreshToken', refreshToken);
-          console.log('🎨🎨🎨🎨🎨🎨accessToken:', accessToken);
-          console.log('🎨🎨🎨🎨🎨🎨refreshToken:', refreshToken);
-
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return axios(originalRequest);
+        } else {
+          await performLogout();
+          return Promise.reject(error);
         }
-      } catch (refreshError) {}
+      } catch (refreshError) {
+        console.log('please help me help me help me');
+        await performLogout();
+        return Promise.reject(refreshError);
+      }
     }
 
     return Promise.reject(error);

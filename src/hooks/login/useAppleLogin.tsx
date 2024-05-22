@@ -6,6 +6,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../../redux/slices/user.ts';
 import {useAppDispatch} from '../../redux/stores';
 import useSetAccessTokenAndRefreshToken from '../auth/useSetAccessTokenAndRefreshToken.ts';
+import {useNavigation} from '@react-navigation/native';
 
 export const useAppleLogin = () => {
   const dispatch = useAppDispatch();
@@ -13,6 +14,7 @@ export const useAppleLogin = () => {
     newUser: false,
   });
   const setTokens = useSetAccessTokenAndRefreshToken();
+  const navigation = useNavigation();
   const signInWithApple = async () => {
     // Android 기기에서의 사용을 방지
     if (Platform.OS === 'android') {
@@ -45,12 +47,12 @@ export const useAppleLogin = () => {
           if (loginResult.success && loginResult.data?.refreshToken) {
             const {accessToken, refreshToken} = loginResult.data;
             await setTokens({accessToken, refreshToken});
+            dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
+            navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
           } else {
             // 신규 유저라면 닉네입 입력 화면으로 이동
             setAppleLoginStatus({newUser: true});
             const accessToken = loginResult.data!.accessToken;
-            console.log('naya');
-            // TODO 이 부분은 왜 accessToken만 있는지 확인 필요
             await EncryptedStorage.setItem('accessToken', accessToken);
             dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
             dispatch(userSlice.actions.setAccessToken(accessToken));

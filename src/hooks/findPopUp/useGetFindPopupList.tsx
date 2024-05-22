@@ -1,5 +1,7 @@
 import {useState, useEffect} from 'react';
 import getFindPopUpList from '../../apis/popup/findPopupList.ts';
+import getPublicFindPopUpList from '../../apis/popup/public_findPopupList.ts';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 interface GetClosingState {
   loading: boolean;
@@ -10,10 +12,12 @@ type TFilter = {id: number; name: string; selected: boolean};
 const useGetFindPopupList = (
   page: number,
   size: number,
-  selectedTab: string,
+
+  selectedTab: any,
   selectedOrder: string,
   availableTags: TFilter[],
   searchKeyword: string,
+  triggerFetch: boolean,
 ) => {
   const [getListState, setGetListState] = useState<GetClosingState>({
     loading: false,
@@ -24,13 +28,14 @@ const useGetFindPopupList = (
   useEffect(() => {
     const fetcFindPopupList = async () => {
       setGetListState(prevState => ({...prevState, loading: true}));
+
       const selectedCategoryString = availableTags
-        .slice(0, 13)
+        .slice(0, 14)
         .map(item => (item.selected ? '1' : '0'))
         .join('');
 
       const selectedTypeString = availableTags
-        .slice(13, availableTags.length)
+        .slice(14, availableTags.length)
         .map(item => (item.selected ? '1' : '0'))
         .join('');
 
@@ -45,12 +50,20 @@ const useGetFindPopupList = (
       };
 
       try {
-        const response = await getFindPopUpList(filterParams);
+        const accessToken = await EncryptedStorage.getItem('accessToken');
+        console.log('accestoken', accessToken);
+        const response = accessToken
+          ? await getFindPopUpList(filterParams)
+          : await getPublicFindPopUpList(filterParams);
+
         if (response.success) {
           setGetListState(prevState => ({
             loading: false,
             error: null,
-            data: [...prevState.data, ...response.data],
+            data:
+              page !== 0
+                ? [...prevState.data, ...response.data]
+                : response.data,
           }));
         } else {
           setGetListState({
@@ -71,7 +84,7 @@ const useGetFindPopupList = (
       }
     };
     fetcFindPopupList();
-  }, [page, size, selectedOrder, selectedTab, availableTags]);
+  }, [page, size, selectedOrder, selectedTab, availableTags, triggerFetch]);
 
   return getListState;
 };

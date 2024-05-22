@@ -1,9 +1,11 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, Text, Image, StyleSheet, Pressable} from 'react-native';
 import StarOnSvg from '../../../assets/icons/starOn.svg';
 import Text18B from '../../../styles/texts/body_large/Text18B.ts';
 import Text12B from '../../../styles/texts/label/Text12B.ts';
 import globalColors from '../../../styles/color/globalColors.ts';
+import useDeleteInterestPopUp from '../../../hooks/detailPopUp/useDeleteInterestPopUp.tsx';
+import useGetInterestList from '../../../hooks/popUpList/useGetInterestList.tsx';
 
 interface InterestPopUpCardProps {
   image_url: string;
@@ -33,9 +35,16 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
   status,
   id,
 }) => {
+  const {deleteInterest} = useDeleteInterestPopUp();
+  const {refetch} = useGetInterestList();
   const date = `${open_date} ~ ${close_date}`;
   const formattedName = name.length > 15 ? `${name.substring(0, 15)}...` : name;
   const statusText = getStatusText(status);
+
+  const handDeleteInteret = (id: number) => {
+    deleteInterest(id);
+    refetch();
+  };
 
   return (
     <View style={styles.cardContainer}>
@@ -45,7 +54,9 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
           <View style={[styles.statusContainer]}>
             <Text style={styles.statusText}>{statusText}</Text>
           </View>
-          <StarOnSvg style={styles.starIcon} />
+          <Pressable onPress={() => handDeleteInteret(id)}>
+            <StarOnSvg style={styles.starIcon} />
+          </Pressable>
         </View>
         <Text style={[Text18B.text, styles.title]}>{formattedName}</Text>
         <Text style={[Text12B.text, styles.date]}>{date}</Text>
@@ -72,7 +83,9 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    justifyContent: 'space-between',
+    height: '100%',
+    gap: 10,
+    padding: 10,
   },
   title: {
     marginBottom: 2,

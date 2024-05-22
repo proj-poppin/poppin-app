@@ -1,15 +1,27 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Pressable,
+  TouchableOpacity,
+} from 'react-native';
 import StarOnSvg from '../../assets/icons/starOn.svg';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12B from '../../styles/texts/label/Text12B.ts';
 import globalColors from '../../styles/color/globalColors.ts';
 import DividerLine from '../DividerLine.tsx';
+import Favorite from '../../assets/icons/favorite.svg';
 import {POP_UP_TYPES} from './constants.ts';
+import usePostBookmarkPopup from '../../hooks/findPopUp/usePostBookmarkPopup.tsx';
+import {useNavigation} from '@react-navigation/native';
 
 const FindCard = ({item, type}: any) => {
+  const navigation = useNavigation();
   const formattedTitle =
-    item.name.length > 20 ? `${item.title.substring(0, 20)}...` : item.title;
+    item.name.length > 20 ? `${item.name.substring(0, 20)}...` : item.name;
   const calculateRemainingDays = (serverDate: string) => {
     const closeDate = new Date(serverDate);
 
@@ -22,8 +34,14 @@ const FindCard = ({item, type}: any) => {
 
   const remainingDays = calculateRemainingDays(item.closeDate);
 
+  const handleFavoriteClick = (popupId: number) => {
+    const {addInterest} = usePostBookmarkPopup();
+    addInterest(popupId);
+  };
+
   return (
-    <>
+    <TouchableOpacity
+      onPress={() => navigation.navigate('PopUpDetail', {id: item.id})}>
       <View style={styles.cardContainer}>
         <View style={styles.svgContainer}>
           <Image src={item.posterUrl} style={{width: 120, height: 120}} />
@@ -40,7 +58,13 @@ const FindCard = ({item, type}: any) => {
         <View style={styles.textContainer}>
           <View style={styles.statusAndStarContainer}>
             <Text style={[Text18B.text, styles.title]}>{formattedTitle}</Text>
-            <StarOnSvg style={styles.starIcon} />
+            <Pressable onPress={() => handleFavoriteClick(item.id)}>
+              {item?.isInterested && item.isInterested ? (
+                <StarOnSvg style={styles.starIcon} />
+              ) : (
+                <Favorite style={styles.starIcon} />
+              )}
+            </Pressable>
           </View>
           <Text style={styles.location}>{item.address}</Text>
 
@@ -89,7 +113,7 @@ const FindCard = ({item, type}: any) => {
         </View>
       </View>
       <DividerLine height={1} />
-    </>
+    </TouchableOpacity>
   );
 };
 
@@ -99,7 +123,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: 'hidden',
     padding: 10,
-    alignItems: 'flex-start', // SVG와 텍스트 컨테이너를 위쪽으로 정렬
+    alignItems: 'flex-start',
     backgroundColor: globalColors.white,
   },
   svgContainer: {
@@ -169,6 +193,7 @@ const styles = StyleSheet.create({
     width: 'auto',
     height: 28,
     padding: 8,
+    marginLeft: 8,
   },
   tag: {
     fontSize: 11,

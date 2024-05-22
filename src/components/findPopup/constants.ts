@@ -18,7 +18,8 @@ export const POP_UP_TYPES: TFilter[] = [
   {id: 11, name: 'kpop', label: 'K-POP', selected: false},
   {id: 12, name: 'alcchol', label: '주류', selected: false},
   {id: 13, name: 'animalPlant', label: '동물/식물', selected: false},
-  // {name: '14', label: '기타', selected: false},
+  {id: 14, name: 'etc', label: '기타', selected: false},
+
   {id: 15, name: 'market', label: '🛍️마켓형', selected: false},
   {id: 16, name: 'display', label: '🖼️전시형', selected: false},
   {id: 17, name: 'experience', label: '🏃체험형', selected: false},

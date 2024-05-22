@@ -45,13 +45,6 @@ function FindScreen({navigation, route}: FindScreenProps) {
   const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
     useState(false);
 
-  useEffect(() => {
-    if (route.params) {
-      const {searchText} = route.params;
-      setSearchKeyword(searchText);
-    }
-  }, [route]);
-
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const handleTabPress = (tab: string) => {
@@ -66,11 +59,6 @@ function FindScreen({navigation, route}: FindScreenProps) {
     const orderValue = FIND_ORDER_TYPES[value].value;
     setSelectedOrder(orderValue);
   };
-
-  useEffect(() => {
-    const isSelected = selectedTags.some(tag => tag.selected);
-    setIsOneMoreCategorySelected(isSelected);
-  }, [selectedTags]);
 
   // variables
   const snapPoints = useMemo(() => ['77%'], []);
@@ -93,6 +81,21 @@ function FindScreen({navigation, route}: FindScreenProps) {
       prev.map(item => (item.id === tid ? {...item, selected: false} : item)),
     );
   };
+
+  /**
+   * useEffect
+   */
+  useEffect(() => {
+    if (route.params) {
+      const {searchText} = route.params;
+      setSearchKeyword(searchText);
+    }
+  }, [route]);
+
+  useEffect(() => {
+    const isSelected = selectedTags.some(tag => tag.selected);
+    setIsOneMoreCategorySelected(isSelected);
+  }, [selectedTags]);
 
   return (
     <>
@@ -186,7 +189,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
           }}>
           <Tab.Screen name="운영 중">
             {() => (
-              <NotyetTab
+              <OperationTab
                 selectedOrder={selectedOrder}
                 availableTags={availableTags}
                 searchKeyword={searchKeyword}
@@ -195,7 +198,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
           </Tab.Screen>
           <Tab.Screen name="오픈 예정">
             {() => (
-              <OperationTab
+              <NotyetTab
                 selectedOrder={selectedOrder}
                 availableTags={availableTags}
                 searchKeyword={searchKeyword}
@@ -205,6 +208,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
           <Tab.Screen name="운영 종료">
             {() => (
               <ClosedTab
+                type="close"
                 selectedOrder={selectedOrder}
                 availableTags={availableTags}
                 searchKeyword={searchKeyword}
@@ -230,7 +234,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
                   key={item.id}
                   item={item}
                   onClick={handleClick}
-                  selected={item.selected}
+                  // selected={item.selected}
                   tagDeleteClick={tagDeleteClick}
                 />
               ))}
@@ -242,7 +246,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
                   key={item.id}
                   item={item}
                   onClick={handleClick}
-                  selected={item.selected}
+                  // selected={item.selected}
                   tagDeleteClick={tagDeleteClick}
                 />
               ))}
@@ -260,7 +264,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
                     key={tag.id}
                     item={tag}
                     onClick={() => {}}
-                    selected={true}
+                    seletedTag
                     tagDeleteClick={tagDeleteClick}
                   />
                 ) : null,
@@ -438,7 +442,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 60,
     flexDirection: 'row',
-    gap: 10,
+    gap: 15,
     padding: 10,
   },
   buttonsWrapper: {

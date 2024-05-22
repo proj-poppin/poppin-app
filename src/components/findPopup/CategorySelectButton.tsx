@@ -14,17 +14,18 @@ import {TFilter} from './constants.ts';
 interface CategorySelectButtonProps {
   item: TFilter;
   onClick: (item: TFilter) => void;
-  selected: boolean;
+
   tagDeleteClick: (id: number) => void;
+  seletedTag?: any;
 }
 
 const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
   item,
   onClick,
-  selected,
   tagDeleteClick,
+  seletedTag,
 }) => {
-  if (selected) {
+  if (seletedTag) {
     return (
       <Pressable onPress={() => onClick(item)}>
         <LinearGradient
@@ -33,7 +34,7 @@ const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
           end={{x: 1, y: 1}}
           style={styles.gradientBorder}>
           <View style={styles.innerContent}>
-            <Text>{item.name}</Text>
+            <Text>{item.label}</Text>
             <TouchableOpacity onPress={() => tagDeleteClick(item.id)}>
               <CategoryButtonDeleteSvg />
             </TouchableOpacity>
@@ -51,12 +52,12 @@ const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
           end={{x: 1, y: 1}}
           style={styles.gradientBorder}>
           <View style={styles.innerContent}>
-            <Text>{item.name}</Text>
+            <Text>{item.label}</Text>
           </View>
         </LinearGradient>
       ) : (
         <View style={styles.tag}>
-          <Text>{item.name}</Text>
+          <Text>{item.label}</Text>
         </View>
       )}
     </Pressable>

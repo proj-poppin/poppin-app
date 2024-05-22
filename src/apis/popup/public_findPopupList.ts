@@ -1,4 +1,4 @@
-import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
+import PublicApiInstance from '../../apis/apiInstance/PublicApiInstance.ts';
 import {TfindPopupType} from '../../types/FindPopUpData.ts';
 
 export type TFilterparmas = {
@@ -10,13 +10,15 @@ export type TFilterparmas = {
   taste: string;
   size: number;
 };
-const getFindPopUpList = async (
+const getPublicFindPopUpList = async (
   params: any,
 ): Promise<CommonResponse<TfindPopupType>> => {
   try {
-    const response = await nonPublicApiInstance.get('/api/v1/popup/search', {
+    const response = await PublicApiInstance.get('/api/v1/popup/guest/search', {
       params: params,
     });
+
+    console.log('getFindPopupList response:', response.data);
 
     if (response.data.success) {
       return response.data;
@@ -27,7 +29,7 @@ const getFindPopUpList = async (
       };
     }
   } catch (error) {
-    console.log('Error fetching popuplist:', error);
+    console.log('Error fetching pop up detail:', error);
     return {
       success: false,
       error: {
@@ -38,4 +40,4 @@ const getFindPopUpList = async (
   }
 };
 
-export default getFindPopUpList;
+export default getPublicFindPopUpList;

@@ -44,14 +44,15 @@ function LikesScreen({navigation}) {
     }, [dispatch, refetch]),
   );
 
-  console.log(interestList);
-
   const dispatch = useAppDispatch();
 
   const handleDateSelected = (day: any) => {
     setSelectedDate({
       [day.dateString]: {selected: true, marked: true},
     });
+  };
+  const handleRefetch = () => {
+    refetch();
   };
 
   const renderBottomSheetContent = () => (

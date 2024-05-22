@@ -29,10 +29,6 @@ const RootNavigator = () => {
             refreshToken,
           }),
         );
-      } else {
-        setInitialLoading(false);
-        SplashScreen.hide();
-        return;
       }
 
       // 토큰을 사용하여 사용자 정보 조회
@@ -41,13 +37,14 @@ const RootNavigator = () => {
         console.log(userResponse);
         if (userResponse.success) {
           // 사용자 정보 조회 성공, 메인 화면으로
-          console.log('User info fetched successfully.');
           console.log(userResponse.data);
           dispatch(userSlice.actions.getUser(userResponse.data));
         } else {
+          dispatch(userSlice.actions.resetUser());
           throw new Error('User info fetch failed.');
         }
       } catch (error) {
+        dispatch(userSlice.actions.resetUser());
         console.log('Error fetching user info:', error);
       } finally {
         setInitialLoading(false);

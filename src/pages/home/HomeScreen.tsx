@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,10 +15,8 @@ import DownSvg from '../../assets/icons/down.svg';
 import RightSvg from '../../assets/icons/smallright.svg';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
-import useGetUser from '../../hooks/auth/useGetUser.tsx';
 import useGetHotList from '../../hooks/popUpList/useGetHotList.tsx';
 import useGetNewList from '../../hooks/popUpList/useGetNewList.tsx';
-import useGetDetailPopUp from '../../hooks/detailPopUp/useGetDetailPopUp.tsx';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import RowPopUpCard from '../../components/molecules/card/RowPopUpCard.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
@@ -30,16 +29,6 @@ import HomeLoginHeader from '../../components/HomeLoginHeader.tsx';
 function HomeScreen({navigation}) {
   const [showNotice, setShowNotice] = useState(false);
 
-  const toggleNotice = () => {
-    setShowNotice(!showNotice);
-  };
-
-  const handleHideNotice = () => {
-    if (showNotice) {
-      setShowNotice(false);
-    }
-  };
-
   const {
     data: hotList,
     loading: hotListLoading,
@@ -51,12 +40,6 @@ function HomeScreen({navigation}) {
     loading: newListLoading,
     error: newListError,
   } = useGetNewList();
-
-  const {
-    data: detailPopUpData,
-    loading: newDetailPopUpLoading,
-    error: newDetailPopUpError,
-  } = useGetDetailPopUp(34);
 
   const {
     data: closingList,
@@ -74,12 +57,7 @@ function HomeScreen({navigation}) {
     navigation.navigate('Find');
   };
 
-  // 드롭다운 아이콘을 렌더링하는 로직
-  const renderDropdownIcon = () => {
-    return isDropdownOpen ? <UpSvg /> : <DownSvg />;
-  };
-
-  if (hotListLoading || newListLoading || newDetailPopUpLoading) {
+  if (hotListLoading || newListLoading) {
     return <ActivityIndicator />;
   }
 
@@ -93,9 +71,9 @@ function HomeScreen({navigation}) {
             <View style={styles.textAndQuestionContainer}>
               <Text style={Text18B.text}>인기 TOP 5</Text>
               <View style={styles.questionContainer}>
-                <TouchableOpacity onPress={() => setShowNotice(prev => !prev)}>
+                <Pressable onPress={() => setShowNotice(prev => !prev)}>
                   <QuestionSvg style={{paddingLeft: 40}} />
-                </TouchableOpacity>
+                </Pressable>
                 {showNotice && (
                   <View style={styles.noticeAbsoluteContainer}>
                     <HotListNoticeSvg />

@@ -3,7 +3,6 @@ import React, {useEffect, useState} from 'react';
 import DividerLine from '../../../components/DividerLine.tsx';
 import FindCard from '../../../components/findPopup/FindCard.tsx';
 import useGetFindPopupList from '../../../hooks/findPopUp/useGetFindPopupList.tsx';
-
 import NotList from '../../../components/findPopup/NotList.tsx';
 
 function OperationTab({
@@ -37,23 +36,31 @@ function OperationTab({
       layoutMeasurement.height + contentOffset.y >= contentSize.height;
     if (isEndReached && !loadingMore) {
       setLoadingMore(true);
-
       setPage(prev => prev + 1);
     }
   };
 
   useEffect(() => {
     setPage(0);
-    setTriggerFetch(prev => !prev);
+    setTriggerFetch(true);
   }, [selectedOrder, availableTags, searchKeyword]);
 
+  useEffect(() => {
+    if (triggerFetch) {
+      setTriggerFetch(false);
+    }
+  }, [triggerFetch]);
+
   return (
-    <ScrollView onScroll={handleScroll} style={{marginBottom: 100}}>
+    <ScrollView
+      scrollEventThrottle={16}
+      onScroll={handleScroll}
+      style={{marginBottom: 100}}>
       <DividerLine height={1} />
       {findPopupListData && findPopupListData.length > 0 ? (
-        findPopupListData.map((item: any) => {
-          return <FindCard type={type} key={item.id} item={item} />;
-        })
+        findPopupListData.map((item: any) => (
+          <FindCard type={type} key={item.id} item={item} />
+        ))
       ) : (
         <NotList />
       )}

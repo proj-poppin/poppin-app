@@ -50,7 +50,6 @@ function FindInputScreen({navigation}: any) {
     const fetchKeywords = async () => {
       try {
         const storedKeywords = await AsyncStorage.getItem('@keywords');
-        console.log('ssss', storedKeywords);
 
         if (storedKeywords !== null) {
           setKeywordRecord(JSON.parse(storedKeywords));

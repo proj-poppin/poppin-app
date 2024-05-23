@@ -1,5 +1,5 @@
 import {ScrollView} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import DividerLine from '../../../components/DividerLine.tsx';
 import FindCard from '../../../components/findPopup/FindCard.tsx';
 import useGetFindPopupList from '../../../hooks/findPopUp/useGetFindPopupList.tsx';
@@ -9,6 +9,7 @@ function ClosedTab({type, selectedOrder, availableTags, searchKeyword}: any) {
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(5);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [triggerFetch, setTriggerFetch] = useState(false);
 
   const {
     data: findPopupListData,
@@ -21,6 +22,7 @@ function ClosedTab({type, selectedOrder, availableTags, searchKeyword}: any) {
     selectedOrder,
     availableTags,
     searchKeyword,
+    triggerFetch,
   );
 
   const handleScroll = (event: any) => {
@@ -33,6 +35,17 @@ function ClosedTab({type, selectedOrder, availableTags, searchKeyword}: any) {
       setPage(page + 1);
     }
   };
+
+  useEffect(() => {
+    setPage(0);
+    setTriggerFetch(true);
+  }, [selectedOrder, availableTags, searchKeyword]);
+
+  useEffect(() => {
+    if (triggerFetch) {
+      setTriggerFetch(false);
+    }
+  }, [triggerFetch]);
   return (
     <ScrollView onScroll={handleScroll} style={{marginBottom: 100}}>
       <DividerLine height={1} />

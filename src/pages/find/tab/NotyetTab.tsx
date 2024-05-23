@@ -38,8 +38,14 @@ function NotyetTab({type, selectedOrder, availableTags, searchKeyword}: any) {
   };
   useEffect(() => {
     setPage(0);
-    setTriggerFetch(prev => !prev);
+    setTriggerFetch(true);
   }, [selectedOrder, availableTags, searchKeyword]);
+
+  useEffect(() => {
+    if (triggerFetch) {
+      setTriggerFetch(false);
+    }
+  }, [triggerFetch]);
 
   return (
     <ScrollView onScroll={handleScroll} style={{marginBottom: 100}}>

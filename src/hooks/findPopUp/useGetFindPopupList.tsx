@@ -9,10 +9,10 @@ interface GetClosingState {
   data: any | null;
 }
 type TFilter = {id: number; name: string; selected: boolean};
+
 const useGetFindPopupList = (
   page: number,
   size: number,
-
   selectedTab: any,
   selectedOrder: string,
   availableTags: TFilter[],
@@ -51,7 +51,6 @@ const useGetFindPopupList = (
 
       try {
         const accessToken = await EncryptedStorage.getItem('accessToken');
-        console.log('accestoken', accessToken);
         const response = accessToken
           ? await getFindPopUpList(filterParams)
           : await getPublicFindPopUpList(filterParams);
@@ -60,10 +59,9 @@ const useGetFindPopupList = (
           setGetListState(prevState => ({
             loading: false,
             error: null,
-            data:
-              page !== 0
-                ? [...prevState.data, ...response.data]
-                : response.data,
+            data: triggerFetch
+              ? response.data
+              : [...prevState.data, ...response.data],
           }));
         } else {
           setGetListState({
@@ -83,8 +81,19 @@ const useGetFindPopupList = (
         });
       }
     };
-    fetcFindPopupList();
-  }, [page, size, selectedOrder, selectedTab, availableTags, triggerFetch]);
+
+    if (triggerFetch || page > 0) {
+      fetcFindPopupList();
+    }
+  }, [
+    page,
+    size,
+    selectedOrder,
+    selectedTab,
+    availableTags,
+    searchKeyword,
+    triggerFetch,
+  ]);
 
   return getListState;
 };

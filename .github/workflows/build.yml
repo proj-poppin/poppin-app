@@ -19,11 +19,6 @@ jobs:
           node-version: '20.9.0'
           check-latest: true
 
-      - name: Boot iOS Simulator
-        run: |
-          sudo xcrun simctl boot "iPhone 14 Pro"
-          sleep 30
-
       - name: Install dependencies
         run: npm install
 
@@ -101,12 +96,16 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PROVISIONING_PROFILE_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
-      - name: Build iOS IPA
+      - name: Archive app
         run: |
           cd ios
           export NODE_BINARY=$(which node)
-          set -o pipefail && xcodebuild -workspace PoppinProject.xcworkspace -scheme PoppinProject -sdk iphoneos -configuration Release archive -archivePath $PWD/build/PoppinProject.xcarchive | xcpretty
-          set -o pipefail && xcodebuild -exportArchive -archivePath $PWD/build/PoppinProject.xcarchive -exportOptionsPlist $PWD/PoppinProject/ExportOptions.plist -exportPath $PWD/build/PoppinProject | xcpretty
+          set -o pipefail && xcodebuild clean archive -workspace PoppinProject.xcworkspace -scheme PoppinProject -configuration Release -archivePath $PWD/build/PoppinProject.xcarchive | xcpretty
+
+      - name: Export app
+        run: |
+          cd ios
+          set -o pipefail && xcodebuild -exportArchive -archivePath $PWD/build/PoppinProject.xcarchive -exportOptionsPlist $PWD/PoppinProject/ExportOptions.plist -exportPath $PWD/build/PoppinProject -allowProvisioningUpdates | xcpretty
 
       - name: Rename and Move IPA file
         run: |

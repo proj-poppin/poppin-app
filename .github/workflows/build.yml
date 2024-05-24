@@ -99,8 +99,8 @@ jobs:
         run: |
           cd ios
           export NODE_BINARY=$(which node)
-          xcodebuild -workspace PoppinProject.xcworkspace -scheme PoppinProject -sdk iphoneos -configuration Release archive -archivePath $PWD/build/PoppinProject.xcarchive
-          xcodebuild -exportArchive -archivePath $PWD/build/PoppinProject.xcarchive -exportOptionsPlist $PWD/PoppinProject/ExportOptions.plist -exportPath $PWD/build/PoppinProject
+          xcodebuild -workspace PoppinProject.xcworkspace -scheme PoppinProject -sdk iphoneos -configuration Release archive -archivePath $PWD/build/PoppinProject.xcarchive -quiet
+          xcodebuild -exportArchive -archivePath $PWD/build/PoppinProject.xcarchive -exportOptionsPlist $PWD/PoppinProject/ExportOptions.plist -exportPath $PWD/build/PoppinProject -quiet
 
       - name: Rename and Move IPA file
         run: |
@@ -119,5 +119,14 @@ jobs:
       - name: Upload IPA to TestFlight
         env:
           API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          API_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          API_ISSUER: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
         run: xcrun altool --upload-app --type ios -f "${GITHUB_WORKSPACE}/build/ios/ipa/MyApp.ipa" --apiKey $API_KEY --apiIssuer $API_ISSUER
+
+      - name: Upload Build Logs
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-logs
+          path: |
+            /Users/runner/Library/Logs
+            ${{ runner.temp }}/build_logs

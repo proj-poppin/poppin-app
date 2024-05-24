@@ -75,18 +75,19 @@ jobs:
 
       - name: Build and Archive app 📁
         env:
-          XC_WORKSPACE: "ios/PoppinProject.xcworkspace"
+          XC_WORKSPACE: "${{ github.workspace }}/ios/PoppinProject.xcworkspace"
           XC_SCHEME: "PoppinProject"
-          XC_ARCHIVE: "$PWD/ios/build/PoppinProject.xcarchive"
+          XC_ARCHIVE: "${{ github.workspace }}/ios/build/PoppinProject.xcarchive"
         run: |
-          cd ios && pod install --repo-update --clean-install && cd ..
+          cd ios
+          pod install --repo-update --clean-install
           xcodebuild clean archive -workspace $XC_WORKSPACE -scheme $XC_SCHEME -configuration Release -archivePath $XC_ARCHIVE | xcpretty
 
       - name: Export app
         env:
-          XC_ARCHIVE: "$PWD/ios/build/PoppinProject.xcarchive"
+          XC_ARCHIVE: "${{ github.workspace }}/ios/build/PoppinProject.xcarchive"
         run: |
-          xcodebuild -exportArchive -archivePath $XC_ARCHIVE -exportOptionsPlist ios/PoppinProject/ExportOptions.plist -exportPath ios/build/PoppinProject -allowProvisioningUpdates | xcpretty
+          xcodebuild -exportArchive -archivePath $XC_ARCHIVE -exportOptionsPlist ${{ github.workspace }}/ios/PoppinProject/ExportOptions.plist -exportPath ${{ github.workspace }}/ios/build/PoppinProject -allowProvisioningUpdates | xcpretty
 
       - name: Install private API key P8 🔑
         env:
@@ -100,7 +101,7 @@ jobs:
       - name: Upload IPA to TestFlight 🆙
         uses: apple-actions/upload-testflight-build@v1
         with:
-          app-path: ios/build/PoppinProject/*.ipa
+          app-path: ${{ github.workspace }}/ios/build/PoppinProject/*.ipa
           issuer-id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           api-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           api-private-key: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}

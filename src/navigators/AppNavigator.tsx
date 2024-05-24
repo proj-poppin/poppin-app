@@ -138,7 +138,6 @@ function AppNavigator() {
         component={SignUpNickNameScreen}
         options={SignUpNickNameOptions}
       />
-
       <Stack.Screen
         name="SignUpSucceed"
         component={SignUpSucceedScreen}

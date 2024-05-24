@@ -48,6 +48,9 @@ import Geolocation from 'react-native-geolocation-service';
 import useAddRecommendReview from '../../hooks/detailPopUp/useAddRecommendReview.tsx';
 import {useNavigation} from '@react-navigation/native';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
+import useAddVisitor from '../../hooks/detailPopUp/useAddVisitor.ts';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 
 async function requestPermissions() {
   if (Platform.OS === 'ios') {
@@ -100,15 +103,21 @@ async function requestPermissions() {
   return false;
 }
 
+export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
+  AppNavigatorParamList,
+  'PopUpDetail'
+>;
+
 const PopUpDetailScreen = ({route}) => {
   const isLoggedIn = useIsLoggedIn();
-  const navigation = useNavigation();
+  const navigation = useNavigation<PopUpDetailScreenNavigationProp>();
+  const [fetchTrigger, setFetchTrigger] = useState(false);
   const {id} = route.params;
   const {
     data: detailPopUpData,
     loading,
     error,
-  } = useGetDetailPopUp(id, !isLoggedIn);
+  } = useGetDetailPopUp(id, !isLoggedIn, fetchTrigger);
   const firstImageUrl =
     detailPopUpData?.images?.[0] ??
     'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/4/1.jpg';
@@ -118,12 +127,15 @@ const PopUpDetailScreen = ({route}) => {
   const {addRecommendCount} = useAddRecommendReview();
   const {addInterest} = useAddInterestPopUp();
   const {deleteInterest} = useDeleteInterestPopUp();
+  const {addVisitorPopUp} = useAddVisitor();
 
   const [isOnlyVerifiedReview, setIsOnlyVerifiedReview] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
+
+  const [showFullText, setShowFullText] = useState(false);
 
   useEffect(() => {
     if (detailPopUpData) {
@@ -138,6 +150,11 @@ const PopUpDetailScreen = ({route}) => {
   };
 
   const handleVisitPress = async () => {
+    if (!isLoggedIn) {
+      navigation.navigate('Entry');
+      return;
+    }
+
     const hasPermission = await requestPermissions();
     if (hasPermission) {
       Geolocation.getCurrentPosition(
@@ -148,17 +165,35 @@ const PopUpDetailScreen = ({route}) => {
           console.log('Current Location:', latitude, longitude);
           console.log('사용자 허용상태: ', hasPermission);
           Alert.alert(
-            'Current Location',
-            `Latitude: ${latitude}, Longitude: ${longitude}`,
+            '사용자 현재 위치',
+            `위도: ${latitude}, 경도: ${longitude}`,
           );
         },
         error => {
           console.log(error.code, error.message);
-          Alert.alert('Error', 'Failed to get your location');
         },
         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
       );
     }
+    if (hasPermission) {
+      const response = await addVisitorPopUp(detailPopUpData!.id!);
+      if (response.success) {
+        setToastMessage('방문 인증 되었습니다.');
+        setFetchTrigger(!fetchTrigger);
+      } else {
+        setToastMessage(response.error?.message || '방문 인증에 실패했습니다.');
+      }
+      setIsShowToast(true);
+    }
+  };
+
+  const handleCompletePress = () => {
+    if (!isLoggedIn) {
+      navigation.navigate('Entry');
+      return;
+    }
+
+    setModalVisible(true);
   };
 
   const handleToggleInterest = async () => {
@@ -241,10 +276,18 @@ const PopUpDetailScreen = ({route}) => {
         <Image source={{uri: firstImageUrl}} style={styles.posterImage} />
         <View style={styles.detailContainer}>
           <Text style={styles.title}>{detailPopUpData.name}</Text>
-          <Text style={styles.introduce} numberOfLines={2} ellipsizeMode="tail">
+          <Text
+            style={styles.introduce}
+            numberOfLines={showFullText ? 0 : 2}
+            ellipsizeMode="tail">
             {detailPopUpData.introduce}
           </Text>
-          <Text style={styles.link}>더보기</Text>
+          {detailPopUpData.introduce.length > 100 && (
+            <UnderlinedTextButton
+              label={showFullText ? '접기' : '더보기'}
+              onClicked={() => setShowFullText(!showFullText)}
+            />
+          )}
           <View style={styles.iconContainer}>
             <Pressable
               onPress={() => handleOpenLink(detailPopUpData.homepageLink)}>
@@ -355,10 +398,19 @@ const PopUpDetailScreen = ({route}) => {
             <Text style={[Text20B.text, {color: globalColors.purple}]}>
               방문 후기
             </Text>
-            <SvgWithNameBoxLabel
-              Icon={WriteReviewSvg}
-              label="방문후기 작성하기"
-            />
+            <Pressable
+              onPress={() => {
+                if (!isLoggedIn) {
+                  navigation.navigate('Entry');
+                  return;
+                }
+                navigation.navigate('ReviewWrite');
+              }}>
+              <SvgWithNameBoxLabel
+                Icon={WriteReviewSvg}
+                label="방문후기 작성하기"
+              />
+            </Pressable>
           </View>
           <View style={styles.rowBetweenContainer}>
             <View style={styles.recentReviewHeader}>
@@ -393,7 +445,7 @@ const PopUpDetailScreen = ({route}) => {
                 <UnderlinedTextButton
                   label={'신고하기'}
                   onClicked={() => {
-                    navigation.navigate('Report');
+                    navigation.navigate('report');
                   }}
                 />
               </View>
@@ -430,8 +482,15 @@ const PopUpDetailScreen = ({route}) => {
         <View style={{width: 20}} />
         <VisitButton
           onPress={handleVisitPress}
+          onCompletePress={handleCompletePress}
           isInstagram={false}
-          title={detailPopUpData.isVisited ? '방문하기' : '방문완료'}
+          title={
+            !isLoggedIn
+              ? '방문하기'
+              : !detailPopUpData.isVisited
+              ? '방문하기'
+              : '방문완료'
+          }
         />
       </View>
       <CustomModal
@@ -489,7 +548,7 @@ const styles = StyleSheet.create({
   },
   posterImage: {
     width: '100%',
-    height: 300, // Adjust height as needed
+    height: 400, // Adjust height as needed
   },
   detailContainer: {},
   title: {

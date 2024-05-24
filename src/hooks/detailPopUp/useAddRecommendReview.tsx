@@ -23,7 +23,6 @@ const useAddRecommendReview = () => {
   ): Promise<AddRecommendReviewResponse> => {
     setAddInterestState({loading: true, error: null, success: null});
     try {
-      console.log('test addRecommendReview');
       const response: AddRecommendReviewResponse = await addRecommendReview(
         popUpId,
         reviewId,

@@ -12,6 +12,7 @@ interface DetailPopUpState {
 function useGetDetailPopUp(
   popUpId: number,
   isPublic: boolean,
+  fetchTrigger: boolean, // Add fetchTrigger as a parameter
 ): DetailPopUpState {
   const [getDetailPopUpState, setGetDetailPopUpState] =
     useState<DetailPopUpState>({
@@ -56,7 +57,7 @@ function useGetDetailPopUp(
     };
 
     fetchDetailPopUp();
-  }, [popUpId, isPublic]);
+  }, [popUpId, isPublic, fetchTrigger]); // Add fetchTrigger as a dependency
 
   return getDetailPopUpState;
 }

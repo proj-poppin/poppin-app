@@ -2,14 +2,10 @@ import Config from 'react-native-config';
 import axios from 'axios';
 
 // 회원가입을 시도하는 함수
-const resetPassword = async (password: string, passwordConfirm: string) => {
+const randomNickName = async () => {
   try {
-    const response = await axios.put(
-      `${Config.API_URL}/api/v1/auth/reset-password`,
-      {
-        password,
-        passwordConfirm,
-      },
+    const response = await axios.get(
+      `${Config.API_URL}/api/v1/user/random-nickname`,
     );
     if (response.data.success) {
       console.log('Sign up successful', response.data);
@@ -21,7 +17,7 @@ const resetPassword = async (password: string, passwordConfirm: string) => {
       };
     }
   } catch (error) {
-    console.log('Email verification error:', error);
+    console.log('random nickname error:', error);
     return {
       success: false,
       error: {code: 'Network', message: 'Network error'},
@@ -29,4 +25,4 @@ const resetPassword = async (password: string, passwordConfirm: string) => {
   }
 };
 
-export default resetPassword;
+export default randomNickName;

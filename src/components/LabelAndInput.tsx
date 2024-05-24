@@ -10,16 +10,16 @@ import {
 import globalColors from '../styles/color/globalColors.ts';
 import Text20B from '../styles/texts/title/Text20B.ts';
 
-// Props 타입 정의
 interface LabelAndInputProps extends TextInputProps {
   onChangeText: (text: string) => void;
   placeholder: string;
   errorText?: string;
   labelText: string;
   isPassword?: boolean;
-  isPasswordSetting?: boolean; // 비밀번호 설정 모드 여부
-  isPasswordSameSetting?: boolean; // 비밀번호 일치 여부
-  isPasswordSame?: boolean; // 비밀번호 일치 여부
+  isPasswordSetting?: boolean;
+  isPasswordSameSetting?: boolean;
+  isPasswordSame?: boolean;
+  value: string; // Add value prop here
 }
 
 const LabelAndInput: React.FC<LabelAndInputProps> = ({
@@ -29,21 +29,19 @@ const LabelAndInput: React.FC<LabelAndInputProps> = ({
   errorText,
   labelText,
   isPassword = false,
-  isPasswordSetting = false, // 기본값은 false
-  isPasswordSameSetting = false, // 기본값은 false
-  isPasswordSame = false, // 기본값은 false
+  isPasswordSetting = false,
+  isPasswordSameSetting = false,
+  isPasswordSame = false,
+  value, // Use value prop here
 }) => {
   const [secureTextEntry] = useState(isPassword);
-  // 비밀번호 유효성 검사 상태
   const [isValidLength, setIsValidLength] = useState(false);
   const [containsNumAndLetter, setContainsNumAndLetter] = useState(false);
   const [containsSpecialChar, setContainsSpecialChar] = useState(false);
 
-  // 변경된 비밀번호 유효성 검사 로직
   const handlePasswordValidation = (text: string) => {
     if (isPasswordSetting) {
       const isValidLength = text.length >= 8;
-      // 영문자와 숫자가 각각 최소 1개 이상 포함되어 있는지 검사하는 정규식
       const containsNumAndLetter = /(?=.*[A-Za-z])(?=.*\d)/.test(text);
       const containsSpecialChar = /(?=.*[@$!%*#?&])/.test(text);
 
@@ -71,7 +69,8 @@ const LabelAndInput: React.FC<LabelAndInputProps> = ({
         placeholderTextColor={globalColors.font}
         keyboardType={keyboardType}
         secureTextEntry={secureTextEntry}
-        returnKeyType={isPassword ? 'done' : 'next'} // Use "done" for password fields
+        returnKeyType={isPassword ? 'done' : 'next'}
+        value={value} // Use the value prop here
       />
       {isPasswordSetting && (
         <View style={styles.validationContainer}>

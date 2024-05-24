@@ -2,22 +2,22 @@ import React from 'react';
 import {Pressable} from 'react-native';
 import BackSvg from '../../assets/icons/goBack.svg';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 
 type SignUpNickNameScreenNavigationProp = NativeStackNavigationProp<
-  AuthNavigatorParamList,
+  AppNavigatorParamList,
   'SignUpNickName'
 >;
 
-// Props 타입 정의
-// HeaderOptions 컴포넌트
 const SignUpNickNameOptions = ({
   navigation,
 }: {
   navigation: SignUpNickNameScreenNavigationProp;
 }) => ({
   headerLeft: () => (
-    <Pressable onPress={() => navigation.goBack()} style={{padding: 10}}>
+    <Pressable
+      onPress={() => navigation.replace('Entry')}
+      style={{padding: 10}}>
       <BackSvg />
     </Pressable>
   ),

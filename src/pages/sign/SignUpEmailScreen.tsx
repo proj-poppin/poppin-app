@@ -1,5 +1,4 @@
-// SignInEmailScreen.js
-import React from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet, Alert} from 'react-native';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
@@ -35,13 +34,15 @@ function SignUpEmailScreen({navigation}: SignUpEmailScreenProps) {
     isPasswordSame,
   } = useSignUpEmail();
 
-  const disPatch = useDispatch();
-  const {verifyEmail} = useEmailVerification(email); // 수정된 부분
+  const dispatch = useDispatch();
+  const {verifyEmail} = useEmailVerification(email);
+  const [loading, setLoading] = useState(false);
+
   const handlePress = () => {
+    setLoading(true);
     verifyEmail()
       .then(receivedAuthCode => {
-        // verifyEmail 함수에서 Promise.resolve로 authCode를 반환!
-        disPatch(
+        dispatch(
           userSlice.actions.setSignUpEmailScreen({
             email: email,
             password: password,
@@ -52,17 +53,19 @@ function SignUpEmailScreen({navigation}: SignUpEmailScreenProps) {
         );
 
         console.log('email', email);
-        console.log('authCode', receivedAuthCode); // 여기에서 receivedAuthCode를 사용
+        console.log('authCode', receivedAuthCode);
         navigation.navigate('SignUpAuthCode', {
           fromScreen: 'SignUpEmail',
-          authCode: receivedAuthCode, // 직접 전달
+          authCode: receivedAuthCode,
         });
       })
       .catch(error => {
-        // 에러 처리
         const message =
           error.message || '이메일 인증 중 알 수 없는 오류가 발생했습니다.';
         Alert.alert('Error', message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -101,10 +104,10 @@ function SignUpEmailScreen({navigation}: SignUpEmailScreenProps) {
           isPasswordSetting={true}
         />
         <CompleteButton
-          title="다음"
+          title={loading ? '인증번호 발송중...' : '다음'}
           onPress={handlePress}
-          loading={false}
-          disabled={!canGoNext}
+          loading={loading}
+          disabled={!canGoNext || loading}
           alwaysActive={false}
         />
         <TermsAndPrivacyPolicyAgreement

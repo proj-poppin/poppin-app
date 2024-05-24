@@ -88,9 +88,14 @@ jobs:
           NEW_BUNDLE_VERSION=$(date +%Y%m%d%H%M)
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUNDLE_VERSION" "$PLIST_PATH"
 
+      - name: Fix Node.js path issues
+        run: |
+          sudo ln -s "$(which node)" /usr/local/bin/node
+          sudo ln -s "$(which npm)" /usr/local/bin/npm
+
       - name: Build iOS app
         env:
-          NODE_BINARY: /usr/local/bin/node
+          NODE_BINARY: $(which node)
         run: |
           cd ios
           export NODE_BINARY=$(which node)
@@ -114,5 +119,5 @@ jobs:
       - name: Upload IPA to TestFlight
         env:
           API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          API_ISSUER: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
+          API_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: xcrun altool --upload-app --type ios -f "${GITHUB_WORKSPACE}/build/ios/ipa/MyApp.ipa" --apiKey $API_KEY --apiIssuer $API_ISSUER

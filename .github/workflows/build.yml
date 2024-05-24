@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.9.0'
+          check-latest: true
 
       - name: Install dependencies
         run: npm install
@@ -88,6 +89,8 @@ jobs:
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUNDLE_VERSION" "$PLIST_PATH"
 
       - name: Build iOS app
+        env:
+          NODE_BINARY: /usr/local/bin/node
         run: |
           cd ios
           xcodebuild -workspace PoppinProject.xcworkspace -scheme PoppinProject -sdk iphoneos -configuration Release archive -archivePath $PWD/build/PoppinProject.xcarchive

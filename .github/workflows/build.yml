@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -47,20 +47,6 @@ jobs:
         run: |
           echo "${{ secrets.XCODE_ENV_LOCAL_KEY }}" > ios/.xcode.env.local
 
-      - name: Create tmp.xcconfig file
-        run: |
-          echo "KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}" >> ios/tmp.xcconfig
-          echo "KAKAO_API_KEY_WITH_KAKAO=${{ secrets.KAKAO_API_KEY_WITH_KAKAO }}" >> ios/tmp.xcconfig
-          echo "NAVER_CONSUMER_KEY=${{ secrets.NAVER_CONSUMER_KEY }}" >> ios/tmp.xcconfig
-          echo "NAVER_SECRECT_KEY=${{ secrets.NAVER_SECRECT_KEY }}" >> ios/tmp.xcconfig
-          echo "NAVER_URL=${{ secrets.NAVER_URL }}" >> ios/tmp.xcconfig
-          echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> ios/tmp.xcconfig
-          echo "API_URL=${{ secrets.API_URL }}" >> ios/tmp.xcconfig
-          echo "GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}" >> ios/tmp.xcconfig
-          echo "GOOGLE_WEB_CLIENT_SECRET=${{ secrets.GOOGLE_WEB_CLIENT_SECRET }}" >> ios/tmp.xcconfig
-          echo "REDIRECT_URI=${{ secrets.REDIRECT_URI }}" >> ios/tmp.xcconfig
-          echo "NAVER_MAP_CLIENT_ID=${{ secrets.NAVER_MAP_CLIENT_ID }}" >> ios/tmp.xcconfig
-
       - name: Decode iOS secrets
         env:
           P12_DISTRIBUTION_CERTIFICATE_BASE64: ${{ secrets.IOS_P12_DISTRIBUTION_CERTIFICATE_BASE64 }}
@@ -76,6 +62,8 @@ jobs:
           APNS_KEY_PATH=$RUNNER_TEMP/apns_key.p12
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
           EXPORT_OPTIONS_PATH="${{ github.workspace }}/ios/Runner/ExportOptions.plist"
+          
+          mkdir -p $(dirname "$EXPORT_OPTIONS_PATH")
           
           echo -n "$P12_DISTRIBUTION_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
           echo -n "$DISTRIBUTION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $PROVISIONING_PROFILE_PATH

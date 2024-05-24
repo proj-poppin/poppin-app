@@ -19,11 +19,31 @@ jobs:
           node-version: '20.9.0'
           check-latest: true
 
+      - name: Boot iOS Simulator
+        run: |
+          sudo xcrun simctl boot "iPhone 14 Pro"
+          sleep 30
+
       - name: Install dependencies
         run: npm install
 
       - name: Install CocoaPods
         run: sudo gem install cocoapods -v 1.15.2
+
+      - name: Install xcpretty
+        run: sudo gem install xcpretty
+
+      - name: Clean Derived Data
+        run: |
+          rm -rf ~/Library/Developer/Xcode/DerivedData/*
+
+      - name: Remove .xcworkspace
+        run: |
+          rm -rf ios/*.xcworkspace
+
+      - name: Remove Podfile.lock
+        run: |
+          rm ios/Podfile.lock
 
       - name: Install CocoaPods dependencies
         run: |
@@ -81,26 +101,12 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PROVISIONING_PROFILE_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
-      - name: Set Bundle Version
-        run: |
-          cd ios
-          PLIST_PATH="./PoppinProject/Info.plist"
-          NEW_BUNDLE_VERSION=$(date +%Y%m%d%H%M)
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUNDLE_VERSION" "$PLIST_PATH"
-
-      - name: Fix Node.js path issues
-        run: |
-          sudo ln -s "$(which node)" /usr/local/bin/node
-          sudo ln -s "$(which npm)" /usr/local/bin/npm
-
-      - name: Build iOS app
-        env:
-          NODE_BINARY: $(which node)
+      - name: Build iOS IPA
         run: |
           cd ios
           export NODE_BINARY=$(which node)
-          xcodebuild -workspace PoppinProject.xcworkspace -scheme PoppinProject -sdk iphoneos -configuration Release archive -archivePath $PWD/build/PoppinProject.xcarchive -quiet
-          xcodebuild -exportArchive -archivePath $PWD/build/PoppinProject.xcarchive -exportOptionsPlist $PWD/PoppinProject/ExportOptions.plist -exportPath $PWD/build/PoppinProject -quiet
+          set -o pipefail && xcodebuild -workspace PoppinProject.xcworkspace -scheme PoppinProject -sdk iphoneos -configuration Release archive -archivePath $PWD/build/PoppinProject.xcarchive | xcpretty
+          set -o pipefail && xcodebuild -exportArchive -archivePath $PWD/build/PoppinProject.xcarchive -exportOptionsPlist $PWD/PoppinProject/ExportOptions.plist -exportPath $PWD/build/PoppinProject | xcpretty
 
       - name: Rename and Move IPA file
         run: |

@@ -82,20 +82,20 @@ jobs:
 
       - name: Set Bundle Version
         run: |
-          cd ios/PoppinProject
-          PLIST_PATH="./Info.plist"
+          cd ios
+          PLIST_PATH="./PoppinProject/Info.plist"
           NEW_BUNDLE_VERSION=$(date +%Y%m%d%H%M)
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUNDLE_VERSION" "$PLIST_PATH"
 
       - name: Build iOS app
         run: |
-          cd ios/PoppinProject
+          cd ios
           xcodebuild -workspace PoppinProject.xcworkspace -scheme PoppinProject -sdk iphoneos -configuration Release archive -archivePath $PWD/build/PoppinProject.xcarchive
-          xcodebuild -exportArchive -archivePath $PWD/build/PoppinProject.xcarchive -exportOptionsPlist $PWD/ExportOptions.plist -exportPath $PWD/build/PoppinProject
+          xcodebuild -exportArchive -archivePath $PWD/build/PoppinProject.xcarchive -exportOptionsPlist $PWD/PoppinProject/ExportOptions.plist -exportPath $PWD/build/PoppinProject
 
       - name: Rename and Move IPA file
         run: |
-          IPA_FILE=$(find ios/PoppinProject/build/PoppinProject -name "*.ipa")
+          IPA_FILE=$(find ios/build/PoppinProject -name "*.ipa")
           mv "$IPA_FILE" "${GITHUB_WORKSPACE}/build/ios/ipa/MyApp.ipa"
 
       - name: Install private API key P8
@@ -110,5 +110,5 @@ jobs:
       - name: Upload IPA to TestFlight
         env:
           API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          API_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          API_ISSUER: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
         run: xcrun altool --upload-app --type ios -f "${GITHUB_WORKSPACE}/build/ios/ipa/MyApp.ipa" --apiKey $API_KEY --apiIssuer $API_ISSUER

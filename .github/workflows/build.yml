@@ -21,13 +21,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Set up Ruby
-        uses: actions/setup-ruby@v1
-        with:
-          ruby-version: '3.2.2'
-
-      - name: Set up CocoaPods
-        run: sudo gem install cocoapods
+      - name: Install CocoaPods
+        run: sudo gem install cocoapods -v 1.15.2
 
       - name: Install CocoaPods dependencies
         run: |

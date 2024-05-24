@@ -102,6 +102,7 @@ async function requestPermissions() {
   }
   return false;
 }
+
 export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
   'PopUpDetail'
@@ -149,6 +150,11 @@ const PopUpDetailScreen = ({route}) => {
   };
 
   const handleVisitPress = async () => {
+    if (!isLoggedIn) {
+      navigation.navigate('Entry');
+      return;
+    }
+
     const hasPermission = await requestPermissions();
     if (hasPermission) {
       Geolocation.getCurrentPosition(
@@ -182,6 +188,11 @@ const PopUpDetailScreen = ({route}) => {
   };
 
   const handleCompletePress = () => {
+    if (!isLoggedIn) {
+      navigation.navigate('Entry');
+      return;
+    }
+
     setModalVisible(true);
   };
 
@@ -387,10 +398,19 @@ const PopUpDetailScreen = ({route}) => {
             <Text style={[Text20B.text, {color: globalColors.purple}]}>
               방문 후기
             </Text>
-            <SvgWithNameBoxLabel
-              Icon={WriteReviewSvg}
-              label="방문후기 작성하기"
-            />
+            <Pressable
+              onPress={() => {
+                if (!isLoggedIn) {
+                  navigation.navigate('Entry');
+                  return;
+                }
+                navigation.navigate('ReviewWrite');
+              }}>
+              <SvgWithNameBoxLabel
+                Icon={WriteReviewSvg}
+                label="방문후기 작성하기"
+              />
+            </Pressable>
           </View>
           <View style={styles.rowBetweenContainer}>
             <View style={styles.recentReviewHeader}>
@@ -464,7 +484,13 @@ const PopUpDetailScreen = ({route}) => {
           onPress={handleVisitPress}
           onCompletePress={handleCompletePress}
           isInstagram={false}
-          title={!detailPopUpData.isVisited ? '방문하기' : '방문완료'}
+          title={
+            !isLoggedIn
+              ? '방문하기'
+              : !detailPopUpData.isVisited
+              ? '방문하기'
+              : '방문완료'
+          }
         />
       </View>
       <CustomModal

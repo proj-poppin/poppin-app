@@ -22,6 +22,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Clean Derived Data
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData/*
+
+      - name: Clean CocoaPods cache
+        run: pod cache clean --all
+
       - name: Create .env file
         run: |
           echo "KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}" >> .env

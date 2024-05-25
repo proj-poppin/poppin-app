@@ -108,6 +108,15 @@ jobs:
       - name: List contents of export directory
         run: ls -R $PWD/ios/build/PoppinProject
 
+      - name: Verify IPA File Exists
+        run: |
+          if [ ! -f ios/build/PoppinProject/*.ipa ]; then
+            echo "IPA file not found!"
+            exit 1
+          else
+            echo "IPA file exists."
+          fi
+
       - name: Upload IPA to TestFlight 🆙
         uses: apple-actions/upload-testflight-build@v1
         with:

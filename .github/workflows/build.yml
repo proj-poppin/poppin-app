@@ -110,7 +110,7 @@ jobs:
 
       - name: Verify IPA File Exists
         run: |
-          if [ ! -f ios/build/PoppinProject/*.ipa ]; then
+          if [ ! -f ios/build/PoppinProject/PoppinProject.ipa ]; then
             echo "IPA file not found!"
             exit 1
           else
@@ -120,7 +120,7 @@ jobs:
       - name: Upload IPA to TestFlight 🆙
         uses: apple-actions/upload-testflight-build@v1
         with:
-          app-path: ios/build/PoppinProject/*.ipa
+          app-path: ios/build/PoppinProject/PoppinProject.ipa
           issuer-id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           api-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           api-private-key: ~/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
@@ -136,7 +136,7 @@ jobs:
 
       - name: Rename and Move IPA file
         run: |
-          IPA_FILE=$(find . -name "*.ipa")
+          IPA_FILE=$(find ios/build/PoppinProject -name "*.ipa")
           mv "$IPA_FILE" "${GITHUB_WORKSPACE}/build/ios/ipa/MyApp.ipa"
 
       - name: Install private API key P8

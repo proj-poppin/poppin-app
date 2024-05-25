@@ -18,7 +18,6 @@ jobs:
         with:
           node-version: '20.9.0'
           check-latest: true
-
       - name: Install dependencies
         run: npm install
 

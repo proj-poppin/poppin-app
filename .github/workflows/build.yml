@@ -44,6 +44,12 @@ jobs:
         run: |
           echo "${{ secrets.GOOGLE_SERVICE_INFO_BASE64 }}" | base64 --decode > ios/GoogleService-Info.plist
 
+      - name: Update bundle version
+        run: |
+          VERSION_NUMBER=$(date +%Y%m%d%H%M)
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $VERSION_NUMBER" "ios/PoppinProject/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION_NUMBER" "ios/PoppinProject/Info.plist"
+
       - name: Decode iOS secrets
         env:
           P12_DISTRIBUTION_CERTIFICATE_BASE64: ${{ secrets.IOS_P12_DISTRIBUTION_CERTIFICATE_BASE64 }}
@@ -127,6 +133,7 @@ jobs:
           echo "$PRIVATE_API_KEY" > ~/private_keys/AuthKey_$API_KEY.p8
           IPA_FILE=$(find ios/build/PoppinProject -name "*.ipa")
           xcrun altool --upload-app --type ios -f "$IPA_FILE" --apiKey "$API_KEY" --apiIssuer "$API_ISSUER" --apiKeyPath ~/private_keys/AuthKey_$API_KEY.p8
+
       - name: Upload Build Logs
         if: failure()
         uses: actions/upload-artifact@v2

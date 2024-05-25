@@ -46,9 +46,16 @@ jobs:
 
       - name: Update bundle version
         run: |
-          VERSION_NUMBER=$(date +%Y%m%d%H%M)
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $VERSION_NUMBER" "ios/PoppinProject/Info.plist"
-          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION_NUMBER" "ios/PoppinProject/Info.plist"
+          # Set the major and minor version numbers
+          MAJOR_VERSION=1
+          MINOR_VERSION=0
+          # Get the current build number
+          BUILD_NUMBER=$(defaults read "$(pwd)/ios/PoppinProject/Info" CFBundleVersion || echo "0")
+          # Increment the build number
+          NEW_BUILD_NUMBER=$((BUILD_NUMBER + 1))
+          # Update the Info.plist with the new build number
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${MAJOR_VERSION}.${MINOR_VERSION}" "ios/PoppinProject/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${MAJOR_VERSION}.${MINOR_VERSION}.${NEW_BUILD_NUMBER}" "ios/PoppinProject/Info.plist"
 
       - name: Decode iOS secrets
         env:

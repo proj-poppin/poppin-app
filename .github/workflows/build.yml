@@ -18,14 +18,13 @@ jobs:
         with:
           node-version: '20.9.0'
           check-latest: true
+
       - name: Install dependencies
         run: npm install
 
-      - name: Clean Derived Data
-        run: rm -rf ~/Library/Developer/Xcode/DerivedData/*
-
-      - name: Clean CocoaPods cache
-        run: pod cache clean --all
+      - name: Delete .xcode.env.local file
+        run: |
+          if [ -f ios/.xcode.env.local ]; then rm ios/.xcode.env.local; fi
 
       - name: Create .env file
         run: |
@@ -40,10 +39,6 @@ jobs:
           echo "GOOGLE_WEB_CLIENT_SECRET=${{ secrets.GOOGLE_WEB_CLIENT_SECRET }}" >> .env
           echo "REDIRECT_URI=${{ secrets.REDIRECT_URI }}" >> .env
           echo "NAVER_MAP_CLIENT_ID=${{ secrets.NAVER_MAP_CLIENT_ID }}" >> .env
-
-      - name: Create .xcode.env.local file
-        run: |
-          echo "${{ secrets.XCODE_ENV_LOCAL_KEY }}" > ios/.xcode.env.local
 
       - name: Decode iOS secrets
         env:

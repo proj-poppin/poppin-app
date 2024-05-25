@@ -74,6 +74,11 @@ env/
 .env
 android/app/google-services.json
 
+/ios/GoogleService-Info.plist
 /ios/tmp.xcconfig
 /ios/Config.xcconfig
+
+
+
+
 

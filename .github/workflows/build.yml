@@ -40,6 +40,10 @@ jobs:
           echo "REDIRECT_URI=${{ secrets.REDIRECT_URI }}" >> .env
           echo "NAVER_MAP_CLIENT_ID=${{ secrets.NAVER_MAP_CLIENT_ID }}" >> .env
 
+      - name: Decode and create GoogleService-Info.plist
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICE_INFO_BASE64 }}" | base64 --decode > ios/GoogleService-Info.plist
+
       - name: Decode iOS secrets
         env:
           P12_DISTRIBUTION_CERTIFICATE_BASE64: ${{ secrets.IOS_P12_DISTRIBUTION_CERTIFICATE_BASE64 }}

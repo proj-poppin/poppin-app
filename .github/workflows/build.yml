@@ -53,7 +53,7 @@ jobs:
           APNS_KEY_PASSWORD: ${{ secrets.APNS_KEY_PASSWORD }}
           KEYCHAIN_PASSWORD: ${{ secrets.IOS_RUNNER_LOCAL_KEYCHAIN_PASSWORD }}
           EXPORT_OPTIONS_BASE64: ${{ secrets.IOS_EXPORT_OPTIONS_BASE64 }}
-          PRIVATE_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY_BASE64 }}
+          PRIVATE_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
           API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           API_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
@@ -71,7 +71,7 @@ jobs:
           echo -n "$APNS_KEY_BASE64" | base64 --decode -o $APNS_KEY_PATH
           echo -n "$EXPORT_OPTIONS_BASE64" | base64 --decode -o $EXPORT_OPTIONS_PATH
           mkdir -p ~/private_keys
-          echo -n "$PRIVATE_API_KEY_BASE64" | base64 --decode --output $AUTH_KEY_PATH
+          echo "$PRIVATE_API_KEY" > $AUTH_KEY_PATH
           
           security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
@@ -110,7 +110,7 @@ jobs:
 
       - name: Verify IPA File Exists
         run: |
-          if [ ! -f ios/build/PoppinProject/PoppinProject.ipa ]; then
+          if [ ! -f ios/build/PoppinProject/*.ipa ]; then
             echo "IPA file not found!"
             exit 1
           else
@@ -118,12 +118,15 @@ jobs:
           fi
 
       - name: Upload IPA to TestFlight 🆙
-        uses: apple-actions/upload-testflight-build@v1
-        with:
-          app-path: ios/build/PoppinProject/PoppinProject.ipa
-          issuer-id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-          api-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          api-private-key: ~/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
+        env:
+          API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          API_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          PRIVATE_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/private_keys
+          echo "$PRIVATE_API_KEY" > ~/private_keys/AuthKey_$API_KEY.p8
+          IPA_FILE=$(find ios/build/PoppinProject -name "*.ipa")
+          xcrun altool --upload-app --type ios -f "$IPA_FILE" --apiKey "$API_KEY" --apiIssuer "$API_ISSUER" --apiKeyPath ~/private_keys/AuthKey_$API_KEY.p8
 
       - name: Upload Build Logs
         if: failure()
@@ -133,23 +136,3 @@ jobs:
           path: |
             /Users/runner/Library/Logs
             ${{ runner.temp }}/build_logs
-
-      - name: Rename and Move IPA file
-        run: |
-          IPA_FILE=$(find ios/build/PoppinProject -name "*.ipa")
-          mv "$IPA_FILE" "${GITHUB_WORKSPACE}/build/ios/ipa/MyApp.ipa"
-
-      - name: Install private API key P8
-        env:
-          PRIVATE_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY_BASE64 }}
-          API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          API_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-        run: |
-          mkdir -p ~/private_keys
-          echo -n "$PRIVATE_API_KEY_BASE64" | base64 --decode --output ~/private_keys/AuthKey_$API_KEY.p8
-
-      - name: Upload IPA to TestFlight
-        env:
-          API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          API_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-        run: xcrun altool --upload-app --type ios -f "${GITHUB_WORKSPACE}/build/ios/ipa/MyApp.ipa" --apiKey $API_KEY --apiIssuer $API_ISSUER

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 import ShallowDividerLine from '../../components/ShallowDividerLine.tsx';
@@ -8,6 +8,8 @@ import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationMo
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
 import Text12M from '../../styles/texts/label/Text12M.ts';
+import useReportPopup from '../../hooks/report/useReportPopUp.tsx';
+import useReportReview from '../../hooks/report/useReportReview.tsx';
 
 const reasons = [
   '고의의 잘못된 내용이 혼동을 일으켜요',
@@ -17,10 +19,13 @@ const reasons = [
   '기타',
 ];
 
-function ReportScreen({navigation}) {
+function ReportScreen({navigation, route}) {
+  const {id, isReview, reviewId} = route.params;
   const [selectedReason, setSelectedReason] = useState(null);
   const [isDeleted, setIsDeleted] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const {reportPopupDetails} = useReportPopup();
+  const {reportReviewDetails} = useReportReview();
 
   const openModal = () => {
     setModalVisible(true);
@@ -30,9 +35,15 @@ function ReportScreen({navigation}) {
     setModalVisible(false);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     setIsDeleted(true);
     closeModal();
+    const content = reasons[selectedReason];
+    if (isReview) {
+      await reportReviewDetails(reviewId, content);
+    } else {
+      await reportPopupDetails(id, content);
+    }
   };
 
   if (isDeleted) {
@@ -41,7 +52,7 @@ function ReportScreen({navigation}) {
         <View style={styles.completeContainer}>
           <Text style={Text20B.text}>신고 완료</Text>
           <Text style={[Text12R.text, styles.completeText]}>
-            그동안 Poppin을{'\n'}이용해주셔서 감사합니다.
+            신고가 완료되었습니다.
           </Text>
         </View>
         <View style={{paddingTop: 150}}>
@@ -97,14 +108,14 @@ function ReportScreen({navigation}) {
         />
       </DismissKeyboardView>
       <TwoSelectConfirmationModal
-        mainAlertTitle={'정말 탈퇴 하시겠습니까?'}
-        subAlertTitle={'탈퇴하신 아이디로는\n30일간 재가입 하실 수 없어요'}
+        mainAlertTitle={'정말 신고하시겠습니까?'}
+        subAlertTitle={'신고 사유를 확인해주세요.'}
         onConfirm={confirmDelete}
         onClose={closeModal}
         onBlankSpacePressed={closeModal}
         isVisible={modalVisible}
-        selectFirstText={'계속 사용하기'}
-        selectSecondText={'탈퇴하기'}
+        selectFirstText={'취소'}
+        selectSecondText={'신고하기'}
       />
     </>
   );

@@ -21,6 +21,7 @@ import NoLikesSvg from '../../assets/likes/noLikes.svg';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import NotLogginBox from '../../components/NotLogginBox.tsx';
 import {useFocusEffect} from '@react-navigation/native';
+import LikeCalendarView from './LikeCalendarView.tsx';
 
 const popUpTypes = ['오픈 예정인 팝업', '운영 중인 팝업', '운영 종료 팝업'];
 const orderTypes = ['오픈일순', '마감일순', '저장순'];
@@ -72,12 +73,12 @@ function LikesScreen({navigation}) {
         selectedDate: true,
         textColor: 'black',
         selectedColor: globalColors.purpleLight,
-        selected: true,
-        dots: [
-          {color: globalColors.blue, selectedDotColor: globalColors.blue},
-          {color: globalColors.purple, selectedDotColor: globalColors.purple},
-          {color: globalColors.white, selectedDotColor: globalColors.white},
-        ],
+        // selected: true,
+        // dots: [
+        //   {color: globalColors.blue, selectedDotColor: globalColors.blue},
+        //   {color: globalColors.purple, selectedDotColor: globalColors.purple},
+        //   {color: globalColors.white, selectedDotColor: globalColors.white},
+        // ],
       },
     };
 
@@ -200,12 +201,13 @@ function LikesScreen({navigation}) {
             </TouchableOpacity>
           </View>
           {isCalendarView ? (
-            <CalendarView
-              selectedDate={selectedDate}
-              getMarkedDates={getMarkedDates}
-              handleDateSelected={handleDateSelected}
-              renderBottomSheetContent={renderBottomSheetContent}
-            />
+            <LikeCalendarView />
+            // <CalendarView
+            //   selectedDate={selectedDate}
+            //   getMarkedDates={getMarkedDates}
+            //   handleDateSelected={handleDateSelected}
+            //   renderBottomSheetContent={renderBottomSheetContent}
+            // />
           ) : (
             <ListView
               popUpTypes={popUpTypes}

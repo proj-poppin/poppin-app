@@ -551,7 +551,7 @@ const styles = StyleSheet.create({
   },
   posterImage: {
     width: '100%',
-    height: 400, // Adjust height as needed
+    height: 400, 
   },
   detailContainer: {
     
@@ -628,7 +628,9 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: 'white',
     justifyContent: 'space-around',
-    padding: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom:25,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: -2},
     shadowOpacity: 0.1,
@@ -655,7 +657,6 @@ const styles = StyleSheet.create({
   colCloseContainer: {
     flexDirection: 'column',
     marginVertical: 10,
- 
     paddingLeft: 16,
     paddingRight:16
   },

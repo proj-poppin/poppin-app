@@ -58,8 +58,8 @@ const PopUpDetailOptions = ({
 const styles = StyleSheet.create({
   dropdownContainer: {
     width: 50,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
+   justifyContent: 'flex-end', 
+    alignItems: 'flex-start',
   },
   buttonInnerContainer: {
     flexDirection: 'row',
@@ -73,12 +73,18 @@ const styles = StyleSheet.create({
     padding: 0,
     alignItems: 'center',
     justifyContent: 'center',
+   
   },
+  
   dropdownStyle: {
+    position:'absolute',
     borderRadius: 8,
     backgroundColor: globalColors.white,
     marginTop: 20,
-    minWidth: 100,
+    marginLeft:-100,
+    minWidth: 150,
+   
+   
   },
   rowTextStyle: {
     color: globalColors.font,

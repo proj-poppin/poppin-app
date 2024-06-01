@@ -381,7 +381,7 @@ const PopUpDetailScreen = ({route}) => {
             </View>
           </View>
           <DividerLine height={10} />
-          <View style={{paddingTop: 40, paddingLeft: 20, paddingBottom: 10}}>
+          <View style={{paddingTop: 40,  paddingBottom: 10,paddingLeft:16}}>
             <Text style={[Text20B.text, {color: globalColors.purple}]}>
               방문자 데이터
             </Text>
@@ -506,11 +506,14 @@ const PopUpDetailScreen = ({route}) => {
 
 const styles = StyleSheet.create({
   visitorDataContainer: {
-    margin: 10,
+    // margin: 10,
+    marginTop: 10,
+    marginRight: 10,
+    marginBottom:10,
     borderColor: globalColors.component,
     borderWidth: 1.0,
     borderRadius: 15,
-    padding: 20,
+     padding: 20,
   },
   recommendContainer: {
     flexDirection: 'row',
@@ -550,35 +553,48 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 400, // Adjust height as needed
   },
-  detailContainer: {},
+  detailContainer: {
+    
+  },
   title: {
     ...Text20B.text,
+    padding:16,
     marginBottom: 8,
+    
   },
   introduce: {
-    marginTop: 15,
+    // marginTop: 15,
+    marginLeft: 16,
+    marginRight:16,
+    marginBottom:10,
     ...Text14M.text,
   },
   link: {
     ...Text14R.text,
     color: globalColors.font,
     marginBottom: 16,
+    
   },
   rowBetweenContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   iconContainer: {
-    marginTop: 10,
+    marginTop: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 20,
+    paddingLeft: 16,
+    paddingRight:16
   },
   recentReviewHeader: {
     gap: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingLeft: 16,
+    paddingRight:16,
+    
   },
   socialIcons: {
     flexDirection: 'row',
@@ -588,16 +604,19 @@ const styles = StyleSheet.create({
   },
   detailSection: {
     flexDirection: 'column',
-    marginTop: 20,
     marginBottom: 16,
+    paddingLeft: 16,
+    paddingRight:16
   },
   additionalInfo: {
     marginBottom: 16,
   },
   detailRow: {
+   
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 4,
+
   },
   bottomBar: {
     position: 'absolute',
@@ -636,6 +655,9 @@ const styles = StyleSheet.create({
   colCloseContainer: {
     flexDirection: 'column',
     marginVertical: 10,
+ 
+    paddingLeft: 16,
+    paddingRight:16
   },
   rowCloseContainer: {
     flexDirection: 'row',
@@ -652,6 +674,8 @@ const styles = StyleSheet.create({
   },
   reviewText: {
     ...Text16M.text,
+    fontSize: 14,
+    color:globalColors.font,
     marginVertical: 5,
   },
   verifiedReviewSvg: {

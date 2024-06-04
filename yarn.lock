@@ -2497,6 +2497,11 @@
   resolved "https://registry.npmjs.org/@types/wrap-ansi/-/wrap-ansi-3.0.0.tgz"
   integrity sha512-ltIpx+kM7g/MLRZfkbL7EsCEjfzCcScLpkg37eXEtx5kmrAKBkTJwd1GIAjDSL8wTpM6Hzn5YO4pSb91BEwu1g==
 
+"@types/xdate@^0.8.35":
+  version "0.8.35"
+  resolved "https://registry.npmjs.org/@types/xdate/-/xdate-0.8.35.tgz"
+  integrity sha512-bOzSX26UoY1IbVanQPw5KRfM6X1REw5kUtp0/H0zRakXIjb1N8/gOA0PXNiEvmgaZlCC3EOIfEWBZVkzxfCVqw==
+
 "@types/yargs-parser@*":
   version "21.0.3"
   resolved "https://registry.npmjs.org/@types/yargs-parser/-/yargs-parser-21.0.3.tgz"

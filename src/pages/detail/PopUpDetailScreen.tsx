@@ -199,6 +199,10 @@ const PopUpDetailScreen = ({route}) => {
   };
 
   const handleToggleInterest = async () => {
+    if (!isLoggedIn) {
+      navigation.navigate('Entry');
+      return;
+    }
     if (isInterested) {
       await deleteInterest(id);
       setToastMessage('관심팝업에서 삭제되었어요!');

@@ -119,7 +119,7 @@ const PopUpDetailScreen = ({route}) => {
     error,
   } = useGetDetailPopUp(id, !isLoggedIn, fetchTrigger);
 
-  console.log("ddd",detailPopUpData)
+  
   const firstImageUrl =
     detailPopUpData?.images?.[0] ??
     'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/4/1.jpg';
@@ -397,6 +397,9 @@ const PopUpDetailScreen = ({route}) => {
               data={{weekdayAm, weekdayPm, weekendAm, weekendPm}}
             />
           </View>
+          <View>
+          <Text style={styles.message}>
+          *혼잡도는 팝핀 이용자의 통계 데이터이므로 정확하지 않을 수 있습니다.</Text></View>
           <DividerLine height={10} />
           <View style={styles.iconContainer}>
             <Text style={[Text20B.text, {color: globalColors.purple}]}>
@@ -517,7 +520,7 @@ const styles = StyleSheet.create({
     borderColor: globalColors.component,
     borderWidth: 1.0,
     borderRadius: 15,
-     padding: 20,
+    padding: 20,
   },
   recommendContainer: {
     flexDirection: 'row',
@@ -578,6 +581,12 @@ const styles = StyleSheet.create({
     color: globalColors.font,
     marginBottom: 16,
     
+  },
+  message: {
+    color: globalColors.font,
+    fontSize: 12,
+    paddingLeft: 18,
+    paddingBottom:50,
   },
   rowBetweenContainer: {
     flexDirection: 'row',

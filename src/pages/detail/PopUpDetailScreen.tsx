@@ -118,6 +118,8 @@ const PopUpDetailScreen = ({route}) => {
     loading,
     error,
   } = useGetDetailPopUp(id, !isLoggedIn, fetchTrigger);
+
+  
   const firstImageUrl =
     detailPopUpData?.images?.[0] ??
     'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/4/1.jpg';
@@ -197,6 +199,10 @@ const PopUpDetailScreen = ({route}) => {
   };
 
   const handleToggleInterest = async () => {
+    if (!isLoggedIn) {
+      navigation.navigate('Entry');
+      return;
+    }
     if (isInterested) {
       await deleteInterest(id);
       setToastMessage('관심팝업에서 삭제되었어요!');
@@ -269,6 +275,8 @@ const PopUpDetailScreen = ({route}) => {
   const filteredReviews = isOnlyVerifiedReview
     ? detailPopUpData.review.filter(review => review.isCertificated)
     : detailPopUpData.review;
+
+  console.log("filteredReviews",detailPopUpData)
 
   return (
     <>
@@ -388,11 +396,14 @@ const PopUpDetailScreen = ({route}) => {
           </View>
           <View style={styles.visitorDataContainer}>
             <CongestionSection
-              satisfyPercent={detailPopUpData.viewCnt}
+              satisfyPercent={detailPopUpData?.visitorData?.satisfaction}
               title="혼잡도"
               data={{weekdayAm, weekdayPm, weekendAm, weekendPm}}
             />
           </View>
+          <View>
+          <Text style={styles.message}>
+          *혼잡도는 팝핀 이용자의 통계 데이터이므로 정확하지 않을 수 있습니다.</Text></View>
           <DividerLine height={10} />
           <View style={styles.iconContainer}>
             <Text style={[Text20B.text, {color: globalColors.purple}]}>
@@ -438,7 +449,7 @@ const PopUpDetailScreen = ({route}) => {
                       )}
                     </View>
                     <Text style={styles.reviewText}>
-                      리뷰 {review.totalReviewWrite}개
+                      리뷰 {review.reviewCnt}개
                     </Text>
                   </View>
                 </View>
@@ -458,7 +469,7 @@ const PopUpDetailScreen = ({route}) => {
                   />
                 ))}
               </ScrollView>
-              <Text style={styles.reviewText}>{review.text}</Text>
+              <Text style={styles.reviewContent}>{review.text}</Text>
               <Pressable onPress={() => handleRecommendPress(review.reviewId)}>
                 <View style={styles.recommendContainer}>
                   <SvgWithNameBoxLabel
@@ -506,14 +517,14 @@ const PopUpDetailScreen = ({route}) => {
 
 const styles = StyleSheet.create({
   visitorDataContainer: {
-    // margin: 10,
     marginTop: 10,
-    marginRight: 10,
+    marginLeft:16,
+    marginRight: 16,
     marginBottom:10,
     borderColor: globalColors.component,
     borderWidth: 1.0,
     borderRadius: 15,
-     padding: 20,
+    padding: 20,
   },
   recommendContainer: {
     flexDirection: 'row',
@@ -574,6 +585,12 @@ const styles = StyleSheet.create({
     color: globalColors.font,
     marginBottom: 16,
     
+  },
+  message: {
+    color: globalColors.font,
+    fontSize: 12,
+    paddingLeft: 18,
+    paddingBottom:50,
   },
   rowBetweenContainer: {
     flexDirection: 'row',
@@ -657,30 +674,38 @@ const styles = StyleSheet.create({
   colCloseContainer: {
     flexDirection: 'column',
     marginVertical: 10,
-    paddingLeft: 16,
-    paddingRight:16
+    paddingRight: 16,
   },
   rowCloseContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    
   },
   imageScroll: {
     flexDirection: 'row',
     marginVertical: 10,
+    paddingLeft:16
   },
   reviewImage: {
     width: 100,
     height: 100,
     marginRight: 10,
   },
+  reviewContent: {
+    marginVertical: 5,
+    fontSize: 14,
+    marginLeft: 18,
+    marginBottom:10
+  },
   reviewText: {
     ...Text16M.text,
-    fontSize: 14,
+    fontSize: 12,
     color:globalColors.font,
     marginVertical: 5,
   },
   verifiedReviewSvg: {
     marginLeft: 5,
+  
   },
 });
 

@@ -10,7 +10,7 @@ import Text16M from '../../../styles/texts/body_medium_large/Text16M.ts';
 import Text14M from '../../../styles/texts/body_medium/Text14M.ts';
 import Text14B from '../../../styles/texts/body_medium/Text14B.ts';
 
-const CongestionSection = ({satisfyPercent, title, data}) => {
+const CongestionSection = ({ satisfyPercent, title, data }) => {
   return (
     <View style={{flexDirection: 'column'}}>
       <View style={styles.satisfyRowSection}>
@@ -64,7 +64,7 @@ const CongestionSection = ({satisfyPercent, title, data}) => {
             />
           </View>
           <View style={styles.chartRowSection}>
-            <Text style={Text18M.text}>오후</Text>
+            <Text style={Text16M.text}>오후</Text>
             <VerticalDividerLine />
             <HorizontalBarChart
               congestionRate={data.weekendPm.congestionRate}
@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
     columnGap: 20,
   },
   chartRowSection: {
+   
     flexDirection: 'row',
     alignItems: 'center',
   },

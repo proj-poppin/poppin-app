@@ -37,7 +37,7 @@ const NormalCalendarComponent: React.FC<NormalCalendarComponentProps> = (
     };
   }
 
-  return <View style={{flex:1, backgroundColor:'green'}}>
+  return <View style={{flex:1, backgroundColor:'white'}}>
     <CalendarList
       hideArrows={false}
       onPressArrowLeft={(method, month) => {

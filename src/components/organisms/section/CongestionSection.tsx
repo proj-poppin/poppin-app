@@ -10,7 +10,7 @@ import Text16M from '../../../styles/texts/body_medium_large/Text16M.ts';
 import Text14M from '../../../styles/texts/body_medium/Text14M.ts';
 import Text14B from '../../../styles/texts/body_medium/Text14B.ts';
 
-const CongestionSection = ({satisfyPercent, title, data}) => {
+const CongestionSection = ({ satisfyPercent, title, data }) => {
   return (
     <View style={{flexDirection: 'column'}}>
       <View style={styles.satisfyRowSection}>

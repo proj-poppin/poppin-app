@@ -392,7 +392,7 @@ const PopUpDetailScreen = ({route}) => {
           </View>
           <View style={styles.visitorDataContainer}>
             <CongestionSection
-              satisfyPercent={detailPopUpData.viewCnt}
+              satisfyPercent={detailPopUpData?.visitorData?.satisfaction}
               title="혼잡도"
               data={{weekdayAm, weekdayPm, weekendAm, weekendPm}}
             />
@@ -680,6 +680,7 @@ const styles = StyleSheet.create({
   imageScroll: {
     flexDirection: 'row',
     marginVertical: 10,
+    paddingLeft:16
   },
   reviewImage: {
     width: 100,

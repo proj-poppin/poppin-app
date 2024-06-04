@@ -1,29 +1,37 @@
 import React from 'react';
 import {Pressable, StyleSheet, View, Text} from 'react-native';
 import BackSvg from '../../assets/icons/goBack.svg';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 import MenuSvg from '../../assets/detail/menu.svg';
 import globalColors from '../../styles/color/globalColors.ts';
 import SelectDropdown from 'react-native-select-dropdown';
+import {
+  NativeStackNavigationProp,
+  NativeStackNavigationOptions,
+} from '@react-navigation/native-stack';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 
-type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
-  AppNavigatorParamList,
-  'PopUpDetail'
->;
+interface PopUpDetailOptionsProps {
+  navigation: NativeStackNavigationProp<AppNavigatorParamList, 'PopUpDetail'>;
+  id: number;
+  name: string;
+}
 
 const PopUpDetailOptions = ({
   navigation,
-}: {
-  navigation: PopUpDetailScreenNavigationProp;
-}) => {
+  id,
+  name,
+}: PopUpDetailOptionsProps): Partial<NativeStackNavigationOptions> => {
   const menuOptions = [
     {label: '신고하기', route: 'Report'},
     {label: '수정 요청하기', route: 'PopUpEditRequest'},
   ];
 
   const handleSelect = (selectedItem: any) => {
-    navigation.navigate(selectedItem.route);
+    if (selectedItem.route === 'Report') {
+      navigation.navigate(selectedItem.route, {id, isReview: false});
+    } else {
+      navigation.navigate(selectedItem.route, {id, name});
+    }
   };
 
   return {
@@ -38,7 +46,7 @@ const PopUpDetailOptions = ({
       </View>
     ),
     headerRight: () => (
-      <View style={styles.dropdownContainer}>
+      <View>
         <SelectDropdown
           data={menuOptions}
           onSelect={handleSelect}
@@ -56,16 +64,6 @@ const PopUpDetailOptions = ({
 };
 
 const styles = StyleSheet.create({
-  dropdownContainer: {
-    width: 50,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-  },
-  buttonInnerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: 20,
-  },
   dropdownButtonStyle: {
     backgroundColor: 'transparent',
     width: 30,

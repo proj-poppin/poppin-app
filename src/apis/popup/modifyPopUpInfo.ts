@@ -32,6 +32,9 @@ const modifyPopUpInfo = async (
       },
     );
 
+    // 서버 응답 출력
+    console.log('Response:', response);
+
     if (response.data.success) {
       return response.data;
     } else {

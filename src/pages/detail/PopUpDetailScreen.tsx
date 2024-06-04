@@ -51,6 +51,7 @@ import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import useAddVisitor from '../../hooks/detailPopUp/useAddVisitor.ts';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
+import PopUpDetailOptions from '../../navigators/options/PopUpDetailOptions.tsx';
 
 async function requestPermissions() {
   if (Platform.OS === 'ios') {
@@ -112,12 +113,26 @@ const PopUpDetailScreen = ({route}) => {
   const isLoggedIn = useIsLoggedIn();
   const navigation = useNavigation<PopUpDetailScreenNavigationProp>();
   const [fetchTrigger, setFetchTrigger] = useState(false);
-  const {id} = route.params;
+  const {id, name} = route.params;
+
   const {
     data: detailPopUpData,
     loading,
     error,
   } = useGetDetailPopUp(id, !isLoggedIn, fetchTrigger);
+
+  useEffect(() => {
+    if (detailPopUpData) {
+      navigation.setOptions(
+        PopUpDetailOptions({
+          navigation,
+          id: detailPopUpData.id,
+          name: detailPopUpData.name,
+        }),
+      );
+    }
+  }, [navigation, detailPopUpData]);
+
   const firstImageUrl =
     detailPopUpData?.images?.[0] ??
     'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/4/1.jpg';
@@ -404,7 +419,11 @@ const PopUpDetailScreen = ({route}) => {
                   navigation.navigate('Entry');
                   return;
                 }
-                navigation.navigate('ReviewWrite');
+                navigation.navigate('ReviewWrite', {
+                  name: detailPopUpData.name,
+                  id: detailPopUpData.id,
+                  isVisited: detailPopUpData.isVisited,
+                });
               }}>
               <SvgWithNameBoxLabel
                 Icon={WriteReviewSvg}
@@ -445,7 +464,10 @@ const PopUpDetailScreen = ({route}) => {
                 <UnderlinedTextButton
                   label={'신고하기'}
                   onClicked={() => {
-                    navigation.navigate('report');
+                    navigation.navigate('Report', {
+                      id: review.reviewId,
+                      isReview: true,
+                    });
                   }}
                 />
               </View>

@@ -1,36 +1,62 @@
-import React, {useCallback, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
-  Pressable,
+  View,
   Text,
   StyleSheet,
-  View,
   TextInput,
   ScrollView,
   Image,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
-import globalColors from '../../styles/color/globalColors.ts';
-import SearchSvg from '../../assets/icons/searchGray.svg';
-import OptionSingleButton from '../../components/atoms/button/OptionSingleButton.tsx';
+import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
+import globalColors from '../../styles/color/globalColors';
+import OptionSingleButton from '../../components/atoms/button/OptionSingleButton';
 import PlusSvg from '../../assets/icons/plus.svg';
 import ImageDeleteSvg from '../../assets/icons/imageDelete.svg';
 import ImagePicker from 'react-native-image-crop-picker';
-import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
-import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
-import Text14R from '../../styles/texts/body_medium/Text14R.ts';
-import Text13R from '../../styles/texts/label/Text12R.ts';
-import Text12R from '../../styles/texts/label/Text12R.ts';
+import ImageResizer from 'react-native-image-resizer';
+import CompleteButton from '../../components/atoms/button/CompleteButton';
+import DismissKeyboardView from '../../components/DismissKeyboardView';
+import Text14R from '../../styles/texts/body_medium/Text14R';
+import Text13R from '../../styles/texts/label/Text12R';
+import Text12R from '../../styles/texts/label/Text12R';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
+import useCreateReview from '../../hooks/review/useCreateReview.tsx';
+
+type ReviewWriteScreenRouteProp = RouteProp<
+  AppNavigatorParamList,
+  'ReviewWrite'
+>;
 
 function ReviewWriteScreen() {
-  const [keyword, setKeyword] = useState('');
-  const [selectedVisitTime, setSelectedVisitTime] = useState(null);
-  const [selectedSatisfaction, setSelectedSatisfaction] = useState(null);
-  const [selectedCongestion, setSelectedCongestion] = useState(null);
-  const [review, setReview] = useState(''); // 후기 내용을 저장할 상태
-  const [selectedImages, setSelectedImages] = useState([]);
+  const route = useRoute<ReviewWriteScreenRouteProp>();
+  const navigation = useNavigation();
+  const {name, id, isVisited} = route.params;
+  const {createReview, loading, error, success} = useCreateReview();
 
-  // handleRemoveImage 함수 추가
-  const handleRemoveImage = useCallback(indexToRemove => {
+  useEffect(() => {
+    navigation.setOptions({
+      title: isVisited ? '인증 후기 작성' : '일반 후기 작성',
+    });
+  }, [isVisited, navigation]);
+
+  const [keyword, setKeyword] = useState('');
+  const [selectedVisitTime, setSelectedVisitTime] = useState<string | null>(
+    null,
+  );
+  const [selectedSatisfaction, setSelectedSatisfaction] = useState<
+    string | null
+  >(null);
+  const [selectedCongestion, setSelectedCongestion] = useState<string | null>(
+    null,
+  );
+  const [review, setReview] = useState('');
+  const [selectedImages, setSelectedImages] = useState<
+    Array<{uri: string; width: number; height: number}>
+  >([]);
+
+  const handleRemoveImage = useCallback((indexToRemove: number) => {
     setSelectedImages(prevImages =>
       prevImages.filter((_, index) => index !== indexToRemove),
     );
@@ -40,43 +66,67 @@ function ReviewWriteScreen() {
     ImagePicker.openPicker({
       multiple: true,
       mediaType: 'photo',
-      maxFiles: 5 - selectedImages.length, // 최대 5개까지 선택 가능
+      maxFiles: 5 - selectedImages.length,
     })
       .then(images => {
-        // 선택된 이미지들을 상태에 추가
-        const newImages = images.map(image => ({
-          uri: image.path,
-          width: image.width,
-          height: image.height,
-        }));
-        setSelectedImages(prevImages => [...prevImages, ...newImages]);
+        const resizePromises = images.map(image =>
+          ImageResizer.createResizedImage(
+            image.path,
+            600,
+            600,
+            image.mime.includes('jpeg') ? 'JPEG' : 'PNG',
+            100,
+            0,
+          ),
+        );
+        Promise.all(resizePromises)
+          .then(resizedImages => {
+            const newImages = resizedImages.map(image => ({
+              uri: image.uri,
+              width: image.width,
+              height: image.height,
+            }));
+            setSelectedImages(prevImages => [...prevImages, ...newImages]);
+          })
+          .catch(error => {
+            console.log('Image resizing error:', error);
+          });
       })
       .catch(error => {
         console.log(error);
       });
   };
 
+  const handleSubmit = async () => {
+    if (!isSubmitEnabled) {
+      return;
+    }
+    const response = await createReview(
+      id,
+      review,
+      selectedVisitTime ?? '',
+      selectedSatisfaction ?? '',
+      selectedCongestion ?? '',
+      keyword,
+      selectedImages,
+      isVisited,
+    );
+    if (response.success) {
+      navigation.goBack();
+    } else if (response.error) {
+      console.error('Review submission error:', response.error.message);
+    }
+  };
+
   const isSubmitEnabled =
-    keyword.trim() !== '' &&
     (selectedVisitTime !== null ||
       selectedSatisfaction !== null ||
       selectedCongestion !== null) &&
-    review.trim().length >= 10;
+    review.trim().length >= 0;
 
   return (
     <DismissKeyboardView style={styles.container}>
-      <View style={styles.keywordInputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="텍스트를 입력하세요."
-          value={keyword}
-          onChangeText={setKeyword}
-        />
-        <Pressable style={styles.registerButton} onPress={() => {}}>
-          <SearchSvg />
-        </Pressable>
-      </View>
-
+      <Text style={[Text14R.text, {color: globalColors.purple}]}>{name}</Text>
       <View style={styles.sectionContainer}>
         <Text style={[Text14R.text, {color: globalColors.purple}, {width: 65}]}>
           방문 일시
@@ -134,20 +184,19 @@ function ReviewWriteScreen() {
       </View>
       <TextInput
         style={styles.reviewInput}
-        multiline // 여러 줄 입력 가능
+        multiline
         placeholder="팝업에 대한 후기를 남겨주세요(선택)"
-        placeholderTextColor={globalColors.font} // 힌트 텍스트 색상 조정
-        maxLength={1000} // 최대 입력 가능한 문자 수
+        placeholderTextColor={globalColors.font}
+        maxLength={1000}
         value={review}
-        onChangeText={setReview} // 입력 값 변경 시 상태 업데이트
+        onChangeText={setReview}
       />
       <View style={styles.imagesContainer}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          scrollEnabled={selectedImages.length >= 2} // 2장 이상일 때만 스크롤 활성화
-          contentContainerStyle={[styles.imagesContainer]} // 스타일 조정
-        >
+          scrollEnabled={selectedImages.length >= 2}
+          contentContainerStyle={[styles.imagesContainer]}>
           {selectedImages.length < 5 && (
             <Pressable
               style={styles.addImageButton}
@@ -160,7 +209,7 @@ function ReviewWriteScreen() {
           )}
           {selectedImages.map((image, index) => (
             <View key={index} style={styles.imageContainer}>
-              <Image source={{uri: image}} style={styles.selectedImage} />
+              <Image source={{uri: image.uri}} style={styles.selectedImage} />
               <TouchableOpacity
                 style={styles.deleteIcon}
                 onPress={() => handleRemoveImage(index)}>
@@ -173,8 +222,8 @@ function ReviewWriteScreen() {
       <View style={{paddingBottom: 40}}>
         <CompleteButton
           title="작성 완료"
-          onPress={() => {}}
-          disabled={!isSubmitEnabled}
+          onPress={handleSubmit}
+          disabled={!isSubmitEnabled || loading}
         />
       </View>
     </DismissKeyboardView>
@@ -211,64 +260,53 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   scrollView: {
-    marginLeft: 10,
-    flexGrow: 0,
+    flex: 1,
   },
   buttonsContainer: {
     flexDirection: 'row',
-    marginLeft: 10,
-    flexGrow: 0,
+    flex: 1,
   },
   reviewInput: {
-    width: 340,
-    height: 150,
-    backgroundColor: 'white',
-    borderColor: globalColors.warmGray,
     borderWidth: 1,
-    borderRadius: 15,
+    borderColor: globalColors.warmGray,
+    borderRadius: 10,
     padding: 10,
+    marginBottom: 10,
     textAlignVertical: 'top',
-    marginBottom: 20,
-    color: globalColors.font, // 입력 텍스트 색상
-    fontWeight: '200', // 폰트 두께 조절
-    fontSize: 13, // 폰트 크기 조절
+    height: 150,
+    fontSize: 14,
   },
   imagesContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10, // 스크롤 뷰와 주변 요소 간 간격 조정
   },
   addImageButton: {
-    borderColor: globalColors.component,
-    borderWidth: 2,
-    borderRadius: 20,
+    width: 150,
+    height: 150,
+    borderWidth: 1,
+    borderColor: globalColors.warmGray,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 120,
-    height: 120,
-    marginRight: 10,
-  },
-  selectedImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 10,
     marginRight: 10,
   },
   addImageText: {
+    fontSize: 12,
     color: globalColors.font,
-    paddingTop: 8,
-    textAlign: 'center', // 텍스트 중앙 정렬
-  },
-  deleteIcon: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    padding: 10, // 쉽게 탭할 수 있도록 패딩 추가
-    color: 'black',
+    textAlign: 'center',
   },
   imageContainer: {
     position: 'relative',
     marginRight: 10,
+  },
+  selectedImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+  },
+  deleteIcon: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
   },
 });
 

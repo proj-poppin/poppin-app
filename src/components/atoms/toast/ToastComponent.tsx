@@ -44,7 +44,7 @@ const ToastComponent: React.FC<ToastComponentProps> = ({
       width: 368,
       height: height,
       borderRadius: 14,
-      marginTop: 160,
+      marginTop: 110,
       marginLeft: 16,
       marginRight: 16,
       backgroundColor: 'rgba(0, 0, 0, 0.7)',

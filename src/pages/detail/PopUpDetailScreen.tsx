@@ -118,6 +118,8 @@ const PopUpDetailScreen = ({route}) => {
     loading,
     error,
   } = useGetDetailPopUp(id, !isLoggedIn, fetchTrigger);
+
+  console.log("ddd",detailPopUpData)
   const firstImageUrl =
     detailPopUpData?.images?.[0] ??
     'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/4/1.jpg';
@@ -269,6 +271,8 @@ const PopUpDetailScreen = ({route}) => {
   const filteredReviews = isOnlyVerifiedReview
     ? detailPopUpData.review.filter(review => review.isCertificated)
     : detailPopUpData.review;
+
+  console.log("filteredReviews",detailPopUpData)
 
   return (
     <>
@@ -438,7 +442,7 @@ const PopUpDetailScreen = ({route}) => {
                       )}
                     </View>
                     <Text style={styles.reviewText}>
-                      리뷰 {review.totalReviewWrite}개
+                      리뷰 {review.reviewCnt}개
                     </Text>
                   </View>
                 </View>
@@ -458,7 +462,7 @@ const PopUpDetailScreen = ({route}) => {
                   />
                 ))}
               </ScrollView>
-              <Text style={styles.reviewText}>{review.text}</Text>
+              <Text style={styles.reviewContent}>{review.text}</Text>
               <Pressable onPress={() => handleRecommendPress(review.reviewId)}>
                 <View style={styles.recommendContainer}>
                   <SvgWithNameBoxLabel
@@ -506,9 +510,9 @@ const PopUpDetailScreen = ({route}) => {
 
 const styles = StyleSheet.create({
   visitorDataContainer: {
-    // margin: 10,
     marginTop: 10,
-    marginRight: 10,
+    marginLeft:16,
+    marginRight: 16,
     marginBottom:10,
     borderColor: globalColors.component,
     borderWidth: 1.0,
@@ -657,12 +661,12 @@ const styles = StyleSheet.create({
   colCloseContainer: {
     flexDirection: 'column',
     marginVertical: 10,
-    paddingLeft: 16,
-    paddingRight:16
+    paddingRight: 16,
   },
   rowCloseContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    
   },
   imageScroll: {
     flexDirection: 'row',
@@ -673,14 +677,21 @@ const styles = StyleSheet.create({
     height: 100,
     marginRight: 10,
   },
+  reviewContent: {
+    marginVertical: 5,
+    fontSize: 14,
+    marginLeft: 18,
+    marginBottom:10
+  },
   reviewText: {
     ...Text16M.text,
-    fontSize: 14,
+    fontSize: 12,
     color:globalColors.font,
     marginVertical: 5,
   },
   verifiedReviewSvg: {
     marginLeft: 5,
+  
   },
 });
 

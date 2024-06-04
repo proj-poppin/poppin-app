@@ -64,7 +64,7 @@ const CongestionSection = ({satisfyPercent, title, data}) => {
             />
           </View>
           <View style={styles.chartRowSection}>
-            <Text style={Text18M.text}>오후</Text>
+            <Text style={Text16M.text}>오후</Text>
             <VerticalDividerLine />
             <HorizontalBarChart
               congestionRate={data.weekendPm.congestionRate}
@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
     columnGap: 20,
   },
   chartRowSection: {
+   
     flexDirection: 'row',
     alignItems: 'center',
   },

@@ -13,14 +13,13 @@ import CalendarSvg from '../../assets/icons/calendar.svg';
 import globalColors from '../../styles/color/globalColors';
 import ListIconSvg from '../../assets/icons/listIcon.svg';
 import useGetInterestList from '../../hooks/popUpList/useGetInterestList';
-import DismissKeyboardView from '../../components/DismissKeyboardView';
 import Text24B from '../../styles/texts/headline/Text24B';
-import CalendarView from './CalendarView';
 import ListView from './ListView';
 import NoLikesSvg from '../../assets/likes/noLikes.svg';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import NotLogginBox from '../../components/NotLogginBox.tsx';
 import {useFocusEffect} from '@react-navigation/native';
+import CalendarComponent from "./calendar/CalendarComponent.tsx";
 
 const popUpTypes = ['오픈 예정인 팝업', '운영 중인 팝업', '운영 종료 팝업'];
 const orderTypes = ['오픈일순', '마감일순', '저장순'];
@@ -72,12 +71,12 @@ function LikesScreen({navigation}) {
         selectedDate: true,
         textColor: 'black',
         selectedColor: globalColors.purpleLight,
-        selected: true,
-        dots: [
-          {color: globalColors.blue, selectedDotColor: globalColors.blue},
-          {color: globalColors.purple, selectedDotColor: globalColors.purple},
-          {color: globalColors.white, selectedDotColor: globalColors.white},
-        ],
+        // selected: true,
+        // dots: [
+        //   {color: globalColors.blue, selectedDotColor: globalColors.blue},
+        //   {color: globalColors.purple, selectedDotColor: globalColors.purple},
+        //   {color: globalColors.white, selectedDotColor: globalColors.white},
+        // ],
       },
     };
 
@@ -187,7 +186,7 @@ function LikesScreen({navigation}) {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <DismissKeyboardView>
+      {/*<DismissKeyboardView>*/}
         <BottomSheetModalProvider>
           <View style={styles.header}>
             <Text style={[Text24B.text]}>관심 목록</Text>
@@ -200,12 +199,13 @@ function LikesScreen({navigation}) {
             </TouchableOpacity>
           </View>
           {isCalendarView ? (
-            <CalendarView
-              selectedDate={selectedDate}
-              getMarkedDates={getMarkedDates}
-              handleDateSelected={handleDateSelected}
-              renderBottomSheetContent={renderBottomSheetContent}
-            />
+
+            <View style={{flex:1}}>
+              <CalendarComponent
+                data={interestList}
+              />
+            </View>
+
           ) : (
             <ListView
               popUpTypes={popUpTypes}
@@ -216,7 +216,7 @@ function LikesScreen({navigation}) {
             />
           )}
         </BottomSheetModalProvider>
-      </DismissKeyboardView>
+      {/*</DismissKeyboardView>*/}
     </SafeAreaView>
   );
 }

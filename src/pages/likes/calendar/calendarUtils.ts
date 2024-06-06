@@ -1,0 +1,144 @@
+import { DateData } from "react-native-calendars";
+import globalColors from "../../../styles/color/globalColors.ts";
+import { MarkedDates } from "react-native-calendars/src/types";
+import { GetInterestPopUpListResponse } from "../../../types/PopUpListData.ts";
+
+/**
+ * 현재 날짜를 "YYYY-MM-DD" 형식의 문자열로 반환합니다.
+ *
+ * @returns {string} 현재 날짜를 "YYYY-MM-DD" 형식으로 반환
+ */
+export function getTodayDate(): string {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고 2자리로 만듭니다.
+  const day = String(today.getDate()).padStart(2, '0'); // 일도 2자리로 만듭니다.
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * 주어진 날짜 문자열을 "D일 요일" 형식으로 변환하여 반환합니다.
+ *
+ * @param dateString (예: 2024-06-05)
+ * @returns {string} (예: 5일 수요일)
+ */
+export function formatDate(dateString: string): string {
+  const days = ['일', '월', '화', '수', '목', '금', '토'];
+  const date = new Date(dateString);
+  const dayOfWeek = days[date.getDay()]; // 요일을 가져옵니다.
+  const day = date.getDate();
+
+  // 일일 월요일 형식으로 변환하여 반환합니다.
+  return `${day}일 ${dayOfWeek}요일`;
+}
+
+/**
+ * 주어진 날짜가 열림 날짜와 닫힘 날짜 사이에 있는지 여부를 확인합니다.
+ *
+ * @param {string} openDate - 이벤트의 열림 날짜 (예: "2023-06-01")
+ * @param {string} closeDate - 이벤트의 닫힘 날짜 (예: "2023-06-30")
+ * @param {DateData} selDate - 선택한 날짜를 나타내는 객체
+ * @returns {boolean} 선택한 날짜가 열림 날짜 이전이거나 닫힘 날짜 이후이면 true, 그렇지 않으면 false
+ */
+export function checkIsClosed(
+  openDate: string,
+  closeDate: string,
+  selDate: DateData,
+): boolean {
+  const open = new Date(openDate);
+  const close = new Date(closeDate);
+  const selected = new Date(selDate.dateString);
+  return selected < open || selected > close;
+}
+
+/**
+ * 현재 날짜와 시간을 기반으로 DateData 객체를 생성하여 반환합니다.
+ *
+ * @returns {DateData} 현재 날짜와 시간 정보를 포함하는 DateData 객체
+ */
+export function createTodayDateData(): DateData {
+  const today = new Date(); // 현재 날짜 및 시간을 가져옵니다.
+
+  return {
+    dateString: today.toISOString().split('T')[0], // ISO 형식의 문자열로 변환하여 날짜 부분만 추출합니다.
+    day: today.getDate(),
+    month: today.getMonth() + 1,
+    year: today.getFullYear(),
+    timestamp: today.getTime(), // 밀리초 단위의 타임스탬프
+  };
+}
+
+/**
+ * 캘린더에 circle mark 합니다
+ */
+export function setCircle(
+  markedDates: MarkedDates,
+  dateWithHyphen: string,
+  isToday: boolean = false,
+) {
+  const markedDate = markedDates[dateWithHyphen] || {};
+
+  markedDate.selected = true;
+  markedDate.selectedColor = isToday
+    ? globalColors.purpleLight
+    : globalColors.purple;
+  markedDate.selectedTextColor = isToday
+    ? globalColors.white
+    : globalColors.black;
+
+  markedDates[dateWithHyphen] = markedDate;
+}
+
+export function addDots(
+  markedDates: MarkedDates,
+  e: GetInterestPopUpListResponse,
+) {
+  const openMarkDate = markedDates[e.open_date] || {};
+  const closeMarkDate = markedDates[e.close_date] || {};
+
+  const openDots: any = openMarkDate.dots;
+  if (!openDots) {
+    openMarkDate.dots = [{color: globalColors.purple, key: e.name}];
+    markedDates[e.open_date] = openMarkDate;
+  } else {
+    switch (openDots.length) {
+      case 1:
+        openDots.push({color: globalColors.blue, key: e.name});
+        break;
+      case 2:
+        openDots.push({color: globalColors.purpleLight, key: e.name});
+        break;
+    }
+  }
+
+  const closeDots = closeMarkDate.dots;
+  if (!closeDots) {
+    closeMarkDate.dots = [{color: globalColors.purple, key: e.name}];
+    markedDates[e.close_date] = closeMarkDate;
+  } else {
+    switch (closeDots.length) {
+      case 1:
+        closeDots.push({color: globalColors.blue, key: e.name});
+        break;
+      case 2:
+        closeDots.push({color: globalColors.purpleLight, key: e.name});
+        break;
+    }
+  }
+}
+
+export const createDateData = (
+  year: number,
+  month: number,
+  day: number,
+): DateData => {
+  const date = new Date(year, month - 1, day);
+
+  return {
+    dateString: date.toISOString().split('T')[0],
+    day: date.getDate(),
+    month: date.getMonth() + 1,
+    year: date.getFullYear(),
+    timestamp: date.getTime(),
+  };
+};

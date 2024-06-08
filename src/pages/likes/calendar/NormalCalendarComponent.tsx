@@ -1,10 +1,11 @@
 /* eslint-disable */
 import React, { useState } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { CalendarList, DateData } from "react-native-calendars";
 import globalColors from "../../../styles/color/globalColors.ts";
 import { DayState, MarkedDates } from "react-native-calendars/src/types";
 import HeaderTitle from "./HeaderTitle.tsx";
+import { createDateData, normalCalendarHeaderStyle, normalCalendarTheme } from "./calendarUtils.ts";
 
 interface NormalCalendarComponentProps {
   handlePresentModalPress: any;
@@ -40,20 +41,33 @@ const NormalCalendarComponent: React.FC<NormalCalendarComponentProps> = (
   return <View style={{flex:1, backgroundColor:'white'}}>
     <CalendarList
       hideArrows={false}
-      onPressArrowLeft={(method, month) => {
+      horizontal={true}
+      pagingEnabled={true}
+      markingType="multi-dot"
+      markedDates={markedDates}
+      theme={normalCalendarTheme}
+      headerStyle={normalCalendarHeaderStyle}
+      onMonthChange={(month: DateData) => {
+        const curMonthDateData = createDateData(month.year, month.month, month.day);
+        setSelDate(curMonthDateData);
+      }}
+      onPressArrowLeft={(method, month: XDate|undefined) => {
+        console.log(month);
+        console.log("안녕");
         const dateData = addMonthsToDateData(selDate, -1);
+
         setSelDate(dateData);
         method();
-
       }}
-      onPressArrowRight={(method, month) => {
+      onPressArrowRight={(method, month: XDate|undefined) => {
+        console.log(month);
+        console.log("안녕");
         const dateData = addMonthsToDateData(selDate, 1);
         setSelDate(dateData);
         method();
-
       }}
-      horizontal={true}
-      renderHeader={() => <HeaderTitle selDate={selDate.dateString} onClickHeaderTitle={onClickHeaderTitle} />}
+      // renderHeader={() => <HeaderTitle selDate={selDate.dateString} onClickHeaderTitle={onClickHeaderTitle} />}
+      stickyHeaderIndices={[0]}
       onDayPress={(date: DateData) => {
         setSelDate(date);
         // 새로운 마크된 날짜 객체 생성
@@ -85,41 +99,8 @@ const NormalCalendarComponent: React.FC<NormalCalendarComponentProps> = (
 
         setMarkedDates(updatedMarkedDates);
         handlePresentModalPress();
-      }}
-      pagingEnabled={true}
-      markingType="multi-dot"
-      markedDates={markedDates}
-      // onMonthChange={(date:DateData) => setSelDate(date.dateString)}
-      // customHeaderTitle={<HeaderTitle selDate={selDate}/>}
-      theme={{
-        textDayHeaderFontWeight: '600',
-        textMonthFontWeight: '600',
-        todayButtonFontWeight: '600',
-        textSectionTitleColor: '#b6c1cd',
-        arrowColor: globalColors.black,
-        selectedDayBackgroundColor: globalColors.purple,
-        selectedDayTextColor: globalColors.white,
-        todayTextColor: globalColors.black,
-        todayBackgroundColor: globalColors.purpleLight,
-        // textDisabledColor: '#d9e1e8',
-        textDayFontSize: 16,
-        textDayFontWeight: '500',
-        'stylesheet.calendar.header': {
-          dayTextAtIndex0: {
-            color: 'red'
-          },
-        }
-
       }} />
   </View>
-
-  function getTodayDate(): string {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고 2자리로 만듭니다.
-    const day = String(today.getDate()).padStart(2, '0'); // 일도 2자리로 만듭니다.
-    return `${year}-${month}-${day}`;
-  }
 }
 
 export default NormalCalendarComponent

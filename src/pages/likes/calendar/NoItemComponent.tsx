@@ -9,7 +9,9 @@ const NoItemComponent: React.FC = () => {
       <Text style={[styles.textStyle, {paddingTop: 7.5}]}>
         저장한 팝업이 없어요!🫤
       </Text>
-      <Text style={[styles.textStyle, {paddingTop: 3}]}>관심 있는 팝업을 저장해 보세요.</Text>
+      <Text style={[styles.textStyle, {paddingTop: 3}]}>
+        관심 있는 팝업을 저장해 보세요.
+      </Text>
     </View>
   );
 };

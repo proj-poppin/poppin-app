@@ -15,6 +15,7 @@ import NormalCalendarComponent from "./NormalCalendarComponent.tsx";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { addDots, checkIsClosed, createTodayDateData, formatDate, getTodayDate, setCircle } from "./calendarUtils.ts";
 import BottomSheetItem from "./BottomSheetItem.tsx";
+import NoItemComponent from "./NoItemComponent.tsx";
 
 
 interface LikeCalendarComponentProps {
@@ -59,7 +60,6 @@ const CalendarComponent:React.FC<LikeCalendarComponentProps>  = ({data}) => {
   }, []);
 
   const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
     if (index == -1) {
       setCalendarType(CalendarType.FULL);
     } else {
@@ -84,6 +84,7 @@ const CalendarComponent:React.FC<LikeCalendarComponentProps>  = ({data}) => {
     });
     return markedDates;
   }
+
 
   // renders
   return (
@@ -133,11 +134,14 @@ const CalendarComponent:React.FC<LikeCalendarComponentProps>  = ({data}) => {
             <BottomSheetView>
               <View style={{flexDirection:'column'}}>
                 <Text style={{marginLeft:16, marginBottom:12, fontSize:20, fontWeight:"600"}}>{(formatDate(selDate.dateString))}</Text>
-                <FlatList
+                {(filteredData?.length == 0) ?
+                  <NoItemComponent/> :
+                  <FlatList
                   data={filteredData}
                   keyExtractor={(index) => index.toString()} // 각 아이템을 고유하게 식별하는 키 제공
                   renderItem={(props) => <BottomSheetItem item={props.item} navigation={navigation} />}>
                 </FlatList>
+                }
               </View>
             </BottomSheetView>
           </BottomSheetModal>

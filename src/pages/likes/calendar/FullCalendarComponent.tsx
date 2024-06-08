@@ -7,6 +7,7 @@ import { DayState, MarkedDates } from "react-native-calendars/src/types";
 import { MarkingProps } from "react-native-calendars/src/calendar/day/marking";
 import globalColors from "../../../styles/color/globalColors.ts";
 import HeaderTitle from "./HeaderTitle.tsx";
+import { createDateData, fullCalendarTheme } from "./calendarUtils.ts";
 
 interface FullCalendarProps {
   popupList: GetInterestPopUpListResponse[] | null;
@@ -44,7 +45,10 @@ const FullCalendarComponent: React.FC<FullCalendarProps> = (
   return (
     <View style={styles.container}>
       <CalendarList
-        hideArrows={false}
+        onMonthChange={(month) => {
+          const curMonthDateData = createDateData(month.year, month.month, month.day);
+          setSelDate(curMonthDateData);
+        }}
         onPressArrowLeft={(method, month) => {
           const dateData = addMonthsToDateData(selDate, -1);
           setSelDate(dateData);
@@ -57,11 +61,14 @@ const FullCalendarComponent: React.FC<FullCalendarProps> = (
           method();
 
         }}
+        hideArrows={false}
         horizontal={true}
         renderHeader={() => <HeaderTitle selDate={selDate.dateString} onClickHeaderTitle={onClickHeaderTitle} />}
         markedDates={markedDates}
         pagingEnabled={true}
-        theme={{arrowColor:globalColors.black}}
+        theme={
+          fullCalendarTheme
+        }
         dayComponent={({date, state, marking }) =>
 
           <TouchableOpacity
@@ -108,7 +115,7 @@ interface FullCalendarItemProps {
   marking: MarkingProps| undefined,
   popupList: GetInterestPopUpListResponse[] | null,
 }
-const FullCalendarItem: React.FC<FullCalendarItemProps> = ({date, state, marking,popupList, selDate}) => {
+const FullCalendarItem: React.FC<FullCalendarItemProps> = ({date, state, marking,popupList}) => {
   const containerStyle = state ? { backgroundColor: globalColors.purple } : {};
 
   return (

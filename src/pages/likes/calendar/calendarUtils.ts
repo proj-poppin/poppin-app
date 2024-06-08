@@ -1,7 +1,7 @@
-import { DateData } from "react-native-calendars";
-import globalColors from "../../../styles/color/globalColors.ts";
-import { MarkedDates } from "react-native-calendars/src/types";
-import { GetInterestPopUpListResponse } from "../../../types/PopUpListData.ts";
+import {DateData} from 'react-native-calendars';
+import globalColors from '../../../styles/color/globalColors.ts';
+import {MarkedDates} from 'react-native-calendars/src/types';
+import {GetInterestPopUpListResponse} from '../../../types/PopUpListData.ts';
 
 /**
  * 현재 날짜를 "YYYY-MM-DD" 형식의 문자열로 반환합니다.
@@ -141,4 +141,54 @@ export const createDateData = (
     year: date.getFullYear(),
     timestamp: date.getTime(),
   };
+};
+
+export const normalCalendarTheme = {
+  textDayHeaderFontWeight: '600',
+  textMonthFontWeight: '600',
+  todayButtonFontWeight: '600',
+  textSectionTitleColor: '#b6c1cd',
+  arrowColor: globalColors.black,
+  selectedDayBackgroundColor: globalColors.purple,
+  selectedDayTextColor: globalColors.white,
+  todayTextColor: globalColors.black,
+  todayBackgroundColor: globalColors.purpleLight,
+  // textDisabledColor: '#d9e1e8',
+  textDayFontSize: 16,
+  textDayFontWeight: '500',
+  'stylesheet.calendar.header': {
+    dayTextAtIndex0: {
+      color: 'red',
+    },
+  },
+};
+
+export const fullCalendarTheme = {
+  'stylesheet.calendar.main': {
+    dayContainer: {
+      borderColor: '#D1D3D4',
+      borderBottomWidth: 1,
+      flex: 1,
+      padding: 10,
+    },
+    emptyDayContainer: {
+      borderColor: '#D1D3D4',
+      borderBottomWidth: 1,
+      flex: 1,
+      padding: 10,
+    },
+    week: {
+      marginTop: 0,
+      marginBottom: 0,
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+    },
+  },
+  arrowColor: globalColors.black,
+};
+
+export const normalCalendarHeaderStyle = {
+  backgroundColor: globalColors.white,
+  borderBottomWidth: 1,
+  borderBottomColor: globalColors.warmGray,
 };

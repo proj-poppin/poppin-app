@@ -130,10 +130,13 @@ const CalendarComponent:React.FC<LikeCalendarComponentProps>  = ({data}) => {
             snapPoints={snapPoints}
             onChange={handleSheetChanges}
 
+            handleStyle={{borderTopWidth:1, borderTopColor:globalColors.warmGray}}
+            handleIndicatorStyle={{backgroundColor:globalColors.font, width:56}}
+
           >
-            <BottomSheetView>
-              <View style={{flexDirection:'column'}}>
-                <Text style={{marginLeft:16, marginBottom:12, fontSize:20, fontWeight:"600"}}>{(formatDate(selDate.dateString))}</Text>
+            <BottomSheetView >
+              <View style={{flexDirection:'column', marginBottom:160}}>
+                <Text style={{marginLeft:16, marginBottom:12, fontSize:20, fontWeight:"600", }}>{(formatDate(selDate.dateString))}</Text>
                 {(filteredData?.length == 0) ?
                   <NoItemComponent/> :
                   <FlatList
@@ -164,7 +167,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
   },
   bottomSheetStyle: {
-    height:0
+    height:0,
   }
 });
 

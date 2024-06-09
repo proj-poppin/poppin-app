@@ -153,12 +153,29 @@ export const normalCalendarTheme = {
   selectedDayTextColor: globalColors.white,
   todayTextColor: globalColors.black,
   todayBackgroundColor: globalColors.purpleLight,
-  // textDisabledColor: '#d9e1e8',
   textDayFontSize: 16,
   textDayFontWeight: '500',
   'stylesheet.calendar.header': {
     dayTextAtIndex0: {
       color: 'red',
+    },
+    dayTextAtIndex1: {
+      color: 'black',
+    },
+    dayTextAtIndex2: {
+      color: 'black',
+    },
+    dayTextAtIndex3: {
+      color: 'black',
+    },
+    dayTextAtIndex4: {
+      color: 'black',
+    },
+    dayTextAtIndex5: {
+      color: 'black',
+    },
+    dayTextAtIndex6: {
+      color: 'black',
     },
   },
 };
@@ -182,6 +199,29 @@ export const fullCalendarTheme = {
       marginBottom: 0,
       flexDirection: 'row',
       justifyContent: 'space-around',
+    },
+  },
+  'stylesheet.calendar.header': {
+    dayTextAtIndex0: {
+      color: 'red',
+    },
+    dayTextAtIndex1: {
+      color: 'black',
+    },
+    dayTextAtIndex2: {
+      color: 'black',
+    },
+    dayTextAtIndex3: {
+      color: 'black',
+    },
+    dayTextAtIndex4: {
+      color: 'black',
+    },
+    dayTextAtIndex5: {
+      color: 'black',
+    },
+    dayTextAtIndex6: {
+      color: 'black',
     },
   },
   arrowColor: globalColors.black,

@@ -186,13 +186,13 @@ export const fullCalendarTheme = {
       borderColor: '#D1D3D4',
       borderBottomWidth: 1,
       flex: 1,
-      padding: 10,
+      paddingTop: 4.7,
     },
     emptyDayContainer: {
       borderColor: '#D1D3D4',
       borderBottomWidth: 1,
       flex: 1,
-      padding: 10,
+      paddingTop: 4.7,
     },
     week: {
       marginTop: 0,

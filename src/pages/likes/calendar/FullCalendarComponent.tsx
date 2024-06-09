@@ -116,20 +116,17 @@ interface FullCalendarItemProps {
   popupList: GetInterestPopUpListResponse[] | null,
 }
 const FullCalendarItem: React.FC<FullCalendarItemProps> = ({date, state, marking,popupList}) => {
-  const containerStyle = state ? { backgroundColor: globalColors.purple } : {};
 
   return (
     <View style={[styles.calendarItemContainer, ]}>
         <DayComponent day={date?.day} state={state} marking={marking}/>
-
-
       {
-        marking?.dots?.map((e) => {
-          console.log(e.key);
+        marking?.dots?.map((e, index) => {
+          const textColor = index == 2 ? { color: globalColors.black } : { color: globalColors.white };
 
           return (
             <View style={[styles.markedContainer, { backgroundColor: e.color }]}>
-              <Text style={styles.markedText} numberOfLines={1} ellipsizeMode="tail">{e.key}</Text>
+              <Text style={[styles.markedText, textColor]} numberOfLines={1} ellipsizeMode="tail">{e.key}</Text>
             </View>
           );
         })

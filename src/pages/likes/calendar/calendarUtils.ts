@@ -188,12 +188,14 @@ export const fullCalendarTheme = {
     dayContainer: {
       borderColor: '#D1D3D4',
       borderBottomWidth: 1,
+      // borderWidth: 1,
       flex: 1,
       paddingTop: 4.7,
     },
     emptyDayContainer: {
       borderColor: '#D1D3D4',
       borderBottomWidth: 1,
+      // borderWidth: 1,
       flex: 1,
       paddingTop: 4.7,
     },

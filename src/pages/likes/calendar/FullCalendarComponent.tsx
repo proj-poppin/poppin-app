@@ -149,42 +149,45 @@ const DayComponent: React.FC<DayProps> = (dayProps) => {
   const selContainerStyle = (dayProps.marking?.selected) ? {backgroundColor: globalColors.purple} : {};
   const selTextStyle = (dayProps.marking?.selected) ? {color: globalColors.white} : {};
 
-  return <View style={[todayStyle,selContainerStyle,  {borderRadius:30, width:28, height:28, justifyContent:'center', alignContent:'center'}]}>
-    <Text style={[styles.calenderItemText, selTextStyle]}>{dayProps.day}</Text>
+  return (
+  <View style={{alignItems:'center'}}>
+    <View style={[todayStyle, selContainerStyle,  {borderRadius:30, width:28, height:28, justifyContent:'center'}]}>
+      <Text style={[styles.calenderItemText, selTextStyle]}>{dayProps.day}</Text>
+    </View>
   </View>
+  );
 }
 
 const styles= StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom: 60
+    // paddingBottom: 60
   },
   calendarItemContainer: {
-    width: 38,
+    flex:1,
     height: 88,
     flexDirection:'column',
-    alignItems: 'flex-end',
+    alignItems: 'center',
 
   },
-  // 선택된 스타일을 선정 및 로직으로 정해준다.
+
   calenderItemText: {
     color: "black",
     textAlign:'center',
   },
   markedContainer: {
-    width: 38,
+    width: 48,
     height: 14,
     justifyContent:'center',
     marginTop: 0.53,
     marginBottom: 2.2,
     borderRadius: 2,
-
-
   },
   markedText: {
     fontSize: 12,
     color: 'white',
     marginLeft: 2.57,
+    marginRight: 2.57,
     fontWeight: '600',
   },
 })

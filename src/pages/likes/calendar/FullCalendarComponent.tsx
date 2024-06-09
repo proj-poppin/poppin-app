@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { CalendarList, DateData } from "react-native-calendars";
 import { GetInterestPopUpListResponse } from "../../../types/PopUpListData.ts";
 import { DayState, MarkedDates } from "react-native-calendars/src/types";
@@ -44,67 +44,70 @@ const FullCalendarComponent: React.FC<FullCalendarProps> = (
 
   return (
     <View style={styles.container}>
-      <CalendarList
-        onMonthChange={(month) => {
-          const curMonthDateData = createDateData(month.year, month.month, month.day);
-          setSelDate(curMonthDateData);
-        }}
-        onPressArrowLeft={(method, month) => {
-          const dateData = addMonthsToDateData(selDate, -1);
-          setSelDate(dateData);
-          method();
+      <ScrollView>
+        <CalendarList
+          onMonthChange={(month) => {
+            const curMonthDateData = createDateData(month.year, month.month, month.day);
+            setSelDate(curMonthDateData);
+          }}
+          onPressArrowLeft={(method, month) => {
+            const dateData = addMonthsToDateData(selDate, -1);
+            setSelDate(dateData);
+            method();
 
-        }}
-        onPressArrowRight={(method, month) => {
-          const dateData = addMonthsToDateData(selDate, 1);
-          setSelDate(dateData);
-          method();
+          }}
+          onPressArrowRight={(method, month) => {
+            const dateData = addMonthsToDateData(selDate, 1);
+            setSelDate(dateData);
+            method();
 
-        }}
-        hideArrows={false}
-        horizontal={true}
-        renderHeader={() => <HeaderTitle selDate={selDate.dateString} onClickHeaderTitle={onClickHeaderTitle} />}
-        markedDates={markedDates}
-        pagingEnabled={true}
-        theme={
-          fullCalendarTheme
-        }
-        dayComponent={({date, state, marking }) =>
-
-          <TouchableOpacity
-          onPress={ () => {
-
-            // 새로운 마크된 날짜 객체 생성
-            const updatedMarkedDates = { ...markedDates };
-
-            // 모든 select 초기화
-            Object.keys(updatedMarkedDates).forEach(day => {
-                if (!updatedMarkedDates[day].today) {
-                  updatedMarkedDates[day].selected = false;
-                }
-              }
-            );
-
-            // 선택된 날로 select
-            if (updatedMarkedDates[date!.dateString]) {
-              updatedMarkedDates[date!.dateString].selected = !updatedMarkedDates[date!.dateString].selected;
-            } else {
-              updatedMarkedDates[date!.dateString] = {selected: true, selectedColor: globalColors.purple, selectedTextColor: globalColors.white};
-            }
-            setMarkedDates(updatedMarkedDates);
-
-            handlePresentModalPress();
-            }
+          }}
+          hideArrows={false}
+          horizontal={true}
+          renderHeader={() => <HeaderTitle selDate={selDate.dateString} onClickHeaderTitle={onClickHeaderTitle} />}
+          markedDates={markedDates}
+          pagingEnabled={true}
+          theme={
+            fullCalendarTheme
           }
-          >
-            <FullCalendarItem
-              date={date}
-              marking={marking}
-              state={state}
-              popupList={popupList}/>
-          </TouchableOpacity>
-      }
-      />
+          dayComponent={({date, state, marking }) =>
+
+            <TouchableOpacity
+              onPress={ () => {
+
+                // 새로운 마크된 날짜 객체 생성
+                const updatedMarkedDates = { ...markedDates };
+
+                // 모든 select 초기화
+                Object.keys(updatedMarkedDates).forEach(day => {
+                    if (!updatedMarkedDates[day].today) {
+                      updatedMarkedDates[day].selected = false;
+                    }
+                  }
+                );
+
+                // 선택된 날로 select
+                if (updatedMarkedDates[date!.dateString]) {
+                  updatedMarkedDates[date!.dateString].selected = !updatedMarkedDates[date!.dateString].selected;
+                } else {
+                  updatedMarkedDates[date!.dateString] = {selected: true, selectedColor: globalColors.purple, selectedTextColor: globalColors.white};
+                }
+                setMarkedDates(updatedMarkedDates);
+
+                handlePresentModalPress();
+              }
+              }
+            >
+              <FullCalendarItem
+                date={date}
+                marking={marking}
+                state={state}
+                popupList={popupList}/>
+            </TouchableOpacity>
+          }
+        />
+      </ScrollView>
+
     </View>
   );
 }
@@ -151,16 +154,17 @@ const DayComponent: React.FC<DayProps> = (dayProps) => {
   </View>
 }
 
-const styles = StyleSheet.create({
+const styles= StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom: 60
   },
   calendarItemContainer: {
     width: 38,
     height: 88,
     flexDirection:'column',
-    alignItems: 'center',
-    // borderWidth: 1
+    alignItems: 'flex-end',
+
   },
   // 선택된 스타일을 선정 및 로직으로 정해준다.
   calenderItemText: {
@@ -168,12 +172,13 @@ const styles = StyleSheet.create({
     textAlign:'center',
   },
   markedContainer: {
-    width: 48,
+    width: 38,
     height: 14,
     justifyContent:'center',
     marginTop: 0.53,
     marginBottom: 2.2,
     borderRadius: 2,
+
 
   },
   markedText: {
@@ -182,7 +187,6 @@ const styles = StyleSheet.create({
     marginLeft: 2.57,
     fontWeight: '600',
   },
-
 })
 
 export default FullCalendarComponent

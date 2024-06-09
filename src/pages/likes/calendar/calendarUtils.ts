@@ -181,6 +181,9 @@ export const normalCalendarTheme = {
 };
 
 export const fullCalendarTheme = {
+  textDayHeaderFontWeight: '600',
+  textMonthFontWeight: '600',
+  todayButtonFontWeight: '600',
   'stylesheet.calendar.main': {
     dayContainer: {
       borderColor: '#D1D3D4',

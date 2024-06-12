@@ -48,13 +48,13 @@ jobs:
         run: |
           # Set the major and minor version numbers
           MAJOR_VERSION=1
-          MINOR_VERSION=0
+          MINOR_VERSION=1
           # Get the current build number
-          BUILD_NUMBER=$(defaults read "$(pwd)/ios/PoppinProject/Info" CFBundleVersion || echo "0")
+          BUILD_NUMBER=$(defaults read "$(pwd)/ios/PoppinProject/Info" CFBundleVersion | sed 's/^1\.1\.\([0-9]\+\)$/\1/' || echo "0")
           # Increment the build number
           NEW_BUILD_NUMBER=$((BUILD_NUMBER + 1))
           # Update the Info.plist with the new build number
-          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${MAJOR_VERSION}.${MINOR_VERSION}" "ios/PoppinProject/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${MAJOR_VERSION}.${MINOR_VERSION}.3" "ios/PoppinProject/Info.plist"
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${MAJOR_VERSION}.${MINOR_VERSION}.${NEW_BUILD_NUMBER}" "ios/PoppinProject/Info.plist"
 
       - name: Decode iOS secrets
@@ -139,7 +139,7 @@ jobs:
           mkdir -p ~/private_keys
           echo "$PRIVATE_API_KEY" > ~/private_keys/AuthKey_$API_KEY.p8
           IPA_FILE=$(find ios/build/PoppinProject -name "*.ipa")
-          xcrun altool --upload-app --type ios -f "$IPA_FILE" --apiKey "$API_KEY" --apiIssuer "$API_ISSUER" --apiKeyPath ~/private_keys/AuthKey_$API_KEY.p8
+          xcrun altool --upload-app -f "$IPA_FILE" --type ios --apiKey "$API_KEY" --apiIssuer "$API_ISSUER" --apiKeyPath ~/private_keys/AuthKey_$API_KEY.p8
 
       - name: Upload Build Logs
         if: failure()

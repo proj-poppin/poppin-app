@@ -16,7 +16,7 @@ export type VisitorData = {
 export type Review = {
   reviewId: number;
   nickname: string;
-  totalReviewWrite: number;
+  reviewCnt: number;
   text: string;
   imageUrls: string[];
   isCertificated: boolean;

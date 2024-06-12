@@ -13,12 +13,14 @@ const colorSystem = {
   subWhite: '#FAF4FC',
   component: '#F2F4F6',
   warmGray: '#DDDDDD',
+  warmGray2: '#E6E9ED',
   red: '#EF4452',
   stroke: '#E5E5E5',
   white: '#FFFFFF',
   stroke2: '#70828A',
   redLight: '#FAF4FC',
   blueLight: '#EDFAFF',
+
   // 여기에 그라데이션 색상 추가
   blueToPurpleGradient: ['#0EB5F9', '#C37CD2'],
 };

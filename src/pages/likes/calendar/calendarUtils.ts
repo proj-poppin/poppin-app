@@ -23,6 +23,7 @@ export function getTodayDate(): string {
  * @returns {string} (예: 5일 수요일)
  */
 export function formatDate(dateString: string): string {
+  console.log(`여기?아이템들 ${dateString}`);
   const days = ['일', '월', '화', '수', '목', '금', '토'];
   const date = new Date(dateString);
   const dayOfWeek = days[date.getDay()]; // 요일을 가져옵니다.
@@ -83,8 +84,8 @@ export function setCircle(
     ? globalColors.purpleLight
     : globalColors.purple;
   markedDate.selectedTextColor = isToday
-    ? globalColors.white
-    : globalColors.black;
+    ? globalColors.black
+    : globalColors.white;
 
   markedDates[dateWithHyphen] = markedDate;
 }
@@ -127,20 +128,30 @@ export function addDots(
   }
 }
 
+export function updateDate(date: Date, month: number, day: number): Date {
+  date.setMonth(month);
+  date.setDate(day);
+  return date;
+}
+
 export const createDateData = (
   year: number,
   month: number,
-  day: number,
+  date: number,
 ): DateData => {
-  const date = new Date(year, month - 1, day);
+  const dates = new Date(year, month, date);
 
   return {
-    dateString: date.toISOString().split('T')[0],
-    day: date.getDate(),
-    month: date.getMonth() + 1,
-    year: date.getFullYear(),
-    timestamp: date.getTime(),
+    dateString: dates.toISOString().split('T')[0],
+    day: dates.getDate(),
+    month: dates.getMonth(),
+    year: dates.getFullYear(),
+    timestamp: dates.getTime(),
   };
+};
+
+export const createDate = (year: number, month: number, date: number): Date => {
+  return new Date(year, month, date);
 };
 
 export const normalCalendarTheme = {

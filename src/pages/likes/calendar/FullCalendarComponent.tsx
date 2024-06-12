@@ -8,6 +8,7 @@ import { MarkingProps } from "react-native-calendars/src/calendar/day/marking";
 import globalColors from "../../../styles/color/globalColors.ts";
 import HeaderTitle from "./HeaderTitle.tsx";
 import { createDateData, fullCalendarTheme } from "./calendarUtils.ts";
+import XDate from "xdate";
 
 interface FullCalendarProps {
   popupList: GetInterestPopUpListResponse[] | null;
@@ -16,6 +17,7 @@ interface FullCalendarProps {
   setMarkedDates: React.Dispatch<React.SetStateAction<MarkedDates>>;
   selDate: DateData;
   setSelDate: React.Dispatch<React.SetStateAction<DateData>>;
+  dateTimePickerYearMonthRef: React.RefObject<string>;
   onClickHeaderTitle: (dateData: DateData) => void;
 }
 
@@ -27,6 +29,7 @@ const FullCalendarComponent: React.FC<FullCalendarProps> = (
     setMarkedDates,
     selDate,
     onClickHeaderTitle,
+    dateTimePickerYearMonthRef,
     setSelDate}) => {
 
   function addMonthsToDateData(dateData: DateData, months: number): DateData {
@@ -42,29 +45,26 @@ const FullCalendarComponent: React.FC<FullCalendarProps> = (
     };
   }
 
+  console.log(`지금 선택된 날짜는: ${selDate.dateString}`);
+
   return (
     <View style={styles.container}>
       <ScrollView>
         <CalendarList
-          onMonthChange={(month) => {
-            const curMonthDateData = createDateData(month.year, month.month, month.day);
-            setSelDate(curMonthDateData);
+          current={selDate.dateString}
+          renderHeader={(date?: XDate) => {
+            dateTimePickerYearMonthRef.current = date!.toString('yyyy.MM');
+            return <HeaderTitle selDate={date!.toString('yyyy-MM-dd')} onClickHeaderTitle={onClickHeaderTitle} />
           }}
           onPressArrowLeft={(method, month) => {
-            const dateData = addMonthsToDateData(selDate, -1);
-            setSelDate(dateData);
             method();
-
           }}
           onPressArrowRight={(method, month) => {
-            const dateData = addMonthsToDateData(selDate, 1);
-            setSelDate(dateData);
             method();
-
           }}
           hideArrows={false}
           horizontal={true}
-          renderHeader={() => <HeaderTitle selDate={selDate.dateString} onClickHeaderTitle={onClickHeaderTitle} />}
+
           markedDates={markedDates}
           pagingEnabled={true}
           theme={
@@ -75,27 +75,28 @@ const FullCalendarComponent: React.FC<FullCalendarProps> = (
             <TouchableOpacity
               onPress={ () => {
 
-                // 새로운 마크된 날짜 객체 생성
-                const updatedMarkedDates = { ...markedDates };
+                  // 새로운 마크된 날짜 객체 생성
+                  const updatedMarkedDates = { ...markedDates };
 
-                // 모든 select 초기화
-                Object.keys(updatedMarkedDates).forEach(day => {
-                    if (!updatedMarkedDates[day].today) {
-                      updatedMarkedDates[day].selected = false;
+                  // 모든 select 초기화
+                  Object.keys(updatedMarkedDates).forEach(day => {
+                      if (!updatedMarkedDates[day].today) {
+                        updatedMarkedDates[day].selected = false;
+                      }
                     }
+                  );
+
+                  // 선택된 날로 select
+                  if (updatedMarkedDates[date!.dateString]) {
+                    updatedMarkedDates[date!.dateString].selected = !updatedMarkedDates[date!.dateString].selected;
+                  } else {
+                    updatedMarkedDates[date!.dateString] = {selected: true, selectedColor: globalColors.purple, selectedTextColor: globalColors.white};
                   }
-                );
+                  setMarkedDates(updatedMarkedDates);
+                  setSelDate(date!);
+                  handlePresentModalPress();
 
-                // 선택된 날로 select
-                if (updatedMarkedDates[date!.dateString]) {
-                  updatedMarkedDates[date!.dateString].selected = !updatedMarkedDates[date!.dateString].selected;
-                } else {
-                  updatedMarkedDates[date!.dateString] = {selected: true, selectedColor: globalColors.purple, selectedTextColor: globalColors.white};
                 }
-                setMarkedDates(updatedMarkedDates);
-
-                handlePresentModalPress();
-              }
               }
             >
               <FullCalendarItem

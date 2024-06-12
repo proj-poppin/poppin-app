@@ -1,11 +1,12 @@
 /* eslint-disable */
-import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View } from "react-native";
 import { CalendarList, DateData } from "react-native-calendars";
 import globalColors from "../../../styles/color/globalColors.ts";
-import { DayState, MarkedDates } from "react-native-calendars/src/types";
+import {  MarkedDates } from "react-native-calendars/src/types";
 import HeaderTitle from "./HeaderTitle.tsx";
-import { createDateData, normalCalendarHeaderStyle, normalCalendarTheme } from "./calendarUtils.ts";
+import { normalCalendarTheme } from "./calendarUtils.ts";
+import XDate from "xdate";
 
 interface NormalCalendarComponentProps {
   handlePresentModalPress: any;
@@ -13,8 +14,22 @@ interface NormalCalendarComponentProps {
   setMarkedDates: React.Dispatch<React.SetStateAction<MarkedDates>>;
   selDate: DateData;
   setSelDate: React.Dispatch<React.SetStateAction<DateData>>;
+  dateTimePickerYearMonthRef: React.RefObject<string>;
   onClickHeaderTitle: (dateData: DateData) => void;
 }
+function subtractMonthFromString(dateString: string) {
+  // 입력된 문자열을 연도와 월로 분리
+  const [year, month] = dateString.split('.').map(Number);
+  // 새로운 Date 객체 생성
+  const date = new Date(year, month - 1); // month - 1로 0부터 시작하는 월 보정
+  // 한 달 빼기
+  date.setMonth(date.getMonth() - 1);
+  // 결과 문자열 생성 (월을 2자리로 맞춤)
+  const newYear = date.getFullYear();
+  const newMonth = String(date.getMonth() + 1).padStart(2, '0'); // month + 1로 보정 후 2자리로 포맷
+
+  return `${newYear}.${newMonth}`;
+};
 
 const NormalCalendarComponent: React.FC<NormalCalendarComponentProps> = (
   {
@@ -23,54 +38,36 @@ const NormalCalendarComponent: React.FC<NormalCalendarComponentProps> = (
     setMarkedDates,
     selDate,
     onClickHeaderTitle,
+    dateTimePickerYearMonthRef,
     setSelDate}) => {
 
-  function addMonthsToDateData(dateData: DateData, months: number): DateData {
-    const date = new Date(dateData.year, dateData.month - 1, dateData.day);
-    date.setMonth(date.getMonth() + months);
-
-    return {
-      dateString: date.toISOString().split('T')[0], // ISO 문자열로 변환하여 날짜 부분만 추출
-      day: date.getDate(),
-      month: date.getMonth() + 1,
-      year: date.getFullYear(),
-      timestamp: date.getTime(),
-    };
-  }
+  useEffect(() => {
+    console.log(`지금 선택된 날짜는: ${selDate.dateString}`);
+  }, []);
 
   return <View style={{flex:1, backgroundColor:'white'}}>
     <CalendarList
+      current={selDate.dateString}
       hideArrows={false}
       horizontal={true}
       pagingEnabled={true}
       markingType="multi-dot"
       markedDates={markedDates}
       theme={normalCalendarTheme}
-      headerStyle={normalCalendarHeaderStyle}
-      onMonthChange={(month: DateData) => {
-        const curMonthDateData = createDateData(month.year, month.month, month.day);
-        setSelDate(curMonthDateData);
-      }}
       onPressArrowLeft={(method, month: XDate|undefined) => {
-        console.log(month);
-        console.log("안녕");
-        const dateData = addMonthsToDateData(selDate, -1);
-
-        setSelDate(dateData);
         method();
       }}
       onPressArrowRight={(method, month: XDate|undefined) => {
-        console.log(month);
-        console.log("안녕");
-        const dateData = addMonthsToDateData(selDate, 1);
-        setSelDate(dateData);
         method();
       }}
-      // renderHeader={() => <HeaderTitle selDate={selDate.dateString} onClickHeaderTitle={onClickHeaderTitle} />}
-      stickyHeaderIndices={[0]}
+      renderHeader={(date?: XDate) => {
+        dateTimePickerYearMonthRef.current = subtractMonthFromString(date!.toString('yyyy.MM'));
+        return <HeaderTitle selDate={date!.toString('yyyy-MM-dd')} onClickHeaderTitle={onClickHeaderTitle} />
+      }}
+
       onDayPress={(date: DateData) => {
+        console.log(`선택한 날짜: ${date.dateString}`)
         setSelDate(date);
-        // 새로운 마크된 날짜 객체 생성
         const updatedMarkedDates = { ...markedDates };
 
         // 모든 select 초기화

@@ -16,7 +16,6 @@ const getUser = async (): Promise<CommonResponse<GetUserData>> => {
       // API 응답이 success=false인 경우
       return {
         success: false,
-        data: null,
         error: response.data.error,
       };
     }

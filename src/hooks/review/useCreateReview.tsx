@@ -1,5 +1,6 @@
 import {useState} from 'react';
-import createPopUpReview from '../../apis/popup/createReview.ts';
+import createPopUpReview from '../../apis/popup/createReview.tsx';
+import {ImageType} from '../../types/ImageType.ts';
 
 interface CreateReviewState {
   loading: boolean;
@@ -23,9 +24,13 @@ const useCreateReview = () => {
     satisfaction: string,
     congestion: string,
     nickname: string,
-    images: {uri: string}[],
+    images: ImageType[],
     isVisited: boolean,
   ): Promise<CommonResponse<any>> => {
+    if (!Array.isArray(images)) {
+      throw new TypeError('images should be an array');
+    }
+
     setCreateReviewState({loading: true, error: null, success: null});
     try {
       const response: CommonResponse<any> = await createPopUpReview(
@@ -38,7 +43,6 @@ const useCreateReview = () => {
         images,
         isVisited,
       );
-      console.log(response);
       if (response.success) {
         console.log(response);
         setCreateReviewState({loading: false, error: null, success: true});
@@ -62,7 +66,6 @@ const useCreateReview = () => {
       return {success: false, error: {code: 'unknown', message: err.message}};
     }
   };
-
   return {...createReviewState, createReview};
 };
 

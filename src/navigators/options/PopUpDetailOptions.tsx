@@ -46,7 +46,7 @@ const PopUpDetailOptions = ({
       </View>
     ),
     headerRight: () => (
-      <View>
+      <View style={styles.dropdownContainer}>
         <SelectDropdown
           data={menuOptions}
           onSelect={handleSelect}
@@ -64,6 +64,16 @@ const PopUpDetailOptions = ({
 };
 
 const styles = StyleSheet.create({
+  dropdownContainer: {
+    width: 50,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-start',
+  },
+  buttonInnerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: 20,
+  },
   dropdownButtonStyle: {
     backgroundColor: 'transparent',
     width: 30,
@@ -72,11 +82,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   dropdownStyle: {
+    position: 'absolute',
     borderRadius: 8,
     backgroundColor: globalColors.white,
     marginTop: 20,
-    minWidth: 100,
+    marginLeft: -100,
+    minWidth: 150,
   },
   rowTextStyle: {
     color: globalColors.font,
@@ -91,5 +104,34 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+// const styles = StyleSheet.create({
+//   dropdownButtonStyle: {
+//     backgroundColor: 'transparent',
+//     width: 30,
+//     height: 30,
+//     padding: 0,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+//   dropdownStyle: {
+//     borderRadius: 8,
+//     backgroundColor: globalColors.white,
+//     marginTop: 20,
+//     minWidth: 100,
+//   },
+//   rowTextStyle: {
+//     color: globalColors.font,
+//     textAlign: 'center',
+//   },
+//   headerTitleContainer: {
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+//   headerTitle: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//   },
+// });
 
 export default PopUpDetailOptions;

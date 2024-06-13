@@ -23,6 +23,7 @@ import Text13R from '../../styles/texts/label/Text12R';
 import Text12R from '../../styles/texts/label/Text12R';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 import useCreateReview from '../../hooks/review/useCreateReview.tsx';
+import {ImageType} from '../../types/ImageType.ts';
 
 type ReviewWriteScreenRouteProp = RouteProp<
   AppNavigatorParamList,
@@ -33,7 +34,9 @@ function ReviewWriteScreen() {
   const route = useRoute<ReviewWriteScreenRouteProp>();
   const navigation = useNavigation();
   const {name, id, isVisited} = route.params;
-  const {createReview, loading, error, success} = useCreateReview();
+  const {createReview, loading} = useCreateReview();
+
+  const popupId = id;
 
   useEffect(() => {
     navigation.setOptions({
@@ -52,9 +55,7 @@ function ReviewWriteScreen() {
     null,
   );
   const [review, setReview] = useState('');
-  const [selectedImages, setSelectedImages] = useState<
-    Array<{uri: string; width: number; height: number}>
-  >([]);
+  const [selectedImages, setSelectedImages] = useState<ImageType[]>([]);
 
   const handleRemoveImage = useCallback((indexToRemove: number) => {
     setSelectedImages(prevImages =>
@@ -77,23 +78,27 @@ function ReviewWriteScreen() {
             image.mime.includes('jpeg') ? 'JPEG' : 'PNG',
             100,
             0,
-          ),
+          )
+            .then(r => ({
+              uri: r.uri,
+              name: r.name,
+              type: image.mime,
+            }))
+            .catch(error => {
+              return null;
+            }),
         );
         Promise.all(resizePromises)
           .then(resizedImages => {
-            const newImages = resizedImages.map(image => ({
-              uri: image.uri,
-              width: image.width,
-              height: image.height,
-            }));
-            setSelectedImages(prevImages => [...prevImages, ...newImages]);
+            const validImages = resizedImages.filter(image => image !== null);
+            setSelectedImages(prevImages => [...prevImages, ...validImages]);
           })
           .catch(error => {
-            console.log('Image resizing error:', error);
+            console.log('Error processing images:', error);
           });
       })
       .catch(error => {
-        console.log(error);
+        console.log('Error selecting images:', error);
       });
   };
 
@@ -101,13 +106,14 @@ function ReviewWriteScreen() {
     if (!isSubmitEnabled) {
       return;
     }
+    let nickname = '뒤져';
     const response = await createReview(
-      id,
+      popupId ?? 1,
       review,
       selectedVisitTime ?? '',
       selectedSatisfaction ?? '',
       selectedCongestion ?? '',
-      keyword,
+      nickname, // @ts-ignore
       selectedImages,
       isVisited,
     );

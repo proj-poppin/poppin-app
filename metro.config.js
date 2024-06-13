@@ -19,21 +19,4 @@ const config = {
   },
 };
 
-// module.exports = mergeConfig(defaultConfig, config);
-
-// metro.config.js
-module.exports = {
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: true,
-      },
-      // babelTransformerPath 추가
-      babelTransformerPath: require.resolve('metro-react-native-babel-preset'),
-    }),
-  },
-  resolver: {
-    sourceExts: ['js', 'json', 'jsx', 'mjs', 'ts', 'tsx'],
-  },
-};
+module.exports = mergeConfig(defaultConfig, config);

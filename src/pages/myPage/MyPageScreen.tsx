@@ -32,6 +32,7 @@ import useLogout from '../../hooks/auth/useLogout.tsx';
 import useGetUser from '../../hooks/auth/useGetUser.tsx';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import logout from '../../apis/auth/logout.ts';
+import Text14M from '../../styles/texts/body_medium/Text14M.ts';
 
 function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
@@ -135,17 +136,17 @@ function MyPageScreen({navigation}) {
           <ProfileSvg />
           <View style={styles.colCloseContainer}>
             <Text style={[text20B.text]}>
-              {' '}
               {isLoggedIn ? user?.nickname : '로그인 후 이용해주세요'}
             </Text>
             <Pressable
               style={styles.profileInfoContainer}
               onPress={navigateToProfileEdit}
-              style={styles.infoRow}>
+              // style={styles.infoRow}>
+            >
               <Text
                 style={[
                   Text18B.text,
-                  {color: globalColors.warmGray},
+                  {color: globalColors.font},
                   styles.profileLabel,
                 ]}>
                 내 정보 및 취향 관리
@@ -194,11 +195,11 @@ function MyPageScreen({navigation}) {
           ))}
         </ScrollView>
         <View style={styles.middleContainer}>
-          <Text style={Text14R.text}>키워드 알림 설정</Text>
+          <Text style={Text14M.text}>키워드 알림 설정</Text>
           <RightSvg style={styles.svgStyle} onPress={navigateToKeywordAlarm} />
         </View>
         <View style={styles.middleContainer}>
-          <Text style={Text14R.text}>문의하기/FAQ</Text>
+          <Text style={Text14M.text}>문의하기/FAQ</Text>
           <RightSvg
             style={styles.svgStyle}
             onPress={() => {
@@ -207,7 +208,7 @@ function MyPageScreen({navigation}) {
           />
         </View>
         <View style={styles.appVersionContainer}>
-          <Text style={Text14R.text}>앱 버전</Text>
+          <Text style={Text14M.text}>앱 버전</Text>
           <View style={styles.rowHeaderContainer}>
             <Text style={[Text13R.text, {color: globalColors.stroke2}]}>
               1.16.0
@@ -215,7 +216,7 @@ function MyPageScreen({navigation}) {
           </View>
         </View>
         <View style={styles.middleContainer}>
-          <Text style={Text13R.text}>이용 약관 및 정책</Text>
+          <Text style={Text14M.text}>이용 약관 및 정책</Text>
           <RightSvg
             style={styles.svgStyle}
             onPress={() => {
@@ -224,7 +225,7 @@ function MyPageScreen({navigation}) {
           />
         </View>
         <Pressable style={styles.middleContainer} onPress={onLogoutClick}>
-          <Text style={Text13R.text}>로그아웃</Text>
+          <Text style={Text14M.text}>로그아웃</Text>
           <RightSvg style={styles.svgStyle} />
         </Pressable>
         <View style={styles.modalContainer}>
@@ -297,12 +298,14 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center', // 세로 중앙 정렬
+    
   },
   // 기존 스타일 유지
   profileInfoContainer: {
     flexDirection: 'row', // 가로로 배열
     alignItems: 'center', // 세로 중앙 정렬
-    marginTop: 10, // 필요한 경우 마진 조정
+    // marginTop: 10, // 필요한 경우 마진 조정
+  
   },
 
   middleContainer: {
@@ -326,6 +329,7 @@ const styles = StyleSheet.create({
   },
 
   profileLabel: {
+    fontSize:12,
     paddingTop: 10,
   },
   rowBodyContainer: {
@@ -337,6 +341,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 15,
+ 
   },
   colMidContainer: {
     flexDirection: 'column',
@@ -349,6 +354,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginTop: 15,
     paddingHorizontal: 10,
+    
   },
 
   iconPadding: {

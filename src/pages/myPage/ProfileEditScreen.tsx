@@ -20,7 +20,11 @@ import RequiredTextLabel from '../../components/RequiredTextLabel.tsx';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import kakaoCirclePng from '../../assets/icons/kakaoCircle.png';
 
-function MyProfileEditScreen({navigation}) {
+
+
+
+
+function MyProfileEditScreen({navigation}:any) {
   const [profileImage, setProfileImage] = useState(ProfileImg);
   // Redux store에서 user 상태 가져오기
   const user = useSelector(state => state.user);
@@ -35,6 +39,9 @@ function MyProfileEditScreen({navigation}) {
   const handleNicknameBlur = () => setIsNicknameFocused(false);
 
   const nicknameInputRef = useRef(null); // TextInput에 대한 ref 생성
+
+ 
+  
 
   // 닉네임 수정을 위한 핸들러
   const handleClearNickname = () => {
@@ -58,7 +65,21 @@ function MyProfileEditScreen({navigation}) {
   //   } else {
   //     setEmailIcon(<GoogleSvg />); // 이메일이 다른 경우 아이콘 없음
   //   }
-  // }, [user.email]);
+  // }, [user.email]);\
+   const handleBirthDateChange = (text:string) => {
+    // Automatically format birthdate
+    let formattedText = text.replace(/[^0-9]/g, '');
+
+    if (formattedText.length > 3) {
+      formattedText = formattedText.slice(0, 4) + '.' + formattedText.slice(4);
+    }
+    if (formattedText.length > 6) {
+      formattedText = formattedText.slice(0, 7) + '.' + formattedText.slice(7);
+    }
+
+    setBirthdate(formattedText);
+  };
+ 
 
   const openGallery = () => {
     ImagePicker.openPicker({
@@ -122,11 +143,11 @@ function MyProfileEditScreen({navigation}) {
               onChangeText={setNickname} // 텍스트 변경 시 닉네임 상태 업데이트
               onFocus={handleNicknameFocus}
               onBlur={handleNicknameBlur}
-              clearButtonMode="while-editing"
+               clearButtonMode="while-editing"
             />
-            <TouchableOpacity onPress={handleClearNickname}>
+            {/* <TouchableOpacity onPress={handleClearNickname}>
               <CloseGraySvg style={{paddingHorizontal: 15}} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <View style={{height: 30}} />
           <RequiredTextLabel label={'생년월일'} />
@@ -134,7 +155,10 @@ function MyProfileEditScreen({navigation}) {
             <TextInput
               style={styles.input}
               value={birthdate}
-              editable={false} // 편집 불가능하게 설정
+              onChangeText={handleBirthDateChange} 
+              placeholder="YYYY.MM.DD"
+              clearButtonMode="while-editing"
+              // editable={false} // 편집 불가능하게 설정
             />
           </View>
         </View>

@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: globalColors.redLight, 
     marginBottom: 20,
-    padding: 10,
+    padding: 15,
     
   },
    itemWrapper: {
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
      justifyContent: 'space-between',
   },
     selectedItemContainer: {
-      backgroundColor: globalColors.purple,
+      backgroundColor: globalColors.redLight,
       // 선택된 항목의 배경색
   },
   svgStyle: {

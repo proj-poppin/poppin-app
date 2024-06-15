@@ -35,7 +35,7 @@ function FAQScreen({ navigation }: any) {
             return (
               <View key={item.id}  style={[styles.itemContainer,item.selected && styles.selectedItemContainer,]}>
               <View style={styles.itemWrapper}>
-                  <Text>Q. {item.answer}</Text>
+                  <Text style={{width:"85%"}} >Q. {item.question}</Text>
                   <TouchableOpacity onPress={() => handleClick(item.id)} >
                     {item.selected ?
                     <UpSvg  style={styles.svgStyle}
@@ -58,7 +58,7 @@ function FAQScreen({ navigation }: any) {
         </Pressable>
       </View>
     </View>
-    <SafeAreaView />
+    {/* <SafeAreaView /> */}
       </>
   );
 }
@@ -67,31 +67,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: globalColors.white,
-    // paddingHorizontal: 20,
   },
   headreTitle: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 15,
-    paddingLeft: 10,
-    
-    
+    paddingLeft: 15,
   },
   itemContainer: {
+    width: "100%",
     minHeight: 50,
     height: 'auto',
     borderBottomWidth: 1,
     borderBottomColor: globalColors.redLight, 
     marginBottom: 20,
     padding: 15,
-    
+   
   },
-   itemWrapper: {
+  itemWrapper: {
     minHeight: 50,
     height: 'auto',
     display: 'flex',
     flexDirection: 'row',
-     justifyContent: 'space-between',
+    justifyContent: 'space-between',
+    gap:15
   },
     selectedItemContainer: {
       backgroundColor: globalColors.redLight,
@@ -108,6 +107,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    marginBottom:40
    
   }
 });

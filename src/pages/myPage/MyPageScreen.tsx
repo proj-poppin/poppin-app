@@ -220,14 +220,14 @@ function MyPageScreen({navigation}:any) {
           </View>
         </View>
         <Pressable  onPress={() => {
-              navigation.navigate('ServicePolicy');
+              navigation.navigate('Policy');
         }}
           style={styles.middleContainer}>
           <Text style={Text14M.text}>이용 약관 및 정책</Text>
           <RightSvg
             style={styles.svgStyle}
             onPress={() => {
-              navigation.navigate('ServicePolicy');
+              navigation.navigate('Policy');
             }}
           />
         </Pressable>

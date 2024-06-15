@@ -49,6 +49,7 @@ import ReportOptions from './options/ReportOptions.tsx';
 import PopUpEditRequestScreen from '../pages/detail/PopUpEditRequestScreen.tsx';
 import PopUpEditRequestOptions from './options/PopUpEditRequestOptions.tsx';
 import PrivacyPolicyOptions from './options/PrivacyPolicyOptions.tsx';
+import PreferenceSettingScreen from '../pages/myPage/preferenceSetting/PreferenceSettingScreen.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -79,6 +80,11 @@ function AppNavigator() {
       <Stack.Screen
         name="Entry"
         component={EntryScreen}
+        options={EntryScreenOptions}
+      />
+       <Stack.Screen
+        name="PreferenceSetting"
+        component={PreferenceSettingScreen}
         options={EntryScreenOptions}
       />
 
@@ -192,6 +198,13 @@ function AppNavigator() {
         options={({navigation}) => ({
           headerShown: true,
           title: '문의하기/FAQ',
+          headerLeft: () => (
+            <Pressable
+              onPress={() => navigation.goBack()}
+              style={({pressed}) => ({opacity: pressed ? 0.5 : 1})}>
+              <GoBackSvg />
+            </Pressable>
+          ),
         })}
       />
       <Stack.Screen

@@ -34,7 +34,7 @@ import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import logout from '../../apis/auth/logout.ts';
 import Text14M from '../../styles/texts/body_medium/Text14M.ts';
 
-function MyPageScreen({navigation}) {
+function MyPageScreen({navigation}:any) {
   const {handleLogout, logoutStatus} = useLogout();
 
   const {data: user, loading, error} = useGetUser();
@@ -194,11 +194,15 @@ function MyPageScreen({navigation}) {
             />
           ))}
         </ScrollView>
-        <View style={styles.middleContainer}>
+        <Pressable onPress={navigateToKeywordAlarm}  style={styles.middleContainer}>
           <Text style={Text14M.text}>키워드 알림 설정</Text>
           <RightSvg style={styles.svgStyle} onPress={navigateToKeywordAlarm} />
-        </View>
-        <View style={styles.middleContainer}>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+              navigation.navigate('FAQ');
+        }}
+          style={styles.middleContainer}>
           <Text style={Text14M.text}>문의하기/FAQ</Text>
           <RightSvg
             style={styles.svgStyle}
@@ -206,7 +210,7 @@ function MyPageScreen({navigation}) {
               navigation.navigate('FAQ');
             }}
           />
-        </View>
+        </Pressable>
         <View style={styles.appVersionContainer}>
           <Text style={Text14M.text}>앱 버전</Text>
           <View style={styles.rowHeaderContainer}>
@@ -215,7 +219,10 @@ function MyPageScreen({navigation}) {
             </Text>
           </View>
         </View>
-        <View style={styles.middleContainer}>
+        <Pressable  onPress={() => {
+              navigation.navigate('ServicePolicy');
+        }}
+          style={styles.middleContainer}>
           <Text style={Text14M.text}>이용 약관 및 정책</Text>
           <RightSvg
             style={styles.svgStyle}
@@ -223,7 +230,7 @@ function MyPageScreen({navigation}) {
               navigation.navigate('ServicePolicy');
             }}
           />
-        </View>
+        </Pressable>
         <Pressable style={styles.middleContainer} onPress={onLogoutClick}>
           <Text style={Text14M.text}>로그아웃</Text>
           <RightSvg style={styles.svgStyle} />

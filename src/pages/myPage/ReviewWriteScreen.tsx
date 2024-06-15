@@ -17,9 +17,9 @@ import ImageDeleteSvg from '../../assets/icons/imageDelete.svg';
 import ImagePicker from 'react-native-image-crop-picker';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
-import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import Text13R from '../../styles/texts/label/Text12R.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
+import Text14B from '../../styles/texts/body_medium/Text14B.ts';
 
 function ReviewWriteScreen() {
   const [keyword, setKeyword] = useState('');
@@ -78,7 +78,7 @@ function ReviewWriteScreen() {
       </View>
 
       <View style={styles.sectionContainer}>
-        <Text style={[Text14R.text, {color: globalColors.purple}, {width: 65}]}>
+        <Text style={[Text14B.text, {color: globalColors.purple}, {width: 65}]}>
           방문 일시
         </Text>
         <ScrollView
@@ -100,7 +100,7 @@ function ReviewWriteScreen() {
       </View>
 
       <View style={styles.sectionContainer}>
-        <Text style={[Text13R.text, {color: globalColors.purple}, {width: 65}]}>
+        <Text style={[Text14B.text, {color: globalColors.purple}, {width: 65}]}>
           팝업 만족도
         </Text>
         <View style={styles.buttonsContainer}>
@@ -117,7 +117,7 @@ function ReviewWriteScreen() {
       </View>
 
       <View style={styles.sectionContainer}>
-        <Text style={[Text12R.text, {color: globalColors.purple}, {width: 65}]}>
+        <Text style={[Text14B.text, {color: globalColors.purple}, {width: 65}]}>
           혼잡도
         </Text>
         <View style={styles.buttonsContainer}>
@@ -222,11 +222,13 @@ const styles = StyleSheet.create({
   reviewInput: {
     width: 340,
     height: 150,
+    
     backgroundColor: 'white',
     borderColor: globalColors.warmGray,
     borderWidth: 1,
     borderRadius: 15,
-    padding: 10,
+    paddingTop:15,
+    padding: 15,
     textAlignVertical: 'top',
     marginBottom: 20,
     color: globalColors.font, // 입력 텍스트 색상

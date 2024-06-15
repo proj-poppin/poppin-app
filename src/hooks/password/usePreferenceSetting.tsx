@@ -1,5 +1,5 @@
 import {useCallback} from 'react';
-import preferenceSetting from '../../apis/auth/preferenceSetting.ts';
+import preferenceSetting from '../../apis/auth/preferenceSetting copy.ts';
 import {PreferenceData} from '../../types/PreferenceData.ts';
 import {useSelector} from 'react-redux';
 import {useAppDispatch} from '../../redux/stores';

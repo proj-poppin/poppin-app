@@ -1,29 +1,36 @@
 /* eslint-disable */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { View, Text, StyleSheet, Button, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Button, FlatList, TouchableOpacity, Modal } from "react-native";
 import {
   BottomSheetModal,
   BottomSheetView,
-  BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet';
 import globalColors from "../../../styles/color/globalColors.ts";
-import { Calendar, DateData, ExpandableCalendar, CalendarList } from "react-native-calendars";
+import DateData from "react-native-calendars";
 import { GetInterestPopUpListResponse } from "../../../types/PopUpListData.ts";
-import InterestPopUpCard from "../../../components/molecules/card/InterestPopUpCard.tsx";
-import DividerLine from "../../../components/DividerLine.tsx";
 import { useNavigation } from "@react-navigation/native";
-import { NewCalendarList } from "react-native-calendars/src";
 import { MarkedDates } from "react-native-calendars/src/types";
-import HeaderTitle from "./HeaderTitle.tsx";
-import XDate from "xdate";
 import FullCalendarComponent from "./FullCalendarComponent.tsx";
 import NormalCalendarComponent from "./NormalCalendarComponent.tsx";
-import DateTimePicker from "react-native-modal-datetime-picker";
+import {
+  addDots,
+  checkIsClosed, createDate,
+  createDateData,
+  createTodayDateData,
+  formatDate,
+  getTodayDate,
+  setCircle, updateDate
+} from "./calendarUtils.ts";
+import BottomSheetItem from "./BottomSheetItem.tsx";
+import NoItemComponent from "./NoItemComponent.tsx";
+import UpButton from "../../../assets/likes/upButtonBlue.svg";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
+
 
 
 interface LikeCalendarComponentProps {
   data: GetInterestPopUpListResponse[] | null;
-  // getMarkedDates: any;
 }
 
 type DateData = {
@@ -40,36 +47,33 @@ enum CalendarType {
 }
 
 const CalendarComponent:React.FC<LikeCalendarComponentProps>  = ({data}) => {
-  // ref
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // navigation
   const navigation = useNavigation();
 
-  // variables
-  const snapPoints = useMemo(() => ['43%', '80%'], []);
-  const [selDate, setSelDate] = useState<DateData>(createTodayDateData()); // 캘린더 내부사용 포맷
-  const handleSnap = useCallback((index: number) => {
-    console.log(`Snapped to index ${index}`);
-  }, []);
-  const [calendarType, setCalendarType] = useState<CalendarType>(CalendarType.NORMAL)
-  const [markedDates, setMarkedDates] = useState<MarkedDates>({});
+
+  // useState
   const [snapIndex, setSnapIndex] = useState(0);
+  const [selDate, setSelDate] = useState<DateData>(createTodayDateData()); // 캘린더 내부사용 포맷
+  const [markedDates, setMarkedDates] = useState<MarkedDates>({});
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
+  const [calendarType, setCalendarType] = useState<CalendarType>(CalendarType.NORMAL)
 
-  useEffect(() => {
-    bottomSheetModalRef.current?.present(snapIndex);
-    setMarkedDates(createMarkedDates());
-  }, []);
+  // useRef
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const dateTimePickerYearMonthRef = useRef<string>(null);
+  const bottomModalDateRef = useRef<DateData>(selDate);
 
+  // useMemo
+  const snapPoints = useMemo(() => ['43%', '80%'], []);
 
-  const filteredData = data?.filter(item => !checkIsClosed(item.open_date, item.close_date, selDate));
-
-  // callbacks
+  // useCallbacks
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
     bottomSheetModalRef.current?.snapToIndex(0);
   }, []);
+
   const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
     if (index == -1) {
       setCalendarType(CalendarType.FULL);
     } else {
@@ -77,181 +81,40 @@ const CalendarComponent:React.FC<LikeCalendarComponentProps>  = ({data}) => {
     }
   }, []);
 
-  function checkIsClosed(openDate:string, closeDate:string, selDate:DateData) {
-    // openDate, closeDate, selDate를 Date 객체로 변환합니다.
-    const open = new Date(openDate);
-    const close = new Date(closeDate);
-    const selected = new Date(selDate.dateString);
-    return selected < open || selected > close;
-  }
+  // variable
+  const filteredData = data?.filter(item => !checkIsClosed(item.open_date, item.close_date, selDate));
 
-  function createTodayDateData(): DateData {
-    const today = new Date(); // 현재 날짜 및 시간을 가져옵니다.
-
-    return {
-      dateString: today.toISOString().split('T')[0], // ISO 형식의 문자열로 변환하여 날짜 부분만 추출합니다.
-      day: today.getDate(),
-      month: today.getMonth() + 1,
-      year: today.getFullYear(),
-      timestamp: today.getTime(), // 밀리초 단위의 타임스탬프
-    };
-  }
-
-  function getTodayDate(): string {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고 2자리로 만듭니다.
-    const day = String(today.getDate()).padStart(2, '0'); // 일도 2자리로 만듭니다.
-    return `${year}-${month}-${day}`;
-  }
-
-  function formatDate(dateString: string): string {
-    const days = ['일', '월', '화', '수', '목', '금', '토'];
-    const date = new Date(dateString);
-    const dayOfWeek = days[date.getDay()]; // 요일을 가져옵니다.
-
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-
-    // 일일 월요일 형식으로 변환하여 반환합니다.
-    return `${day}일 ${dayOfWeek}요일`;
-  }
-
-
-  type ItemData = {
-    item: GetInterestPopUpListResponse;
-  }
-  const renderItem = ({item}:ItemData) => {
-
-
-    return <View style={{flex:1, flexDirection:"column", backgroundColor:"white", borderWidth:0, marginBottom:2}}>
-
-      <TouchableOpacity
-        key={item.id}
-        onPress={() => navigation.navigate('PopUpDetail', {id: item.id})}>
-        <InterestPopUpCard
-          key={item.id}
-          image_url={item.image_url}
-          name={item.name}
-          close_date={item.close_date}
-          open_date={item.open_date}
-          status={item.status}
-          id={item.id}
-        />
-      </TouchableOpacity>
-
-      <DividerLine height={2} />
-    </View>
-  }
+  // useEffect
+  useEffect(() => {
+    console.log(`지금 선택된 날짜는: ${selDate.dateString}`);
+    bottomModalDateRef.current = selDate;
+    bottomSheetModalRef.current?.present(snapIndex);
+    setMarkedDates(createMarkedDates());
+  }, [selDate]);
 
   function createMarkedDates() {
-
     const markedDates: MarkedDates = {};
-
-    function addOpenDateDots(e: GetInterestPopUpListResponse) {
-      if (!markedDates[e.open_date]) {
-        markedDates[e.open_date] = {
-          marked: true,
-          dots: [
-            { color: globalColors.purple, key:e.name},
-          ],
-        }
-      } else {
-        const dots: any = markedDates[e.open_date].dots
-        if (!dots) {
-          markedDates[e.open_date] = {
-            marked: true,
-            dots: [
-              { color: globalColors.purple, key:e.name},
-            ],
-          }
-        } else {
-          switch (dots.length) {
-            case 1:
-              dots.push({ color: globalColors.blue, key:e.name })
-              break;
-            case 2:
-              dots.push({ color: globalColors.purpleLight, key:e.name })
-              break;
-          }
-        }
-      }
-    }
-
-    function addCloseDateDots(e: GetInterestPopUpListResponse) {
-      if (!markedDates[e.close_date]) {
-        markedDates[e.close_date] = {
-          marked: true,
-          dots: [
-            { color: globalColors.purple, key: e.name},
-          ],
-        }
-      } else {
-        const dots: any = markedDates[e.close_date].dots
-        if (!dots) {
-          markedDates[e.close_date] = {
-            marked: true,
-            dots: [
-              { color: globalColors.purple, key: e.name},
-            ],
-          }
-        } else {
-          switch (dots.length) {
-            case 1:
-              dots.push({ color: globalColors.blue, key: e.name })
-              break;
-            case 2:
-              dots.push({ color: globalColors.purpleLight, key: e.name })
-              break;
-          }
-        }
-      }
-    }
-
-    function setTodayMarking() {
-      markedDates[getTodayDate()] = {
-        selected: true,
-        selectedColor: globalColors.purpleLight,
-        selectedTextColor: globalColors.black,
-        today: true
-      };
-    }
-
-    function setSelectedMarking() {
-      markedDates[selDate] = {
-        selected: true,
-        selectedColor: globalColors.purple,
-        selectedTextColor: globalColors.white,
-        // marked: true,
-
-      };
-    }
-
-    // 오늘 날짜 마킹
-    setTodayMarking();
-
-    // 선택 날짜 마킹
-    setSelectedMarking();
-
+    // 선택한 날짜 원찍기
+    setCircle(markedDates, selDate.dateString);
     // 오픈, 마감 날짜 점찍기
     data?.forEach(e=> {
-      addOpenDateDots(e);
-      addCloseDateDots(e);
+      addDots(markedDates, e);
     });
 
     return markedDates;
   }
 
+
   // renders
   return (
     <View style={{flex:1}}>
-
       {
         calendarType == CalendarType.NORMAL ?
-        (<NormalCalendarComponent
+        (
+          <NormalCalendarComponent
             selDate={selDate}
             setSelDate={setSelDate}
+            dateTimePickerYearMonthRef={dateTimePickerYearMonthRef}
             onClickHeaderTitle={(dateData) => {
               setIsDateTimePickerVisible(true);
             }}
@@ -262,6 +125,7 @@ const CalendarComponent:React.FC<LikeCalendarComponentProps>  = ({data}) => {
         (<FullCalendarComponent
             selDate={selDate}
             setSelDate={setSelDate}
+            dateTimePickerYearMonthRef={dateTimePickerYearMonthRef}
             onClickHeaderTitle={(dateData) => {
               setIsDateTimePickerVisible(true);
             }}
@@ -271,32 +135,69 @@ const CalendarComponent:React.FC<LikeCalendarComponentProps>  = ({data}) => {
             setMarkedDates={setMarkedDates}/>)
       }
         <View style={{position:"absolute", bottom:'50%'}}>
-          <DateTimePicker
+
+          <DateTimePickerModal
+            date={createDate(bottomModalDateRef.current.year, bottomModalDateRef.current.month - 1, bottomModalDateRef.current.day)}
+            locale={"ko"}
+            customHeaderIOS={(props) => {
+              return (
+                <View style={{ flexDirection: "row", justifyContent:"center", alignItems:"center"}}>
+                  <Text style={styles.bottomModalTitleText}>{dateTimePickerYearMonthRef.current}</Text>
+                  <UpButton />
+                </View>);
+            }}
+            onChange={(newDate) => {
+              bottomModalDateRef.current = createDateData(newDate.getFullYear(), newDate.getMonth(), newDate.getDate()+1);
+              console.log(`선택됨: ${bottomModalDateRef.current.dateString}`)
+            }}
+            customCancelButtonIOS={(props) => {return <View/>}}
+            customConfirmButtonIOS={(props) => {
+              return (<View style={{flexDirection:"row", alignItems:'center', paddingBottom:14.87}}>
+                <TouchableOpacity style={{flex:1, height:42}} onPress={() => {
+                  setIsDateTimePickerVisible(false)
+                }}>
+                  <Text style={styles.bottomModalButtonTextCancel}>취소</Text>
+                </TouchableOpacity>
+
+                <View style={{width:2, height:20, backgroundColor:globalColors.warmGray2}}/>
+
+                <TouchableOpacity style={{flex:1, height:42}} onPress={() => {
+                  setIsDateTimePickerVisible(false);
+                  setSelDate(bottomModalDateRef.current);
+                  setMarkedDates(createMarkedDates());
+                }}>
+                  <Text style={styles.bottomModalButtonTextConfirm}>확인</Text>
+                </TouchableOpacity>
+              </View>);
+            }}
+
             onConfirm={() => {}}
-            onCancel={() => {setIsDateTimePickerVisible(false)}}
+            onCancel={() => {}}
             display={"spinner"}
             mode={"date"}
             isVisible={isDateTimePickerVisible}
           />
+
         </View>
 
         <View style={styles.bottomSheetStyle}>
           <BottomSheetModal
-
             ref={bottomSheetModalRef}
             index={0}
             snapPoints={snapPoints}
             onChange={handleSheetChanges}
-
-          >
-            <BottomSheetView>
-              <View style={{flexDirection:'column'}}>
-                <Text style={{marginLeft:16, marginBottom:12, fontSize:20, fontWeight:"600"}}>{(formatDate(selDate.dateString))}</Text>
-                <FlatList
+            handleStyle={{borderTopWidth:1, borderTopColor:globalColors.warmGray}}
+            handleIndicatorStyle={{backgroundColor:globalColors.font, width:56}}>
+            <BottomSheetView >
+              <View style={{flexDirection:'column', marginBottom:160}}>
+                <Text style={{marginLeft:16, marginBottom:12, fontSize:20, fontWeight:"600", }}>{(formatDate(selDate.dateString))}</Text>
+                {(filteredData?.length == 0) ?
+                  <NoItemComponent/> :
+                  <FlatList
                   data={filteredData}
-                  keyExtractor={(index) => index.toString()} // 각 아이템을 고유하게 식별하는 키 제공
-                  renderItem={(props) => renderItem(props)}>
+                  renderItem={(props) => <BottomSheetItem item={props.item} navigation={navigation} />}>
                 </FlatList>
+                }
               </View>
             </BottomSheetView>
           </BottomSheetModal>
@@ -305,6 +206,7 @@ const CalendarComponent:React.FC<LikeCalendarComponentProps>  = ({data}) => {
 
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -319,8 +221,30 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
   },
   bottomSheetStyle: {
-    height:0
+    height:0,
+  },
+  bottomModalTitleText: {
+    fontSize: 20,
+    fontWeight: '600',
+    paddingVertical: 19.2,
+    color: globalColors.blue,
+    marginRight: 2,
+  },
+  bottomModalButtonTextCancel: {
+    color:globalColors.font,
+    fontSize:16,
+    fontWeight:'600',
+    padding:12,
+    textAlign:'center'
+  },
+  bottomModalButtonTextConfirm: {
+    color:globalColors.blue,
+    fontSize:16,
+    fontWeight:'600',
+    padding:12,
+    textAlign:'center'
   }
+
 });
 
 export default CalendarComponent;

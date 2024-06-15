@@ -29,7 +29,7 @@ function FAQScreen({ navigation }: any) {
     <>
     <View style={styles.container}>
       <Text style={styles.headreTitle}>자주 묻는 질문</Text>
-      <ScrollView style={{ marginBottom: 100 }}>
+      <ScrollView style={{ marginBottom: 30 }}>
         {data &&
           data.map((item: any) => {
             return (
@@ -51,7 +51,9 @@ function FAQScreen({ navigation }: any) {
           })}
       </ScrollView>
       <View style={styles.buttonContainer}>
-        <Pressable style={{borderRadius:50,width:"90%",backgroundColor:globalColors.blue,height:"90%",display:"flex",justifyContent:"center",}}>
+          <Pressable
+            onPress={()=>navigation.navigate('FAQFormScreen')}
+            style={{ borderRadius: 50, width: "90%", backgroundColor: globalColors.blue, height: "90%", display: "flex", justifyContent: "center", }}>
           <Text style={{color:"white",textAlign:"center",}}>1:1문의하기</Text>
         </Pressable>
       </View>
@@ -105,7 +107,8 @@ const styles = StyleSheet.create({
     height: 60,
     display: "flex",
     justifyContent: "center",
-    alignItems:"center"
+    alignItems: "center",
+   
   }
 });
 

@@ -54,7 +54,7 @@ function FAQScreen({ navigation }: any) {
           <Pressable
             onPress={()=>navigation.navigate('FAQFormScreen')}
             style={{ borderRadius: 50, width: "90%", backgroundColor: globalColors.blue, height: "90%", display: "flex", justifyContent: "center", }}>
-          <Text style={{color:"white",textAlign:"center",}}>1:1문의하기</Text>
+          <Text style={{color:"white",textAlign:"center",fontSize:20}}>1:1문의하기</Text>
         </Pressable>
       </View>
     </View>

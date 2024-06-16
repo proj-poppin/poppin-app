@@ -29,5 +29,6 @@ export type AppNavigatorParamList = {
   NoticeDetail: {nid: number};
   findInputScreen: undefined;
   FAQForm: undefined;
+  PasswordCheck:undefined
 };
 // Path: src/types/RootStackParamList.ts

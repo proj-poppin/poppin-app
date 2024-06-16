@@ -51,6 +51,7 @@ import PopUpEditRequestOptions from './options/PopUpEditRequestOptions.tsx';
 import PrivacyPolicyOptions from './options/PrivacyPolicyOptions.tsx';
 import PreferenceSettingScreen from '../pages/myPage/preferenceSetting/PreferenceSettingScreen.tsx';
 import FAQFormScreen from '../pages/myPage/FAQFormScreen.tsx';
+import PasswordCheckScreen from '../pages/myPage/PasswordCheckScreen.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -77,7 +78,6 @@ function AppNavigator() {
         component={FindInputScreen}
         options={{headerShown: false}}
       />
-
       <Stack.Screen
         name="Entry"
         component={EntryScreen}
@@ -178,7 +178,8 @@ function AppNavigator() {
           title: '프로필 설정',
           headerRight: () => (
             <Text
-              onPress={() => navigation.goBack()}
+              onPress={
+                navigation.navigate('ProfileEdit')}
               style={{color: globalColors.blue, marginRight: 10}}>
               완료
             </Text>
@@ -193,6 +194,7 @@ function AppNavigator() {
         })}
       />
       <Stack.Screen name="PasswordChange" component={PasswordChangeScreen} />
+        <Stack.Screen name="PasswordCheck" component={PasswordCheckScreen} />
       <Stack.Screen
         name="FAQ"
         component={FAQScreen}

@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
+  Pressable,
 } from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 // @ts-ignore
@@ -19,21 +20,30 @@ import CloseGraySvg from '../../assets/icons/closeGray.svg';
 import RequiredTextLabel from '../../components/RequiredTextLabel.tsx';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import kakaoCirclePng from '../../assets/icons/kakaoCircle.png';
+import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
+import GoBackSvg from "../../assets/icons/goBack.svg"
+import usePatchUserSetting from '../../hooks/myPage/usePatchUserSetting.tsx';
 
 
-
-
-
-function MyProfileEditScreen({navigation}:any) {
+function MyProfileEditScreen({ navigation }: any) {
+  const { data: userData } = useGetUserSetting()
   const [profileImage, setProfileImage] = useState(ProfileImg);
+ 
   // Redux store에서 user 상태 가져오기
   const user = useSelector(state => state.user);
-  const [email, setEmail] = useState(user.email || 'poppin@gmail.com'); // 이메일이 없는 경우 디폴트 이메일 설정
-  const [emailIcon, setEmailIcon] = useState(null);
-  const [nickname, setNickname] = useState(user.nickname || 'test');
+  const [nickname, setNickname] = useState("");
+  const [birthdate, setBirthdate] = useState<any>("");
+  
+  
+  // const [email, setEmail] = useState(user.email || 'poppin@gmail.com'); // 이메일이 없는 경우 디폴트 이메일 설정
+  // const [emailIcon, setEmailIcon] = useState(null);
+ 
   const [isNicknameFocused, setIsNicknameFocused] = useState(false);
-  const [birthdate, setBirthdate] = useState(user.birthDate || '');
+  // const [birthdate, setBirthdate] = useState(user.birthDate || '');
+  
 
+  
+ 
   // 닉네임 입력 필드의 포커스 상태 변경을 위한 핸들러
   const handleNicknameFocus = () => setIsNicknameFocused(true);
   const handleNicknameBlur = () => setIsNicknameFocused(false);
@@ -42,12 +52,13 @@ function MyProfileEditScreen({navigation}:any) {
 
  
   
+  
 
   // 닉네임 수정을 위한 핸들러
   const handleClearNickname = () => {
     setNickname(''); // 닉네임 상태 초기화
     // TextInput에 프로그램적으로 포커스
-    nicknameInputRef.current.focus();
+    // nicknameInputRef.current.focus();
   };
 
   // '회원 탈퇴' 버튼 클릭 핸들러
@@ -96,12 +107,53 @@ function MyProfileEditScreen({navigation}:any) {
         console.log('ImagePicker Error: ', error);
       });
   };
+  const { patchUserInfo } = usePatchUserSetting()
+
+   const handleSubmit = async () => {
+    const updatedData = { 
+      nickname,
+      birthdate,
+    };
+     console.log("dd",updatedData)
+     await patchUserInfo(updatedData)
+   };
+  
+    useEffect(() => {
+    if (userData) {
+      setNickname(userData?.nickname)
+      setBirthdate(userData.birthDate);
+    }
+  }, [userData]);
+
+  
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      title: '프로필 설정',
+      headerRight: () => (
+        <Text
+          onPress={handleSubmit}
+          style={{ color: globalColors.blue, marginRight: 10 }}
+        >
+          완료
+        </Text>
+      ),
+      headerLeft: () => (
+        <Pressable
+          onPress={() => navigation.goBack()}
+          style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1 })}
+        >
+          <GoBackSvg />
+        </Pressable>
+      ),
+    });
+  }, [navigation,  nickname, birthdate, profileImage]);
 
   return (
     <DismissKeyboardView style={styles.container}>
       <View style={styles.profileContainer}>
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={profileImage} />
+          <Image style={styles.image} source={userData&&userData.userImageUrl ==null?userData.userImageUrl:profileImage} />
           <TouchableOpacity style={styles.galleryIcon} onPress={openGallery}>
             <GallerySvg />
           </TouchableOpacity>
@@ -125,7 +177,7 @@ function MyProfileEditScreen({navigation}:any) {
             )}
             <TextInput
               style={styles.emailInput}
-              value={email}
+              value={userData&&userData.email}
               editable={false} // 편집 불가능하게 설정
             />
           </View>
@@ -169,7 +221,7 @@ function MyProfileEditScreen({navigation}:any) {
         <RightSvg
           style={styles.svgStyle}
           onPress={() => {
-            navigation.navigate('PasswordChange');
+            navigation.navigate('PasswordCheck');
           }}
         />
       </View>

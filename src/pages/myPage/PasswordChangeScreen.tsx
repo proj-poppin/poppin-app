@@ -10,8 +10,10 @@ import Text12R from '../../styles/texts/label/Text12R.ts';
 import useResetPassword from '../../hooks/password/useResetPassword.tsx';
 import { useSelector } from 'react-redux';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
+import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
 
 function PasswordChangeScreen({ navigation }: any) {
+    const { data: userData } = useGetUserSetting()
   const user = useSelector(state => state.user);
   const [email, setEmail] = useState(user.email || 'poppin@gmail.com'); 
   const [error, setError] = useState('');
@@ -22,7 +24,7 @@ function PasswordChangeScreen({ navigation }: any) {
   const [isPasswordSame, setIsPasswordSame] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
 
-  const canGoNext = isEmailValid && isPasswordValid && isPasswordSame;
+  const canGoNext = isPasswordValid && isPasswordSame;
 
    const {resetUserPassword, resetPasswordStatus} = useResetPassword();
 
@@ -76,6 +78,7 @@ function PasswordChangeScreen({ navigation }: any) {
     if (
       isPasswordSame 
     ) {
+      
       resetUserPassword(password, passwordConfirm).then();
     } else {
       Alert.alert('Error', 'Passwords do not match or meet the criteria.');
@@ -130,26 +133,10 @@ function PasswordChangeScreen({ navigation }: any) {
       <View style={styles.emailInputContainer}>
         <TextInput
           style={styles.emailInput}
-          value={email}
+          value={userData&&userData.email}
           editable={false} 
         />
       </View>
-      <View style={{marginBottom: 20}} />
-      <LabelAndInput
-        onChangeText={handleChangePassword}
-        placeholder="현재 비밀번호"
-        keyboardType="default"
-        labelText={'비밀번호 설정'}
-        isPassword={true}
-        isPasswordSetting={true}
-        value={password}
-        // containerStyle={{marginBottom: 10}}
-      />
-      <Pressable onPress={handleForgotPasswordPress}>
-        <Text style={styles.forgotPasswordText}>
-          현재 비밀번호가 기억나지 않으세요?
-        </Text>
-      </Pressable>
       <LabelAndInput
         onChangeText={handleChangePassword}
         placeholder="새 비밀번호"
@@ -180,7 +167,7 @@ function PasswordChangeScreen({ navigation }: any) {
         loading={false}
         disabled={!canGoNext}
         alwaysActive={false}
-        onDisabledPress={() => setError('✕ 아이디를 입력해주세요')}
+        // onDisabledPress={() => setError('✕ 아이디를 입력해주세요')}
       />
     </DismissKeyboardView>
   );
@@ -200,6 +187,7 @@ const styles = StyleSheet.create({
     backgroundColor: globalColors.component,
     borderRadius: 30,
     padding: 10,
+    marginBottom:20
   },
   forgotPasswordText: {
     textDecorationLine: 'underline',

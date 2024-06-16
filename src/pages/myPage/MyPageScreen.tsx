@@ -33,9 +33,11 @@ import useGetUser from '../../hooks/auth/useGetUser.tsx';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import logout from '../../apis/auth/logout.ts';
 import Text14M from '../../styles/texts/body_medium/Text14M.ts';
+import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
 
 function MyPageScreen({navigation}:any) {
-  const {handleLogout, logoutStatus} = useLogout();
+  const { handleLogout, logoutStatus } = useLogout();
+  const { data: userData } = useGetUserSetting()
 
   const {data: user, loading, error} = useGetUser();
 
@@ -136,7 +138,7 @@ function MyPageScreen({navigation}:any) {
           <ProfileSvg />
           <View style={styles.colCloseContainer}>
             <Text style={[text20B.text]}>
-              {isLoggedIn ? user?.nickname : '로그인 후 이용해주세요'}
+              {isLoggedIn ? userData&&userData?.nickname : '로그인 후 이용해주세요'}
             </Text>
             <Pressable
               style={styles.profileInfoContainer}

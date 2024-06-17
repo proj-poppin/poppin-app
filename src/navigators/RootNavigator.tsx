@@ -65,15 +65,19 @@ const RootNavigator = () => {
         }
         const token = await messaging().getToken();
         console.log('phone token', token);
-        // dispatch(userSlice.actions.setPhoneToken(token));
-        // return axios.post(`${Config.API_URL}/phonetoken`, {token});
 
+        const storedToken = await EncryptedStorage.getItem('pushToken');
+        if (storedToken === token) {
+          console.log('푸시토큰이 이미 등록되어 있습니다.');
+          return;
+        }
         const response = await registerPushToken({
           token: token,
           device: Platform.OS,
         });
         if (response?.success) {
           console.log('푸시 토큰 등록에 성공했습니다.');
+          await EncryptedStorage.setItem('pushToken', token);
         } else {
           console.error(`푸시 토큰 등록에 실패했습니다. ${response?.error}`);
         }

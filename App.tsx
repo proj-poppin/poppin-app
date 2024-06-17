@@ -11,6 +11,7 @@ import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import store from './src/redux/stores';
 import './localConfig';
 import {Alert, NativeModules, Platform} from 'react-native';
+import { registerPushToken } from "./src/apis/push/registerPushToken.ts";
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
@@ -20,6 +21,7 @@ PushNotification.configure({
   // (optional) 토큰이 생성될 때 실행됨(토큰을 서버에 등록할 때 쓸 수 있음)
   onRegister: function (token: any) {
     console.log('TOKEN2:', token);
+
   },
 
   // (required) 리모트 노티를 수신하거나, 열었거나 로컬 노티를 열었을 때 실행

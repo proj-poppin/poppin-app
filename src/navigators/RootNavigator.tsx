@@ -9,6 +9,8 @@ import getUser from '../apis/user/getUser.ts';
 import LoadingScreen from '../pages/splash/LoadingScreen.tsx';
 import userSlice from '../redux/slices/user.ts';
 import messaging from '@react-native-firebase/messaging';
+import { registerPushToken } from "../apis/push/registerPushToken.ts";
+import { Alert, Platform } from "react-native";
 
 const RootNavigator = () => {
   const dispatch = useDispatch();
@@ -65,6 +67,16 @@ const RootNavigator = () => {
         console.log('phone token', token);
         // dispatch(userSlice.actions.setPhoneToken(token));
         // return axios.post(`${Config.API_URL}/phonetoken`, {token});
+
+        const response = await registerPushToken({
+          token: token,
+          device: Platform.OS,
+        });
+        if (response?.success) {
+          console.log('푸시 토큰 등록에 성공했습니다.');
+        } else {
+          console.error(`푸시 토큰 등록에 실패했습니다. ${response?.error}`);
+        }
       } catch (error) {
         console.log(error);
       }

@@ -1,7 +1,12 @@
 import React from 'react';
-import {Text, StyleSheet} from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 
-const RequiredTextLabel = ({label, isRequired = false}) => {
+type Props = {
+  label: string;
+  isRequired?:boolean
+}
+
+const RequiredTextLabel = ({label, isRequired = false}:Props) => {
   return (
     <Text style={styles.labelText}>
       {label}

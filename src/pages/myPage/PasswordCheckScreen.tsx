@@ -11,26 +11,19 @@ import useResetPassword from '../../hooks/password/useResetPassword.tsx';
 import { useSelector } from 'react-redux';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
 import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
+import useConfirmPassword from '../../hooks/myPage/useConfirmPassword.tsx';
 
-function PasswordChangeScreen({ navigation }: any) {
-    const { data: userData } = useGetUserSetting()
-  const user = useSelector(state => state.user);
-  const [email, setEmail] = useState(user.email || 'poppin@gmail.com'); 
-  const [error, setError] = useState('');
-  const [touched, setTouched] = useState(true);
+function PasswordCheckScreen({ navigation }: any) {
+  const { data: userData } = useGetUserSetting()
+
   const [password, setPassword] = useState('');
+  
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  const [isPasswordSame, setIsPasswordSame] = useState(false);
+  const {confirmPassword,...confirmPasswordState}=useConfirmPassword()
 
 
-  const canGoNext = isPasswordValid && isPasswordSame;
-
-   const {resetUserPassword, resetPasswordStatus} = useResetPassword();
-
- 
-
-  const handleChangePassword = text => {
+  const handleChangePassword = (text:string) => {
     setPassword(text);
     // 비밀번호 유효성 검사
     const isValidPassword =
@@ -39,36 +32,28 @@ function PasswordChangeScreen({ navigation }: any) {
       );
     setIsPasswordValid(isValidPassword);
     // 비밀번호 확인 필드와의 일치 여부 검사
-    checkPasswordMatch(text, passwordConfirm);
-  };
-
-  const handleSamePassword = (text: React.SetStateAction<string>) => {
-    setPasswordConfirm(text);
-    // 비밀번호 필드와의 일치 여부 검사
-    checkPasswordMatch(password, text);
-  };
-
-  const checkPasswordMatch = (password, passwordConfirm) => {
-    const isMatch = password === passwordConfirm;
-    setIsPasswordSame(isMatch);
-    if (isMatch && isPasswordValid) {
-      // 비밀번호가 유효하고, 비밀번호와 비밀번호 확인이 일치할 경우 추가 로직 처리
-      console.log('비밀번호 일치 및 유효성 통과');
-    }
-  };
-
-  const handleSumbit = async () => {
-    if (
-      isPasswordSame 
-    ) {
-      
-     await resetUserPassword(password, passwordConfirm).then();
-    } else {
-      Alert.alert('Error', 'Passwords do not match or meet the criteria.');
-    }
+    // checkPasswordMatch(text, passwordConfirm);
   };
 
   
+
+  const handleSumbit = async () => {
+    
+
+    await confirmPassword(password)
+   
+  }
+  useEffect(() => {
+    if (confirmPasswordState.success === true) {
+       
+       navigation.navigate('PasswordChange')
+      setPassword("")
+      setIsPasswordValid(false)
+    }
+    
+  },[confirmPasswordState])
+      
+
   useEffect(() => {
     navigation.setOptions(
       ProfileAppBar({
@@ -79,16 +64,11 @@ function PasswordChangeScreen({ navigation }: any) {
     );
   }, [navigation]);
 
- useEffect(() => {
-    if (resetPasswordStatus.success === true) {
-       
-       navigation.navigate('MyPage')
-      setPassword("")
-      setIsPasswordValid(false)
-    }
-    
-  },[resetPasswordStatus])
-  
+  const handleForgotPasswordPress = () => {
+    // Navigate to your desired screen
+    navigation.navigate('ForgotPasswordScreen'); // Replace 'ForgotPasswordScreen' with your actual screen name
+  };
+
   return (
     <DismissKeyboardView style={styles.container}>
       <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>
@@ -99,47 +79,43 @@ function PasswordChangeScreen({ navigation }: any) {
       <View style={styles.emailInputContainer}>
         <TextInput
           style={styles.emailInput}
-          value={userData&&userData.email}
+          value={userData &&userData?.email}
           editable={false} 
         />
       </View>
+      <View style={{marginBottom: 20}} />
       <LabelAndInput
         onChangeText={handleChangePassword}
-        placeholder="새 비밀번호"
+        placeholder="현재 비밀번호"
+        keyboardType="default"
         labelText={'비밀번호 설정'}
         isPassword={true}
-        containerStyle={{marginBottom: 20}}
+        isPasswordSetting={true}
+        value={password}
+        // containerStyle={{marginBottom: 10}}
       />
-      <LabelAndInput
-        onChangeText={handleSamePassword}
-        placeholder="새 비밀번호 확인"
-        labelText={'비밀번호 확인'}
-        isPassword={true}
-        isPasswordSame={isPasswordSame}
-        isPasswordSameSetting={true}
-      />
-      <Text
-        style={[
-          Text12R.text,
-          {color: globalColors.font},
-          {paddingVertical: 20},
-        ]}>
-        • 개인정보(연락처/생일)와 관련된 숫자 등 다른 사람이 알아낼 수 있는
-        비밀번호는 사용하지 마세요.
-      </Text>
-      <CompleteButton
-        title="완료"
+      {!confirmPasswordState.success && <Text style={{color:"red",marginLeft:10,marginBottom:20}}>{confirmPasswordState.error?.message}</Text>}
+      <Pressable onPress={handleForgotPasswordPress}>
+        <Text style={styles.forgotPasswordText}>
+          현재 비밀번호가 기억나지 않으세요?
+        </Text>
+      </Pressable>
+      <Pressable
+        disabled={!isPasswordValid}
         onPress={handleSumbit}
-        loading={false}
-        disabled={!canGoNext}
-        alwaysActive={false}
-        // onDisabledPress={() => setError('✕ 아이디를 입력해주세요')}
-      />
+        style={{ height: 60, width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <View style={{height:"80%",width:"80%",backgroundColor:globalColors.blue,borderRadius:30,display:"flex",justifyContent:"center"}}>
+          <Text style={{textAlign:"center",color:"white",fontSize:18}}>다음</Text>
+        </View>
+      </Pressable>
+     
+     
     </DismissKeyboardView>
   );
 }
 
-export default PasswordChangeScreen;
+
+export default PasswordCheckScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -153,12 +129,12 @@ const styles = StyleSheet.create({
     backgroundColor: globalColors.component,
     borderRadius: 30,
     padding: 10,
-    marginBottom:20
   },
   forgotPasswordText: {
     textDecorationLine: 'underline',
-    color: 'black',
+    color: globalColors.font,
     marginBottom: 30,
+    textAlign:"center"
   },
   emailInput: {
     flex: 1, // 나머지 공간 채우기

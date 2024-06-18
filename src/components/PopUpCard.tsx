@@ -4,7 +4,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import globalColors from '../styles/color/globalColors.ts';
 import Text14B from '../styles/texts/body_medium/Text14B.ts';
-const PopUpCard = ({Svg = DefaultImageSvg, title, date = null}) => {
+const PopUpCard = ({Svg = DefaultImageSvg, title, date = null}:any) => {
   const formattedTitle =
     title.length > 7 ? `${title.substring(0, 7)}...` : title;
   return (
@@ -33,10 +33,11 @@ const styles = StyleSheet.create({
   },
   svgContainer: {
     width: '100%',
-    height: 80,
-    paddingTop: 10, // SVG 상단 패딩
-    paddingLeft: 10, // SVG 좌측 패딩
-    paddingRight: 10, // SVG 우측 패딩
+    height: '80%',
+   
+    // paddingTop: 10, // SVG 상단 패딩
+    // paddingLeft: 10, // SVG 좌측 패딩
+    // paddingRight: 10, // SVG 우측 패딩
     borderTopLeftRadius: 8, // 상단 좌측 모서리 둥글게
     borderTopRightRadius: 8, // 상단 우측 모서리 둥글게
   },

@@ -1,5 +1,5 @@
 import {useCallback} from 'react';
-import preferenceSetting from '../../apis/auth/preferenceSetting.ts';
+import preferenceSetting from '../../apis/auth/preferenceSetting copy.ts';
 import {PreferenceData} from '../../types/PreferenceData.ts';
 import {useSelector} from 'react-redux';
 import {useAppDispatch} from '../../redux/stores';
@@ -16,12 +16,10 @@ const usePreferenceSetting = () => {
 
   // 선호도 설정 업데이트 함수
   const updatePreference = (
-    category: keyof PreferenceData,
-    key: string,
-    value: boolean,
+    category: any,
   ) => {
-    console.log('updatePreference', category, key, value);
-    dispatch(setPreference({category, key, value}));
+    console.log('updatePreference', category, );
+   
   };
 
   // 선호도 설정 초기화 함수

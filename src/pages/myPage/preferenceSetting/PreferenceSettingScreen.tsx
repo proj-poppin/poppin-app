@@ -11,93 +11,26 @@ import { POP_UP_TYPES,TFilter } from "./types.ts"
 import CategorySelectButton from '../../../components/findPopup/CategorySelectButton.tsx';
 import { useSelector } from 'react-redux';
 import usePreferenceSetting from '../../../hooks/password/usePreferenceSetting.tsx';
-import useGetPreferenceSetting from '../../../hooks/password/useGetPreferenceSetting.tsx.tsx';
+import useGetPreferenceSetting from '../../../hooks/myPage/useGetPreferenceSetting.tsx';
+import usePutPreferenceSetting from '../../../hooks/myPage/usePutSetting.tsx';
+
 
 function PreferenceSettingScreen({ navigation }: any) {
+  const { data, loading } = useGetPreferenceSetting()
+  const {putPreference}=usePutPreferenceSetting()
+    
     const user = useSelector(state => state.user);
     const [modalVisible, setModalVisible] = useState(false);
-    const [availableTags, setAvailableTags] = useState<TFilter[]>(POP_UP_TYPES);
-    const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
+    const [selectedTags, setSelectedTags] = useState<any>(POP_UP_TYPES);
     const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
       useState(false);
-  const { data } = useGetPreferenceSetting()
-  console.log("data",data)
-  const {resetPreference} = usePreferenceSetting();
-
-  const [selections, setSelections] = useState({
-    type: [],
-    interest: [],
-    mate: [],
-  });
 
   // 모달을 닫는 함수
   const handleCloseModal = () => {
     setModalVisible(false);
   };
 
-  // 각 단계에 맞는 제목 렌더링 함수
-  // const renderTitleForStep = step => {
-  //   switch (step) {
-  //     case 1:
-  //       return '팝업 유형';
-  //     case 2:
-  //       return '관심사';
-  //     case 3:
-  //       return '팝업 MATE';
-  //     default:
-  //       return '';
-  //   }
-  // };
-  // // 옵션 선택 처리 함수
-  // const handleSelectOption = (option, step) => {
-  //   setSelections(prevSelections => {
-  //     const newSelections = {...prevSelections};
-  //     switch (step) {
-  //       case 1:
-  //         // 타입 선택 업데이트
-  //         const typeIndex = newSelections.type.indexOf(option);
-  //         if (typeIndex === -1) {
-  //           newSelections.type = [option]; // 예시 코드에서는 단일 선택만을 가정합니다.
-  //         } else {
-  //           newSelections.type = [];
-  //         }
-  //         break;
-  //       case 2:
-  //         // 관심사 선택 업데이트
-  //         const interestIndex = newSelections.interest.indexOf(option);
-  //         if (interestIndex === -1) {
-  //           newSelections.interest.push(option);
-  //         } else {
-  //           newSelections.interest.splice(interestIndex, 1);
-  //         }
-  //         break;
-  //       case 3:
-  //         // 메이트 선택 업데이트
-  //         const mateIndex = newSelections.mate.indexOf(option);
-  //         if (mateIndex === -1) {
-  //           newSelections.mate = [option]; // 예시 코드에서는 단일 선택만을 가정합니다.
-  //         } else {
-  //           newSelections.mate = [];
-  //         }
-  //         break;
-  //       default:
-  //         // 기타 경우 처리
-  //         break;
-  //     }
-  //     return newSelections;
-  //   });
-  // };
-
-  // 디버깅용 로그
-  // useEffect(() => {
-  //   console.log(
-  //     `Type Selected: ${selections.type.length}, Interest Selected: ${selections.interest.length}, Mate Selected: ${selections.mate}`,
-  //   );
-  // }, [selections]);
-  // 모든 카테고리에서 최소 하나의 옵션이 선택되었는지 확인
-  // const isButtonDisabled = Object.values(selections).some(
-  //   value => value.length === 0,
-  // );
+  
     
 
   const handleClick = (selectedTag: TFilter) => {
@@ -126,11 +59,25 @@ function PreferenceSettingScreen({ navigation }: any) {
     return isRange1Selected && isRange2Selected && isRange3Selected;
   };
 
+  const handelSumbit = async() => {
+    setModalVisible(true)
+    await putPreference(selectedTags)
+  }
+
   useEffect(() => {
     const isSelected = checkSelectionInRanges(selectedTags);
     setIsOneMoreCategorySelected(isSelected);
   }, [selectedTags]);
+
+  useEffect(() => {
+    if (data) {
+      setSelectedTags(data);
+    }
+  }, [data]);
  
+  if (loading) {
+    return <Text>로딩중</Text>
+  }
 
   return (
     <DismissKeyboardView style={styles.container}>
@@ -196,7 +143,7 @@ function PreferenceSettingScreen({ navigation }: any) {
         </View>
       ))} */}
       <CompleteButton
-        onPress={() => setModalVisible(true)}
+        onPress={handelSumbit }
         title={'설정 저장하기'}
         disabled={!isOneMoreCategorySelected}
       />

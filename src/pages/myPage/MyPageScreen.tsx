@@ -173,13 +173,15 @@ function MyPageScreen({navigation}:any) {
             </View>
           </View>
           <DividerSvg style={styles.dividerPadding} />
-          <View style={styles.colMidContainer}>
+          <Pressable
+            onPress={()=>navigation.navigate('MyReviewsList')}
+            style={styles.colMidContainer}>
             <Text style={Text13R.text}>작성 완료한 후기</Text>
             <View style={styles.infoRow}>
               <CompleteSvg style={styles.iconPadding} />
               <Text style={[Text18B.text, {color: 'gray'}]}>{reviewCount}</Text>
             </View>
-          </View>
+          </Pressable>
         </View>
         <View style={styles.titleContainer}>
           <Text style={Text20B.text}>최근 본 팝업</Text>

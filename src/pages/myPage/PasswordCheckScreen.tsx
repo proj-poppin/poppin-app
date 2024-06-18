@@ -35,37 +35,24 @@ function PasswordCheckScreen({ navigation }: any) {
     // checkPasswordMatch(text, passwordConfirm);
   };
 
-  // const handleSamePassword = (text: React.SetStateAction<string>) => {
-  //   setPasswordConfirm(text);
-  //   // 비밀번호 필드와의 일치 여부 검사
-  //   // checkPasswordMatch(password, text);
-  // };
-
-  // const checkPasswordMatch = (password, passwordConfirm) => {
-  //   const isMatch = password === passwordConfirm;
-  //   setIsPasswordSame(isMatch);
-  //   if (isMatch && isPasswordValid) {
-  //     // 비밀번호가 유효하고, 비밀번호와 비밀번호 확인이 일치할 경우 추가 로직 처리
-  //     console.log('비밀번호 일치 및 유효성 통과');
-  //   }
-  // };
-
   
 
-  const handleSumbit = async() => {
+  const handleSumbit = async () => {
+    
 
     await confirmPassword(password)
    
   }
   useEffect(() => {
-     if (confirmPasswordState.success === true) {
+    if (confirmPasswordState.success === true) {
+       
        navigation.navigate('PasswordChange')
-       setPassword("")
+      setPassword("")
+      setIsPasswordValid(false)
     }
     
   },[confirmPasswordState])
       
- 
 
   useEffect(() => {
     navigation.setOptions(

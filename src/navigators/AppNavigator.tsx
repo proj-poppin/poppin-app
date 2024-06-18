@@ -52,6 +52,7 @@ import PrivacyPolicyOptions from './options/PrivacyPolicyOptions.tsx';
 import PreferenceSettingScreen from '../pages/myPage/preferenceSetting/PreferenceSettingScreen.tsx';
 import FAQFormScreen from '../pages/myPage/FAQFormScreen.tsx';
 import PasswordCheckScreen from '../pages/myPage/PasswordCheckScreen.tsx';
+import MyReviewsList from '../pages/myPage/MyReviewsList.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -194,7 +195,8 @@ function AppNavigator() {
         })}
       />
       <Stack.Screen name="PasswordChange" component={PasswordChangeScreen} />
-        <Stack.Screen name="PasswordCheck" component={PasswordCheckScreen} />
+      <Stack.Screen name="PasswordCheck" component={PasswordCheckScreen} />
+      <Stack.Screen name="MyReviewsList" component={MyReviewsList} />
       <Stack.Screen
         name="FAQ"
         component={FAQScreen}

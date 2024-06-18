@@ -22,30 +22,13 @@ function PasswordChangeScreen({ navigation }: any) {
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [isPasswordSame, setIsPasswordSame] = useState(false);
-  const [isEmailValid, setIsEmailValid] = useState(false);
+
 
   const canGoNext = isPasswordValid && isPasswordSame;
 
    const {resetUserPassword, resetPasswordStatus} = useResetPassword();
 
-  // 이메일 입력 필드 변경 핸들러
-  const handleChangeEmail = (text: React.SetStateAction<string>) => {
-    setEmail(text);
-    setError(''); // 입력이 변경될 때마다 에러 메시지 초기화
-    if (typeof text === 'string') {
-      const isValidEmail =
-        /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@([0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.)+(com|co\.kr|net)$/i.test(
-          text,
-        );
-    }
-    if (isValidEmail) {
-      setIsEmailValid(true);
-    } else {
-      setIsEmailValid(false);
-    }
-
-    setError('');
-  };
+ 
 
   const handleChangePassword = text => {
     setPassword(text);
@@ -74,40 +57,18 @@ function PasswordChangeScreen({ navigation }: any) {
     }
   };
 
-  const handleSumbit = () => {
+  const handleSumbit = async () => {
     if (
       isPasswordSame 
     ) {
       
-      resetUserPassword(password, passwordConfirm).then();
+     await resetUserPassword(password, passwordConfirm).then();
     } else {
       Alert.alert('Error', 'Passwords do not match or meet the criteria.');
     }
   };
 
-  const handlePress = () => {
-    setTouched(true);
-    if (isPasswordValid) {
-      // 비밀번호 유효성이 확인되면 로그인 시도 로직 실행
-      console.log('로그인 시도부분2');
-    }
-
-    // 이메일 주소가 .com, .co.kr, .net으로 끝나는지 확인
-    const isValidEmail =
-      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@([0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.)+(com|co\.kr|net)$/i.test(
-        email,
-      );
-    if (!isValidEmail) {
-      setError('잘못된 이메일 주소입니다');
-      console.log('touched2');
-      console.log('touched3');
-      return;
-    }
-
-    // 에러가 없고, 입력이 유효한 경우 로그인 시도 로직 실행
-    console.log('로그인 시도 가능');
-    navigation.navigate(''); // 여기로 이동
-  };
+  
   useEffect(() => {
     navigation.setOptions(
       ProfileAppBar({
@@ -118,11 +79,16 @@ function PasswordChangeScreen({ navigation }: any) {
     );
   }, [navigation]);
 
-  const handleForgotPasswordPress = () => {
-    // Navigate to your desired screen
-    navigation.navigate('ForgotPasswordScreen'); // Replace 'ForgotPasswordScreen' with your actual screen name
-  };
-
+ useEffect(() => {
+    if (resetPasswordStatus.success === true) {
+       
+       navigation.navigate('MyPage')
+      setPassword("")
+      setIsPasswordValid(false)
+    }
+    
+  },[resetPasswordStatus])
+  
   return (
     <DismissKeyboardView style={styles.container}>
       <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>

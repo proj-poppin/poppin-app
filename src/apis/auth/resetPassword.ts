@@ -7,7 +7,7 @@ const resetPassword = async (password: string, passwordConfirm: string) => {
   try {
 
      const response = await nonPublicApiInstance.put(
-       `/api/v1/user/settings`,
+       `/api/v1/auth/reset-password`,
         {
         password,
         passwordConfirm,

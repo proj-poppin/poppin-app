@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {ImageType} from '../../types/ImageType.ts';
-import createUserReportPopUp from '../../apis/mypage/createUserReportPopUp.ts';
+import createUserReportPopUp from '../../apis/myPage/createUserReportPopUp.ts';
 
 interface UserReportPopUpInfoState {
   loading: boolean;

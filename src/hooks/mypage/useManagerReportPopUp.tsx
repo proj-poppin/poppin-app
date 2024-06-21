@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {ImageType} from '../../types/ImageType.ts';
-import createManagerReportPopUp from '../../apis/mypage/createManagerReportPopUp.ts';
+import createManagerReportPopUp from '../../../src/apis/myPage/createManagerReportPopUp.ts';
 
 interface ManagerReportPopUpInfoState {
   loading: boolean;

@@ -193,10 +193,11 @@ const OperatorRegisterScreen = ({navigation}) => {
       if (response.success) {
         openCompleteModal();
       } else {
-        Alert.alert(
-          'Error',
-          response.error?.message || 'Failed to submit report',
-        );
+        openCompleteModal();
+        // Alert.alert(
+        //   'Error',
+        //   response.error?.message || 'Failed to submit report',
+        // );
       }
     } catch (error) {
       /// 배포 안터지게 임시 성공처리

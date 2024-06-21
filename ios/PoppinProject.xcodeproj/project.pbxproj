@@ -24,7 +24,8 @@
 		B68F0F55F7FB4DEB96FEBC50 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = AA04ED485BD04171B1B2DA3B /* Pretendard-SemiBold.otf */; };
 		B714F6DC2B72E27400F2D72C /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = B714F6DB2B72E27400F2D72C /* main.jsbundle */; };
 		B72CF4CB2B72D779004120DB /* SwiftBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72CF4CA2B72D779004120DB /* SwiftBridge.swift */; };
-		B750274F2C256EAF00044F81 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B750274E2C256EAF00044F81 /* GoogleService-Info.plist */; };
+		B75027542C25D8FC00044F81 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B75027532C25D8FC00044F81 /* GoogleService-Info.plist */; };
+		B75027552C25D8FC00044F81 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B75027532C25D8FC00044F81 /* GoogleService-Info.plist */; };
 		D9AE3F6F75964519BF90E7A1 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7A6679867A3E4CC7BEF9B2F6 /* Pretendard-Medium.otf */; };
 /* End PBXBuildFile section */
 
@@ -67,8 +68,7 @@
 		B72CF4C92B72D779004120DB /* PoppinProject-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PoppinProject-Bridging-Header.h"; sourceTree = "<group>"; };
 		B72CF4CA2B72D779004120DB /* SwiftBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftBridge.swift; sourceTree = "<group>"; };
 		B749CD2D2B75594E00C8EB35 /* PoppinProject.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = PoppinProject.entitlements; path = PoppinProject/PoppinProject.entitlements; sourceTree = "<group>"; };
-		B750274E2C256EAF00044F81 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../✅팝핀 인증서 모음/google-service-info/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		B75027502C256EED00044F81 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../✅팝핀 인증서 모음/google-service-info/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		B75027532C25D8FC00044F81 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B751CB172B746DE0002A5E08 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C2625EFB1A34469F99CB311C /* Pretendard-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Bold.otf"; path = "../src/assets/fonts/Pretendard-Bold.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -115,7 +115,7 @@
 		13B07FAE1A68108700A75B9A /* PoppinProject */ = {
 			isa = PBXGroup;
 			children = (
-				B750274E2C256EAF00044F81 /* GoogleService-Info.plist */,
+				B75027532C25D8FC00044F81 /* GoogleService-Info.plist */,
 				B749CD2D2B75594E00C8EB35 /* PoppinProject.entitlements */,
 				B714F6DB2B72E27400F2D72C /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -150,7 +150,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				B75027502C256EED00044F81 /* GoogleService-Info.plist */,
 				B70DBD9C2B79E6D6009B2FA9 /* Fonts */,
 				B751CB172B746DE0002A5E08 /* Config.xcconfig */,
 				13B07FAE1A68108700A75B9A /* PoppinProject */,
@@ -255,6 +254,7 @@
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
 				32E099270423DDCD87B9D107 /* [CP-User] [RNFB] Core Configuration */,
 				B75027512C256F6E00044F81 /* Setup Firebase Environment GoogleService-info.plist */,
+				B75027522C25D7E900044F81 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -306,6 +306,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B75027552C25D8FC00044F81 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,6 +314,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B75027542C25D8FC00044F81 /* GoogleService-Info.plist in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				69C1627D6096426BB4610972 /* Pretendard-Black.otf in Resources */,
@@ -325,7 +327,6 @@
 				4E0F9F7D80C74B73BC4F8B1C /* Pretendard-Regular.otf in Resources */,
 				B68F0F55F7FB4DEB96FEBC50 /* Pretendard-SemiBold.otf in Resources */,
 				38193E0556CA44628660A527 /* Pretendard-Thin.otf in Resources */,
-				B750274F2C256EAF00044F81 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,6 +418,23 @@
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncase \"${CONFIGURATION}\" in\n  \"Debug\" )\ncp -r \"$SRCROOT/FirebaseConfig/Debug/GoogleService-Info.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\" ;;\n  \"Staging\" )\ncp -r \"$SRCROOT/FirebaseConfig/Staging/GoogleService-Info.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\" ;;\n  \"Release\" )\ncp -r \"$SRCROOT/FirebaseConfig/Release/GoogleService-Info.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\" ;;\n*)\n;;\nesac\n";
+		};
+		B75027522C25D7E900044F81 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n# Archive 완료 후 빌드 넘버 자동 1 증가 - start\nif [ \"$CONFIGURATION\" == \"Release\" ]; then\n  echo \"Bumping build number...\"\n  plist=\"${PROJECT_DIR}/${INFOPLIST_FILE}\"\n\n  buildnum=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${plist}\")\n  if [[ \"${buildnum}\" == \"\" ]]; then\n    echo \"No build number in $plist\"\n    exit 2\n  fi\n\n  buildnum=$(expr $buildnum + 1)\n  /usr/libexec/PlistBuddy -c \"Set CFBundleVersion $buildnum\" \"${plist}\"\n  echo \"Bumped build number to $buildnum\"\n\nelse\n  echo \"$CONFIGURATION build - Not bumping build number.\"\nfi\n# Archive 완료 후 빌드 넘버 자동 1 증가 - end\n";
 		};
 		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

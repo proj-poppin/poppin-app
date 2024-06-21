@@ -50,12 +50,12 @@ jobs:
           MAJOR_VERSION=1
           MINOR_VERSION=1
           # Get the current build number
-          BUILD_NUMBER=$(defaults read "$(pwd)/ios/PoppinProject/Info" CFBundleVersion | sed 's/^1\.1\.\([0-9]\+\)$/\1/' || echo "0")
+          BUILD_NUMBER=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "ios/PoppinProject/Info.plist" || echo "0")
           # Increment the build number
           NEW_BUILD_NUMBER=$((BUILD_NUMBER + 1))
           # Update the Info.plist with the new build number
-          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${MAJOR_VERSION}.${MINOR_VERSION}.3" "ios/PoppinProject/Info.plist"
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${MAJOR_VERSION}.${MINOR_VERSION}.${NEW_BUILD_NUMBER}" "ios/PoppinProject/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${MAJOR_VERSION}.${MINOR_VERSION}.0" "ios/PoppinProject/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD_NUMBER" "ios/PoppinProject/Info.plist"
 
       - name: Decode iOS secrets
         env:

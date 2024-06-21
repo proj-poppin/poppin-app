@@ -76,8 +76,8 @@ const createManagerReportPopUp = async (
     formData.append('availableAge', availableAge);
     formData.append('parkingAvailable', parkingAvailable);
     formData.append('resvRequired', resvRequired);
-    formData.append('openDate', openDate);
-    formData.append('closeDate', closeDate);
+    formData.append('openDate', 'openDate');
+    formData.append('closeDate', ' closeDate');
     formData.append('openTime', openTime);
     formData.append('closeTime', closeTime);
     formData.append('operationExcept', operationExcept);
@@ -100,7 +100,6 @@ const createManagerReportPopUp = async (
     formData.append('kpop', kpop);
     formData.append('alcohol', alcohol);
     formData.append('animalPlant', animalPlant);
-
     const url = '/api/v1/manager-inform';
     const response = await nonPublicApiInstance.post(url, formData, {
       headers: {
@@ -108,7 +107,6 @@ const createManagerReportPopUp = async (
       },
       transformRequest: data => data,
     });
-
     if (response.data.success) {
       console.log('Manager report submitted successfully');
       console.log(response.data);
@@ -130,5 +128,4 @@ const createManagerReportPopUp = async (
     };
   }
 };
-
 export default createManagerReportPopUp;

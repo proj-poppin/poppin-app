@@ -8,6 +8,8 @@ import {
   Pressable,
   TouchableOpacity,
 } from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {toggleInterest} from '../../redux/slices/interestedPopUpSlice.ts';
 import StarOnSvg from '../../assets/icons/starOn.svg';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12B from '../../styles/texts/label/Text12B.ts';
@@ -15,11 +17,17 @@ import globalColors from '../../styles/color/globalColors.ts';
 import DividerLine from '../DividerLine.tsx';
 import Favorite from '../../assets/icons/favorite.svg';
 import {POP_UP_TYPES} from './constants.ts';
-import usePostBookmarkPopup from '../../hooks/findPopUp/usePostBookmarkPopup.tsx';
 import {useNavigation} from '@react-navigation/native';
+import useAddInterestPopUp from '../../hooks/detailPopUp/useAddInterestPopUp.tsx';
+import useDeleteInterestPopUp from '../../hooks/detailPopUp/useDeleteInterestPopUp.tsx';
+import {RootState} from '../../redux/stores/reducer.ts';
 
 const FindCard = ({item, type}: any) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const isInterested = useSelector(
+    (state: RootState) => state.interestedPopups[item.id],
+  );
   const formattedTitle =
     item.name.length > 20 ? `${item.name.substring(0, 20)}...` : item.name;
   const calculateRemainingDays = (serverDate: string) => {
@@ -31,12 +39,17 @@ const FindCard = ({item, type}: any) => {
     const remainingDays = Math.ceil(timeDifference / (1000 * 3600 * 24));
     return remainingDays;
   };
-
+  const {addInterest} = useAddInterestPopUp();
+  const {deleteInterest} = useDeleteInterestPopUp();
   const remainingDays = calculateRemainingDays(item.closeDate);
 
-  const handleFavoriteClick = (popupId: number) => {
-    // const {addInterest} = usePostBookmarkPopup();
-    // addInterest(popupId);
+  const handleToggleInterest = async () => {
+    if (isInterested) {
+      await deleteInterest(item.id, 'fcmToken');
+    } else {
+      await addInterest(item.id, 'fcmToken');
+    }
+    dispatch(toggleInterest(item.id));
   };
 
   return (
@@ -44,7 +57,10 @@ const FindCard = ({item, type}: any) => {
       onPress={() => navigation.navigate('PopUpDetail', {id: item.id})}>
       <View style={styles.cardContainer}>
         <View style={styles.svgContainer}>
-          <Image src={item.posterUrl} style={{width: 120, height: 120}} />
+          <Image
+            source={{uri: item.posterUrl}}
+            style={{width: 120, height: 120}}
+          />
           {type === 'close' ? (
             <View style={styles.closeWrapper}>
               <Text style={styles.closeText}>팝업 종료</Text>
@@ -58,8 +74,8 @@ const FindCard = ({item, type}: any) => {
         <View style={styles.textContainer}>
           <View style={styles.statusAndStarContainer}>
             <Text style={[Text18B.text, styles.title]}>{formattedTitle}</Text>
-            <Pressable onPress={() => handleFavoriteClick(item.id)}>
-              {item?.isInterested && item.isInterested ? (
+            <Pressable onPress={handleToggleInterest} style={styles.starIcon}>
+              {isInterested ? (
                 <StarOnSvg style={styles.starIcon} />
               ) : (
                 <Favorite style={styles.starIcon} />

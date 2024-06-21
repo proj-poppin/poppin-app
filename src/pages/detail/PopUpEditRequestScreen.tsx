@@ -1,40 +1,35 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import React, {useLayoutEffect, useState} from 'react';
+import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import globalColors from '../../styles/color/globalColors.ts';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
-import React, {
-  useCallback,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import LabelAndInputWithCloseSvg from '../../components/LabelAndInputWithCloseSvg.tsx';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
-import PreferenceOptionButtons from '../../components/PreferenceOptionButtons.tsx';
-import ImagePicker from 'react-native-image-crop-picker';
 import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
 import GoBackSvg from '../../assets/icons/goBack.svg';
 import ConfirmationModal from '../../components/ConfirmationModal.tsx';
 import ImageContainerRow from '../../components/ImageContainerRow.tsx';
 import Text20B from '../../styles/texts/title/Text20B.ts';
-import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
-import {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
+import useModifyPopUpInfo from '../../hooks/modify/useModifyPopUpInfo.tsx';
+import {useImageSelector} from '../../hooks/useImageSelector'; // Import the custom hook
 
-function PopUpEditRequestScreen({navigation}) {
-  const [storeName, setStoreName] = useState('');
-  const [infoLink, setInfoLink] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedImages, setSelectedImages] = useState([]);
+type PopUpEditRequestScreenRouteProp = RouteProp<
+  AppNavigatorParamList,
+  'PopUpEditRequest'
+>;
+
+function PopUpEditRequestScreen() {
+  const [content, setContent] = useState(''); // 후기 내용
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
 
-  // 제보하기 버튼 클릭시 모달 열기
-  const openCompleteModal = () => {
-    setCompleteModalVisible(true);
-  };
+  const route = useRoute<PopUpEditRequestScreenRouteProp>();
+  const navigation = useNavigation();
+  const {name, id} = route.params;
+  const {modifyInfoDetails} = useModifyPopUpInfo();
+  const {selectedImages, handleSelectImages, handleRemoveImage} =
+    useImageSelector(); // Use the custom hook
 
   // 제보하기 버튼 클릭후 모달 닫기
   const closeCompleteModal = () => {
@@ -71,99 +66,15 @@ function PopUpEditRequestScreen({navigation}) {
     });
   }, [navigation]);
 
-  // handleRemoveImage 함수 추가
-  const handleRemoveImage = useCallback(indexToRemove => {
-    setSelectedImages(prevImages =>
-      prevImages.filter((_, index) => index !== indexToRemove),
-    );
-  }, []);
-
-  const isSubmitEnabled =
-    storeName.trim() !== '' &&
-    // selectedCategories.length > 0 &&
-    selectedCategory.trim() !== '' &&
-    selectedImages.length > 0;
-
-  const handleSelectImages = () => {
-    ImagePicker.openPicker({
-      multiple: true,
-      mediaType: 'photo',
-      maxFiles: 5 - selectedImages.length, // 최대 5개까지 선택 가능
-    })
-      .then(images => {
-        // 선택된 이미지들을 상태에 추가
-        const newImages = images.map(image => ({
-          uri: image.path,
-          width: image.width,
-          height: image.height,
-        }));
-        setSelectedImages(prevImages => [...prevImages, ...newImages]);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+  const handleSubmit = async () => {
+    const response = await modifyInfoDetails(id, content, selectedImages);
+    if (response.success) {
+      navigation.goBack();
+    } else if (response.error) {
+      console.error('Review submission error:', response.error.message);
+    }
+    setCompleteModalVisible(true);
   };
-
-  // BottomSheetModal
-
-  // 화면클릭시 모달 내려감
-  const renderBackdrop = useCallback(
-    (
-      props: React.JSX.IntrinsicAttributes & BottomSheetDefaultBackdropProps,
-    ) => (
-      <BottomSheetBackdrop
-        {...props}
-        pressBehavior="close"
-        appearsOnIndex={0}
-        disappearsOnIndex={-1}
-      />
-    ),
-    [],
-  );
-  // ref
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  // variables
-  const snapPoints = useMemo(() => ['60%'], []);
-  // callbacks
-  const handlePresentModal = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
-    // handleOpenBottomSheet();
-  }, []);
-
-  // const onSelectOption = option => {
-  //   console.log('Selected Option: ', option);
-  //   setSelectedOptions(prevOptions => {
-  //     console.log('Previous Options: ', prevOptions);
-  //     console.log('selectedOptions: ', selectedOptions);
-  //     // 옵션을 추가하거나 제거하는 로직
-  //     if (prevOptions.includes(option)) {
-  //       return prevOptions.filter(prevOption => prevOption !== option);
-  //     } else {
-  //       return [...prevOptions, option];
-  //     }
-  //   });
-  // };
-
-  const removeEmoji = text =>
-    text
-      .replace(
-        /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{E000}-\u{F8FF}\u{FE00}-\u{FE0F}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F100}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F910}-\u{1F96B}\u{1F980}-\u{1F9E0}]/gu,
-        '',
-      )
-      .trim();
-  // 단일 선택 모드에서 호출될 함수
-  const onSelectSingleOption = option => {
-    setSelectedCategory(option);
-  };
-  const handleConfirmSelection = useCallback(() => {
-    console.log('Selected Category: ', selectedCategory); // 콘솔에 선택된 카테고리 출력
-
-    bottomSheetModalRef.current?.close(); // 바텀 시트 닫기
-  }, [selectedCategory]);
 
   return (
     <DismissKeyboardView style={styles.container}>
@@ -172,59 +83,37 @@ function PopUpEditRequestScreen({navigation}) {
         {'팝업을 알려주세요'}
       </Text>
       <View style={{height: 20}} />
-      <LabelAndInputWithCloseSvg
-        label={'팝업 이름'}
-        value={storeName}
-        onChangeText={setStoreName}
-      />
+      <Text style={styles.labelText}>{name}</Text>
       <View style={{height: 20}} />
-      <LabelAndInputWithCloseSvg
-        label={'정보를 접한 사이트 주소'}
-        value={infoLink}
-        onChangeText={setInfoLink}
+      <TextInput
+        style={styles.reviewInput}
+        multiline
+        placeholder="팝업에 대한 후기를 남겨주세요(선택)"
+        placeholderTextColor={globalColors.font}
+        maxLength={1000}
+        value={content}
+        onChangeText={setContent}
       />
-      <View style={{paddingTop: 10}} />
       <Text style={styles.labelText}>{'관련사진'}</Text>
-      <View style={styles.modalContainer}>
-        <BottomSheetModal
-          ref={bottomSheetModalRef}
-          index={0}
-          backdropComponent={renderBackdrop}
-          snapPoints={snapPoints}
-          onChange={handleSheetChanges}>
-          <View style={styles.contentContainer}>
-            <Text style={[Text18B.text, {paddingTop: 15, paddingBottom: 40}]}>
-              제보할 팝업의 카테고리를 설정해 주세요
-            </Text>
-            <PreferenceOptionButtons
-              step={2}
-              onSelectOption={onSelectSingleOption}
-              isEmojiRemoved={true}
-              isSingleSelect={true}
-              selectedCategory={selectedCategory}
-            />
-            <CompleteButton onPress={handleConfirmSelection} title={'확인'} />
-          </View>
-        </BottomSheetModal>
-      </View>
+      <View style={styles.modalContainer} />
       <ImageContainerRow
         selectedImages={selectedImages}
         handleSelectImages={handleSelectImages}
         handleRemoveImage={handleRemoveImage}
       />
       <Text style={[Text12R.text, {color: globalColors.font}]}>
-        *첨부파일은 20MB 이하의 파일만 첨부 가능하며, 최대 5개까지 등록
-        가능합니다.{'\n'}
-        *올려주신 사진은 정보 업데이트시 사용될 수 있습니다.{'\n'}
-        *사진은 팝업명과 내/외부 사진이 명확하게 나와야 합니다.{'\n'}
-        *저품질의 사진은 정보 제공이 불가할 수 있습니다.{'\n'}
+        *문의사항은 접수 후 수정이 불가합니다.{'\n'}
+        *첨부파일은 20MB 이하의 파일만 첨부가능하며, 최대 5개까지
+        등록가능합니다.{'\n'}
+        *이미지에 개인정보가 보이지않도록 주의 바랍니다.{'\n'}
+        *고의로 잘못된 정보를 입력하여 다른 소비자들에게 오해와 혼동을 일으키고
+        기업의 이미지를 훼손시킬 경우 민/형사상 책임을 물을 수 있습니다.{'\n'}
       </Text>
       <CompleteButton
-        onPress={openCompleteModal}
-        title={'제보하기'}
-        disabled={!isSubmitEnabled}
+        onPress={handleSubmit}
+        title={'요청하기'}
+        // disabled={isSubmitEnabled}
       />
-
       <TwoSelectConfirmationModal
         isVisible={isModalVisible}
         onClose={closeModal}
@@ -301,6 +190,16 @@ const styles = StyleSheet.create({
     padding: 10, // 쉽게 탭할 수 있도록 패딩 추가
     color: 'black',
   },
+  reviewInput: {
+    borderWidth: 1,
+    borderColor: globalColors.warmGray,
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+    textAlignVertical: 'top',
+    height: 150,
+    fontSize: 14,
+  },
   imageContainer: {
     position: 'relative',
     marginRight: 10,
@@ -308,7 +207,3 @@ const styles = StyleSheet.create({
 });
 
 export default PopUpEditRequestScreen;
-
-/*
-카테고리부분은 에러로 잠시 주석처리
- */

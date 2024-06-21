@@ -1,6 +1,6 @@
 export type AppNavigatorParamList = {
-  Report: undefined;
-  PopUpEditRequest: undefined;
+  Report: {id: number; isReview?: boolean; reviewId?: number};
+  PopUpEditRequest: {name: string; id: number};
   Entry: undefined;
   BasicLogin: undefined;
   PasswordReset: undefined;
@@ -19,7 +19,7 @@ export type AppNavigatorParamList = {
   KeywordAlarm: undefined;
   UserRegister: undefined;
   Policy: undefined;
-  ReviewWrite: undefined;
+  ReviewWrite: {name: string; id: number; isVisited: boolean};
   OperatorRegister: undefined;
   MemberDelete: undefined;
   PreferenceSetting: undefined;
@@ -33,4 +33,3 @@ export type AppNavigatorParamList = {
   MyReviewsList: undefined
   FAQFormScreen:undefined
 };
-// Path: src/types/RootStackParamList.ts

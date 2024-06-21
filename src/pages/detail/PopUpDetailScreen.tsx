@@ -51,6 +51,7 @@ import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import useAddVisitor from '../../hooks/detailPopUp/useAddVisitor.ts';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
+import PopUpDetailOptions from '../../navigators/options/PopUpDetailOptions.tsx';
 
 async function requestPermissions() {
   if (Platform.OS === 'ios') {
@@ -112,14 +113,26 @@ const PopUpDetailScreen = ({route}) => {
   const isLoggedIn = useIsLoggedIn();
   const navigation = useNavigation<PopUpDetailScreenNavigationProp>();
   const [fetchTrigger, setFetchTrigger] = useState(false);
-  const {id} = route.params;
+  const {id, name} = route.params;
+
   const {
     data: detailPopUpData,
     loading,
     error,
   } = useGetDetailPopUp(id, !isLoggedIn, fetchTrigger);
 
-  
+  useEffect(() => {
+    if (detailPopUpData) {
+      navigation.setOptions(
+        PopUpDetailOptions({
+          navigation,
+          id: detailPopUpData.id,
+          name: detailPopUpData.name,
+        }),
+      );
+    }
+  }, [navigation, detailPopUpData]);
+
   const firstImageUrl =
     detailPopUpData?.images?.[0] ??
     'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/4/1.jpg';
@@ -199,10 +212,6 @@ const PopUpDetailScreen = ({route}) => {
   };
 
   const handleToggleInterest = async () => {
-    if (!isLoggedIn) {
-      navigation.navigate('Entry');
-      return;
-    }
     if (isInterested) {
       await deleteInterest(id);
       setToastMessage('관심팝업에서 삭제되었어요!');
@@ -275,8 +284,6 @@ const PopUpDetailScreen = ({route}) => {
   const filteredReviews = isOnlyVerifiedReview
     ? detailPopUpData.review.filter(review => review.isCertificated)
     : detailPopUpData.review;
-
-  console.log("filteredReviews",detailPopUpData)
 
   return (
     <>
@@ -389,21 +396,18 @@ const PopUpDetailScreen = ({route}) => {
             </View>
           </View>
           <DividerLine height={10} />
-          <View style={{paddingTop: 40,  paddingBottom: 10,paddingLeft:16}}>
+          <View style={{paddingTop: 40, paddingLeft: 20, paddingBottom: 10}}>
             <Text style={[Text20B.text, {color: globalColors.purple}]}>
               방문자 데이터
             </Text>
           </View>
           <View style={styles.visitorDataContainer}>
             <CongestionSection
-              satisfyPercent={detailPopUpData?.visitorData?.satisfaction}
+              satisfyPercent={detailPopUpData.viewCnt}
               title="혼잡도"
               data={{weekdayAm, weekdayPm, weekendAm, weekendPm}}
             />
           </View>
-          <View>
-          <Text style={styles.message}>
-          *혼잡도는 팝핀 이용자의 통계 데이터이므로 정확하지 않을 수 있습니다.</Text></View>
           <DividerLine height={10} />
           <View style={styles.iconContainer}>
             <Text style={[Text20B.text, {color: globalColors.purple}]}>
@@ -415,7 +419,11 @@ const PopUpDetailScreen = ({route}) => {
                   navigation.navigate('Entry');
                   return;
                 }
-                navigation.navigate('ReviewWrite');
+                navigation.navigate('ReviewWrite', {
+                  name: detailPopUpData.name,
+                  id: detailPopUpData.id,
+                  isVisited: detailPopUpData.isVisited,
+                });
               }}>
               <SvgWithNameBoxLabel
                 Icon={WriteReviewSvg}
@@ -449,14 +457,17 @@ const PopUpDetailScreen = ({route}) => {
                       )}
                     </View>
                     <Text style={styles.reviewText}>
-                      리뷰 {review.reviewCnt}개
+                      리뷰 {review.totalReviewWrite}개
                     </Text>
                   </View>
                 </View>
                 <UnderlinedTextButton
                   label={'신고하기'}
                   onClicked={() => {
-                    navigation.navigate('report');
+                    navigation.navigate('Report', {
+                      id: review.reviewId,
+                      isReview: true,
+                    });
                   }}
                 />
               </View>
@@ -469,7 +480,7 @@ const PopUpDetailScreen = ({route}) => {
                   />
                 ))}
               </ScrollView>
-              <Text style={styles.reviewContent}>{review.text}</Text>
+              <Text style={styles.reviewText}>{review.text}</Text>
               <Pressable onPress={() => handleRecommendPress(review.reviewId)}>
                 <View style={styles.recommendContainer}>
                   <SvgWithNameBoxLabel
@@ -517,10 +528,7 @@ const PopUpDetailScreen = ({route}) => {
 
 const styles = StyleSheet.create({
   visitorDataContainer: {
-    marginTop: 10,
-    marginLeft:16,
-    marginRight: 16,
-    marginBottom:10,
+    margin: 10,
     borderColor: globalColors.component,
     borderWidth: 1.0,
     borderRadius: 15,
@@ -562,56 +570,37 @@ const styles = StyleSheet.create({
   },
   posterImage: {
     width: '100%',
-    height: 400, 
+    height: 400, // Adjust height as needed
   },
-  detailContainer: {
-    
-  },
+  detailContainer: {},
   title: {
     ...Text20B.text,
-    padding:16,
     marginBottom: 8,
-    
   },
   introduce: {
-    // marginTop: 15,
-    marginLeft: 16,
-    marginRight:16,
-    marginBottom:10,
+    marginTop: 15,
     ...Text14M.text,
   },
   link: {
     ...Text14R.text,
     color: globalColors.font,
     marginBottom: 16,
-    
-  },
-  message: {
-    color: globalColors.font,
-    fontSize: 12,
-    paddingLeft: 18,
-    paddingBottom:50,
   },
   rowBetweenContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   iconContainer: {
-    marginTop: 20,
+    marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 20,
-    paddingLeft: 16,
-    paddingRight:16
   },
   recentReviewHeader: {
     gap: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 16,
-    paddingRight:16,
-    
   },
   socialIcons: {
     flexDirection: 'row',
@@ -621,19 +610,16 @@ const styles = StyleSheet.create({
   },
   detailSection: {
     flexDirection: 'column',
+    marginTop: 20,
     marginBottom: 16,
-    paddingLeft: 16,
-    paddingRight:16
   },
   additionalInfo: {
     marginBottom: 16,
   },
   detailRow: {
-   
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 4,
-
   },
   bottomBar: {
     position: 'absolute',
@@ -645,9 +631,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: 'white',
     justifyContent: 'space-around',
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingBottom:25,
+    padding: 10,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: -2},
     shadowOpacity: 0.1,
@@ -674,38 +658,26 @@ const styles = StyleSheet.create({
   colCloseContainer: {
     flexDirection: 'column',
     marginVertical: 10,
-    paddingRight: 16,
   },
   rowCloseContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    
   },
   imageScroll: {
     flexDirection: 'row',
     marginVertical: 10,
-    paddingLeft:16
   },
   reviewImage: {
     width: 100,
     height: 100,
     marginRight: 10,
   },
-  reviewContent: {
-    marginVertical: 5,
-    fontSize: 14,
-    marginLeft: 18,
-    marginBottom:10
-  },
   reviewText: {
     ...Text16M.text,
-    fontSize: 12,
-    color:globalColors.font,
     marginVertical: 5,
   },
   verifiedReviewSvg: {
     marginLeft: 5,
-  
   },
 });
 

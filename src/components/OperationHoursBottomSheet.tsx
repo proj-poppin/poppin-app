@@ -1,12 +1,6 @@
 import ClockSvg from '../assets/icons/clock.svg';
 import React, {useRef, useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Pressable,
-} from 'react-native';
+import {View, Text, StyleSheet, Pressable} from 'react-native';
 import globalColors from '../styles/color/globalColors.ts';
 import DatePicker from 'react-native-date-picker';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
@@ -21,7 +15,13 @@ interface Times {
   end: string;
 }
 
-const OperationHoursBottomSheet = () => {
+interface OperationHoursBottomSheetProps {
+  setOperationTimes: (times: {start: string; end: string}) => void;
+}
+
+const OperationHoursBottomSheet: React.FC<OperationHoursBottomSheetProps> = ({
+  setOperationTimes,
+}) => {
   const [times, setTimes] = useState<Times>({
     start: '오픈 시간',
     end: '종료 시간',
@@ -29,39 +29,22 @@ const OperationHoursBottomSheet = () => {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [tempTime, setTempTime] = useState(new Date());
   const [selectionMode, setSelectionMode] = useState('start');
-  const handleTimeConfirm = (time: Date) => {
-    const hours = time.getHours();
-    const minutes = time.getMinutes();
-
-    const period = hours < 12 ? '오전' : '오후';
-    const adjustedHour = hours % 12 === 0 ? 12 : hours % 12;
-
-    let formattedTime = period + ' ' + adjustedHour.toString();
-    if (minutes === 0) {
-      formattedTime += '시'; // 분이 '00'인 경우
-    } else {
-      formattedTime += `시 ${minutes.toString().padStart(2, '0')}분`;
-    }
-
-    setTimes(prevTimes => ({
-      ...prevTimes,
-      [selectionMode]: formattedTime,
-    }));
-    bottomSheetModalRef.current?.dismiss();
-  };
 
   const showTimePicker = (type: 'start' | 'end') => {
     setSelectionMode(type);
     bottomSheetModalRef.current?.present();
   };
 
-  const getInputStyle = (type: string) => ({
-    color: selectionMode === type ? globalColors.calendar : 'black',
+  const getInputStyle = (type: string, value: string) => ({
+    color:
+      value === '오픈 시간' || value === '종료 시간'
+        ? globalColors.font
+        : globalColors.black,
   });
 
   const handleComplete = () => {
-    handleTimeConfirm(tempTime); // 임시 시간을 최종 시간으로 설정
-    bottomSheetModalRef.current?.dismiss(); // 바텀 시트 닫기
+    setOperationTimes(times); // Set the operation times using the passed prop
+    bottomSheetModalRef.current?.dismiss();
   };
 
   const onTimeChange = (selectedTime: Date) => {
@@ -91,16 +74,18 @@ const OperationHoursBottomSheet = () => {
   return (
     <View>
       <View style={styles.inputRow}>
-        <View style={[styles.input, styles.firstInput]}>
-          <Text style={{color: globalColors.font}}>{times.start}</Text>
-        </View>
-        <Text style={styles.toText}>~</Text>
-        <TouchableOpacity
-          style={[styles.input, styles.secondInput]}
+        <Pressable
+          style={[styles.input, styles.firstInput]}
           onPress={() => showTimePicker('start')}>
-          <Text style={{color: globalColors.font}}>{times.end}</Text>
+          <Text style={getInputStyle('start', times.start)}>{times.start}</Text>
+        </Pressable>
+        <Text style={styles.toText}>~</Text>
+        <Pressable
+          style={[styles.input, styles.secondInput]}
+          onPress={() => showTimePicker('end')}>
+          <Text style={getInputStyle('end', times.end)}>{times.end}</Text>
           <ClockSvg />
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
       <BottomSheetModal
@@ -122,7 +107,9 @@ const OperationHoursBottomSheet = () => {
               pressed && {backgroundColor: globalColors.warmGray},
             ]}
             onPress={() => setSelectionMode('start')}>
-            <Text style={getInputStyle('start')}>{times.start}</Text>
+            <Text style={getInputStyle('start', times.start)}>
+              {times.start}
+            </Text>
           </Pressable>
         </View>
         <DividerLine height={1} />
@@ -134,7 +121,7 @@ const OperationHoursBottomSheet = () => {
               pressed && {backgroundColor: globalColors.warmGray},
             ]}
             onPress={() => setSelectionMode('end')}>
-            <Text style={getInputStyle('end')}>{times.end}</Text>
+            <Text style={getInputStyle('end', times.end)}>{times.end}</Text>
           </Pressable>
         </View>
         <DividerLine height={1} />

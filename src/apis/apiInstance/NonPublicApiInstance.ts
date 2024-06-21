@@ -11,7 +11,6 @@ const nonPublicApiInstance = axios.create({
 nonPublicApiInstance.interceptors.request.use(
   async config => {
     const accessToken = await EncryptedStorage.getItem('accessToken');
-   console.log("aa",accessToken)
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }

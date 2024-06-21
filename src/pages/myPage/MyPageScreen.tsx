@@ -27,17 +27,13 @@ import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text13R from '../../styles/texts/label/Text12R.ts';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
-import Text14B from '../../styles/texts/body_medium/Text14B.ts';
 import useLogout from '../../hooks/auth/useLogout.tsx';
 import useGetUser from '../../hooks/auth/useGetUser.tsx';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
-import logout from '../../apis/auth/logout.ts';
-import Text14M from '../../styles/texts/body_medium/Text14M.ts';
-import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
+import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
 
-function MyPageScreen({navigation}:any) {
-  const { handleLogout, logoutStatus } = useLogout();
-  const { data: userData } = useGetUserSetting()
+function MyPageScreen({navigation}) {
+  const {handleLogout, logoutStatus} = useLogout();
 
   const {data: user, loading, error} = useGetUser();
 
@@ -138,17 +134,17 @@ function MyPageScreen({navigation}:any) {
           <ProfileSvg />
           <View style={styles.colCloseContainer}>
             <Text style={[text20B.text]}>
-              {isLoggedIn ? userData&&userData?.nickname : '로그인 후 이용해주세요'}
+              {' '}
+              {isLoggedIn ? user?.nickname : '로그인 후 이용해주세요'}
             </Text>
             <Pressable
               style={styles.profileInfoContainer}
               onPress={navigateToProfileEdit}
-              // style={styles.infoRow}>
-            >
+              style={styles.infoRow}>
               <Text
                 style={[
                   Text18B.text,
-                  {color: globalColors.font},
+                  {color: globalColors.warmGray},
                   styles.profileLabel,
                 ]}>
                 내 정보 및 취향 관리
@@ -173,15 +169,13 @@ function MyPageScreen({navigation}:any) {
             </View>
           </View>
           <DividerSvg style={styles.dividerPadding} />
-          <Pressable
-            onPress={()=>navigation.navigate('MyReviewsList')}
-            style={styles.colMidContainer}>
+          <View style={styles.colMidContainer}>
             <Text style={Text13R.text}>작성 완료한 후기</Text>
             <View style={styles.infoRow}>
               <CompleteSvg style={styles.iconPadding} />
               <Text style={[Text18B.text, {color: 'gray'}]}>{reviewCount}</Text>
             </View>
-          </Pressable>
+          </View>
         </View>
         <View style={styles.titleContainer}>
           <Text style={Text20B.text}>최근 본 팝업</Text>
@@ -198,45 +192,38 @@ function MyPageScreen({navigation}:any) {
             />
           ))}
         </ScrollView>
-        <Pressable onPress={navigateToKeywordAlarm}  style={styles.middleContainer}>
-          <Text style={Text14M.text}>키워드 알림 설정</Text>
+        <View style={styles.middleContainer}>
+          <Text style={Text14R.text}>키워드 알림 설정</Text>
           <RightSvg style={styles.svgStyle} onPress={navigateToKeywordAlarm} />
-        </Pressable>
-        <Pressable
-          onPress={() => {
-              navigation.navigate('FAQ');
-        }}
-          style={styles.middleContainer}>
-          <Text style={Text14M.text}>문의하기/FAQ</Text>
+        </View>
+        <View style={styles.middleContainer}>
+          <Text style={Text14R.text}>문의하기/FAQ</Text>
           <RightSvg
             style={styles.svgStyle}
             onPress={() => {
               navigation.navigate('FAQ');
             }}
           />
-        </Pressable>
+        </View>
         <View style={styles.appVersionContainer}>
-          <Text style={Text14M.text}>앱 버전</Text>
+          <Text style={Text14R.text}>앱 버전</Text>
           <View style={styles.rowHeaderContainer}>
             <Text style={[Text13R.text, {color: globalColors.stroke2}]}>
               1.16.0
             </Text>
           </View>
         </View>
-        <Pressable  onPress={() => {
-              navigation.navigate('Policy');
-        }}
-          style={styles.middleContainer}>
-          <Text style={Text14M.text}>이용 약관 및 정책</Text>
+        <View style={styles.middleContainer}>
+          <Text style={Text13R.text}>이용 약관 및 정책</Text>
           <RightSvg
             style={styles.svgStyle}
             onPress={() => {
-              navigation.navigate('Policy');
+              navigation.navigate('ServicePolicy');
             }}
           />
-        </Pressable>
+        </View>
         <Pressable style={styles.middleContainer} onPress={onLogoutClick}>
-          <Text style={Text14M.text}>로그아웃</Text>
+          <Text style={Text13R.text}>로그아웃</Text>
           <RightSvg style={styles.svgStyle} />
         </Pressable>
         <View style={styles.modalContainer}>
@@ -265,7 +252,7 @@ function MyPageScreen({navigation}:any) {
                     <BigRightSvg />
                   </View>
                 </View>
-                <Text style={[Text14B.text, {paddingTop: 10}]}>
+                <Text style={[Text16M.text, {paddingTop: 10}]}>
                   관심있는 팝업이 POPPIN에 올라와 있지 않다면?
                 </Text>
               </Pressable>
@@ -281,14 +268,11 @@ function MyPageScreen({navigation}:any) {
                     팝업 운영자
                   </Text>
                   <View style={styles.optionRight}>
-                    <Text
-                      style={[Text18B.text, {color: globalColors.warmGray}]}>
-                      제보하기
-                    </Text>
+                    <Text style={[Text18B.text]}>제보하기</Text>
                     <BigRightSvg />
                   </View>
                 </View>
-                <Text style={[Text18B.text, {paddingTop: 10}]}>
+                <Text style={[Text16M.text, {paddingTop: 10}]}>
                   운영하는 팝업이 POPPIN에 올라와 있지 않다면?
                 </Text>
               </Pressable>
@@ -309,14 +293,12 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center', // 세로 중앙 정렬
-    
   },
   // 기존 스타일 유지
   profileInfoContainer: {
     flexDirection: 'row', // 가로로 배열
     alignItems: 'center', // 세로 중앙 정렬
-    // marginTop: 10, // 필요한 경우 마진 조정
-  
+    marginTop: 10, // 필요한 경우 마진 조정
   },
 
   middleContainer: {
@@ -340,7 +322,6 @@ const styles = StyleSheet.create({
   },
 
   profileLabel: {
-    fontSize:12,
     paddingTop: 10,
   },
   rowBodyContainer: {
@@ -352,7 +333,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 15,
- 
   },
   colMidContainer: {
     flexDirection: 'column',
@@ -365,7 +345,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginTop: 15,
     paddingHorizontal: 10,
-    
   },
 
   iconPadding: {

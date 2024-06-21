@@ -1,17 +1,8 @@
+import React, {useState, useCallback, useLayoutEffect} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import globalColors from '../../styles/color/globalColors.ts';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
-import React, {
-  useCallback,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
 import LabelAndInputWithCloseSvg from '../../components/LabelAndInputWithCloseSvg.tsx';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
-import PreferenceOptionButtons from '../../components/PreferenceOptionButtons.tsx';
-import ImagePicker from 'react-native-image-crop-picker';
 import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
 import GoBackSvg from '../../assets/icons/goBack.svg';
 import ConfirmationModal from '../../components/ConfirmationModal.tsx';
@@ -19,45 +10,61 @@ import ImageContainerRow from '../../components/ImageContainerRow.tsx';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
-import {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import globalColors from '../../styles/color/globalColors.ts';
+import useUserReportPopUp from '../../hooks/mypage/useUserReportPopUp.tsx';
+import {useImageSelector} from '../../hooks/useImageSelector'; // Import the custom hook
+import {useCategorySelector} from '../../hooks/useCategorySelector'; // Import the custom hook
+import TextInputWithSvgIconInRight from '../../components/TextInputWithSvgIconInRight.tsx';
+import PreferenceOptionButtons from '../../components/PreferenceOptionButtons.tsx';
+import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
+import DownSvg from '../../assets/icons/down.svg';
 import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
+import RequiredTextLabel from '../../components/RequiredTextLabel.tsx';
+import {useNavigation} from '@react-navigation/native';
 
-function UserRegisterScreen({navigation}) {
+function UserRegisterScreen() {
+  const navigation = useNavigation();
   const [storeName, setStoreName] = useState('');
   const [infoLink, setInfoLink] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedImages, setSelectedImages] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
 
-  // 제보하기 버튼 클릭시 모달 열기
+  const {loading, userReportPopUp} = useUserReportPopUp(); // Use the custom hook
+
+  const {selectedImages, handleSelectImages, handleRemoveImage} =
+    useImageSelector(); // Use the custom hook
+
+  const {
+    selectedCategories,
+    bottomSheetModalRef,
+    snapPoints,
+    handlePresentModal,
+    onSelectOption,
+    handleConfirmSelection,
+  } = useCategorySelector(); // Use the custom hook
+
   const openCompleteModal = () => {
     setCompleteModalVisible(true);
   };
 
-  // 제보하기 버튼 클릭후 모달 닫기
   const closeCompleteModal = () => {
     setCompleteModalVisible(false);
+    navigation.goBack();
   };
 
-  // 뒤로가기 버튼 클릭 모달에서 나가기 클릭시
   const closeModal = () => {
-    navigation.goBack(); // 모달을 닫고 이전 화면으로 돌아감
+    navigation.goBack();
     setIsModalVisible(false);
   };
 
-  // 뒤로가기 버튼 클릭 모달에서 빈 화면 터치시
   const closeOnlyModal = () => {
     setIsModalVisible(false);
   };
 
-  // 뒤로가기 버튼 클릭 모달에서 계속 작성하기 클릭시
   const handleModalConfirm = () => {
     setIsModalVisible(false);
   };
 
-  // useLayoutEffect를 사용하여 스크린의 네비게이션 옵션을 설정
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
@@ -71,42 +78,11 @@ function UserRegisterScreen({navigation}) {
     });
   }, [navigation]);
 
-  // handleRemoveImage 함수 추가
-  const handleRemoveImage = useCallback(indexToRemove => {
-    setSelectedImages(prevImages =>
-      prevImages.filter((_, index) => index !== indexToRemove),
-    );
-  }, []);
-
   const isSubmitEnabled =
     storeName.trim() !== '' &&
-    // selectedCategories.length > 0 &&
-    selectedCategory.trim() !== '' &&
+    selectedCategories.length > 0 &&
     selectedImages.length > 0;
 
-  const handleSelectImages = () => {
-    ImagePicker.openPicker({
-      multiple: true,
-      mediaType: 'photo',
-      maxFiles: 5 - selectedImages.length, // 최대 5개까지 선택 가능
-    })
-      .then(images => {
-        // 선택된 이미지들을 상태에 추가
-        const newImages = images.map(image => ({
-          uri: image.path,
-          width: image.width,
-          height: image.height,
-        }));
-        setSelectedImages(prevImages => [...prevImages, ...newImages]);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
-
-  // BottomSheetModal
-
-  // 화면클릭시 모달 내려감
   const renderBackdrop = useCallback(
     (
       props: React.JSX.IntrinsicAttributes & BottomSheetDefaultBackdropProps,
@@ -120,51 +96,42 @@ function UserRegisterScreen({navigation}) {
     ),
     [],
   );
-  // ref
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  // variables
-  const snapPoints = useMemo(() => ['60%'], []);
-  // callbacks
-  const handlePresentModal = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
-    // handleOpenBottomSheet();
   }, []);
 
-  // const onSelectOption = option => {
-  //   console.log('Selected Option: ', option);
-  //   setSelectedOptions(prevOptions => {
-  //     console.log('Previous Options: ', prevOptions);
-  //     console.log('selectedOptions: ', selectedOptions);
-  //     // 옵션을 추가하거나 제거하는 로직
-  //     if (prevOptions.includes(option)) {
-  //       return prevOptions.filter(prevOption => prevOption !== option);
-  //     } else {
-  //       return [...prevOptions, option];
-  //     }
-  //   });
-  // };
+  const handleReportSubmit = async () => {
+    if (!isSubmitEnabled) {
+      console.log('Submit is not enabled');
+      return;
+    }
 
-  const removeEmoji = text =>
-    text
-      .replace(
-        /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{E000}-\u{F8FF}\u{FE00}-\u{FE0F}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F100}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F910}-\u{1F96B}\u{1F980}-\u{1F9E0}]/gu,
-        '',
-      )
-      .trim();
-  // 단일 선택 모드에서 호출될 함수
-  const onSelectSingleOption = option => {
-    setSelectedCategory(option);
+    const response = await userReportPopUp(
+      storeName,
+      infoLink,
+      selectedCategories.includes('fashionBeauty'),
+      selectedCategories.includes('characters'),
+      selectedCategories.includes('foodBeverage'),
+      selectedCategories.includes('webtoonAni'),
+      selectedCategories.includes('interiorThings'),
+      selectedCategories.includes('movie'),
+      selectedCategories.includes('musical'),
+      selectedCategories.includes('sports'),
+      selectedCategories.includes('game'),
+      selectedCategories.includes('itTech'),
+      selectedCategories.includes('kpop'),
+      selectedCategories.includes('alcohol'),
+      selectedCategories.includes('animalPlant'),
+      selectedCategories.includes('etc'),
+      selectedImages,
+    );
+    if (response.success) {
+      openCompleteModal();
+    } else {
+      console.error(response.error?.message || 'Failed to submit report');
+    }
   };
-  const handleConfirmSelection = useCallback(() => {
-    console.log('Selected Category: ', selectedCategory); // 콘솔에 선택된 카테고리 출력
-
-    bottomSheetModalRef.current?.close(); // 바텀 시트 닫기
-  }, [selectedCategory]);
-
   return (
     <DismissKeyboardView style={styles.container}>
       <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>
@@ -176,14 +143,8 @@ function UserRegisterScreen({navigation}) {
         label={'팝업 이름'}
         value={storeName}
         onChangeText={setStoreName}
+        isRequired={true}
       />
-      {/*<View style={{height: 20}} />*/}
-      {/*<TextInputWithSvgIconInRight*/}
-      {/*  label={'카테고리'}*/}
-      {/*  value={selectedCategory} // 변경됨*/}
-      {/*  onIconPress={handlePresentModal}*/}
-      {/*  IconComponent={DownSvg}*/}
-      {/*/>*/}
       <View style={{height: 20}} />
       <LabelAndInputWithCloseSvg
         label={'정보를 접한 사이트 주소'}
@@ -191,29 +152,35 @@ function UserRegisterScreen({navigation}) {
         onChangeText={setInfoLink}
       />
       <View style={{paddingTop: 10}} />
-      <Text style={styles.labelText}>{'관련사진'}</Text>
-      <View style={styles.modalContainer}>
-        <BottomSheetModal
-          ref={bottomSheetModalRef}
-          index={0}
-          backdropComponent={renderBackdrop}
-          snapPoints={snapPoints}
-          onChange={handleSheetChanges}>
-          <View style={styles.contentContainer}>
-            <Text style={[Text18B.text, {paddingTop: 15, paddingBottom: 40}]}>
-              제보할 팝업의 카테고리를 설정해 주세요
-            </Text>
-            <PreferenceOptionButtons
-              step={2}
-              onSelectOption={onSelectSingleOption}
-              isEmojiRemoved={true}
-              isSingleSelect={true}
-              selectedCategory={selectedCategory}
-            />
-            <CompleteButton onPress={handleConfirmSelection} title={'확인'} />
-          </View>
-        </BottomSheetModal>
-      </View>
+      <TextInputWithSvgIconInRight
+        label={'카테고리'}
+        value={selectedCategories.join(', ')} // Show selected categories
+        onIconPress={handlePresentModal}
+        IconComponent={<DownSvg />}
+        isRequired={true}
+      />
+      <BottomSheetModal
+        ref={bottomSheetModalRef}
+        index={0}
+        backdropComponent={renderBackdrop}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}>
+        <View style={styles.contentContainer}>
+          <Text style={[Text18B.text, {paddingTop: 15, paddingBottom: 40}]}>
+            제보할 팝업의 카테고리를 설정해 주세요
+          </Text>
+          <PreferenceOptionButtons
+            step={2}
+            onSelectOption={onSelectOption}
+            isEmojiRemoved={true}
+            isSingleSelect={false}
+            selectedCategories={selectedCategories}
+          />
+          <CompleteButton onPress={handleConfirmSelection} title={'확인'} />
+        </View>
+      </BottomSheetModal>
+      <View style={{paddingTop: 10}} />
+      <RequiredTextLabel label={'관련사진'} isRequired={true} />
       <ImageContainerRow
         selectedImages={selectedImages}
         handleSelectImages={handleSelectImages}
@@ -227,11 +194,10 @@ function UserRegisterScreen({navigation}) {
         *저품질의 사진은 정보 제공이 불가할 수 있습니다.{'\n'}
       </Text>
       <CompleteButton
-        onPress={openCompleteModal}
+        onPress={handleReportSubmit} // Use the report submit handler
         title={'제보하기'}
-        disabled={!isSubmitEnabled}
+        disabled={!isSubmitEnabled || loading} // Disable button when loading
       />
-
       <TwoSelectConfirmationModal
         isVisible={isModalVisible}
         onClose={closeModal}
@@ -278,7 +244,7 @@ const styles = StyleSheet.create({
   imagesContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10, // 스크롤 뷰와 주변 요소 간 간격 조정
+    paddingVertical: 10,
   },
   addImageButton: {
     borderColor: globalColors.component,
@@ -299,13 +265,13 @@ const styles = StyleSheet.create({
   addImageText: {
     color: globalColors.font,
     paddingTop: 8,
-    textAlign: 'center', // 텍스트 중앙 정렬
+    textAlign: 'center',
   },
   deleteIcon: {
     position: 'absolute',
     top: 0,
     right: 0,
-    padding: 10, // 쉽게 탭할 수 있도록 패딩 추가
+    padding: 10,
     color: 'black',
   },
   imageContainer: {
@@ -315,7 +281,3 @@ const styles = StyleSheet.create({
 });
 
 export default UserRegisterScreen;
-
-/*
-카테고리부분은 에러로 잠시 주석처리
- */

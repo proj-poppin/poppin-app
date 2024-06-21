@@ -52,17 +52,14 @@
             # Get the current build number from Info.plist
             CURRENT_BUILD_NUMBER=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "ios/PoppinProject/Info.plist")
 
-            # Check if CURRENT_BUILD_NUMBER is a number, if not set it to 4
-            if ! [[ "$CURRENT_BUILD_NUMBER" =~ ^[0-9]+$ ]]; then
-              CURRENT_BUILD_NUMBER=4
-            fi
-
             # Increment the build number
             NEW_BUILD_NUMBER=$((CURRENT_BUILD_NUMBER + 1))
 
             # Update the Info.plist with the new version number and build number
             /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION_NUMBER" "ios/PoppinProject/Info.plist"
             /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD_NUMBER" "ios/PoppinProject/Info.plist"
+
+            echo "Updated version number to $VERSION_NUMBER and build number to $NEW_BUILD_NUMBER"
 
             echo "Updated version number to $VERSION_NUMBER and build number to $NEW_BUILD_NUMBER"
         - name: Decode iOS secrets

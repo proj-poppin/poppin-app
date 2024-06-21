@@ -27,11 +27,10 @@ import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text13R from '../../styles/texts/label/Text12R.ts';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
-import Text14B from '../../styles/texts/body_medium/Text14B.ts';
 import useLogout from '../../hooks/auth/useLogout.tsx';
 import useGetUser from '../../hooks/auth/useGetUser.tsx';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
-import logout from '../../apis/auth/logout.ts';
+import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
 
 function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
@@ -253,7 +252,7 @@ function MyPageScreen({navigation}) {
                     <BigRightSvg />
                   </View>
                 </View>
-                <Text style={[Text14B.text, {paddingTop: 10}]}>
+                <Text style={[Text16M.text, {paddingTop: 10}]}>
                   관심있는 팝업이 POPPIN에 올라와 있지 않다면?
                 </Text>
               </Pressable>
@@ -269,14 +268,11 @@ function MyPageScreen({navigation}) {
                     팝업 운영자
                   </Text>
                   <View style={styles.optionRight}>
-                    <Text
-                      style={[Text18B.text, {color: globalColors.warmGray}]}>
-                      제보하기
-                    </Text>
+                    <Text style={[Text18B.text]}>제보하기</Text>
                     <BigRightSvg />
                   </View>
                 </View>
-                <Text style={[Text18B.text, {paddingTop: 10}]}>
+                <Text style={[Text16M.text, {paddingTop: 10}]}>
                   운영하는 팝업이 POPPIN에 올라와 있지 않다면?
                 </Text>
               </Pressable>

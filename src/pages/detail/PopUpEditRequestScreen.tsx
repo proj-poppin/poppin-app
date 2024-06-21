@@ -1,19 +1,18 @@
-import React, {useState, useCallback} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
-import ImagePicker from 'react-native-image-crop-picker';
-import ImageResizer from 'react-native-image-resizer';
+import React, {useLayoutEffect, useState} from 'react';
+import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import globalColors from '../../styles/color/globalColors.ts';
+import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
+import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
+import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
+import GoBackSvg from '../../assets/icons/goBack.svg';
+import ConfirmationModal from '../../components/ConfirmationModal.tsx';
+import ImageContainerRow from '../../components/ImageContainerRow.tsx';
+import Text20B from '../../styles/texts/title/Text20B.ts';
+import Text12R from '../../styles/texts/label/Text12R.ts';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 import useModifyPopUpInfo from '../../hooks/modify/useModifyPopUpInfo.tsx';
+import {useImageSelector} from '../../hooks/useImageSelector'; // Import the custom hook
 
 type PopUpEditRequestScreenRouteProp = RouteProp<
   AppNavigatorParamList,
@@ -21,147 +20,189 @@ type PopUpEditRequestScreenRouteProp = RouteProp<
 >;
 
 function PopUpEditRequestScreen() {
+  const [content, setContent] = useState(''); // 후기 내용
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [completeModalVisible, setCompleteModalVisible] = useState(false);
+
   const route = useRoute<PopUpEditRequestScreenRouteProp>();
   const navigation = useNavigation();
-  const {id, name} = route.params;
-  const {modifyInfoDetails, loading, error, success} = useModifyPopUpInfo();
+  const {name, id} = route.params;
+  const {modifyInfoDetails} = useModifyPopUpInfo();
+  const {selectedImages, handleSelectImages, handleRemoveImage} =
+    useImageSelector(); // Use the custom hook
 
-  const [content, setContent] = useState('');
-  const [selectedImages, setSelectedImages] = useState<
-    Array<{uri: string; width: number; height: number}>
-  >([]);
-
-  const handleSelectImages = () => {
-    ImagePicker.openPicker({
-      multiple: true,
-      mediaType: 'photo',
-      maxFiles: 5 - selectedImages.length,
-    })
-      .then(images => {
-        const resizePromises = images.map(image =>
-          ImageResizer.createResizedImage(
-            image.path,
-            600,
-            600,
-            image.mime.includes('jpeg') ? 'JPEG' : 'PNG',
-            100,
-            0,
-          ),
-        );
-        Promise.all(resizePromises)
-          .then(resizedImages => {
-            const newImages = resizedImages.map(image => ({
-              uri: image.uri,
-              width: image.width,
-              height: image.height,
-            }));
-            setSelectedImages(prevImages => [...prevImages, ...newImages]);
-          })
-          .catch(error => {
-            console.log('Image resizing error:', error);
-          });
-      })
-      .catch(error => {
-        console.log(error);
-      });
+  // 제보하기 버튼 클릭후 모달 닫기
+  const closeCompleteModal = () => {
+    setCompleteModalVisible(false);
   };
 
-  const handleRemoveImage = useCallback((indexToRemove: number) => {
-    setSelectedImages(prevImages =>
-      prevImages.filter((_, index) => index !== indexToRemove),
-    );
-  }, []);
+  // 뒤로가기 버튼 클릭 모달에서 나가기 클릭시
+  const closeModal = () => {
+    navigation.goBack(); // 모달을 닫고 이전 화면으로 돌아감
+    setIsModalVisible(false);
+  };
+
+  // 뒤로가기 버튼 클릭 모달에서 빈 화면 터치시
+  const closeOnlyModal = () => {
+    setIsModalVisible(false);
+  };
+
+  // 뒤로가기 버튼 클릭 모달에서 계속 작성하기 클릭시
+  const handleModalConfirm = () => {
+    setIsModalVisible(false);
+  };
+
+  // useLayoutEffect를 사용하여 스크린의 네비게이션 옵션을 설정
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <Pressable
+          onPress={() => setIsModalVisible(true)}
+          style={({pressed}) => [{opacity: pressed ? 0.5 : 1}]}
+          hitSlop={{top: 30, bottom: 30, left: 30, right: 30}}>
+          <GoBackSvg />
+        </Pressable>
+      ),
+    });
+  }, [navigation]);
 
   const handleSubmit = async () => {
-    await modifyInfoDetails(
-      id,
-      content,
-      selectedImages.map(image => image.uri),
-    );
-    if (success) {
+    const response = await modifyInfoDetails(id, content, selectedImages);
+    if (response.success) {
       navigation.goBack();
-    } else if (error) {
-      console.error('Modify info error:', error.message);
+    } else if (response.error) {
+      console.error('Review submission error:', response.error.message);
     }
+    setCompleteModalVisible(true);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>팝업 정보 수정</Text>
+    <DismissKeyboardView style={styles.container}>
+      <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>
+        {'POPPIN이 모르는 새로운\n'}
+        {'팝업을 알려주세요'}
+      </Text>
+      <View style={{height: 20}} />
+      <Text style={styles.labelText}>{name}</Text>
+      <View style={{height: 20}} />
       <TextInput
-        style={styles.input}
-        placeholder="내용을 입력하세요"
+        style={styles.reviewInput}
+        multiline
+        placeholder="팝업에 대한 후기를 남겨주세요(선택)"
+        placeholderTextColor={globalColors.font}
+        maxLength={1000}
         value={content}
         onChangeText={setContent}
-        multiline
       />
-      <ScrollView horizontal style={styles.imageScroll}>
-        {selectedImages.map((image, index) => (
-          <View key={index} style={styles.imageContainer}>
-            <Image source={{uri: image.uri}} style={styles.selectedImage} />
-            <TouchableOpacity
-              style={styles.deleteIcon}
-              onPress={() => handleRemoveImage(index)}>
-              <Text style={styles.deleteText}>X</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-        <Button title="사진 선택" onPress={handleSelectImages} />
-      </ScrollView>
-      <Button
-        title="요청하기"
+      <Text style={styles.labelText}>{'관련사진'}</Text>
+      <View style={styles.modalContainer} />
+      <ImageContainerRow
+        selectedImages={selectedImages}
+        handleSelectImages={handleSelectImages}
+        handleRemoveImage={handleRemoveImage}
+      />
+      <Text style={[Text12R.text, {color: globalColors.font}]}>
+        *문의사항은 접수 후 수정이 불가합니다.{'\n'}
+        *첨부파일은 20MB 이하의 파일만 첨부가능하며, 최대 5개까지
+        등록가능합니다.{'\n'}
+        *이미지에 개인정보가 보이지않도록 주의 바랍니다.{'\n'}
+        *고의로 잘못된 정보를 입력하여 다른 소비자들에게 오해와 혼동을 일으키고
+        기업의 이미지를 훼손시킬 경우 민/형사상 책임을 물을 수 있습니다.{'\n'}
+      </Text>
+      <CompleteButton
         onPress={handleSubmit}
-        disabled={loading || !content.trim() || selectedImages.length === 0}
+        title={'요청하기'}
+        // disabled={isSubmitEnabled}
       />
-      {loading && <Text>요청 중...</Text>}
-      {error && <Text>에러: {error.message}</Text>}
-      {success && <Text>수정 요청이 성공적으로 완료되었습니다!</Text>}
-    </View>
+      <TwoSelectConfirmationModal
+        isVisible={isModalVisible}
+        onClose={closeModal}
+        onConfirm={handleModalConfirm}
+        onBlankSpacePressed={closeOnlyModal}
+        mainAlertTitle="뒤로 가시겠습니까?"
+        subAlertTitle="변경 사항이 저장되지 않을 수 있습니다."
+        selectFirstText="나가기"
+        selectSecondText="계속 작성하기"
+      />
+      <ConfirmationModal
+        isVisible={completeModalVisible}
+        onClose={closeCompleteModal}
+        mainTitle="소중한 제보 감사합니다!"
+        subTitle={
+          '제보하신 팝업은\nPOPPIN에서 확인 후 업로드 될 예정입니다.\n더 나은 POPPIN이 되겠습니다.'
+        }
+      />
+    </DismissKeyboardView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: globalColors.white,
+    paddingHorizontal: 20,
   },
-  title: {
-    fontSize: 20,
-    marginBottom: 20,
+  modalContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  input: {
-    borderColor: '#ccc',
-    borderWidth: 1,
-    padding: 10,
-    marginBottom: 20,
-    borderRadius: 5,
-    textAlignVertical: 'top',
+  labelText: {
+    color: globalColors.black,
+    fontSize: 15,
   },
-  imageScroll: {
+  contentContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  imagesContainer: {
     flexDirection: 'row',
-    marginBottom: 20,
+    alignItems: 'center',
+    paddingVertical: 10, // 스크롤 뷰와 주변 요소 간 간격 조정
+  },
+  addImageButton: {
+    borderColor: globalColors.component,
+    borderWidth: 2,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 120,
+    height: 120,
+    marginRight: 10,
+  },
+  selectedImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  addImageText: {
+    color: globalColors.font,
+    paddingTop: 8,
+    textAlign: 'center', // 텍스트 중앙 정렬
+  },
+  deleteIcon: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    padding: 10, // 쉽게 탭할 수 있도록 패딩 추가
+    color: 'black',
+  },
+  reviewInput: {
+    borderWidth: 1,
+    borderColor: globalColors.warmGray,
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+    textAlignVertical: 'top',
+    height: 150,
+    fontSize: 14,
   },
   imageContainer: {
     position: 'relative',
     marginRight: 10,
-  },
-  selectedImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 5,
-  },
-  deleteIcon: {
-    position: 'absolute',
-    top: 5,
-    right: 5,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    borderRadius: 15,
-    padding: 5,
-  },
-  deleteText: {
-    color: 'white',
-    fontSize: 12,
   },
 });
 

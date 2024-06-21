@@ -61,6 +61,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
   selectedPopupType,
   onSelectPopupType,
   setSelectedDates,
+  operationTimes,
   setOperationTimes,
   operationExcept,
   setOperationExcept,
@@ -118,7 +119,10 @@ const StepTwo: React.FC<StepTwoProps> = ({
         <RequiredTextLabel label={'운영 기간'} isRequired={true} />
         <OperationCalendarBottomSheet setSelectedDates={setSelectedDates} />
         <RequiredTextLabel label={'운영 시간'} isRequired={true} />
-        <OperationHoursBottomSheet setOperationTimes={setOperationTimes} />
+        <OperationHoursBottomSheet
+          setOperationTimes={setOperationTimes}
+          operationTimes={operationTimes}
+        />
         <RequiredTextLabel label={'운영시간 외 예외사항'} isRequired={false} />
         <TextInput
           style={styles.exceptionalInput}

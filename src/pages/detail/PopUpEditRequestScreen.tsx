@@ -65,7 +65,6 @@ function PopUpEditRequestScreen() {
       ),
     });
   }, [navigation]);
-
   const handleSubmit = async () => {
     const response = await modifyInfoDetails(id, content, selectedImages);
     if (response.success) {
@@ -75,7 +74,6 @@ function PopUpEditRequestScreen() {
     }
     setCompleteModalVisible(true);
   };
-
   return (
     <DismissKeyboardView style={styles.container}>
       <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>
@@ -88,7 +86,7 @@ function PopUpEditRequestScreen() {
       <TextInput
         style={styles.reviewInput}
         multiline
-        placeholder="팝업에 대한 후기를 남겨주세요(선택)"
+        placeholder="팝업 정보 수정 요청"
         placeholderTextColor={globalColors.font}
         maxLength={1000}
         value={content}

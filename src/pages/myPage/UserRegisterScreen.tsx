@@ -11,7 +11,6 @@ import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
 import globalColors from '../../styles/color/globalColors.ts';
-import useUserReportPopUp from '../../hooks/mypage/useUserReportPopUp.tsx';
 import {useImageSelector} from '../../hooks/useImageSelector'; // Import the custom hook
 import {useCategorySelector} from '../../hooks/useCategorySelector'; // Import the custom hook
 import TextInputWithSvgIconInRight from '../../components/TextInputWithSvgIconInRight.tsx';
@@ -21,6 +20,7 @@ import DownSvg from '../../assets/icons/down.svg';
 import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 import RequiredTextLabel from '../../components/RequiredTextLabel.tsx';
 import {useNavigation} from '@react-navigation/native';
+import useUserReportPopUp from '../../hooks/myPage/useUserReportPopUp.tsx';
 
 function UserRegisterScreen() {
   const navigation = useNavigation();

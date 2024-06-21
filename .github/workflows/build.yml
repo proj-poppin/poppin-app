@@ -46,19 +46,25 @@
 
         - name: Update bundle version
           run: |
-            # Set the version number to 1.0.0 and build number to 1
+            # Set the version number
             VERSION_NUMBER="1.0.0"
-            BUILD_NUMBER="4"
-            # Update the Info.plist with the new version number and build number
-            # Ensure build number is at least 3, then increment
-            if [ "$BUILD_NUMBER" -lt 4 ]; then
-            BUILD_NUMBER=4
+
+            # Get the current build number from Info.plist
+            CURRENT_BUILD_NUMBER=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "ios/PoppinProject/Info.plist")
+
+            # Check if CURRENT_BUILD_NUMBER is a number, if not set it to 4
+            if ! [[ "$CURRENT_BUILD_NUMBER" =~ ^[0-9]+$ ]]; then
+              CURRENT_BUILD_NUMBER=4
             fi
-            NEW_BUILD_NUMBER=$((BUILD_NUMBER + 1))
-            # Update the Info.plist with the new build number and fixed version number
+
+            # Increment the build number
+            NEW_BUILD_NUMBER=$((CURRENT_BUILD_NUMBER + 1))
+
+            # Update the Info.plist with the new version number and build number
             /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION_NUMBER" "ios/PoppinProject/Info.plist"
             /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD_NUMBER" "ios/PoppinProject/Info.plist"
 
+            echo "Updated version number to $VERSION_NUMBER and build number to $NEW_BUILD_NUMBER"
         - name: Decode iOS secrets
           env:
             P12_DISTRIBUTION_CERTIFICATE_BASE64: ${{ secrets.IOS_P12_DISTRIBUTION_CERTIFICATE_BASE64 }}

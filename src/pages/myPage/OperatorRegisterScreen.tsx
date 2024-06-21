@@ -18,6 +18,7 @@ import StepThree, {
 } from '../../components/operatorRequest/StepThree.tsx';
 import PostalCodeModal from '../../components/operatorRequest/PostalCodeModal.tsx';
 import useManagerReportPopUp from '../../hooks/myPage/useManagerReportPopUp.tsx';
+import {useReducedMotion} from 'react-native-reanimated';
 
 const OperatorRegisterScreen = ({navigation}) => {
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
@@ -50,7 +51,7 @@ const OperatorRegisterScreen = ({navigation}) => {
   const [isPostalSearchModalVisible, setIsPostalSearchModalVisible] =
     useState(false);
   const [address, setAddress] = useState('');
-
+  const reducedMotion = useReducedMotion();
   const {selectedImages, handleSelectImages, handleRemoveImage} =
     useImageSelector(); // Use the custom hook
   // Add a state to track the reservation requirement selection

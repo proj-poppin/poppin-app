@@ -31,10 +31,10 @@ import useLogout from '../../hooks/auth/useLogout.tsx';
 import useGetUser from '../../hooks/auth/useGetUser.tsx';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
-
+import {useReducedMotion} from 'react-native-reanimated';
 function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
-
+  const reducedMotion = useReducedMotion();
   const {data: user, loading, error} = useGetUser();
 
   // 로그아웃 확인 다이얼로그 표시
@@ -228,6 +228,7 @@ function MyPageScreen({navigation}) {
         </Pressable>
         <View style={styles.modalContainer}>
           <BottomSheetModal
+            animateOnMount={!reducedMotion}
             ref={bottomSheetModalRef}
             index={0}
             backdropComponent={renderBackdrop}

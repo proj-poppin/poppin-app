@@ -9,7 +9,7 @@ import CompleteButton from './atoms/button/CompleteButton.tsx';
 import Text18B from '../styles/texts/body_large/Text18B.ts';
 import Text18R from '../styles/texts/body_large/Text18R.ts';
 import useBackdrop from '../hooks/common/useBackDrop.tsx';
-
+import {useReducedMotion} from 'react-native-reanimated';
 interface Times {
   start: string;
   end: string;
@@ -29,6 +29,7 @@ const OperationHoursBottomSheet: React.FC<OperationHoursBottomSheetProps> = ({
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [tempTime, setTempTime] = useState(new Date());
   const [selectionMode, setSelectionMode] = useState('start');
+  const reducedMotion = useReducedMotion();
 
   const showTimePicker = (type: 'start' | 'end') => {
     setSelectionMode(type);
@@ -89,6 +90,7 @@ const OperationHoursBottomSheet: React.FC<OperationHoursBottomSheetProps> = ({
       </View>
 
       <BottomSheetModal
+        animateOnMount={!reducedMotion}
         ref={bottomSheetModalRef}
         index={0}
         snapPoints={['60%']}

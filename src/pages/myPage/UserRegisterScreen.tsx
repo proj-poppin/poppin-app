@@ -21,8 +21,10 @@ import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescri
 import RequiredTextLabel from '../../components/RequiredTextLabel.tsx';
 import {useNavigation} from '@react-navigation/native';
 import useUserReportPopUp from '../../hooks/myPage/useUserReportPopUp.tsx';
+import {useReducedMotion} from 'react-native-reanimated';
 
 function UserRegisterScreen() {
+  const reducedMotion = useReducedMotion();
   const navigation = useNavigation();
   const [storeName, setStoreName] = useState('');
   const [infoLink, setInfoLink] = useState('');
@@ -160,6 +162,7 @@ function UserRegisterScreen() {
         isRequired={true}
       />
       <BottomSheetModal
+        animateOnMount={!reducedMotion}
         ref={bottomSheetModalRef}
         index={0}
         backdropComponent={renderBackdrop}

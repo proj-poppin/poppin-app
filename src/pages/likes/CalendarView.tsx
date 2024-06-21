@@ -3,7 +3,7 @@ import {View, StyleSheet, Text} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import globalColors from '../../styles/color/globalColors';
-
+import {useReducedMotion} from 'react-native-reanimated';
 const CalendarView = ({
   selectedDate,
   getMarkedDates,
@@ -11,7 +11,7 @@ const CalendarView = ({
   renderBottomSheetContent,
 }) => {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
+  const reducedMotion = useReducedMotion();
   const handlePresentModalPress = () => {
     bottomSheetModalRef.current?.present();
   };
@@ -39,6 +39,7 @@ const CalendarView = ({
         }}
       />
       <BottomSheetModal
+        animateOnMount={!reducedMotion}
         ref={bottomSheetModalRef}
         index={1}
         snapPoints={['25%', '40%', '75%']}

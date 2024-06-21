@@ -20,7 +20,7 @@ import OperationTab from './tab/OperatonTab';
 import ClosedTab from './tab/ClosedTab';
 import BackSvg from '../../assets/icons/goBack.svg';
 import useBackdrop from '../../hooks/common/useBackDrop.tsx';
-
+import {useReducedMotion} from 'react-native-reanimated';
 export const FIND_ORDER_TYPES = [
   {label: '최근 오픈 순', value: 'OPEN'},
   {label: '종료 임박 순', value: 'CLOSE'},
@@ -43,6 +43,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [isRefetchSearchKeyword, setIsRefetchSearchKeyword] = useState(false);
   const [isSettingApplied, setIsSettingApplied] = useState(false);
+  const reducedMotion = useReducedMotion();
   const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
     useState(false);
 
@@ -220,6 +221,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
       </SafeAreaView>
       <View style={styles.modalContainer}>
         <BottomSheetModal
+          animateOnMount={!reducedMotion}
           ref={bottomSheetModalRef}
           index={0}
           backdropComponent={useBackdrop}

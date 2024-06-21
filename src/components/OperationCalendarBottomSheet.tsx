@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Pressable,
 } from 'react-native';
+import {useReducedMotion} from 'react-native-reanimated';
 import {BottomSheetModal, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import {Calendar} from 'react-native-calendars'; // Ensure this is installed
 import CalendarGraySvg from '../assets/icons/calendarGray.svg'; // Your SVG path
@@ -14,7 +15,6 @@ import DividerLine from './DividerLine.tsx';
 import CompleteButton from './atoms/button/CompleteButton.tsx';
 import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 import Text18B from '../styles/texts/body_large/Text18B.ts';
-
 interface Dates {
   start: string;
   end: string;
@@ -30,7 +30,7 @@ const OperationCalendarBottomSheet: React.FC<
   const [dates, setDates] = useState<Dates>({start: '', end: ''});
   const [selectionMode, setSelectionMode] = useState('start');
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
+  const reducedMotion = useReducedMotion();
   useEffect(() => {
     const today = new Date();
     const tomorrow = new Date(today);
@@ -135,6 +135,7 @@ const OperationCalendarBottomSheet: React.FC<
       </View>
 
       <BottomSheetModal
+        animateOnMount={!reducedMotion}
         ref={bottomSheetModalRef}
         index={0}
         snapPoints={['75%']}

@@ -49,6 +49,10 @@ import ReportOptions from './options/ReportOptions.tsx';
 import PopUpEditRequestScreen from '../pages/detail/PopUpEditRequestScreen.tsx';
 import PopUpEditRequestOptions from './options/PopUpEditRequestOptions.tsx';
 import PrivacyPolicyOptions from './options/PrivacyPolicyOptions.tsx';
+import PreferenceSettingScreen from '../pages/myPage/preferenceSetting/PreferenceSettingScreen.tsx';
+import FAQFormScreen from '../pages/myPage/FAQFormScreen.tsx';
+import PasswordCheckScreen from '../pages/myPage/PasswordCheckScreen.tsx';
+import MyReviewsList from '../pages/myPage/MyReviewsList.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -75,10 +79,14 @@ function AppNavigator() {
         component={FindInputScreen}
         options={{headerShown: false}}
       />
-
       <Stack.Screen
         name="Entry"
         component={EntryScreen}
+        options={EntryScreenOptions}
+      />
+       <Stack.Screen
+        name="PreferenceSetting"
+        component={PreferenceSettingScreen}
         options={EntryScreenOptions}
       />
 
@@ -171,7 +179,8 @@ function AppNavigator() {
           title: '프로필 설정',
           headerRight: () => (
             <Text
-              onPress={() => navigation.goBack()}
+              onPress={
+                navigation.navigate('ProfileEdit')}
               style={{color: globalColors.blue, marginRight: 10}}>
               완료
             </Text>
@@ -186,12 +195,36 @@ function AppNavigator() {
         })}
       />
       <Stack.Screen name="PasswordChange" component={PasswordChangeScreen} />
+      <Stack.Screen name="PasswordCheck" component={PasswordCheckScreen} />
+      <Stack.Screen name="MyReviewsList" component={MyReviewsList} />
       <Stack.Screen
         name="FAQ"
         component={FAQScreen}
         options={({navigation}) => ({
           headerShown: true,
           title: '문의하기/FAQ',
+          headerLeft: () => (
+            <Pressable
+              onPress={() => navigation.goBack()}
+              style={({pressed}) => ({opacity: pressed ? 0.5 : 1})}>
+              <GoBackSvg />
+            </Pressable>
+          ),
+        })}
+      />
+       <Stack.Screen
+        name="FAQFormScreen"
+        component={FAQFormScreen}
+        options={({navigation}) => ({
+          headerShown: true,
+          title: '1:1문의하기',
+          headerLeft: () => (
+            <Pressable
+              onPress={() => navigation.goBack()}
+              style={({pressed}) => ({opacity: pressed ? 0.5 : 1})}>
+              <GoBackSvg />
+            </Pressable>
+          ),
         })}
       />
       <Stack.Screen

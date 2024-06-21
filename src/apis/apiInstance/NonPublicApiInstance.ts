@@ -2,6 +2,7 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {performLogout} from './performLogout.tsx';
+import {printRequestLog, printResponseLog} from './logUtils.ts';
 
 const nonPublicApiInstance = axios.create({
   baseURL: Config.API_URL,
@@ -10,10 +11,10 @@ const nonPublicApiInstance = axios.create({
 nonPublicApiInstance.interceptors.request.use(
   async config => {
     const accessToken = await EncryptedStorage.getItem('accessToken');
-    console.log('accessToken: ', accessToken);
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
+    printRequestLog(config);
     return config;
   },
   error => {
@@ -23,6 +24,7 @@ nonPublicApiInstance.interceptors.request.use(
 
 nonPublicApiInstance.interceptors.response.use(
   response => {
+    printResponseLog(response);
     return response;
   },
   async error => {

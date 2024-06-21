@@ -14,6 +14,7 @@ const useResetPassword = () => {
   ) => {
     try {
       const response = await resetPassword(password, passwordConfirm);
+      
       if (response.success) {
         console.log('Password reset successful:', response.data);
         setResetPasswordStatus({

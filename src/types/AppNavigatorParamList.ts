@@ -28,4 +28,8 @@ export type AppNavigatorParamList = {
   AlarmSetting: undefined;
   NoticeDetail: {nid: number};
   findInputScreen: undefined;
+  FAQForm: undefined;
+  PasswordCheck: undefined
+  MyReviewsList: undefined
+  FAQFormScreen:undefined
 };

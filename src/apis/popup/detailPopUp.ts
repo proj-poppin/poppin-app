@@ -10,6 +10,7 @@ const getDetailPopUp = async (
     });
 
     if (response.data.success) {
+      console.log('DetailPopUpDataNonPublic:', response.data);
       return response.data;
     } else {
       return {

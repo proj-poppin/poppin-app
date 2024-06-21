@@ -1,6 +1,10 @@
+// src/hooks/review/useCreateReview.tsx
 import {useState} from 'react';
 import createPopUpReview from '../../apis/popup/createReview.tsx';
 import {ImageType} from '../../types/ImageType.ts';
+import {useDispatch} from 'react-redux';
+import {setReviewSubmitted} from '../../redux/slices/reviewSubmittedSlice.ts';
+import getDetailPopUp from '../../apis/popup/detailPopUp';
 
 interface CreateReviewState {
   loading: boolean;
@@ -16,6 +20,8 @@ const useCreateReview = () => {
       success: null,
     },
   );
+
+  const dispatch = useDispatch();
 
   const createReview = async (
     popupId: number,
@@ -44,7 +50,7 @@ const useCreateReview = () => {
         isVisited,
       );
       if (response.success) {
-        console.log(response);
+        dispatch(setReviewSubmitted(true));
         setCreateReviewState({loading: false, error: null, success: true});
         return response;
       } else {
@@ -66,6 +72,7 @@ const useCreateReview = () => {
       return {success: false, error: {code: 'unknown', message: err.message}};
     }
   };
+
   return {...createReviewState, createReview};
 };
 

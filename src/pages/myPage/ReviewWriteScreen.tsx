@@ -22,6 +22,7 @@ import Text12R from '../../styles/texts/label/Text12R';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 import useCreateReview from '../../hooks/review/useCreateReview.tsx';
 import {useImageSelector} from '../../hooks/useImageSelector.tsx';
+import getDetailPopUp from '../../apis/popup/detailPopUp.ts';
 
 type ReviewWriteScreenRouteProp = RouteProp<
   AppNavigatorParamList,
@@ -71,7 +72,10 @@ function ReviewWriteScreen() {
       isVisited,
     );
     if (response.success) {
-      navigation.goBack();
+      const resp = await getDetailPopUp(popupId);
+      if (resp.success) {
+        navigation.goBack();
+      }
     } else if (response.error) {
       console.error('Review submission error:', response.error.message);
     }

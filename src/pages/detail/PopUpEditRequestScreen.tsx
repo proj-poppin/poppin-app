@@ -70,7 +70,8 @@ function PopUpEditRequestScreen() {
     if (response.success) {
       navigation.goBack();
     } else if (response.error) {
-      console.error('Review submission error:', response.error.message);
+      navigation.goBack();
+      // console.error('Review submission error:', response.error.message);
     }
     setCompleteModalVisible(true);
   };

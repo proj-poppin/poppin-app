@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import modifyPopUpInfo from '../../apis/popup/modifyPopUpInfo.ts';
+import {ImageType} from '../../types/ImageType.ts';
 
 interface ModifyPopUpInfoState {
   loading: boolean;
@@ -17,8 +18,12 @@ const useModifyPopUpInfo = () => {
   const modifyInfoDetails = async (
     popupId: number,
     content: string,
-    images: string[],
+    images: ImageType[],
   ): Promise<CommonResponse<any>> => {
+    if (!Array.isArray(images)) {
+      throw new TypeError('images should be an array');
+    }
+
     setModifyInfoState({loading: true, error: null, success: null});
     try {
       const response: CommonResponse<any> = await modifyPopUpInfo(

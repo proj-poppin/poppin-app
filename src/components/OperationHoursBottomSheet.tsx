@@ -7,7 +7,6 @@ import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import DividerLine from './DividerLine.tsx';
 import CompleteButton from './atoms/button/CompleteButton.tsx';
 import Text18B from '../styles/texts/body_large/Text18B.ts';
-import Text18R from '../styles/texts/body_large/Text18R.ts';
 import useBackdrop from '../hooks/common/useBackDrop.tsx';
 import {useReducedMotion} from 'react-native-reanimated';
 interface Times {
@@ -17,15 +16,14 @@ interface Times {
 
 interface OperationHoursBottomSheetProps {
   setOperationTimes: (times: {start: string; end: string}) => void;
+  operationTimes: Times; // 추가: 초기값을 받도록 수정
 }
 
 const OperationHoursBottomSheet: React.FC<OperationHoursBottomSheetProps> = ({
   setOperationTimes,
+  operationTimes,
 }) => {
-  const [times, setTimes] = useState<Times>({
-    start: '오픈 시간',
-    end: '종료 시간',
-  });
+  const [times, setTimes] = useState<Times>(operationTimes); // 초기값 설정
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [tempTime, setTempTime] = useState(new Date());
   const [selectionMode, setSelectionMode] = useState('start');
@@ -36,7 +34,7 @@ const OperationHoursBottomSheet: React.FC<OperationHoursBottomSheetProps> = ({
     bottomSheetModalRef.current?.present();
   };
 
-  const getInputStyle = (type: string, value: string) => ({
+  const getInputStyle = (value: string) => ({
     color:
       value === '오픈 시간' || value === '종료 시간'
         ? globalColors.font
@@ -44,7 +42,11 @@ const OperationHoursBottomSheet: React.FC<OperationHoursBottomSheetProps> = ({
   });
 
   const handleComplete = () => {
-    setOperationTimes(times); // Set the operation times using the passed prop
+    const formattedTimes = {
+      start: formatTimeForData(times.start),
+      end: formatTimeForData(times.end),
+    };
+    setOperationTimes(formattedTimes); // Set the operation times using the passed prop
     bottomSheetModalRef.current?.dismiss();
   };
 
@@ -72,19 +74,40 @@ const OperationHoursBottomSheet: React.FC<OperationHoursBottomSheetProps> = ({
     }));
   };
 
+  const formatTimeForData = (time: string) => {
+    const match = time.match(/오전|오후|\d{1,2}/g);
+    if (!match) {
+      return time;
+    } // 매치되지 않으면 원래 문자열 반환
+
+    const [period, hour, minute] = match;
+    let hours = parseInt(hour);
+    const minutes = minute ? parseInt(minute.replace('분', ''), 10) : 0;
+
+    if (period === '오후' && hours !== 12) {
+      hours += 12;
+    } else if (period === '오전' && hours === 12) {
+      hours = 0;
+    }
+
+    return `${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')}`;
+  };
+
   return (
     <View>
       <View style={styles.inputRow}>
         <Pressable
           style={[styles.input, styles.firstInput]}
           onPress={() => showTimePicker('start')}>
-          <Text style={getInputStyle('start', times.start)}>{times.start}</Text>
+          <Text style={getInputStyle(times.start)}>{times.start}</Text>
         </Pressable>
         <Text style={styles.toText}>~</Text>
         <Pressable
           style={[styles.input, styles.secondInput]}
           onPress={() => showTimePicker('end')}>
-          <Text style={getInputStyle('end', times.end)}>{times.end}</Text>
+          <Text style={getInputStyle(times.end)}>{times.end}</Text>
           <ClockSvg />
         </Pressable>
       </View>
@@ -102,16 +125,14 @@ const OperationHoursBottomSheet: React.FC<OperationHoursBottomSheetProps> = ({
         </View>
 
         <View style={styles.dateRow}>
-          <Text style={[Text18R.text, {marginLeft: 10}]}>시작</Text>
+          <Text style={[Text18B.text, {marginLeft: 10}]}>시작</Text>
           <Pressable
             style={({pressed}) => [
               styles.timeInputContainer,
               pressed && {backgroundColor: globalColors.warmGray},
             ]}
             onPress={() => setSelectionMode('start')}>
-            <Text style={getInputStyle('start', times.start)}>
-              {times.start}
-            </Text>
+            <Text style={getInputStyle(times.start)}>{times.start}</Text>
           </Pressable>
         </View>
         <DividerLine height={1} />
@@ -123,7 +144,7 @@ const OperationHoursBottomSheet: React.FC<OperationHoursBottomSheetProps> = ({
               pressed && {backgroundColor: globalColors.warmGray},
             ]}
             onPress={() => setSelectionMode('end')}>
-            <Text style={getInputStyle('end', times.end)}>{times.end}</Text>
+            <Text style={getInputStyle(times.end)}>{times.end}</Text>
           </Pressable>
         </View>
         <DividerLine height={1} />
@@ -195,14 +216,14 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   dateInput: {
-    flex: 1, // 나머지 공간 채우기
-    marginLeft: 10, // 아이콘과의 간격
+    flex: 1,
+    marginLeft: 10,
     color: globalColors.black,
   },
   centeredView: {
-    alignItems: 'center', // 수평 중앙 정렬
-    justifyContent: 'center', // 수직 중앙 정렬
-    flex: 1, // 부모 컨테이너를 꽉 채우기
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
   },
 });
 

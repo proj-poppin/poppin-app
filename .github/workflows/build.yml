@@ -61,7 +61,6 @@
 
             echo "Updated version number to $VERSION_NUMBER and build number to $NEW_BUILD_NUMBER"
 
-            echo "Updated version number to $VERSION_NUMBER and build number to $NEW_BUILD_NUMBER"
         - name: Decode iOS secrets
           env:
             P12_DISTRIBUTION_CERTIFICATE_BASE64: ${{ secrets.IOS_P12_DISTRIBUTION_CERTIFICATE_BASE64 }}

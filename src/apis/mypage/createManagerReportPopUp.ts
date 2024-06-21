@@ -76,8 +76,8 @@ const createManagerReportPopUp = async (
     formData.append('availableAge', availableAge);
     formData.append('parkingAvailable', parkingAvailable);
     formData.append('resvRequired', resvRequired);
-    formData.append('openDate', 'openDate');
-    formData.append('closeDate', ' closeDate');
+    formData.append('openDate', openDate);
+    formData.append('closeDate', closeDate);
     formData.append('openTime', openTime);
     formData.append('closeTime', closeTime);
     formData.append('operationExcept', operationExcept);

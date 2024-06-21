@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -14,8 +14,6 @@ import globalColors from '../../styles/color/globalColors';
 import OptionSingleButton from '../../components/atoms/button/OptionSingleButton';
 import PlusSvg from '../../assets/icons/plus.svg';
 import ImageDeleteSvg from '../../assets/icons/imageDelete.svg';
-import ImagePicker from 'react-native-image-crop-picker';
-import ImageResizer from 'react-native-image-resizer';
 import CompleteButton from '../../components/atoms/button/CompleteButton';
 import DismissKeyboardView from '../../components/DismissKeyboardView';
 import Text14R from '../../styles/texts/body_medium/Text14R';
@@ -23,7 +21,7 @@ import Text13R from '../../styles/texts/label/Text12R';
 import Text12R from '../../styles/texts/label/Text12R';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 import useCreateReview from '../../hooks/review/useCreateReview.tsx';
-import {ImageType} from '../../types/ImageType.ts';
+import {useImageSelector} from '../../hooks/useImageSelector.tsx';
 
 type ReviewWriteScreenRouteProp = RouteProp<
   AppNavigatorParamList,
@@ -35,6 +33,8 @@ function ReviewWriteScreen() {
   const navigation = useNavigation();
   const {name, id, isVisited} = route.params;
   const {createReview, loading} = useCreateReview();
+  const {selectedImages, handleSelectImages, handleRemoveImage} =
+    useImageSelector(); // Use the custom hook
 
   const popupId = id;
 
@@ -44,7 +44,6 @@ function ReviewWriteScreen() {
     });
   }, [isVisited, navigation]);
 
-  const [keyword, setKeyword] = useState('');
   const [selectedVisitTime, setSelectedVisitTime] = useState<string | null>(
     null,
   );
@@ -55,52 +54,6 @@ function ReviewWriteScreen() {
     null,
   );
   const [review, setReview] = useState('');
-  const [selectedImages, setSelectedImages] = useState<ImageType[]>([]);
-
-  const handleRemoveImage = useCallback((indexToRemove: number) => {
-    setSelectedImages(prevImages =>
-      prevImages.filter((_, index) => index !== indexToRemove),
-    );
-  }, []);
-
-  const handleSelectImages = () => {
-    ImagePicker.openPicker({
-      multiple: true,
-      mediaType: 'photo',
-      maxFiles: 5 - selectedImages.length,
-    })
-      .then(images => {
-        const resizePromises = images.map(image =>
-          ImageResizer.createResizedImage(
-            image.path,
-            600,
-            600,
-            image.mime.includes('jpeg') ? 'JPEG' : 'PNG',
-            100,
-            0,
-          )
-            .then(r => ({
-              uri: r.uri,
-              name: r.name,
-              type: image.mime,
-            }))
-            .catch(error => {
-              return null;
-            }),
-        );
-        Promise.all(resizePromises)
-          .then(resizedImages => {
-            const validImages = resizedImages.filter(image => image !== null);
-            setSelectedImages(prevImages => [...prevImages, ...validImages]);
-          })
-          .catch(error => {
-            console.log('Error processing images:', error);
-          });
-      })
-      .catch(error => {
-        console.log('Error selecting images:', error);
-      });
-  };
 
   const handleSubmit = async () => {
     if (!isSubmitEnabled) {

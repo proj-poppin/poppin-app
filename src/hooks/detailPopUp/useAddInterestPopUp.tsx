@@ -14,10 +14,10 @@ const useAddInterestPopUp = () => {
     success: null,
   });
 
-  const addInterest = async (popUpId: number) => {
+  const addInterest = async (popUpId: number, fcm_token: string) => {
     setAddInterestState({loading: true, error: null, success: null});
     try {
-      const response = await addInterestPopUp(popUpId);
+      const response = await addInterestPopUp(popUpId, fcm_token);
       if (response.success) {
         setAddInterestState({loading: false, error: null, success: true});
       } else {

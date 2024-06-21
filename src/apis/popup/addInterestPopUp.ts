@@ -1,4 +1,5 @@
 import nonPublicApiInstance from '../../apis/apiInstance/NonPublicApiInstance';
+
 export interface AddRecommendReviewResponse {
   success: boolean;
   error?: {
@@ -6,13 +7,19 @@ export interface AddRecommendReviewResponse {
     message: string;
   };
 }
-const addInterestPopup = async (popupId: number) => {
+const addInterestPopup = async (popupId: number, fcmToken: string) => {
   try {
     const response = await nonPublicApiInstance.post(
-      `/api/v1/interest/add-interest`,
-      {popupId},
+      '/api/v1/interest/add-interest',
+      null,
+      {
+        params: {
+          popupId: popupId,
+          fcm_token: 'fcmToken',
+        },
+      },
     );
-    console.log('addbookmarkpopup response:', response.data);
+    console.log('addInterestPopup response:', response.data);
 
     if (response.data.success) {
       return response.data;

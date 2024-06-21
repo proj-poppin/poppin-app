@@ -213,10 +213,10 @@ const PopUpDetailScreen = ({route}) => {
 
   const handleToggleInterest = async () => {
     if (isInterested) {
-      await deleteInterest(id);
+      await deleteInterest(id, 'fcmToken');
       setToastMessage('관심팝업에서 삭제되었어요!');
     } else {
-      await addInterest(id);
+      await addInterest(id, 'fcmToken');
       setToastMessage('관심팝업에 저장되었어요!');
     }
     setIsShowToast(true);

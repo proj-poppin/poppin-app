@@ -19,8 +19,7 @@ import NoLikesSvg from '../../assets/likes/noLikes.svg';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import NotLogginBox from '../../components/NotLogginBox.tsx';
 import {useFocusEffect} from '@react-navigation/native';
-import CalendarComponent from "./calendar/CalendarComponent.tsx";
-
+import CalendarComponent from './calendar/CalendarComponent.tsx';
 const popUpTypes = ['오픈 예정인 팝업', '운영 중인 팝업', '운영 종료 팝업'];
 const orderTypes = ['오픈일순', '마감일순', '저장순'];
 
@@ -187,35 +186,31 @@ function LikesScreen({navigation}) {
   return (
     <SafeAreaView style={{flex: 1}}>
       {/*<DismissKeyboardView>*/}
-        <BottomSheetModalProvider>
-          <View style={styles.header}>
-            <Text style={[Text24B.text]}>관심 목록</Text>
-            <TouchableOpacity style={styles.iconButton} onPress={toggleView}>
-              {isCalendarView ? (
-                <ListIconSvg width={24} height={24} fill={globalColors.font} />
-              ) : (
-                <CalendarSvg width={24} height={24} fill={globalColors.font} />
-              )}
-            </TouchableOpacity>
+      <BottomSheetModalProvider>
+        <View style={styles.header}>
+          <Text style={[Text24B.text]}>관심 목록</Text>
+          <TouchableOpacity style={styles.iconButton} onPress={toggleView}>
+            {isCalendarView ? (
+              <ListIconSvg width={24} height={24} fill={globalColors.font} />
+            ) : (
+              <CalendarSvg width={24} height={24} fill={globalColors.font} />
+            )}
+          </TouchableOpacity>
+        </View>
+        {isCalendarView ? (
+          <View style={{flex: 1}}>
+            <CalendarComponent data={interestList} />
           </View>
-          {isCalendarView ? (
-
-            <View style={{flex:1}}>
-              <CalendarComponent
-                data={interestList}
-              />
-            </View>
-
-          ) : (
-            <ListView
-              popUpTypes={popUpTypes}
-              orderTypes={orderTypes}
-              setSelectedPopUpType={setSelectedPopUpType}
-              setSelectedOrderType={setSelectedOrderType}
-              sortedInterestList={sortedInterestList}
-            />
-          )}
-        </BottomSheetModalProvider>
+        ) : (
+          <ListView
+            popUpTypes={popUpTypes}
+            orderTypes={orderTypes}
+            setSelectedPopUpType={setSelectedPopUpType}
+            setSelectedOrderType={setSelectedOrderType}
+            sortedInterestList={sortedInterestList}
+          />
+        )}
+      </BottomSheetModalProvider>
       {/*</DismissKeyboardView>*/}
     </SafeAreaView>
   );

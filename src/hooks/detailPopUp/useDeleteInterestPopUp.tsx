@@ -15,11 +15,11 @@ const useDeleteInterestPopUp = () => {
       success: null,
     });
 
-  const deleteInterest = async (popUpId: number) => {
+  const deleteInterest = async (popUpId: number, fcm_token: string) => {
     setDeleteInterestState({loading: true, error: null, success: null});
 
     try {
-      const response = await getDeletePopUp(popUpId);
+      const response = await getDeletePopUp(popUpId, fcm_token);
       if (response.success) {
         setDeleteInterestState({loading: false, error: null, success: true});
       } else {

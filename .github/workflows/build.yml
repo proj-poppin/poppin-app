@@ -49,13 +49,21 @@ jobs:
           # Set the major and minor version numbers
           MAJOR_VERSION=1
           MINOR_VERSION=1
-          # Get the current build number
-          BUILD_NUMBER=$(defaults read "$(pwd)/ios/PoppinProject/Info" CFBundleVersion | sed 's/^1\.1\.\([0-9]\+\)$/\1/' || echo "0")
+          # Get the current build number from git tag
+          LAST_BUILD_TAG=$(git tag --list --sort=-v:refname 'build-*' | head -n 1)
+          if [ -z "$LAST_BUILD_TAG" ]; then
+            BUILD_NUMBER=0
+          else
+            BUILD_NUMBER=$(echo $LAST_BUILD_TAG | sed 's/build-//')
+          fi
           # Increment the build number
           NEW_BUILD_NUMBER=$((BUILD_NUMBER + 1))
+          NEW_BUILD_TAG="build-$NEW_BUILD_NUMBER"
           # Update the Info.plist with the new build number
-          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${MAJOR_VERSION}.${MINOR_VERSION}.3" "ios/PoppinProject/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${MAJOR_VERSION}.${MINOR_VERSION}.${NEW_BUILD_NUMBER}" "ios/PoppinProject/Info.plist"
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${MAJOR_VERSION}.${MINOR_VERSION}.${NEW_BUILD_NUMBER}" "ios/PoppinProject/Info.plist"
+          git tag $NEW_BUILD_TAG
+          git push origin $NEW_BUILD_TAG
 
       - name: Decode iOS secrets
         env:

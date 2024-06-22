@@ -49,6 +49,8 @@ import ReportOptions from './options/ReportOptions.tsx';
 import PopUpEditRequestScreen from '../pages/detail/PopUpEditRequestScreen.tsx';
 import PopUpEditRequestOptions from './options/PopUpEditRequestOptions.tsx';
 import PrivacyPolicyOptions from './options/PrivacyPolicyOptions.tsx';
+import {useNavigation} from '@react-navigation/native';
+import {initFirebaseNotification} from '../apis/push/firebase.ts';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -63,6 +65,9 @@ const DefaultNoHeaderOptions = {
 };
 
 function AppNavigator() {
+  const navigation = useNavigation();
+  initFirebaseNotification(navigation);
+
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen

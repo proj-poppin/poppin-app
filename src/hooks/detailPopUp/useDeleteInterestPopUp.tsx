@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import getDeletePopUp from '../../apis/popup/deleteInterestPopUp.ts';
+import EncryptedStorage from "react-native-encrypted-storage";
 
 interface DeleteInterestState {
   loading: boolean;
@@ -15,11 +16,12 @@ const useDeleteInterestPopUp = () => {
       success: null,
     });
 
-  const deleteInterest = async (popUpId: number) => {
+  const deleteInterest = async (popupId: number) => {
     setDeleteInterestState({loading: true, error: null, success: null});
 
     try {
-      const response = await getDeletePopUp(popUpId);
+      const fcm_token = (await EncryptedStorage.getItem('pushToken')) ?? '';
+      const response = await getDeletePopUp({popupId, fcm_token});
       if (response.success) {
         setDeleteInterestState({loading: false, error: null, success: true});
       } else {

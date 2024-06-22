@@ -6,11 +6,16 @@ export interface AddRecommendReviewResponse {
     message: string;
   };
 }
-const addInterestPopup = async (popupId: number) => {
+interface AddInterestPopupParams {
+  popupId: number;
+  fcm_token: string;
+}
+const addInterestPopup = async (params: AddInterestPopupParams) => {
   try {
     const response = await nonPublicApiInstance.post(
-      `/api/v1/interest/add-interest`,
-      {popupId},
+      '/api/v1/interest/add-interest',
+      null,
+      {params: params},
     );
     console.log('addbookmarkpopup response:', response.data);
 

@@ -60,9 +60,7 @@ const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({data}) => {
   const [selDate, setSelDate] = useState<DateData>(createTodayDateData()); // 캘린더 내부사용 포맷
   const [markedDates, setMarkedDates] = useState<MarkedDates>({});
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
-  const [calendarType, setCalendarType] = useState<CalendarType>(
-    CalendarType.NORMAL,
-  );
+  const [calendarType, setCalendarType] = useState<CalendarType>(CalendarType.NORMAL);
   const reducedMotion = useReducedMotion();
 
   // useRef
@@ -77,6 +75,7 @@ const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({data}) => {
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
     bottomSheetModalRef.current?.snapToIndex(0);
+    setCalendarType(CalendarType.NORMAL);
   }, []);
 
   const handleSheetChanges = useCallback((index: number) => {

@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Pressable,
 } from 'react-native';
+import {useReducedMotion} from 'react-native-reanimated';
 import {BottomSheetModal, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import {Calendar} from 'react-native-calendars'; // Ensure this is installed
 import CalendarGraySvg from '../assets/icons/calendarGray.svg'; // Your SVG path
@@ -14,18 +15,22 @@ import DividerLine from './DividerLine.tsx';
 import CompleteButton from './atoms/button/CompleteButton.tsx';
 import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 import Text18B from '../styles/texts/body_large/Text18B.ts';
-import Text18R from '../styles/texts/body_large/Text18R.ts';
-
 interface Dates {
   start: string;
   end: string;
 }
 
-const OperationCalendarBottomSheet: React.FC = () => {
+interface OperationCalendarBottomSheetProps {
+  setSelectedDates: (dates: Dates) => void;
+}
+
+const OperationCalendarBottomSheet: React.FC<
+  OperationCalendarBottomSheetProps
+> = ({setSelectedDates}) => {
   const [dates, setDates] = useState<Dates>({start: '', end: ''});
   const [selectionMode, setSelectionMode] = useState('start');
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
+  const reducedMotion = useReducedMotion();
   useEffect(() => {
     const today = new Date();
     const tomorrow = new Date(today);
@@ -38,48 +43,29 @@ const OperationCalendarBottomSheet: React.FC = () => {
   }, []);
 
   const handleOpenCalendar = (mode: 'start' | 'end') => {
-    setDates(prev => ({...prev, mode}));
+    setSelectionMode(mode);
     bottomSheetModalRef.current?.present();
   };
 
-  // 캘린더에서 날짜 선택 시 호출되는 함수 수정
-  const handleDateSelected = (day: {dateString: any}) => {
+  const handleDateSelected = (day: {dateString: string}) => {
     const selectedDate = day.dateString;
-    const newDate = new Date(selectedDate);
-
     if (selectionMode === 'start') {
-      newDate.setDate(newDate.getDate() + 1); // 선택한 날짜의 다음 날
-      const nextDay = newDate.toISOString().split('T')[0];
-
-      if (selectedDate > dates.end) {
-        // 시작 날짜가 종료 날짜보다 뒤일 경우
-        setDates({start: selectedDate, end: nextDay}); // 종료 날짜를 시작 날짜의 다음 날로 설정
-      } else {
-        setDates({...dates, start: selectedDate});
-      }
-      // setSelectionMode('end'); // 날짜 선택 후 'end' 모드로 자동 전환(기/디 의견 필요)
+      setDates(prev => ({...prev, start: selectedDate}));
+      setSelectionMode('end');
     } else if (selectionMode === 'end') {
-      newDate.setDate(newDate.getDate() - 1); // 선택한 날짜의 전 날
-      const previousDay = newDate.toISOString().split('T')[0];
-
-      if (selectedDate < dates.start) {
-        // 종료 날짜가 시작 날짜보다 앞일 경우
-        setDates({start: previousDay, end: selectedDate}); // 시작 날짜를 종료 날짜의 전 날로 설정
-      } else {
-        setDates({...dates, end: selectedDate});
-      }
+      setDates(prev => ({...prev, end: selectedDate}));
     }
   };
 
-  const getDateInputTextStyle = (type: string) => ({
-    color: selectionMode === type ? globalColors.calendar : 'black', // 선택 모드에 따라 텍스트 색상 변경
+  const getDateInputTextStyle = (type: string, value: string) => ({
+    color: value ? globalColors.black : globalColors.font,
   });
 
   const handleComplete = () => {
+    setSelectedDates(dates); // 부모 컴포넌트에 선택된 날짜 전달
     bottomSheetModalRef.current?.dismiss();
   };
 
-  // 바깥 화면 터치 시 바텀 시트를 내리도록 설정
   const renderBackdrop = (
     props: React.JSX.IntrinsicAttributes & BottomSheetDefaultBackdropProps,
   ) => (
@@ -91,50 +77,37 @@ const OperationCalendarBottomSheet: React.FC = () => {
     />
   );
 
-  // 캘린더에서 날짜를 선택했을 때의 시각적 표시 조정
   const getMarkedDates = () => {
     let markedDates: {[date: string]: any} = {};
 
-    if (selectionMode === 'start') {
-      // 선택 모드가 'start'일 때, 시작 날짜 마킹
-      if (dates.start) {
-        markedDates[dates.start] = {
-          selected: true,
-          startingDay: true,
-          endingDay: dates.start === dates.end,
-          color: globalColors.calendar,
-          textColor: 'black',
-          primaryColors: globalColors.calendar,
-        };
-      }
-    } else if (selectionMode === 'end') {
-      // 선택 모드가 'end'일 때, 종료 날짜만 마킹
-      if (dates.end) {
-        markedDates[dates.end] = {
-          selected: true,
-          startingDay: dates.start === dates.end,
-          endingDay: true,
-          color: globalColors.calendar,
-          primaryColors: globalColors.calendar,
-          textColor: 'black',
-        };
-      }
+    if (dates.start) {
+      markedDates[dates.start] = {
+        selected: true,
+        startingDay: true,
+        endingDay: dates.start === dates.end,
+        color: globalColors.calendar,
+        textColor: 'black',
+      };
+    }
+    if (dates.end && dates.start !== dates.end) {
+      markedDates[dates.end] = {
+        selected: true,
+        endingDay: true,
+        color: globalColors.calendar,
+        textColor: 'black',
+      };
     }
 
-    // 시작 날짜와 종료 날짜가 다를 경우, 두 날짜 사이의 범위도 마킹
-    if (dates.start && dates.end && dates.start !== dates.end) {
-      let iterateDate = new Date(dates.start);
-      let endDate = new Date(dates.end);
-      while (iterateDate < endDate) {
-        const dateString = iterateDate.toISOString().split('T')[0];
-        if (dateString !== dates.start && dateString !== dates.end) {
-          markedDates[dateString] = {
-            color: globalColors.calendar,
-            textColor: 'black',
-          };
-        }
-        iterateDate.setDate(iterateDate.getDate() + 1);
+    let currentDate = new Date(dates.start);
+    while (currentDate <= new Date(dates.end)) {
+      const dateString = currentDate.toISOString().split('T')[0];
+      if (dateString !== dates.start && dateString !== dates.end) {
+        markedDates[dateString] = {
+          color: globalColors.calendar,
+          textColor: 'black',
+        };
       }
+      currentDate.setDate(currentDate.getDate() + 1);
     }
 
     return markedDates;
@@ -143,23 +116,26 @@ const OperationCalendarBottomSheet: React.FC = () => {
   return (
     <View>
       <View style={styles.inputRow}>
-        <View style={[styles.input, styles.firstInput]}>
-          <Text style={{color: globalColors.font}}>
+        <Pressable
+          style={[styles.input, styles.firstInput]}
+          onPress={() => handleOpenCalendar('start')}>
+          <Text style={getDateInputTextStyle('start', dates.start)}>
             {dates.start || '오픈일'}
           </Text>
-        </View>
+        </Pressable>
         <Text style={styles.toText}>~</Text>
-        <TouchableOpacity
+        <Pressable
           style={[styles.input, styles.secondInput]}
-          onPress={() => handleOpenCalendar('start')}>
-          <Text style={{color: globalColors.font}}>
+          onPress={() => handleOpenCalendar('end')}>
+          <Text style={getDateInputTextStyle('end', dates.end)}>
             {dates.end || '종료일'}
           </Text>
           <CalendarGraySvg />
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
       <BottomSheetModal
+        animateOnMount={!reducedMotion}
         ref={bottomSheetModalRef}
         index={0}
         snapPoints={['75%']}
@@ -171,14 +147,16 @@ const OperationCalendarBottomSheet: React.FC = () => {
         </View>
 
         <View style={styles.dateRow}>
-          <Text style={[Text18R.text, {marginLeft: 10}]}>시작</Text>
+          <Text style={[Text18B.text, {marginLeft: 10}]}>시작</Text>
           <Pressable
             style={({pressed}) => [
               styles.dateInputContainer,
               pressed && {backgroundColor: globalColors.warmGray},
             ]}
             onPress={() => setSelectionMode('start')}>
-            <Text style={getDateInputTextStyle('start')}>{dates.start}</Text>
+            <Text style={getDateInputTextStyle('start', dates.start)}>
+              {dates.start}
+            </Text>
           </Pressable>
         </View>
         <DividerLine height={1} />
@@ -190,7 +168,9 @@ const OperationCalendarBottomSheet: React.FC = () => {
               pressed && {backgroundColor: globalColors.warmGray},
             ]}
             onPress={() => setSelectionMode('end')}>
-            <Text style={getDateInputTextStyle('end')}>{dates.end}</Text>
+            <Text style={getDateInputTextStyle('end', dates.end)}>
+              {dates.end}
+            </Text>
           </Pressable>
         </View>
 

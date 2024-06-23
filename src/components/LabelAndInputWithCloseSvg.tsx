@@ -1,12 +1,19 @@
-import React, {useState} from 'react';
+import React, {useState, FC} from 'react';
 import {StyleSheet, View, TextInput, TouchableOpacity} from 'react-native';
 import CloseGraySvg from '../assets/icons/closeGray.svg'; // 아이콘 경로 확인 필요
-import globalColors from '../styles/color/globalColors.ts';
-import RequiredTextLabel from './RequiredTextLabel.tsx';
+import globalColors from '../styles/color/globalColors';
+import RequiredTextLabel from './RequiredTextLabel';
 
-const LabelAndInputWithCloseSvg = ({
-  label,
-  value,
+interface LabelAndInputWithCloseSvgProps {
+  label?: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  isRequired?: boolean;
+}
+
+const LabelAndInputWithCloseSvg: FC<LabelAndInputWithCloseSvgProps> = ({
+  label = '',
+  value = '',
   onChangeText,
   isRequired = false,
 }) => {

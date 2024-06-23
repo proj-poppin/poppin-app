@@ -33,13 +33,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingVertical: 6,
     paddingHorizontal: 14,
-    backgroundColor: globalColors.white, // Ensure the background is white
+    backgroundColor: globalColors.white, 
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 10,
   },
   text: {
-    fontSize: 16,
+    fontSize: 14,
   },
 });

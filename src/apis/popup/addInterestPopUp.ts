@@ -1,4 +1,5 @@
 import nonPublicApiInstance from '../../apis/apiInstance/NonPublicApiInstance';
+
 export interface AddRecommendReviewResponse {
   success: boolean;
   error?: {
@@ -17,7 +18,7 @@ const addInterestPopup = async (params: AddInterestPopupParams) => {
       null,
       {params: params},
     );
-    console.log('addbookmarkpopup response:', response.data);
+    console.log('addInterestPopup response:', response.data);
 
     if (response.data.success) {
       return response.data;

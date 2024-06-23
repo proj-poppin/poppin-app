@@ -9,6 +9,9 @@ import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
+import useDeleteUser from '../../hooks/myPage/useDeleteUser.tsx';
+
+
 
 const reasons = [
   '앱 사용이 불편해요',
@@ -19,7 +22,7 @@ const reasons = [
   '기타',
 ];
 
-function MemberDeleteScreen({navigation}) {
+function MemberDeleteScreen({navigation}:any) {
   const [selectedReason, setSelectedReason] = useState(null);
   const [isDeleted, setIsDeleted] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -34,6 +37,8 @@ function MemberDeleteScreen({navigation}) {
 
   const confirmDelete = () => {
     setIsDeleted(true);
+    const { data } = useDeleteUser()
+    // console.log("data",data)
     closeModal();
   };
 

@@ -1,5 +1,5 @@
-import {useState, useEffect} from 'react';
-import getUser, {GetUserData} from '../../apis/user/getUser.ts';
+import { useState, useEffect } from 'react';
+import getUser, { GetUserData } from '../../apis/user/getUser';
 
 interface UserState {
   loading: boolean;
@@ -16,12 +16,14 @@ const useGetUser = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      setUserState(prevState => ({...prevState, loading: true}));
+      setUserState(prevState => ({ ...prevState, loading: true }));
       try {
         const data = await getUser();
         if (data.success) {
-          setUserState({loading: false, error: null, data: data.data!}); // 'result'는 API 응답에 따라 'data' 등으로 변경해야 할 수 있음
+          console.log("data다!",data.data)
+          setUserState({ loading: false, error: null, data: data.data || null });
         } else {
+          
           setUserState({
             loading: false,
             error: new Error(data.error?.message || 'Unknown error'),
@@ -31,16 +33,13 @@ const useGetUser = () => {
       } catch (error: any) {
         setUserState({
           loading: false,
-          error:
-            error instanceof Error
-              ? error
-              : new Error('An unexpected error occurred'),
+          error: error instanceof Error ? error : new Error('An unexpected error occurred'),
           data: null,
         });
       }
     };
 
-    fetchUser().then();
+    fetchUser();
   }, []);
 
   return userState;

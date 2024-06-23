@@ -11,18 +11,17 @@ import globalColors from '../styles/color/globalColors.ts';
 import AlertSvg from '../assets/images/alert.svg';
 import Text20B from '../styles/texts/title/Text20B.ts';
 import Text14B from '../styles/texts/body_medium/Text14B.ts';
-import Text12B from '../styles/texts/label/Text12B.ts';
-import Text14R from '../styles/texts/body_medium/Text14R.ts';
+import Text16M from '../styles/texts/body_medium_large/Text16M.ts';
 
 const TwoSelectConfirmationModal = ({
-  isVisible,
-  onClose,
-  onConfirm,
-  mainAlertTitle,
-  subAlertTitle,
-  selectFirstText,
-  selectSecondText,
-  onBlankSpacePressed,
+  isVisible = false,
+  onClose = () => {},
+  onConfirm = () => {},
+  mainAlertTitle = '',
+  subAlertTitle = '',
+  selectFirstText = '',
+  selectSecondText = '',
+  onBlankSpacePressed = () => {},
 }) => {
   return (
     <Modal
@@ -49,7 +48,7 @@ const TwoSelectConfirmationModal = ({
               <Pressable
                 style={[styles.button, styles.continueButton]}
                 onPress={onClose}>
-                <Text style={[Text12B.text, {color: globalColors.font}]}>
+                <Text style={[Text16M.text, {color: globalColors.font}]}>
                   {selectFirstText}
                 </Text>
               </Pressable>
@@ -68,7 +67,7 @@ const TwoSelectConfirmationModal = ({
                 onPress={() => {
                   onConfirm(); // 삭제하기 버튼을 누를 때 onConfirm 함수 호출
                 }}>
-                <Text style={[Text14R.text, {color: globalColors.blue}]}>
+                <Text style={[Text16M.text, {color: globalColors.blue}]}>
                   {selectSecondText}
                 </Text>
               </Pressable>

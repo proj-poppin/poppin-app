@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Alert, Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import React, {useEffect, useState} from 'react';
@@ -7,37 +7,28 @@ import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import PasswordCheckTextFormField from '../../components/molecules/form_field/PasswordCheckTextFormField.tsx';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
+import useResetPassword from '../../hooks/password/useResetPassword.tsx';
+import { useSelector } from 'react-redux';
+import LabelAndInput from '../../components/LabelAndInput.tsx';
+import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
 
-function PasswordChangeScreen({navigation}) {
-  const [email, setEmail] = useState('');
+function PasswordChangeScreen({ navigation }: any) {
+    const { data: userData } = useGetUserSetting()
+  const user = useSelector(state => state.user);
+  const [email, setEmail] = useState(user.email || 'poppin@gmail.com'); 
   const [error, setError] = useState('');
   const [touched, setTouched] = useState(true);
   const [password, setPassword] = useState('');
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [isPasswordSame, setIsPasswordSame] = useState(false);
-  const [isEmailValid, setIsEmailValid] = useState(false);
 
-  const canGoNext = isEmailValid && isPasswordValid && isPasswordSame;
 
-  // 이메일 입력 필드 변경 핸들러
-  const handleChangeEmail = (text: React.SetStateAction<string>) => {
-    setEmail(text);
-    setError(''); // 입력이 변경될 때마다 에러 메시지 초기화
-    if (typeof text === 'string') {
-      const isValidEmail =
-        /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@([0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.)+(com|co\.kr|net)$/i.test(
-          text,
-        );
-    }
-    if (isValidEmail) {
-      setIsEmailValid(true);
-    } else {
-      setIsEmailValid(false);
-    }
+  const canGoNext = isPasswordValid && isPasswordSame;
 
-    setError('');
-  };
+   const {resetUserPassword, resetPasswordStatus} = useResetPassword();
+
+ 
 
   const handleChangePassword = text => {
     setPassword(text);
@@ -66,29 +57,18 @@ function PasswordChangeScreen({navigation}) {
     }
   };
 
-  const handlePress = () => {
-    setTouched(true);
-    if (isPasswordValid) {
-      // 비밀번호 유효성이 확인되면 로그인 시도 로직 실행
-      console.log('로그인 시도부분2');
+  const handleSumbit = async () => {
+    if (
+      isPasswordSame 
+    ) {
+      
+     await resetUserPassword(password, passwordConfirm).then();
+    } else {
+      Alert.alert('Error', 'Passwords do not match or meet the criteria.');
     }
-
-    // 이메일 주소가 .com, .co.kr, .net으로 끝나는지 확인
-    const isValidEmail =
-      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@([0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.)+(com|co\.kr|net)$/i.test(
-        email,
-      );
-    if (!isValidEmail) {
-      setError('잘못된 이메일 주소입니다');
-      console.log('touched2');
-      console.log('touched3');
-      return;
-    }
-
-    // 에러가 없고, 입력이 유효한 경우 로그인 시도 로직 실행
-    console.log('로그인 시도 가능');
-    navigation.navigate(''); // 여기로 이동
   };
+
+  
   useEffect(() => {
     navigation.setOptions(
       ProfileAppBar({
@@ -99,11 +79,16 @@ function PasswordChangeScreen({navigation}) {
     );
   }, [navigation]);
 
-  const handleForgotPasswordPress = () => {
-    // Navigate to your desired screen
-    navigation.navigate('ForgotPasswordScreen'); // Replace 'ForgotPasswordScreen' with your actual screen name
-  };
-
+ useEffect(() => {
+    if (resetPasswordStatus.success === true) {
+       
+       navigation.navigate('MyPage')
+      setPassword("")
+      setIsPasswordValid(false)
+    }
+    
+  },[resetPasswordStatus])
+  
   return (
     <DismissKeyboardView style={styles.container}>
       <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>
@@ -114,33 +99,18 @@ function PasswordChangeScreen({navigation}) {
       <View style={styles.emailInputContainer}>
         <TextInput
           style={styles.emailInput}
-          value={'poppin2024@naver.com'}
-          editable={false} // 편집 불가능하게 설정
+          value={userData&&userData.email}
+          editable={false} 
         />
       </View>
-      <View style={{marginBottom: 20}} />
-      <PasswordCheckTextFormField
-        onChangeText={handleChangePassword}
-        placeholder="현재 비밀번호"
-        keyboardType="default"
-        labelText={'비밀번호 설정'}
-        isPassword={true}
-        isPasswordSetting={false}
-        containerStyle={{marginBottom: 10}}
-      />
-      <Pressable onPress={handleForgotPasswordPress}>
-        <Text style={styles.forgotPasswordText}>
-          현재 비밀번호가 기억나지 않으세요?
-        </Text>
-      </Pressable>
-      <PasswordCheckTextFormField
+      <LabelAndInput
         onChangeText={handleChangePassword}
         placeholder="새 비밀번호"
         labelText={'비밀번호 설정'}
         isPassword={true}
         containerStyle={{marginBottom: 20}}
       />
-      <PasswordCheckTextFormField
+      <LabelAndInput
         onChangeText={handleSamePassword}
         placeholder="새 비밀번호 확인"
         labelText={'비밀번호 확인'}
@@ -159,11 +129,11 @@ function PasswordChangeScreen({navigation}) {
       </Text>
       <CompleteButton
         title="완료"
-        onPress={handlePress}
+        onPress={handleSumbit}
         loading={false}
         disabled={!canGoNext}
         alwaysActive={false}
-        onDisabledPress={() => setError('✕ 아이디를 입력해주세요')}
+        // onDisabledPress={() => setError('✕ 아이디를 입력해주세요')}
       />
     </DismissKeyboardView>
   );
@@ -183,6 +153,7 @@ const styles = StyleSheet.create({
     backgroundColor: globalColors.component,
     borderRadius: 30,
     padding: 10,
+    marginBottom:20
   },
   forgotPasswordText: {
     textDecorationLine: 'underline',

@@ -1,5 +1,6 @@
 import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 
+
 interface AddInterestPopupParams {
   popupId: number;
   fcm_token: string;

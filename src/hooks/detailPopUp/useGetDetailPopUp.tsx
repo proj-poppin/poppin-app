@@ -1,7 +1,14 @@
+// src/hooks/detailPopUp/useGetDetailPopUp.ts
 import {useState, useEffect} from 'react';
-import {DetailPopUpDataNonPublic} from '../../types/DetailPopUpDataNonPublic.ts';
-import getDetailPopUp from '../../apis/popup/detailPopUp.ts';
-import getDetailPopUpPublic from '../../apis/public/detailPopUpPublic.ts';
+import {DetailPopUpDataNonPublic} from '../../types/DetailPopUpDataNonPublic';
+import getDetailPopUp from '../../apis/popup/detailPopUp';
+import getDetailPopUpPublic from '../../apis/public/detailPopUpPublic';
+import {useDispatch} from 'react-redux';
+import {
+  setPopupDetailData,
+  setPopupDetailLoading,
+  setPopupDetailError,
+} from '../../redux/slices/popupDetailSlice.ts';
 
 interface DetailPopUpState {
   loading: boolean;
@@ -12,7 +19,7 @@ interface DetailPopUpState {
 function useGetDetailPopUp(
   popUpId: number,
   isPublic: boolean,
-  fetchTrigger: boolean, // Add fetchTrigger as a parameter
+  fetchTrigger: boolean,
 ): DetailPopUpState {
   const [getDetailPopUpState, setGetDetailPopUpState] =
     useState<DetailPopUpState>({
@@ -21,43 +28,55 @@ function useGetDetailPopUp(
       error: null,
     });
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    // 팝업 상세 정보를 가져오는 비동기 함수
     const fetchDetailPopUp = async () => {
       setGetDetailPopUpState({
         loading: true,
         data: null,
         error: null,
       });
+      dispatch(setPopupDetailLoading(true));
+
       try {
         const response = isPublic
           ? await getDetailPopUpPublic(popUpId)
           : await getDetailPopUp(popUpId);
-        if (response.success) {
+
+        if (response.success && response.data) {
           setGetDetailPopUpState({
             loading: false,
             data: response.data,
             error: null,
           });
-          console.log(response.data);
+          dispatch(setPopupDetailData(response.data));
         } else {
+          const errorMessage =
+            response.error?.message || 'An unknown error occurred';
           setGetDetailPopUpState({
             loading: false,
             data: null,
-            error: response.error?.message || 'An unknown error occurred',
+            error: errorMessage,
           });
+          dispatch(setPopupDetailError(errorMessage));
         }
       } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'An error occurred';
         setGetDetailPopUpState({
           loading: false,
           data: null,
-          error: error instanceof Error ? error.message : 'An error occurred',
+          error: errorMessage,
         });
+        dispatch(setPopupDetailError(errorMessage));
+      } finally {
+        dispatch(setPopupDetailLoading(false));
       }
     };
 
     fetchDetailPopUp();
-  }, [popUpId, isPublic, fetchTrigger]); // Add fetchTrigger as a dependency
+  }, [popUpId, isPublic, fetchTrigger, dispatch]);
 
   return getDetailPopUpState;
 }

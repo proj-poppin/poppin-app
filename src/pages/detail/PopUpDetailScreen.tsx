@@ -12,45 +12,52 @@ import {
   Text,
   View,
 } from 'react-native';
-import useGetDetailPopUp from '../../hooks/detailPopUp/useGetDetailPopUp.tsx';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  toggleInterest,
+  setInterest,
+} from '../../redux/slices/interestedPopUpSlice'; // 추가
+import useGetDetailPopUp from '../../hooks/detailPopUp/useGetDetailPopUp';
 import ShareSvg from '../../assets/detail/share.svg';
 import StarOffSvg from '../../assets/detail/starOff.svg';
 import StarOnSvg from '../../assets/detail/starOn.svg';
 import MapSvg from '../../assets/detail/map.svg';
-import Text20B from '../../styles/texts/title/Text20B.ts';
-import Text14R from '../../styles/texts/body_medium/Text14R.ts';
-import globalColors from '../../styles/color/globalColors.ts';
+import Text20B from '../../styles/texts/title/Text20B';
+import Text14R from '../../styles/texts/body_medium/Text14R';
+import globalColors from '../../styles/color/globalColors';
 import DetailDividerLine from '../../assets/detail/detailDivider.svg';
-import Text14B from '../../styles/texts/body_medium/Text14B.ts';
-import Text14M from '../../styles/texts/body_medium/Text14M.ts';
-import RealTimeVisitorsViewButton from '../../components/atoms/button/CommonButton.tsx';
-import DividerLine from '../../components/DividerLine.tsx';
-import useAddInterestPopUp from '../../hooks/detailPopUp/useAddInterestPopUp.tsx';
-import useDeleteInterestPopUp from '../../hooks/detailPopUp/useDeleteInterestPopUp.tsx';
+import Text14B from '../../styles/texts/body_medium/Text14B';
+import Text14M from '../../styles/texts/body_medium/Text14M';
+import RealTimeVisitorsViewButton from '../../components/atoms/button/CommonButton';
+import DividerLine from '../../components/DividerLine';
+import useAddInterestPopUp from '../../hooks/detailPopUp/useAddInterestPopUp';
+import useDeleteInterestPopUp from '../../hooks/detailPopUp/useDeleteInterestPopUp';
 import ReviewProfileSvg from '../../assets/detail/reviewProfile.svg';
 import VerifiedReviewSvg from '../../assets/detail/verifiedReview.svg';
 import WriteReviewSvg from '../../assets/detail/writeReview.svg';
-import SvgWithNameBoxLabel from '../../components/SvgWithNameBoxLabel.tsx';
-import UnderlinedTextButton from '../../components/UnderlineTextButton.tsx';
+import SvgWithNameBoxLabel from '../../components/SvgWithNameBoxLabel';
+import UnderlinedTextButton from '../../components/UnderlineTextButton';
 import LikeReviewSvg from '../../assets/detail/likesReview.svg';
-import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
-import OrderSvg from '../../assets/icons/order.svg';
-import ReasonItem from '../../components/ReasonItem.tsx';
-import CongestionSection from '../../components/organisms/section/CongestionSection.tsx';
-import {VisitorDataDetail} from '../../types/DetailPopUpDataNonPublic.ts';
+import Text16M from '../../styles/texts/body_medium_large/Text16M';
+import OrderSvg from '../../assets/icons/order';
+import ReasonItem from '../../components/ReasonItem';
+import CongestionSection from '../../components/organisms/section/CongestionSection';
+import {VisitorDataDetail} from '../../types/DetailPopUpDataNonPublic';
 import WebSvg from '../../assets/detail/web.svg';
 import InstagramTestSvg from '../../assets/detail/instagramTest.svg';
-import ToastComponent from '../../components/atoms/toast/ToastComponent.tsx';
-import VisitButton from '../../components/atoms/button/VisitButton.tsx';
+import ToastComponent from '../../components/atoms/toast/ToastComponent';
+import VisitButton from '../../components/atoms/button/VisitButton';
 import VisitModalSvg from '../../assets/detail/visitModal.svg';
-import CustomModal from '../../components/atoms/modal/CustomModal.tsx';
+import CustomModal from '../../components/atoms/modal/CustomModal';
 import Geolocation from 'react-native-geolocation-service';
-import useAddRecommendReview from '../../hooks/detailPopUp/useAddRecommendReview.tsx';
+import useAddRecommendReview from '../../hooks/detailPopUp/useAddRecommendReview';
 import {useNavigation} from '@react-navigation/native';
-import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
-import useAddVisitor from '../../hooks/detailPopUp/useAddVisitor.ts';
+import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn';
+import useAddVisitor from '../../hooks/detailPopUp/useAddVisitor';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList';
+import PopUpDetailOptions from '../../navigators/options/PopUpDetailOptions';
+import {RootState} from '../../redux/stores/reducer';
 
 async function requestPermissions() {
   if (Platform.OS === 'ios') {
@@ -112,16 +119,39 @@ const PopUpDetailScreen = ({route}) => {
   const isLoggedIn = useIsLoggedIn();
   const navigation = useNavigation<PopUpDetailScreenNavigationProp>();
   const [fetchTrigger, setFetchTrigger] = useState(false);
-  const {id} = route.params;
+  const {id, name} = route.params;
+  const dispatch = useDispatch();
+  const isInterested = useSelector(
+    (state: RootState) => state.interestedPopups[id],
+  ); // 추가
+
   const {
     data: detailPopUpData,
     loading,
     error,
   } = useGetDetailPopUp(id, !isLoggedIn, fetchTrigger);
+
+  useEffect(() => {
+    if (detailPopUpData) {
+      navigation.setOptions(
+        PopUpDetailOptions({
+          navigation,
+          id: detailPopUpData.id,
+          name: detailPopUpData.name,
+        }),
+      );
+      dispatch(
+        setInterest({
+          popupId: detailPopUpData.id,
+          isInterested: detailPopUpData.isInterested,
+        }),
+      ); // 추가
+    }
+  }, [navigation, detailPopUpData, dispatch]);
+
   const firstImageUrl =
     detailPopUpData?.images?.[0] ??
     'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/4/1.jpg';
-  const [isInterested, setIsInterested] = useState(false);
   const [isShowToast, setIsShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const {addRecommendCount} = useAddRecommendReview();
@@ -139,7 +169,6 @@ const PopUpDetailScreen = ({route}) => {
 
   useEffect(() => {
     if (detailPopUpData) {
-      setIsInterested(detailPopUpData.isInterested);
       setToastMessage('이 팝업이 근처에 있어요!!');
       setIsShowToast(true);
     }
@@ -198,14 +227,14 @@ const PopUpDetailScreen = ({route}) => {
 
   const handleToggleInterest = async () => {
     if (isInterested) {
-      await deleteInterest(id);
+      await deleteInterest(id, 'fcmToken');
       setToastMessage('관심팝업에서 삭제되었어요!');
     } else {
-      await addInterest(id);
+      await addInterest(id, 'fcmToken');
       setToastMessage('관심팝업에 저장되었어요!');
     }
     setIsShowToast(true);
-    setIsInterested(!isInterested);
+    dispatch(toggleInterest(id)); // 추가
   };
 
   const handleOpenLink = url => {
@@ -235,7 +264,6 @@ const PopUpDetailScreen = ({route}) => {
     }
     setIsShowToast(true);
   };
-
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -404,7 +432,11 @@ const PopUpDetailScreen = ({route}) => {
                   navigation.navigate('Entry');
                   return;
                 }
-                navigation.navigate('ReviewWrite');
+                navigation.navigate('ReviewWrite', {
+                  name: detailPopUpData.name,
+                  id: detailPopUpData.id,
+                  isVisited: detailPopUpData.isVisited,
+                });
               }}>
               <SvgWithNameBoxLabel
                 Icon={WriteReviewSvg}
@@ -445,7 +477,10 @@ const PopUpDetailScreen = ({route}) => {
                 <UnderlinedTextButton
                   label={'신고하기'}
                   onClicked={() => {
-                    navigation.navigate('report');
+                    navigation.navigate('Report', {
+                      id: review.reviewId,
+                      isReview: true,
+                    });
                   }}
                 />
               </View>

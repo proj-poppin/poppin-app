@@ -1,19 +1,22 @@
-import React, {useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
-import globalColors from '../styles/color/globalColors.ts';
-import RequiredTextLabel from './RequiredTextLabel.tsx';
+import React, {useState, ReactElement} from 'react';
+import {StyleSheet, View, TextInput, Pressable} from 'react-native';
+import globalColors from '../styles/color/globalColors';
+import RequiredTextLabel from './RequiredTextLabel';
 
-// IconComponent prop 추가
-const TextInputWithSvgIconInRight = ({
-  label,
-  value,
-  onIconPress,
+interface TextInputWithSvgIconInRightProps {
+  label?: string;
+  value: string;
+  onIconPress?: () => void;
+  IconComponent: ReactElement;
+  isRequired?: boolean;
+}
+
+const TextInputWithSvgIconInRight: React.FC<
+  TextInputWithSvgIconInRightProps
+> = ({
+  label = '',
+  value = '',
+  onIconPress = () => {},
   IconComponent,
   isRequired = false,
 }) => {
@@ -22,13 +25,15 @@ const TextInputWithSvgIconInRight = ({
   return (
     <>
       <RequiredTextLabel label={label} isRequired={isRequired} />
-      <View
+      <Pressable
         style={[
           styles.inputContainer,
           isFocused
             ? {borderColor: globalColors.blue}
             : {borderColor: globalColors.warmGray},
-        ]}>
+        ]}
+        onPress={onIconPress} // Trigger the icon press when the whole container is pressed
+      >
         <TextInput
           style={styles.input}
           value={value}
@@ -36,10 +41,8 @@ const TextInputWithSvgIconInRight = ({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
         />
-        <TouchableOpacity style={styles.iconButton} onPress={onIconPress}>
-          {IconComponent}
-        </TouchableOpacity>
-      </View>
+        <View style={styles.iconButton}>{IconComponent}</View>
+      </Pressable>
     </>
   );
 };

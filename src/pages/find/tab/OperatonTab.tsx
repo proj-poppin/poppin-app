@@ -1,9 +1,10 @@
-import {ScrollView, Text, View} from 'react-native';
+import {ScrollView, ActivityIndicator, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import DividerLine from '../../../components/DividerLine.tsx';
 import FindCard from '../../../components/findPopup/FindCard.tsx';
 import useGetFindPopupList from '../../../hooks/findPopUp/useGetFindPopupList.tsx';
 import NotList from '../../../components/findPopup/NotList.tsx';
+import globalColors from '../../../styles/color/globalColors.ts'; // Ensure you import the right path
 
 function OperationTab({
   type,
@@ -51,33 +52,33 @@ function OperationTab({
     }
   }, [triggerFetch]);
 
-  return (
-    <ScrollView
-      scrollEventThrottle={16}
-      onScroll={handleScroll}
-      style={{marginBottom: 100}}>
-      <DividerLine height={1} />
-      {findPopupListData && findPopupListData.length > 0 ? (
-        findPopupListData.map((item: any) => (
-          <FindCard type={type} key={item.id} item={item} />
-        ))
-      ) : (
-        <NotList />
-      )}
-      {findPopupListLoading && (
-        <View
-          style={{
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>데이터를 불러오고 있습니다.</Text>
-        </View>
-      )}
-      <DividerLine height={1} />
-    </ScrollView>
-  );
+  if (findPopupListLoading) {
+    return <ActivityIndicator size="large" color={globalColors.purple} />;
+  } else if (
+    page === 0 &&
+    findPopupListData &&
+    findPopupListData.length === 0
+  ) {
+    return <NotList />;
+  } else {
+    return (
+      <ScrollView
+        scrollEventThrottle={16}
+        onScroll={handleScroll}
+        style={{marginBottom: 100}}>
+        <DividerLine height={1} />
+        {findPopupListData && findPopupListData.length > 0
+          ? findPopupListData.map((item: any) => (
+              <FindCard type={type} key={item.id} item={item} />
+            ))
+          : !findPopupListLoading && <NotList />}
+        {loadingMore && (
+          <ActivityIndicator size="small" color={globalColors.blue} />
+        )}
+        <DividerLine height={1} />
+      </ScrollView>
+    );
+  }
 }
 
 export default OperationTab;

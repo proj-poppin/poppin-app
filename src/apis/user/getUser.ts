@@ -10,6 +10,7 @@ export interface GetUserData {
 const getUser = async (): Promise<CommonResponse<GetUserData>> => {
   try {
     const response = await nonPublicApiInstance.get('/api/v1/user');
+    console.log("ㄱㄷ네ㅐㅜㄴ",response)
     if (response.data.success) {
       return response.data;
     } else {
@@ -23,7 +24,7 @@ const getUser = async (): Promise<CommonResponse<GetUserData>> => {
     // 네트워크 에러 또는 기타 예외 처리
     return {
       success: false,
-      data: null,
+      data: undefined,
       error: {
         code: 'NetworkError',
         message: 'Network error occurred',

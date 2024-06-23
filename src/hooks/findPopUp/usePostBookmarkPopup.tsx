@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import addInterestPopUp from '../../apis/popup/addInterestPopUp.ts';
+import EncryptedStorage from "react-native-encrypted-storage";
 
 interface AddInterestState {
   loading: boolean;
@@ -14,10 +15,11 @@ const usePostBookmarkPopup = () => {
     success: null,
   });
 
-  const addInterest = async (popUpId: number) => {
+  const addInterest = async (popupId: number) => {
     setAddInterestState({loading: true, error: null, success: null});
     try {
-      const response = await addInterestPopUp(popUpId);
+      const fcm_token = (await EncryptedStorage.getItem('pushToken')) ?? '';
+      const response = await addInterestPopUp({popupId, fcm_token});
       if (response.success) {
         setAddInterestState({loading: false, error: null, success: true});
       } else {

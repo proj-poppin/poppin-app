@@ -153,7 +153,7 @@ function MyPageScreen({navigation}) {
           <View style={styles.colCloseContainer}>
             <Text style={[text20B.text]}>
               {' '}
-              {isLoggedIn ? data&&data?.nickname : '로그인 후 이용해주세요'}
+              {isLoggedIn ? userData : '로그인 후 이용해주세요'}
             </Text>
             <Pressable
               style={styles.profileInfoContainer}

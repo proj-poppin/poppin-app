@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   Pressable,
+  Alert,
 } from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 // @ts-ignore
@@ -112,10 +113,10 @@ function MyProfileEditScreen({ navigation }: any) {
    const handleSubmit = async () => {
     const updatedData = { 
       nickname,
-      birthdate,
+      birthDate:birthdate,
     };
-     console.log("dd",updatedData)
-     await patchUserInfo(updatedData)
+     
+     await patchUserInfo(updatedData).then(()=>Alert.alert('성공적으로 변경되었습니다.'))
    };
   
     useEffect(() => {

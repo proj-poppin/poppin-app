@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useCallback, useEffect, useMemo, useRef} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import globalColors from '../../styles/color/globalColors.ts';
 import ProfileSvg from '../../assets/images/profile.svg';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
@@ -32,10 +32,18 @@ import useGetUser from '../../hooks/auth/useGetUser.tsx';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
 import {useReducedMotion} from 'react-native-reanimated';
+import Text14M from '../../styles/texts/body_medium/Text14M.ts';
+import { useSelector } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
+import getUser from '../../apis/user/getUser.ts';
 function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
   const reducedMotion = useReducedMotion();
-  const {data: user, loading, error} = useGetUser();
+ const [userData,setUserData]=useState<string | undefined>("")
+  const { data, loading, error } =useGetUser();
+ 
+ 
+
 
   // 로그아웃 확인 다이얼로그 표시
   const showLogoutConfirmation = () => {
@@ -118,11 +126,21 @@ function MyPageScreen({navigation}) {
     [isLoggedIn],
   );
 
+
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
   }, []);
 
+    useFocusEffect(
+    useCallback(() => {
+      // 화면이 포커스를 얻을 때마다 useGetUser 호출
+      getUser().then(({data})=>setUserData(data?.nickname))
+    }, [])
+  );
+
+
   const reviewCount = 10;
+
 
   return (
     <DismissKeyboardView style={styles.container}>
@@ -135,7 +153,7 @@ function MyPageScreen({navigation}) {
           <View style={styles.colCloseContainer}>
             <Text style={[text20B.text]}>
               {' '}
-              {isLoggedIn ? user?.nickname : '로그인 후 이용해주세요'}
+              {isLoggedIn ? data&&data?.nickname : '로그인 후 이용해주세요'}
             </Text>
             <Pressable
               style={styles.profileInfoContainer}
@@ -160,9 +178,9 @@ function MyPageScreen({navigation}) {
           <View style={styles.colMidContainer}>
             <Text style={Text13R.text}>후기 작성하기</Text>
             <View style={styles.infoRow}>
-              <Pressable onPress={navigateToReviewWrite}>
+              {/* <Pressable onPress={navigateToReviewWrite}> */}
                 <FeedBackSvg style={styles.iconPadding} />
-              </Pressable>
+              {/* </Pressable> */}
               <Text style={[Text18B.text, {color: globalColors.blue}]}>
                 {reviewCount}
               </Text>
@@ -192,36 +210,43 @@ function MyPageScreen({navigation}) {
             />
           ))}
         </ScrollView>
-        <View style={styles.middleContainer}>
-          <Text style={Text14R.text}>키워드 알림 설정</Text>
+        <Pressable onPress={navigateToKeywordAlarm}
+          style={styles.middleContainer}>
+          <Text style={Text14M.text}>키워드 알림 설정</Text>
           <RightSvg style={styles.svgStyle} onPress={navigateToKeywordAlarm} />
-        </View>
-        <View style={styles.middleContainer}>
-          <Text style={Text14R.text}>문의하기/FAQ</Text>
+        </Pressable>
+        <Pressable onPress={() => {
+              navigation.navigate('FAQ');
+        }}
+          style={styles.middleContainer}>
+          <Text style={Text14M.text}>문의하기/FAQ</Text>
           <RightSvg
             style={styles.svgStyle}
             onPress={() => {
               navigation.navigate('FAQ');
             }}
           />
-        </View>
-        <View style={styles.appVersionContainer}>
-          <Text style={Text14R.text}>앱 버전</Text>
+        </Pressable>
+        <Pressable style={styles.appVersionContainer}>
+          <Text style={Text14M.text}>앱 버전</Text>
           <View style={styles.rowHeaderContainer}>
             <Text style={[Text13R.text, {color: globalColors.stroke2}]}>
               1.16.0
             </Text>
           </View>
-        </View>
-        <View style={styles.middleContainer}>
-          <Text style={Text13R.text}>이용 약관 및 정책</Text>
+        </Pressable>
+        <Pressable onPress={() => {
+              navigation.navigate('ServicePolicy');
+        }}
+          style={styles.middleContainer}>
+          <Text style={Text14M.text}>이용 약관 및 정책</Text>
           <RightSvg
             style={styles.svgStyle}
             onPress={() => {
               navigation.navigate('ServicePolicy');
             }}
           />
-        </View>
+        </Pressable>
         <Pressable style={styles.middleContainer} onPress={onLogoutClick}>
           <Text style={Text13R.text}>로그아웃</Text>
           <RightSvg style={styles.svgStyle} />

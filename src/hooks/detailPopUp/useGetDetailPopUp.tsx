@@ -12,7 +12,7 @@ import {
 
 interface DetailPopUpState {
   loading: boolean;
-  data: DetailPopUpDataNonPublic | null;
+  data: DetailPopUpDataNonPublic | null | undefined;
   error: string | null;
 }
 

@@ -1,5 +1,6 @@
 import {
   Alert,
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -25,8 +26,6 @@ import text24B from '../../styles/texts/headline/Text24B.ts';
 import text20B from '../../styles/texts/title/Text20B.ts';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text13R from '../../styles/texts/label/Text12R.ts';
-import Text20B from '../../styles/texts/title/Text20B.ts';
-import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import useLogout from '../../hooks/auth/useLogout.tsx';
 import useGetUser from '../../hooks/auth/useGetUser.tsx';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
@@ -40,13 +39,46 @@ function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
   const reducedMotion = useReducedMotion();
   const [userData, setUserData] = useState<string | undefined>('');
+  const [userImageUrl, setUserImageUrl] = useState<string | null>(null);
   const {data, loading, error} = useGetUser();
 
-  // 로그아웃 확인 다이얼로그 표시
+  const isLoggedIn = useIsLoggedIn();
+  // mount, unmount 제대로 이해해야 가능
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await getUser();
+      setUserData(result?.data?.nickname);
+      setUserImageUrl(result?.data?.userImageUrl ?? null);
+    };
+
+    fetchData();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        const result = await getUser();
+        setUserData(result?.data?.nickname);
+        setUserImageUrl(result?.data?.userImageUrl ?? null);
+      };
+
+      fetchData();
+    }, []),
+  );
+
+  useEffect(() => {
+    if (logoutStatus.success) {
+      console.log('로그아웃 성공');
+      navigation.navigate('MyPage');
+    } else if (logoutStatus.error) {
+      console.log('로그아웃 실패:', logoutStatus.error);
+    }
+  }, [logoutStatus, navigation]);
+
   const showLogoutConfirmation = () => {
     Alert.alert(
-      '로그아웃', // 타이틀
-      '로그아웃 하시겠습니까?', // 메시지
+      '로그아웃',
+      '로그아웃 하시겠습니까?',
       [
         {
           text: '아니오',
@@ -63,14 +95,6 @@ function MyPageScreen({navigation}) {
     isLoggedIn ? showLogoutConfirmation() : navigation.navigate('Entry');
   };
 
-  useEffect(() => {
-    if (logoutStatus.success) {
-      console.log('로그아웃 성공');
-      navigation.navigate('MyPage');
-    } else if (logoutStatus.error) {
-      console.log('로그아웃 실패:', logoutStatus.error);
-    }
-  }, [logoutStatus, navigation]);
   const navigateToProfileEdit = () => {
     isLoggedIn
       ? navigation.navigate('ProfileEdit')
@@ -89,11 +113,6 @@ function MyPageScreen({navigation}) {
       : navigation.navigate('Entry');
   };
 
-  const isLoggedIn = useIsLoggedIn();
-
-  console.log('isLoggedIn', isLoggedIn);
-
-  // 화면클릭시 모달 내려감
   const renderBackdrop = useCallback(
     (
       props: React.JSX.IntrinsicAttributes & BottomSheetDefaultBackdropProps,
@@ -107,12 +126,10 @@ function MyPageScreen({navigation}) {
     ),
     [],
   );
-  // ref
+
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  // variables
   const snapPoints = useMemo(() => ['40%'], []);
 
-  // callbacks
   const handlePresentModal = useCallback(
     (action: () => void) => {
       if (isLoggedIn) {
@@ -127,13 +144,6 @@ function MyPageScreen({navigation}) {
     console.log('handleSheetChanges', index);
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      // 화면이 포커스를 얻을 때마다 useGetUser 호출
-      getUser().then(({data}) => setUserData(data?.nickname));
-    }, []),
-  );
-
   const reviewCount = 10;
 
   return (
@@ -143,7 +153,14 @@ function MyPageScreen({navigation}) {
           <Text style={text24B.text}>마이 페이지</Text>
         </View>
         <View style={styles.rowHeaderContainer}>
-          <ProfileSvg />
+          {userImageUrl ? (
+            <Image
+              source={{uri: userImageUrl}}
+              style={styles.profileImage} // 스타일 추가 필요
+            />
+          ) : (
+            <ProfileSvg />
+          )}
           <View style={styles.colCloseContainer}>
             <Text style={[text20B.text]}>
               {' '}
@@ -307,6 +324,11 @@ function MyPageScreen({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  profileImage: {
+    width: 70, // 원하는 이미지 크기로 조정
+    height: 70, // 원하는 이미지 크기로 조정
+    borderRadius: 40, // 이미지가 원형이 되도록
+  },
   container: {
     backgroundColor: 'white',
     paddingHorizontal: 20,

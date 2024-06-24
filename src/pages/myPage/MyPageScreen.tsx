@@ -33,17 +33,14 @@ import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
 import {useReducedMotion} from 'react-native-reanimated';
 import Text14M from '../../styles/texts/body_medium/Text14M.ts';
-import { useSelector } from 'react-redux';
-import { useFocusEffect } from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
 import getUser from '../../apis/user/getUser.ts';
 function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
   const reducedMotion = useReducedMotion();
- const [userData,setUserData]=useState<string | undefined>("")
-  const { data, loading, error } =useGetUser();
- 
- 
-
+  const [userData, setUserData] = useState<string | undefined>('');
+  const {data, loading, error} = useGetUser();
 
   // 로그아웃 확인 다이얼로그 표시
   const showLogoutConfirmation = () => {
@@ -126,21 +123,18 @@ function MyPageScreen({navigation}) {
     [isLoggedIn],
   );
 
-
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
   }, []);
 
-    useFocusEffect(
+  useFocusEffect(
     useCallback(() => {
       // 화면이 포커스를 얻을 때마다 useGetUser 호출
-      getUser().then(({data})=>setUserData(data?.nickname))
-    }, [])
+      getUser().then(({data}) => setUserData(data?.nickname));
+    }, []),
   );
 
-
   const reviewCount = 10;
-
 
   return (
     <DismissKeyboardView style={styles.container}>
@@ -174,50 +168,51 @@ function MyPageScreen({navigation}) {
           </View>
         </View>
         <CompleteButton onPress={handlePresentModal} title={'팝업 제보하기'} />
-        <View style={styles.rowBodyContainer}>
-          <View style={styles.colMidContainer}>
-            <Text style={Text13R.text}>후기 작성하기</Text>
-            <View style={styles.infoRow}>
-              {/* <Pressable onPress={navigateToReviewWrite}> */}
-                <FeedBackSvg style={styles.iconPadding} />
-              {/* </Pressable> */}
-              <Text style={[Text18B.text, {color: globalColors.blue}]}>
-                {reviewCount}
-              </Text>
-            </View>
-          </View>
-          <DividerSvg style={styles.dividerPadding} />
-          <View style={styles.colMidContainer}>
-            <Text style={Text13R.text}>작성 완료한 후기</Text>
-            <View style={styles.infoRow}>
-              <CompleteSvg style={styles.iconPadding} />
-              <Text style={[Text18B.text, {color: 'gray'}]}>{reviewCount}</Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.titleContainer}>
-          <Text style={Text20B.text}>최근 본 팝업</Text>
-        </View>
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={styles.popUpScrollView}>
-          {[...Array(10).keys()].map(index => (
-            <PopUpCard
-              key={index}
-              Svg={FeedBackSvg} // 예시로 사용, 필요에 따라 다른 SVG 컴포넌트를 사용하세요
-              title={`팝업 ${index + 1}`}
-            />
-          ))}
-        </ScrollView>
-        <Pressable onPress={navigateToKeywordAlarm}
-          style={styles.middleContainer}>
-          <Text style={Text14M.text}>키워드 알림 설정</Text>
-          <RightSvg style={styles.svgStyle} onPress={navigateToKeywordAlarm} />
-        </Pressable>
-        <Pressable onPress={() => {
-              navigation.navigate('FAQ');
-        }}
+        {/*<View style={styles.rowBodyContainer}>*/}
+        {/*  <View style={styles.colMidContainer}>*/}
+        {/*    <Text style={Text13R.text}>후기 작성하기</Text>*/}
+        {/*    <View style={styles.infoRow}>*/}
+        {/*      /!* <Pressable onPress={navigateToReviewWrite}> *!/*/}
+        {/*      <FeedBackSvg style={styles.iconPadding} />*/}
+        {/*      /!* </Pressable> *!/*/}
+        {/*      <Text style={[Text18B.text, {color: globalColors.blue}]}>*/}
+        {/*        {reviewCount}*/}
+        {/*      </Text>*/}
+        {/*    </View>*/}
+        {/*  </View>*/}
+        {/*  <DividerSvg style={styles.dividerPadding} />*/}
+        {/*  <View style={styles.colMidContainer}>*/}
+        {/*    <Text style={Text13R.text}>작성 완료한 후기</Text>*/}
+        {/*    <View style={styles.infoRow}>*/}
+        {/*      <CompleteSvg style={styles.iconPadding} />*/}
+        {/*      <Text style={[Text18B.text, {color: 'gray'}]}>{reviewCount}</Text>*/}
+        {/*    </View>*/}
+        {/*  </View>*/}
+        {/*</View>*/}
+        {/*<View style={styles.titleContainer}>*/}
+        {/*  <Text style={Text20B.text}>최근 본 팝업</Text>*/}
+        {/*</View>*/}
+        {/*<ScrollView*/}
+        {/*  horizontal={true}*/}
+        {/*  showsHorizontalScrollIndicator={false}*/}
+        {/*  style={styles.popUpScrollView}>*/}
+        {/*  {[...Array(10).keys()].map(index => (*/}
+        {/*    <PopUpCard*/}
+        {/*      key={index}*/}
+        {/*      Svg={FeedBackSvg} // 예시로 사용, 필요에 따라 다른 SVG 컴포넌트를 사용하세요*/}
+        {/*      title={`팝업 ${index + 1}`}*/}
+        {/*    />*/}
+        {/*  ))}*/}
+        {/*</ScrollView>*/}
+        {/*<Pressable onPress={navigateToKeywordAlarm}*/}
+        {/*  style={styles.middleContainer}>*/}
+        {/*  <Text style={Text14M.text}>키워드 알림 설정</Text>*/}
+        {/*  <RightSvg style={styles.svgStyle} onPress={navigateToKeywordAlarm} />*/}
+        {/*</Pressable>*/}
+        <Pressable
+          onPress={() => {
+            navigation.navigate('FAQ');
+          }}
           style={styles.middleContainer}>
           <Text style={Text14M.text}>문의하기/FAQ</Text>
           <RightSvg
@@ -235,9 +230,10 @@ function MyPageScreen({navigation}) {
             </Text>
           </View>
         </Pressable>
-        <Pressable onPress={() => {
-              navigation.navigate('Policy');
-        }}
+        <Pressable
+          onPress={() => {
+            navigation.navigate('Policy');
+          }}
           style={styles.middleContainer}>
           <Text style={Text14M.text}>이용 약관 및 정책</Text>
           <RightSvg

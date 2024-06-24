@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {getAccessToken} from '@react-native-seoul/kakao-login';
+import {getAccessToken, login} from '@react-native-seoul/kakao-login';
 import loginSocial from '../../apis/auth/loginSocial.ts';
 import {useAppDispatch} from '../../redux/stores';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -19,7 +19,7 @@ export const useKakaoLogin = () => {
 
   const signInWithKakao = async () => {
     try {
-      const tokenResult = await getAccessToken();
+      const tokenResult = await login();
       const loginResult = await loginSocial('kakao', tokenResult.accessToken);
 
       // 기존 유저라면 로그인

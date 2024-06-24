@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 import useFAQList from '../../hooks/myPage/useFAQList.tsx';
 import UpSvg from '../../assets/icons/up.svg';
 import DownSvg from '../../assets/icons/down.svg';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
-function FAQScreen({ navigation }: any) {
-  const { data: initialData } = useFAQList();
+function FAQScreen({navigation}: any) {
+  const {data: initialData} = useFAQList();
   const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
@@ -19,47 +26,63 @@ function FAQScreen({ navigation }: any) {
   const handleClick = (id: number) => {
     setData(prevData =>
       prevData.map(item =>
-        item.id === id ? { ...item, selected: !item.selected } : item
-      )
+        item.id === id ? {...item, selected: !item.selected} : item,
+      ),
     );
   };
 
-
   return (
     <>
-    <View style={styles.container}>
-      <Text style={styles.headreTitle}>자주 묻는 질문</Text>
-      <ScrollView style={{ marginBottom: 30 }}>
-        {data &&
-          data.map((item: any) => {
-            return (
-              <View key={item.id}  style={[styles.itemContainer,item.selected && styles.selectedItemContainer,]}>
-              <View style={styles.itemWrapper}>
-                  <Text style={{width:"85%"}} >Q. {item.question}</Text>
-                  <TouchableOpacity onPress={() => handleClick(item.id)} >
-                    {item.selected ?
-                    <UpSvg  style={styles.svgStyle}
-                      />
-                    : <DownSvg
-                  style={styles.svgStyle}
-                />}
-                  </TouchableOpacity>
-              </View>
-                {item.selected && <View><Text>A.{ item.answer}</Text></View>}
+      <View style={styles.container}>
+        <Text style={styles.headreTitle}>자주 묻는 질문</Text>
+        <ScrollView style={{marginBottom: 30}}>
+          {data &&
+            data.map((item: any) => {
+              return (
+                <View
+                  key={item.id}
+                  style={[
+                    styles.itemContainer,
+                    item.selected && styles.selectedItemContainer,
+                  ]}>
+                  <View style={styles.itemWrapper}>
+                    <Text style={{width: '85%'}}>Q. {item.question}</Text>
+                    <Pressable onPress={() => handleClick(item.id)}>
+                      {item.selected ? (
+                        <UpSvg style={styles.svgStyle} />
+                      ) : (
+                        <DownSvg style={styles.svgStyle} />
+                      )}
+                    </Pressable>
+                  </View>
+                  {item.selected && (
+                    <View>
+                      <Text>A.{item.answer}</Text>
+                    </View>
+                  )}
                 </View>
-            );
-          })}
-      </ScrollView>
-      <View style={styles.buttonContainer}>
+              );
+            })}
+        </ScrollView>
+        <View style={styles.buttonContainer}>
           <Pressable
-            onPress={()=>navigation.navigate('FAQFormScreen')}
-            style={{ borderRadius: 50, width: "90%", backgroundColor: globalColors.blue, height: "90%", display: "flex", justifyContent: "center", }}>
-          <Text style={{color:"white",textAlign:"center",fontSize:20}}>1:1문의하기</Text>
-        </Pressable>
+            onPress={() => navigation.navigate('FAQFormScreen')}
+            style={{
+              borderRadius: 50,
+              width: '90%',
+              backgroundColor: globalColors.blue,
+              height: '90%',
+              display: 'flex',
+              justifyContent: 'center',
+            }}>
+            <Text style={{color: 'white', textAlign: 'center', fontSize: 20}}>
+              1:1문의하기
+            </Text>
+          </Pressable>
+        </View>
       </View>
-    </View>
-    {/* <SafeAreaView /> */}
-      </>
+      {/* <SafeAreaView /> */}
+    </>
   );
 }
 
@@ -75,14 +98,13 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
   },
   itemContainer: {
-    width: "100%",
+    width: '100%',
     minHeight: 50,
     height: 'auto',
     borderBottomWidth: 1,
-    borderBottomColor: globalColors.redLight, 
+    borderBottomColor: globalColors.redLight,
     marginBottom: 20,
     padding: 15,
-   
   },
   itemWrapper: {
     minHeight: 50,
@@ -90,11 +112,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap:15
+    gap: 15,
   },
-    selectedItemContainer: {
-      backgroundColor: globalColors.redLight,
-      // 선택된 항목의 배경색
+  selectedItemContainer: {
+    backgroundColor: globalColors.redLight,
+    // 선택된 항목의 배경색
   },
   svgStyle: {
     height: 60, // SVG 높이를 30으로 설정
@@ -104,12 +126,11 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '100%',
     height: 60,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom:40
-   
-  }
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 40,
+  },
 });
 
 export default FAQScreen;

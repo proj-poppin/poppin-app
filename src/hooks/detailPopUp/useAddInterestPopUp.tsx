@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import addInterestPopUp from '../../apis/popup/addInterestPopUp.ts';
-import EncryptedStorage from "react-native-encrypted-storage";
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 interface AddInterestState {
   loading: boolean;

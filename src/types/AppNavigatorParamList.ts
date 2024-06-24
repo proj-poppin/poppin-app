@@ -23,13 +23,13 @@ export type AppNavigatorParamList = {
   OperatorRegister: undefined;
   MemberDelete: undefined;
   PreferenceSetting: undefined;
-  PopUpDetail: {id: number};
+  PopUpDetail: {id: number; name: string};
   Alarm: undefined;
   AlarmSetting: undefined;
   NoticeDetail: {nid: number};
   findInputScreen: undefined;
   FAQForm: undefined;
-  PasswordCheck: undefined
-  MyReviewsList: undefined
-  FAQFormScreen:undefined
+  PasswordCheck: undefined;
+  MyReviewsList: undefined;
+  FAQFormScreen: undefined;
 };

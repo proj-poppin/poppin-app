@@ -13,12 +13,11 @@ const ToastComponent: React.FC<ToastComponentProps> = ({
   message,
   height = 50,
   onClose,
-  duration = 4000,
+  duration = 3000,
   fadeDuration = 500,
 }) => {
   const [isToastVisible, setIsToastVisible] = useState(true);
   const fadeAnim = useRef(new Animated.Value(0)).current;
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsToastVisible(false);
@@ -44,11 +43,11 @@ const ToastComponent: React.FC<ToastComponentProps> = ({
       width: 368,
       height: height,
       borderRadius: 14,
-      marginTop: 110,
+      marginTop: 100,
       marginLeft: 16,
       marginRight: 16,
       backgroundColor: 'rgba(0, 0, 0, 0.7)',
-      opacity: 10.0,
+      opacity: 1.0,
     } as ViewStyle,
     toastText: {
       width: '100%',

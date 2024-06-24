@@ -1,18 +1,8 @@
 import nonPublicApiInstance from '../../apis/apiInstance/NonPublicApiInstance';
 
-export interface GetUserSettingResponse {
-  success: boolean;
-  error?: {
-    code: string;
-    message: string;
-  };
-}
-
-const getUserSetting = async (): Promise<GetUserSettingResponse> => {
+const getUserSetting = async (): Promise<CommonResponse<any>> => {
   try {
-    const response = await nonPublicApiInstance.get(
-      `/api/v1/user/settings`,
-    );
+    const response = await nonPublicApiInstance.get('/api/v1/user/settings');
     console.log('getUserSetting response:', response.data);
 
     if (response.data.success) {

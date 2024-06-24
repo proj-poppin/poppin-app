@@ -31,6 +31,10 @@ function PopUpEditRequestScreen() {
   const {selectedImages, handleSelectImages, handleRemoveImage} =
     useImageSelector(); // Use the custom hook
 
+  const openCompleteModal = () => {
+    setCompleteModalVisible(true);
+  };
+
   // 제보하기 버튼 클릭후 모달 닫기
   const closeCompleteModal = () => {
     setCompleteModalVisible(false);
@@ -68,10 +72,11 @@ function PopUpEditRequestScreen() {
   const handleSubmit = async () => {
     const response = await modifyInfoDetails(id, content, selectedImages);
     if (response.success) {
+      openCompleteModal();
       navigation.goBack();
     } else if (response.error) {
+      openCompleteModal();
       navigation.goBack();
-      // console.error('Review submission error:', response.error.message);
     }
     setCompleteModalVisible(true);
   };

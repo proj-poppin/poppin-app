@@ -8,78 +8,91 @@ import {
   TextInput,
   Pressable,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
-import globalColors from '../../styles/color/globalColors.ts';
-// @ts-ignore
-import ProfileImg from '../../assets/images/defaultProfile.png';
+import RightSvg from '../../assets/icons/bigRight.svg';
+import globalColors from '../../styles/color/globalColors';
 import GallerySvg from '../../assets/icons/gallery.svg';
 import ImagePicker from 'react-native-image-crop-picker';
-import {useSelector} from 'react-redux';
-import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
-import RightSvg from '../../assets/icons/bigRight.svg';
+import DismissKeyboardView from '../../components/DismissKeyboardView';
 import CloseGraySvg from '../../assets/icons/closeGray.svg';
-import RequiredTextLabel from '../../components/RequiredTextLabel.tsx';
-import Text14R from '../../styles/texts/body_medium/Text14R.ts';
-import kakaoCirclePng from '../../assets/icons/kakaoCircle.png';
-import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
-import GoBackSvg from "../../assets/icons/goBack.svg"
-import usePatchUserSetting from '../../hooks/myPage/usePatchUserSetting.tsx';
+import RequiredTextLabel from '../../components/RequiredTextLabel';
+import Text14R from '../../styles/texts/body_medium/Text14R';
+import NaverCirclePng from '../../assets/png/naverCircle.png';
+import KakaoCirclePng from '../../assets/png/kakaoCircle.png';
+import GoogleCirclePng from '../../assets/png/googleCircle.png';
+import AppleCirclePng from '../../assets/png/appleCircle.png';
+import PoppinCirclePng from '../../assets/png/poppinCircle.png';
+import useGetUserSetting from '../../hooks/myPage/useGetUserSetting';
+import usePatchUserSetting from '../../hooks/myPage/usePatchUserSetting';
+import {useSelector} from 'react-redux';
+import useChangeProfileImageInfo from '../../hooks/myPage/usePutChangeProfileImage.tsx';
+import ProfileEditOptions from '../../navigators/options/ProfileEditOptions.tsx';
+import ConfirmationModal from '../../components/ConfirmationModal.tsx';
 
-
-function MyProfileEditScreen({ navigation }: any) {
-  const { data: userData } = useGetUserSetting()
-  const [profileImage, setProfileImage] = useState(ProfileImg);
- 
-  // Redux store에서 user 상태 가져오기
-  const user = useSelector(state => state.user);
-  const [nickname, setNickname] = useState("");
-  const [birthdate, setBirthdate] = useState<any>("");
-  
-  
-  // const [email, setEmail] = useState(user.email || 'poppin@gmail.com'); // 이메일이 없는 경우 디폴트 이메일 설정
-  // const [emailIcon, setEmailIcon] = useState(null);
- 
+function MyProfileEditScreen({navigation}: any) {
+  const {changeProfileImageInfo} = useChangeProfileImageInfo();
+  const {data: userData, loading, error} = useGetUserSetting();
+  const [profileImage, setProfileImage] = useState<any>(PoppinCirclePng);
+  const [nickname, setNickname] = useState('');
+  const [birthdate, setBirthdate] = useState('');
+  const [emailIcon, setEmailIcon] = useState<any>(null);
   const [isNicknameFocused, setIsNicknameFocused] = useState(false);
-  // const [birthdate, setBirthdate] = useState(user.birthDate || '');
-  
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [completeModalVisible, setCompleteModalVisible] = useState(false);
 
-  
- 
-  // 닉네임 입력 필드의 포커스 상태 변경을 위한 핸들러
-  const handleNicknameFocus = () => setIsNicknameFocused(true);
-  const handleNicknameBlur = () => setIsNicknameFocused(false);
+  const nicknameInputRef = useRef<TextInput>(null);
+  const user = useSelector(state => state.user);
+  const userImageUrl = userData?.userImageUrl;
 
-  const nicknameInputRef = useRef(null); // TextInput에 대한 ref 생성
+  useEffect(() => {
+    if (userData) {
+      setNickname(userData.nickname);
+      setBirthdate(userData.birthDate);
+      switch (userData.provider) {
+        case 'KAKAO':
+          setEmailIcon(KakaoCirclePng);
+          break;
+        case 'NAVER':
+          setEmailIcon(NaverCirclePng);
+          break;
+        case 'GOOGLE':
+          setEmailIcon(GoogleCirclePng);
+          break;
+        case 'APPLE':
+          setEmailIcon(AppleCirclePng);
+          break;
+        default:
+          setEmailIcon(null);
+          break;
+      }
 
- 
-  
-  
+      if (userData.userImageUrl) {
+        setProfileImage({uri: userData.userImageUrl});
+      }
+    }
+  }, [userData, userImageUrl]);
 
-  // 닉네임 수정을 위한 핸들러
-  const handleClearNickname = () => {
-    setNickname(''); // 닉네임 상태 초기화
-    // TextInput에 프로그램적으로 포커스
-    // nicknameInputRef.current.focus();
+  const openCompleteModal = () => {
+    setCompleteModalVisible(true);
   };
 
-  // '회원 탈퇴' 버튼 클릭 핸들러
+  const closeCompleteModal = () => {
+    setCompleteModalVisible(false);
+    navigation.goBack();
+  };
+
+  const handleNicknameFocus = () => setIsNicknameFocused(true);
+  const handleNicknameBlur = () => setIsNicknameFocused(false);
   const handleMemberWithdrawalPress = () => {
     navigation.navigate('MemberDelete');
   };
-  // useEffect(() => {
-  //   // 이메일에 따라 SVG 아이콘 설정
-  //   if (user.email.includes('kakao')) {
-  //     setEmailIcon(<KakaoSvg />);
-  //   } else if (user.email.includes('naver')) {
-  //     setEmailIcon(<NaverSvg />);
-  //   } else if (user.email.includes('gmail')) {
-  //     setEmailIcon(<GoogleSvg />);
-  //   } else {
-  //     setEmailIcon(<GoogleSvg />); // 이메일이 다른 경우 아이콘 없음
-  //   }
-  // }, [user.email]);\
-   const handleBirthDateChange = (text:string) => {
-    // Automatically format birthdate
+
+  const handleClearNickname = () => {
+    setNickname('');
+  };
+
+  const handleBirthDateChange = (text: string) => {
     let formattedText = text.replace(/[^0-9]/g, '');
 
     if (formattedText.length > 3) {
@@ -91,80 +104,72 @@ function MyProfileEditScreen({ navigation }: any) {
 
     setBirthdate(formattedText);
   };
- 
 
   const openGallery = () => {
     ImagePicker.openPicker({
-      width: 110,
-      height: 110,
+      width: 100,
+      height: 100,
       cropping: true,
       cropperCircleOverlay: true,
-    })
-      .then(image => {
-        console.log('selected image', image);
-        setProfileImage({uri: image.path});
-      })
-      .catch(error => {
-        console.log('ImagePicker Error: ', error);
-      });
-  };
-  const { patchUserInfo } = usePatchUserSetting()
-
-   const handleSubmit = async () => {
-    const updatedData = { 
-      nickname,
-      birthDate:birthdate,
-    };
-     
-     await patchUserInfo(updatedData).then(()=>Alert.alert('성공적으로 변경되었습니다.'))
-   };
-  
-    useEffect(() => {
-    if (userData) {
-      setNickname(userData?.nickname)
-      setBirthdate(userData.birthDate);
-    }
-  }, [userData]);
-
-  
-  useEffect(() => {
-    navigation.setOptions({
-      headerShown: true,
-      title: '프로필 설정',
-      headerRight: () => (
-        <Text
-          onPress={handleSubmit}
-          style={{ color: globalColors.blue, marginRight: 10 }}
-        >
-          완료
-        </Text>
-      ),
-      headerLeft: () => (
-        <Pressable
-          onPress={() => navigation.goBack()}
-          style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1 })}
-        >
-          <GoBackSvg />
-        </Pressable>
-      ),
+    }).then(image => {
+      setProfileImage({uri: image.path});
+      changeProfileImageInfo({
+        uri: image.path,
+        type: image.mime,
+        name: image.filename || 'profileImage',
+      }).then(r => console.log('r:', r));
     });
-  }, [navigation,  nickname, birthdate, profileImage]);
+  };
+
+  const {patchUserInfo} = usePatchUserSetting();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleSubmit = async () => {
+    const updatedData = {
+      nickname: nickname,
+      birthDate: birthdate,
+    };
+
+    await patchUserInfo(updatedData).then(() => {
+      openCompleteModal(); // 모달 열기
+    });
+  };
+
+  useEffect(() => {
+    navigation.setOptions(ProfileEditOptions({navigation, handleSubmit}));
+  }, [navigation, nickname, birthdate, profileImage, handleSubmit]);
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.centered]}>
+        <ActivityIndicator size="large" color={globalColors.blue} />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={[styles.container, styles.centered]}>
+        <Text style={{color: globalColors.red}}>{error.message}</Text>
+      </View>
+    );
+  }
 
   return (
     <DismissKeyboardView style={styles.container}>
       <View style={styles.profileContainer}>
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={userData&&userData.userImageUrl ==null?userData.userImageUrl:profileImage} />
+          <Image
+            style={styles.image}
+            source={profileImage.uri ? profileImage : PoppinCirclePng}
+          />
           <TouchableOpacity style={styles.galleryIcon} onPress={openGallery}>
             <GallerySvg />
           </TouchableOpacity>
         </View>
         <TouchableOpacity
           style={styles.preferenceButton}
-          onPress={() => {
-            // 버튼 클릭 시 이벤트 핸들러
-            navigation.push('PreferenceSetting');
-          }}>
+          onPress={() => navigation.push('PreferenceSetting')}>
           <Text style={styles.preferenceButtonText}>취향 설정</Text>
         </TouchableOpacity>
         <View style={styles.emailContainer}>
@@ -172,14 +177,13 @@ function MyProfileEditScreen({ navigation }: any) {
             {user.isSocialLogin ? '이메일' : '아이디'}
           </Text>
           <View style={styles.emailInputContainer}>
-            {/*{user.isSocialLogin && emailIcon}*/}
-            {!user.isSocialLogin && (
-              <Image source={kakaoCirclePng} style={styles.socialIcon} />
+            {emailIcon && (
+              <Image source={emailIcon} style={styles.socialIcon} />
             )}
             <TextInput
               style={styles.emailInput}
-              value={userData&&userData.email}
-              editable={false} // 편집 불가능하게 설정
+              value={userData?.email || 'test@poppin.com'}
+              editable={false}
             />
           </View>
           <View style={{height: 30}} />
@@ -190,17 +194,16 @@ function MyProfileEditScreen({ navigation }: any) {
               isNicknameFocused && {borderColor: globalColors.blue},
             ]}>
             <TextInput
-              ref={nicknameInputRef} // TextInput에 ref 할당
+              ref={nicknameInputRef}
               style={styles.input}
-              value={nickname} // 닉네임 상태를 value로 사용
-              onChangeText={setNickname} // 텍스트 변경 시 닉네임 상태 업데이트
+              value={nickname}
+              onChangeText={setNickname}
               onFocus={handleNicknameFocus}
               onBlur={handleNicknameBlur}
-               clearButtonMode="while-editing"
             />
-            {/* <TouchableOpacity onPress={handleClearNickname}>
+            <TouchableOpacity onPress={handleClearNickname}>
               <CloseGraySvg style={{paddingHorizontal: 15}} />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
           <View style={{height: 30}} />
           <RequiredTextLabel label={'생년월일'} />
@@ -208,15 +211,11 @@ function MyProfileEditScreen({ navigation }: any) {
             <TextInput
               style={styles.input}
               value={birthdate}
-              onChangeText={handleBirthDateChange} 
-              placeholder="YYYY.MM.DD"
-              clearButtonMode="while-editing"
-              // editable={false} // 편집 불가능하게 설정
+              editable={false}
             />
           </View>
         </View>
       </View>
-
       <View style={styles.middleContainer}>
         <Text style={Text14R.text}>비밀번호 변경</Text>
         <RightSvg
@@ -231,6 +230,12 @@ function MyProfileEditScreen({ navigation }: any) {
         onPress={handleMemberWithdrawalPress}>
         회원 탈퇴
       </Text>
+      <ConfirmationModal
+        isVisible={completeModalVisible}
+        onClose={closeCompleteModal}
+        mainTitle="프로필 설정이 변경됐어요!"
+        subTitle={'변경사항이 저장되었습니다.'}
+      />
     </DismissKeyboardView>
   );
 }
@@ -245,20 +250,24 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white', // 내부 색깔을 흰색으로 설정
-    borderColor: globalColors.warmGray, // 테두리 색상을 globalColors.component로 설정
-    borderWidth: 1, // 테두리 두께 설정
+    backgroundColor: 'white',
+    borderColor: globalColors.warmGray,
+    borderWidth: 1,
     borderRadius: 30,
     padding: 10,
   },
   input: {
     flex: 1,
     marginLeft: 10,
-    color: 'black', // 검은색 글씨
+    color: 'black',
   },
   container: {
     flex: 1,
-    backgroundColor: 'white', // 전체 배경색을 흰색으로 설정
+    backgroundColor: 'white',
+  },
+  centered: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   emailContainer: {
     alignItems: 'flex-start',
@@ -278,38 +287,33 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   emailInput: {
-    flex: 1, // 나머지 공간 채우기
-    marginLeft: 10, // 아이콘과의 간격
+    flex: 1,
+    marginLeft: 10,
     color: globalColors.font,
   },
   profileContainer: {
     flex: 1,
     alignItems: 'center',
     padding: 10,
-    marginTop: 30, // 상단 여백 추가
+    marginTop: 30,
   },
   socialIcon: {
-    marginRight: 5, // 아이콘과 텍스트 필드 사이의 간격
-    width: 20, // 아이콘의 너비
-    height: 20, // 아이콘의 높이
-  },
-  profileText: {
-    fontSize: 18,
-    marginBottom: 20, // 텍스트와 버튼 사이의 간격
-    color: globalColors.font,
+    marginRight: 5,
+    width: 30,
+    height: 30,
   },
   preferenceButton: {
-    marginTop: 20, // 버튼의 상단 여백
-    backgroundColor: globalColors.blue, // 버튼 배경색
-    paddingVertical: 10, // 상하 패딩
-    paddingHorizontal: 20, // 좌우 패딩
-    borderRadius: 25, // 모서리 둥글기
+    marginTop: 20,
+    backgroundColor: globalColors.blue,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
   },
   preferenceButtonText: {
-    color: 'white', // 텍스트 색상
-    fontSize: 13, // 텍스트 크기
+    color: 'white',
+    fontSize: 13,
     fontWeight: '600',
   },
   imageContainer: {
@@ -318,19 +322,19 @@ const styles = StyleSheet.create({
   },
   textContainer: {},
   image: {
-    width: 110,
-    height: 110,
+    width: 100,
+    height: 100,
     borderRadius: 55,
   },
   galleryIcon: {
-    position: 'absolute', // 절대 위치 사용
-    right: 0, // 오른쪽 하단에 위치
-    bottom: 0, // 오른쪽 하단에 위치
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
   },
   svgStyle: {
-    height: 30, // SVG 높이를 30으로 설정
-    width: 30, // SVG 너비를 30으로 설정
-    paddingRight: 10, // SVG 우측 패딩 유지
+    height: 30,
+    width: 30,
+    paddingRight: 10,
   },
 });
 

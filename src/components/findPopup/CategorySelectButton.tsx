@@ -17,7 +17,6 @@ interface CategorySelectButtonProps {
   tagDeleteClick: (id: number) => void;
   seletedTag?: any;
 }
-
 const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
   item,
   onClick,
@@ -72,7 +71,7 @@ const styles = StyleSheet.create({
   },
   tag: {
     borderRadius: 30,
-    borderWidth: 1,
+    borderWidth: 1.5, //🎨gradientBorder의 padding와 동일하게!
     borderColor: globalColors.warmGray,
     paddingTop: 8,
     paddingBottom: 8,
@@ -89,7 +88,7 @@ const styles = StyleSheet.create({
   },
   gradientBorder: {
     borderRadius: 30,
-    padding: 2,
+    padding: 1.5, //🎨tag의 borderWidth와 동일하게!
   },
   innerContent: {
     borderRadius: 28,

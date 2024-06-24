@@ -58,7 +58,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList';
 import PopUpDetailOptions from '../../navigators/options/PopUpDetailOptions';
 import {RootState} from '../../redux/stores/reducer';
-
+import {Share} from 'react-native';
 async function requestPermissions() {
   if (Platform.OS === 'ios') {
     const auth = await Geolocation.requestAuthorization('whenInUse');
@@ -340,7 +340,10 @@ const PopUpDetailScreen = ({route}) => {
               <Pressable onPress={handleToggleInterest}>
                 {isInterested ? <StarOnSvg /> : <StarOffSvg />}
               </Pressable>
-              <Pressable onPress={() => {}}>
+              <Pressable
+                onPress={async () => {
+                  await Share.share({message: 'eqwew'});
+                }}>
                 <ShareSvg style={{paddingHorizontal: 20}} />
               </Pressable>
             </View>
@@ -352,7 +355,7 @@ const PopUpDetailScreen = ({route}) => {
               message={toastMessage}
             />
           )}
-          <DetailDividerLine />
+          {/*<DetailDividerLine />*/}
           <View style={styles.iconContainer}>
             <Text style={[Text20B.text, {color: globalColors.purple}]}>
               상세 정보
@@ -470,7 +473,7 @@ const PopUpDetailScreen = ({route}) => {
                       )}
                     </View>
                     <Text style={styles.reviewText}>
-                      리뷰 {review.totalReviewWrite}개
+                      리뷰 {review.reviewCnt}개
                     </Text>
                   </View>
                 </View>

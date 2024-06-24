@@ -255,25 +255,25 @@ function FindScreen({navigation, route}: FindScreenProps) {
               ))}
             </View>
           </View>
-          <DividerLine height={2} />
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            scrollEventThrottle={16}>
-            <View style={styles.popSelectedWrapper}>
-              {selectedTags.map(tag =>
-                tag.selected ? (
-                  <CategorySelectButton
-                    key={tag.id}
-                    item={tag}
-                    onClick={() => {}}
-                    seletedTag
-                    tagDeleteClick={tagDeleteClick}
-                  />
-                ) : null,
-              )}
-            </View>
-          </ScrollView>
+          {/*<DividerLine height={2} />*/}
+          {/*<ScrollView*/}
+          {/*  horizontal={true}*/}
+          {/*  showsHorizontalScrollIndicator={false}*/}
+          {/*  scrollEventThrottle={16}>*/}
+          {/*  <View style={styles.popSelectedWrapper}>*/}
+          {/*    {selectedTags.map(tag =>*/}
+          {/*      tag.selected ? (*/}
+          {/*        <CategorySelectButton*/}
+          {/*          key={tag.id}*/}
+          {/*          item={tag}*/}
+          {/*          onClick={() => {}}*/}
+          {/*          seletedTag*/}
+          {/*          tagDeleteClick={tagDeleteClick}*/}
+          {/*        />*/}
+          {/*      ) : null,*/}
+          {/*    )}*/}
+          {/*  </View>*/}
+          {/*</ScrollView>*/}
           <View style={styles.buttonsWrapper}>
             <BackMiddleButton
               onPress={() => {

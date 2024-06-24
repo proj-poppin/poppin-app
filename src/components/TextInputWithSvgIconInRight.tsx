@@ -9,6 +9,7 @@ interface TextInputWithSvgIconInRightProps {
   onIconPress?: () => void;
   IconComponent: ReactElement;
   isRequired?: boolean;
+  isClickableTextInput?: boolean; // New prop
 }
 
 const TextInputWithSvgIconInRight: React.FC<
@@ -19,6 +20,7 @@ const TextInputWithSvgIconInRight: React.FC<
   onIconPress = () => {},
   IconComponent,
   isRequired = false,
+  isClickableTextInput = false, // Default value
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -40,6 +42,7 @@ const TextInputWithSvgIconInRight: React.FC<
           editable={false} // 텍스트 입력 비활성화 (필요에 따라 조정)
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          pointerEvents={isClickableTextInput ? 'none' : 'auto'} // Prevent focus if clickable
         />
         <View style={styles.iconButton}>{IconComponent}</View>
       </Pressable>
@@ -66,5 +69,4 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
 });
-
 export default TextInputWithSvgIconInRight;

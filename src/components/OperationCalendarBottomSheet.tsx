@@ -1,20 +1,15 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Pressable,
-} from 'react-native';
+import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {useReducedMotion} from 'react-native-reanimated';
 import {BottomSheetModal, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
-import {Calendar} from 'react-native-calendars'; // Ensure this is installed
-import CalendarGraySvg from '../assets/icons/calendarGray.svg'; // Your SVG path
+import {Calendar} from 'react-native-calendars';
+import CalendarGraySvg from '../assets/icons/calendarGray.svg';
 import globalColors from '../styles/color/globalColors.ts';
 import DividerLine from './DividerLine.tsx';
 import CompleteButton from './atoms/button/CompleteButton.tsx';
 import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
 import Text18B from '../styles/texts/body_large/Text18B.ts';
+
 interface Dates {
   start: string;
   end: string;
@@ -27,19 +22,20 @@ interface OperationCalendarBottomSheetProps {
 const OperationCalendarBottomSheet: React.FC<
   OperationCalendarBottomSheetProps
 > = ({setSelectedDates}) => {
-  const [dates, setDates] = useState<Dates>({start: '', end: ''});
+  const [dates, setDates] = useState<Dates>({start: '오픈일', end: '종료일'});
   const [selectionMode, setSelectionMode] = useState('start');
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const reducedMotion = useReducedMotion();
+
   useEffect(() => {
     const today = new Date();
     const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setDate(today.getDate() + 1);
 
-    const todayStr = today.toISOString().split('T')[0];
-    const tomorrowStr = tomorrow.toISOString().split('T')[0];
-
-    setDates({start: todayStr, end: tomorrowStr});
+    // setDates({
+    //   start: today.toISOString().split('T')[0],
+    //   end: tomorrow.toISOString().split('T')[0],
+    // });
   }, []);
 
   const handleOpenCalendar = (mode: 'start' | 'end') => {
@@ -57,8 +53,8 @@ const OperationCalendarBottomSheet: React.FC<
     }
   };
 
-  const getDateInputTextStyle = (type: string, value: string) => ({
-    color: value ? globalColors.black : globalColors.font,
+  const getDateInputTextStyle = (value: string, defaultText: string) => ({
+    color: value === defaultText ? globalColors.font : globalColors.black,
   });
 
   const handleComplete = () => {
@@ -119,16 +115,16 @@ const OperationCalendarBottomSheet: React.FC<
         <Pressable
           style={[styles.input, styles.firstInput]}
           onPress={() => handleOpenCalendar('start')}>
-          <Text style={getDateInputTextStyle('start', dates.start)}>
-            {dates.start || '오픈일'}
+          <Text style={getDateInputTextStyle(dates.start, '오픈일')}>
+            {dates.start !== '' ? dates.start : '오픈일'}
           </Text>
         </Pressable>
         <Text style={styles.toText}>~</Text>
         <Pressable
           style={[styles.input, styles.secondInput]}
           onPress={() => handleOpenCalendar('end')}>
-          <Text style={getDateInputTextStyle('end', dates.end)}>
-            {dates.end || '종료일'}
+          <Text style={getDateInputTextStyle(dates.end, '종료일')}>
+            {dates.end !== '' ? dates.end : '종료일'}
           </Text>
           <CalendarGraySvg />
         </Pressable>
@@ -154,7 +150,7 @@ const OperationCalendarBottomSheet: React.FC<
               pressed && {backgroundColor: globalColors.warmGray},
             ]}
             onPress={() => setSelectionMode('start')}>
-            <Text style={getDateInputTextStyle('start', dates.start)}>
+            <Text style={getDateInputTextStyle(dates.start, '오픈일')}>
               {dates.start}
             </Text>
           </Pressable>
@@ -168,7 +164,7 @@ const OperationCalendarBottomSheet: React.FC<
               pressed && {backgroundColor: globalColors.warmGray},
             ]}
             onPress={() => setSelectionMode('end')}>
-            <Text style={getDateInputTextStyle('end', dates.end)}>
+            <Text style={getDateInputTextStyle(dates.end, '종료일')}>
               {dates.end}
             </Text>
           </Pressable>

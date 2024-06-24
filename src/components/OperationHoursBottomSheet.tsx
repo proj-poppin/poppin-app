@@ -18,12 +18,14 @@ interface OperationHoursBottomSheetProps {
   setOperationTimes: (times: {start: string; end: string}) => void;
   operationTimes: Times; // 추가: 초기값을 받도록 수정
 }
-
 const OperationHoursBottomSheet: React.FC<OperationHoursBottomSheetProps> = ({
   setOperationTimes,
   operationTimes,
 }) => {
-  const [times, setTimes] = useState<Times>(operationTimes); // 초기값 설정
+  const [times, setTimes] = useState<Times>({
+    start: '오픈 시간',
+    end: '종료 시간',
+  });
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [tempTime, setTempTime] = useState(new Date());
   const [selectionMode, setSelectionMode] = useState('start');

@@ -8,7 +8,7 @@ type PreferenceSettingScreenNavigationProp = NativeStackNavigationProp<
 
 // Props 타입 정의
 // HeaderOptions 컴포넌트
-const PreferenceSettingOptions = ({}: {
+const SignUpPreferenceSettingOptions = ({}: {
   navigation: PreferenceSettingScreenNavigationProp;
 }) => ({
   headerLeft: () => {
@@ -17,4 +17,4 @@ const PreferenceSettingOptions = ({}: {
   headerTitle: '취향 설정하기',
 });
 
-export default PreferenceSettingOptions;
+export default SignUpPreferenceSettingOptions;

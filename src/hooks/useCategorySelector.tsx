@@ -2,7 +2,7 @@ import {useState, useCallback, useRef, useMemo} from 'react';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 
 export const useCategorySelector = () => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['60%'], []);
 
@@ -11,11 +11,7 @@ export const useCategorySelector = () => {
   }, []);
 
   const onSelectOption = (option: string) => {
-    setSelectedCategories(prevSelectedCategories =>
-      prevSelectedCategories.includes(option)
-        ? prevSelectedCategories.filter(item => item !== option)
-        : [...prevSelectedCategories, option],
-    );
+    setSelectedCategory(option);
   };
 
   const handleConfirmSelection = useCallback(() => {
@@ -23,8 +19,8 @@ export const useCategorySelector = () => {
   }, []);
 
   return {
-    selectedCategories,
-    setSelectedCategories,
+    selectedCategory,
+    setSelectedCategory,
     bottomSheetModalRef,
     snapPoints,
     handlePresentModal,

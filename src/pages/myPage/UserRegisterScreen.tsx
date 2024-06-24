@@ -37,7 +37,8 @@ function UserRegisterScreen() {
     useImageSelector(); // Use the custom hook
 
   const {
-    selectedCategories,
+    selectedCategory,
+    setSelectedCategory,
     bottomSheetModalRef,
     snapPoints,
     handlePresentModal,
@@ -82,7 +83,7 @@ function UserRegisterScreen() {
 
   const isSubmitEnabled =
     storeName.trim() !== '' &&
-    selectedCategories.length > 0 &&
+    selectedCategory !== '' &&
     selectedImages.length > 0;
 
   const renderBackdrop = useCallback(
@@ -112,20 +113,20 @@ function UserRegisterScreen() {
     const response = await userReportPopUp(
       storeName,
       infoLink,
-      selectedCategories.includes('fashionBeauty'),
-      selectedCategories.includes('characters'),
-      selectedCategories.includes('foodBeverage'),
-      selectedCategories.includes('webtoonAni'),
-      selectedCategories.includes('interiorThings'),
-      selectedCategories.includes('movie'),
-      selectedCategories.includes('musical'),
-      selectedCategories.includes('sports'),
-      selectedCategories.includes('game'),
-      selectedCategories.includes('itTech'),
-      selectedCategories.includes('kpop'),
-      selectedCategories.includes('alcohol'),
-      selectedCategories.includes('animalPlant'),
-      selectedCategories.includes('etc'),
+      selectedCategory.includes('fashionBeauty'),
+      selectedCategory.includes('characters'),
+      selectedCategory.includes('foodBeverage'),
+      selectedCategory.includes('webtoonAni'),
+      selectedCategory.includes('interiorThings'),
+      selectedCategory.includes('movie'),
+      selectedCategory.includes('musical'),
+      selectedCategory.includes('sports'),
+      selectedCategory.includes('game'),
+      selectedCategory.includes('itTech'),
+      selectedCategory.includes('kpop'),
+      selectedCategory.includes('alcohol'),
+      selectedCategory.includes('animalPlant'),
+      selectedCategory.includes('etc'),
       selectedImages,
     );
     if (response.success) {
@@ -156,10 +157,11 @@ function UserRegisterScreen() {
       <View style={{paddingTop: 10}} />
       <TextInputWithSvgIconInRight
         label={'카테고리'}
-        value={selectedCategories.join(', ')} // Show selected categories
+        value={selectedCategory}
         onIconPress={handlePresentModal}
         IconComponent={<DownSvg />}
         isRequired={true}
+        isClickableTextInput={true}
       />
       <BottomSheetModal
         animateOnMount={!reducedMotion}
@@ -177,7 +179,7 @@ function UserRegisterScreen() {
             onSelectOption={onSelectOption}
             isEmojiRemoved={true}
             isSingleSelect={false}
-            selectedCategories={selectedCategories}
+            selectedCategory={selectedCategory}
           />
           <CompleteButton onPress={handleConfirmSelection} title={'확인'} />
         </View>

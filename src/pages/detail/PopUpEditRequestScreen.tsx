@@ -23,6 +23,7 @@ function PopUpEditRequestScreen() {
   const [content, setContent] = useState(''); // 후기 내용
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(true); // New state to track success or failure
 
   const route = useRoute<PopUpEditRequestScreenRouteProp>();
   const navigation = useNavigation();
@@ -38,6 +39,7 @@ function PopUpEditRequestScreen() {
   // 제보하기 버튼 클릭후 모달 닫기
   const closeCompleteModal = () => {
     setCompleteModalVisible(false);
+    navigation.goBack();
   };
 
   // 뒤로가기 버튼 클릭 모달에서 나가기 클릭시
@@ -69,17 +71,17 @@ function PopUpEditRequestScreen() {
       ),
     });
   }, [navigation]);
+
   const handleSubmit = async () => {
     const response = await modifyInfoDetails(id, content, selectedImages);
     if (response.success) {
-      openCompleteModal();
-      navigation.goBack();
+      setIsSuccess(true);
     } else if (response.error) {
-      openCompleteModal();
-      navigation.goBack();
+      setIsSuccess(false);
     }
-    setCompleteModalVisible(true);
+    openCompleteModal();
   };
+
   return (
     <DismissKeyboardView style={styles.container}>
       <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>
@@ -128,14 +130,24 @@ function PopUpEditRequestScreen() {
         selectFirstText="나가기"
         selectSecondText="계속 작성하기"
       />
-      <ConfirmationModal
-        isVisible={completeModalVisible}
-        onClose={closeCompleteModal}
-        mainTitle="소중한 제보 감사합니다!"
-        subTitle={
-          '제보하신 팝업은\nPOPPIN에서 확인 후 업로드 될 예정입니다.\n더 나은 POPPIN이 되겠습니다.'
-        }
-      />
+      {isSuccess ? (
+        <ConfirmationModal
+          isVisible={completeModalVisible}
+          onClose={closeCompleteModal}
+          mainTitle="소중한 제보 감사합니다!"
+          subTitle={
+            '제보하신 팝업은\nPOPPIN에서 확인 후 업로드 될 예정입니다.\n더 나은 POPPIN이 되겠습니다.'
+          }
+        />
+      ) : (
+        <ConfirmationModal
+          isAlertSvg={true}
+          isVisible={completeModalVisible}
+          onClose={closeCompleteModal}
+          mainTitle="오류"
+          subTitle={'잠시 후 다시 시도해 주세요.'}
+        />
+      )}
     </DismissKeyboardView>
   );
 }

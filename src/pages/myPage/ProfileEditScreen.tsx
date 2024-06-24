@@ -6,8 +6,6 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
-  Pressable,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
 import RightSvg from '../../assets/icons/bigRight.svg';
@@ -92,19 +90,6 @@ function MyProfileEditScreen({navigation}: any) {
     setNickname('');
   };
 
-  const handleBirthDateChange = (text: string) => {
-    let formattedText = text.replace(/[^0-9]/g, '');
-
-    if (formattedText.length > 3) {
-      formattedText = formattedText.slice(0, 4) + '.' + formattedText.slice(4);
-    }
-    if (formattedText.length > 6) {
-      formattedText = formattedText.slice(0, 7) + '.' + formattedText.slice(7);
-    }
-
-    setBirthdate(formattedText);
-  };
-
   const openGallery = () => {
     ImagePicker.openPicker({
       width: 100,
@@ -121,7 +106,7 @@ function MyProfileEditScreen({navigation}: any) {
     });
   };
 
-  const {patchUserInfo} = usePatchUserSetting();
+  const {patchUserInfo, success} = usePatchUserSetting();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleSubmit = async () => {

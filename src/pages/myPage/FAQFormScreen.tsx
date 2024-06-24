@@ -2,11 +2,11 @@ import React, {useState, useCallback} from 'react';
 import {
   Pressable,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
+  FlatList,
 } from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -19,9 +19,9 @@ function FAQFormScreen({navigation}: any) {
   const [value, setValue] = useState('apple');
   const [items, setItems] = useState([
     {label: '문의 유형을 선택해주세요.', value: 'apple'},
-    {label: '불편사항 및 개선사항', value: 'banana'},
-    {label: '정보 및 시스템 오류', value: 'banana'},
-    {label: '기타 문의', value: 'banana'},
+    {label: '불편사항 및 개선사항', value: 'banana1'},
+    {label: '정보 및 시스템 오류', value: 'banana2'},
+    {label: '기타 문의', value: 'banana3'},
   ]);
   const [content, setContent] = useState('');
   const [error, setError] = useState(false);
@@ -67,6 +67,63 @@ function FAQFormScreen({navigation}: any) {
     console.log('hi');
   };
 
+  const renderContent = () => (
+    <View style={{padding: 20}}>
+      <DropDownPicker
+        open={open}
+        value={value}
+        items={items}
+        setOpen={setOpen}
+        setValue={setValue}
+        setItems={setItems}
+        style={{borderRadius: 20, borderColor: globalColors.font}}
+      />
+      <TextInput
+        style={styles.introduceInput}
+        value={content}
+        onChangeText={handleChangeText}
+        placeholder={'내용을 입력해주세요.(최소 10자, 최대 1000자)'}
+        multiline={true}
+      />
+      {error && (
+        <Text
+          style={{
+            color: 'red',
+            marginBottom: 10,
+            marginTop: 3,
+            paddingLeft: 5,
+          }}>
+          글자 수가 10개 이상 1000이하 여야 합니다.
+        </Text>
+      )}
+      <ImageContainerRow
+        selectedImages={selectedImages}
+        handleSelectImages={handleSelectImages}
+        handleRemoveImage={handleRemoveImage}
+      />
+      <View style={{marginTop: 20}}>
+        <View style={styles.dotTextContainer}>
+          <Text style={styles.dot}>•</Text>
+          <Text style={styles.descText}>
+            문의사항은 접수 후 수정이 불가합니다.
+          </Text>
+        </View>
+        <View style={styles.dotTextContainer}>
+          <Text style={styles.dot}>•</Text>
+          <Text style={styles.descText}>
+            첨부파일은 20MB 이하의 파일만 첨부 가능하며, 최대 5개까지 등록
+            가능합니다.
+          </Text>
+        </View>
+        <View style={styles.dotTextContainer}>
+          <Text style={styles.dot}>•</Text>
+          <Text style={styles.descText}>
+            이미지에 개인정보가 보이지 않도록 주의 바랍니다.
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
   return (
     <>
       <View style={styles.container}>
@@ -74,68 +131,15 @@ function FAQFormScreen({navigation}: any) {
           더 나은 POPPIN을 위한 {'\n'}여러분의 소중한 의견에 감사드립니다.
         </Text>
         <Text style={{padding: 10, color: globalColors.font}}>
-          {' '}
           팝핀(POPIN)을 이용하면서 느끼신 불편/개선/보완 사항이 있다면
           알려주세요. 소중한 의견을 참고하여 더 나은 팝핀(POPIN)이 되도록
           노력하겠습니다.
         </Text>
-        <ScrollView>
-          <View style={{padding: 20}}>
-            <DropDownPicker
-              open={open}
-              value={value}
-              items={items}
-              setOpen={setOpen}
-              setValue={setValue}
-              setItems={setItems}
-              style={{borderRadius: 20, borderColor: globalColors.font}}
-            />
-            <TextInput
-              style={styles.introduceInput}
-              value={content}
-              onChangeText={handleChangeText}
-              placeholder={'내용을 입력해주세요.(최소 10자, 최대 1000자)ㄴ'}
-              multiline={true}
-            />
-            {error && (
-              <Text
-                style={{
-                  color: 'red',
-                  marginBottom: 10,
-                  marginTop: 3,
-                  paddingLeft: 5,
-                }}>
-                글자 수가 10개 이상 1000이하 여야 합니다.
-              </Text>
-            )}
-            <ImageContainerRow
-              selectedImages={selectedImages}
-              handleSelectImages={handleSelectImages}
-              handleRemoveImage={handleRemoveImage}
-            />
-            <View style={{marginTop: 20}}>
-              <View style={styles.dotTextContainer}>
-                <Text style={styles.dot}>•</Text>
-                <Text style={styles.descText}>
-                  문의사항은 접수 후 수정이 불가합니다.
-                </Text>
-              </View>
-              <View style={styles.dotTextContainer}>
-                <Text style={styles.dot}>•</Text>
-                <Text style={styles.descText}>
-                  첨부파일은 20MB 이하의 파일만 첨부 가능하며, 최대 5개까지 등록
-                  가능합니다.
-                </Text>
-              </View>
-              <View style={styles.dotTextContainer}>
-                <Text style={styles.dot}>•</Text>
-                <Text style={styles.descText}>
-                  이미지에 개인정보가 보이지 않도록 주의 바랍니다.
-                </Text>
-              </View>
-            </View>
-          </View>
-        </ScrollView>
+        <FlatList
+          data={[{key: 'form'}]}
+          renderItem={renderContent}
+          keyExtractor={item => item.key}
+        />
         <View style={[styles.buttonContainer]}>
           <Pressable
             disabled={error}
@@ -167,7 +171,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: globalColors.white,
-    // paddingHorizontal: 20,
   },
   dotTextContainer: {
     flexDirection: 'row',
@@ -249,9 +252,6 @@ const styles = StyleSheet.create({
   },
   boxText: {
     fontSize: 16,
-  },
-  descText: {
-    color: globalColors.font,
   },
 });
 

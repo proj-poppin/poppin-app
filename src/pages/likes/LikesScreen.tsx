@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  ActivityIndicator,
 } from 'react-native';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {useAppDispatch} from '../../redux/stores';
@@ -29,7 +30,7 @@ function LikesScreen({navigation}) {
   const [selectedDate, setSelectedDate] = useState<Record<string, any>>({});
   const [isCalendarView, setIsCalendarView] = useState(false);
 
-  const {data: interestList, refetch} = useGetInterestList();
+  const {data: interestList, refetch, loading, error} = useGetInterestList();
 
   useFocusEffect(
     useCallback(() => {
@@ -48,6 +49,7 @@ function LikesScreen({navigation}) {
       [day.dateString]: {selected: true, marked: true},
     });
   };
+
   const handleRefetch = () => {
     refetch();
   };
@@ -70,12 +72,6 @@ function LikesScreen({navigation}) {
         selectedDate: true,
         textColor: 'black',
         selectedColor: globalColors.purpleLight,
-        // selected: true,
-        // dots: [
-        //   {color: globalColors.blue, selectedDotColor: globalColors.blue},
-        //   {color: globalColors.purple, selectedDotColor: globalColors.purple},
-        //   {color: globalColors.white, selectedDotColor: globalColors.white},
-        // ],
       },
     };
 
@@ -103,7 +99,9 @@ function LikesScreen({navigation}) {
   const toggleView = () => {
     setIsCalendarView(!isCalendarView);
   };
+
   const isLoggedIn = useIsLoggedIn();
+
   useEffect(() => {
     dispatch(loadingSlice.actions.setLoading({isLoading: true}));
     setTimeout(() => {
@@ -164,6 +162,13 @@ function LikesScreen({navigation}) {
     );
   }
 
+  if (loading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color={globalColors.blue} />
+      </View>
+    );
+  }
   if (isLoggedIn && interestList?.length === 0) {
     return (
       <SafeAreaView style={{flex: 1}}>
@@ -185,7 +190,6 @@ function LikesScreen({navigation}) {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      {/*<DismissKeyboardView>*/}
       <BottomSheetModalProvider>
         <View style={styles.header}>
           <Text style={[Text24B.text]}>관심 목록</Text>
@@ -211,7 +215,6 @@ function LikesScreen({navigation}) {
           />
         )}
       </BottomSheetModalProvider>
-      {/*</DismissKeyboardView>*/}
     </SafeAreaView>
   );
 }

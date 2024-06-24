@@ -36,7 +36,7 @@ import BasicLoginOptions from './options/BasicLoginOptions.tsx';
 import PasswordResetScreen from '../pages/sign/PasswordResetScreen.tsx';
 import {PasswordResetOptions} from './options/PasswordResetOptions.tsx';
 import SignUpPreferenceSettingScreen from '../pages/preference/SignUpPreferenceSettingScreen.tsx';
-import PreferenceSettingOptions from './options/PreferenceSettingOptions.tsx';
+import SignUpPreferenceSettingOptions from './options/SignUpPreferenceSettingOptions.tsx';
 import AlarmSettingScreen from '../pages/alarm/AlaramSettingScreen.tsx';
 import AlarmScreen from '../pages/alarm/AlarmScreen.tsx';
 import AlarmOptions from './options/AlarmOptions.tsx';
@@ -55,6 +55,7 @@ import PreferenceSettingScreen from '../pages/myPage/preferenceSetting/Preferenc
 import FAQFormScreen from '../pages/myPage/FAQFormScreen.tsx';
 import PasswordCheckScreen from '../pages/myPage/PasswordCheckScreen.tsx';
 import MyReviewsList from '../pages/myPage/MyReviewsList.tsx';
+import {MyPagePreferenceSettingScreenOptions} from './options/MyPagePreferenceSettingOptions.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -89,10 +90,10 @@ function AppNavigator() {
         component={EntryScreen}
         options={EntryScreenOptions}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="PreferenceSetting"
         component={PreferenceSettingScreen}
-        options={EntryScreenOptions}
+        options={MyPagePreferenceSettingScreenOptions}
       />
 
       <Stack.Screen
@@ -128,9 +129,8 @@ function AppNavigator() {
       <Stack.Screen
         name="SignUpPreferenceSetting"
         component={SignUpPreferenceSettingScreen}
-        options={PreferenceSettingOptions}
+        options={SignUpPreferenceSettingOptions}
       />
-
       <Stack.Screen
         name="SignUpNickNameSocial"
         component={SignUpSocialNickNameScreen}
@@ -184,8 +184,7 @@ function AppNavigator() {
           title: '프로필 설정',
           headerRight: () => (
             <Text
-              onPress={
-                navigation.navigate('ProfileEdit')}
+              onPress={navigation.navigate('ProfileEdit')}
               style={{color: globalColors.blue, marginRight: 10}}>
               완료
             </Text>
@@ -217,7 +216,7 @@ function AppNavigator() {
           ),
         })}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="FAQFormScreen"
         component={FAQFormScreen}
         options={({navigation}) => ({
@@ -287,7 +286,6 @@ function AppNavigator() {
           headerShown: true,
           title: '회원 탈퇴', // 헤더 타이틀 설정
           headerLeft: AppBarLeftPressableIconButton,
-          // 기타 헤더 스타일링 옵션
         })}
       />
     </Stack.Navigator>

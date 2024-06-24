@@ -100,6 +100,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
           onIconPress={handlePresentModal}
           IconComponent={<DownSvg />}
           isRequired={true}
+          isClickableTextInput={true}
         />
         <View style={{flexDirection: 'row'}}>
           <RequiredTextLabel label={'팝업유형'} isRequired={true} />

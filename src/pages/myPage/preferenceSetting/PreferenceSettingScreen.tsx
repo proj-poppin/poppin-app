@@ -1,37 +1,35 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import globalColors from '../../../styles/color/globalColors.ts';
 import DismissKeyboardView from '../../../components/DismissKeyboardView.tsx';
 import CompleteButton from '../../../components/atoms/button/CompleteButton.tsx';
-import PreferenceOptionButtons from '../../../components/PreferenceOptionButtons.tsx';
 import CustomOKModal from '../../../components/CustomOKModal.tsx';
 import Text20B from '../../../styles/texts/title/Text20B.ts';
 import Text12R from '../../../styles/texts/label/Text12R.ts';
-import { POP_UP_TYPES,TFilter } from "./types.ts"
+import {POP_UP_TYPES, TFilter} from './types.ts';
 import CategorySelectButton from '../../../components/findPopup/CategorySelectButton.tsx';
-import { useSelector } from 'react-redux';
-import usePreferenceSetting from '../../../hooks/password/usePreferenceSetting.tsx';
+import {useSelector} from 'react-redux';
 import useGetPreferenceSetting from '../../../hooks/myPage/useGetPreferenceSetting.tsx';
 import usePutPreferenceSetting from '../../../hooks/myPage/usePutSetting.tsx';
+import getHotList from '../../../apis/popup/hotList.ts';
+import hotList from '../../../apis/popup/hotList.ts';
+import newList from '../../../apis/popup/newList.ts';
 
+function PreferenceSettingScreen({navigation}: any) {
+  const {data} = useGetPreferenceSetting();
+  const {putPreference, success, loading} = usePutPreferenceSetting();
 
-function PreferenceSettingScreen({ navigation }: any) {
-  const { data, loading } = useGetPreferenceSetting()
-  const {putPreference}=usePutPreferenceSetting()
-    
-    const user = useSelector(state => state.user);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectedTags, setSelectedTags] = useState<any>(POP_UP_TYPES);
-    const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
-      useState(false);
+  const user = useSelector(state => state.user);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<any>(POP_UP_TYPES);
+  const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
+    useState(false);
 
   // 모달을 닫는 함수
   const handleCloseModal = () => {
     setModalVisible(false);
+    navigation.goBack();
   };
-
-  
-    
 
   const handleClick = (selectedTag: TFilter) => {
     setSelectedTags(prev =>
@@ -47,22 +45,28 @@ function PreferenceSettingScreen({ navigation }: any) {
     );
   };
 
-  const checkSelectionInRanges = (tags:any) => {
+  const checkSelectionInRanges = (tags: any) => {
     const range1 = tags.slice(0, 13); // id 1-13
     const range2 = tags.slice(13, 17); // id 14-17
     const range3 = tags.slice(17, 21); // id 18-21
 
-    const isRange1Selected = range1.some((tag:any) => tag.selected);
-    const isRange2Selected = range2.some((tag:any)  => tag.selected);
-    const isRange3Selected = range3.some((tag:any)  => tag.selected);
+    const isRange1Selected = range1.some((tag: any) => tag.selected);
+    const isRange2Selected = range2.some((tag: any) => tag.selected);
+    const isRange3Selected = range3.some((tag: any) => tag.selected);
 
     return isRange1Selected && isRange2Selected && isRange3Selected;
   };
 
-  const handelSumbit = async() => {
-    setModalVisible(true)
-    await putPreference(selectedTags)
-  }
+  const handleSubmit = async () => {
+    setModalVisible(true);
+    const response = await putPreference(selectedTags);
+    if (response.success) {
+      await getHotList();
+      await hotList();
+      await newList();
+      console.log('success!!!');
+    }
+  };
 
   useEffect(() => {
     const isSelected = checkSelectionInRanges(selectedTags);
@@ -74,15 +78,15 @@ function PreferenceSettingScreen({ navigation }: any) {
       setSelectedTags(data);
     }
   }, [data]);
- 
+
   if (loading) {
-    return <Text>로딩중</Text>
+    return <ActivityIndicator size="large" color={globalColors.purple} />;
   }
 
   return (
     <DismissKeyboardView style={styles.container}>
       <View>
-        <Text style={[Text20B.text, {marginTop: 20,  marginBottom: 10}]}>
+        <Text style={[Text20B.text, {marginTop: 20, marginBottom: 10}]}>
           <Text style={{color: globalColors.blue}}>{user.nickname}</Text>
           <Text>{'님의 팝업 취향을'}</Text>
         </Text>
@@ -94,43 +98,43 @@ function PreferenceSettingScreen({ navigation }: any) {
             {'(카테고리 당 1개 이상 필수 선택)'}
           </Text>
         </View>
-        </View>
-            <Text style={styles.popCat}>팝업 유형</Text>
-            <View style={styles.popWrapper}>
-              {selectedTags.slice(13, 17).map(item => (
-                <CategorySelectButton
-                  key={item.id}
-                  item={item}
-                  onClick={handleClick}
-                  // selected={item.selected}
-                  tagDeleteClick={tagDeleteClick}
-                />
-              ))}
-          </View>
-           <Text style={styles.popCat}>관심사</Text>
-           <View style={styles.popWrapper}>
-            {selectedTags.slice(0, 13).map(item => (
-                <CategorySelectButton
-                  key={item.id}
-                  item={item}
-                  onClick={handleClick}
-                  // selected={item.selected}
-                  tagDeleteClick={tagDeleteClick}
-                />
-              ))}
       </View>
-       <Text style={styles.popCat}>MATE</Text>
-           <View style={styles.popWrapper}>
-            {selectedTags.slice(17, POP_UP_TYPES.length).map(item => (
-                <CategorySelectButton
-                  key={item.id}
-                  item={item}
-                  onClick={handleClick}
-                  // selected={item.selected}
-                  tagDeleteClick={tagDeleteClick}
-                />
-              ))}
-            </View>
+      <Text style={styles.popCat}>팝업 유형</Text>
+      <View style={styles.popWrapper}>
+        {selectedTags.slice(13, 17).map(item => (
+          <CategorySelectButton
+            key={item.id}
+            item={item}
+            onClick={handleClick}
+            // selected={item.selected}
+            tagDeleteClick={tagDeleteClick}
+          />
+        ))}
+      </View>
+      <Text style={styles.popCat}>관심사</Text>
+      <View style={styles.popWrapper}>
+        {selectedTags.slice(0, 13).map(item => (
+          <CategorySelectButton
+            key={item.id}
+            item={item}
+            onClick={handleClick}
+            // selected={item.selected}
+            tagDeleteClick={tagDeleteClick}
+          />
+        ))}
+      </View>
+      <Text style={styles.popCat}>MATE</Text>
+      <View style={styles.popWrapper}>
+        {selectedTags.slice(17, POP_UP_TYPES.length).map(item => (
+          <CategorySelectButton
+            key={item.id}
+            item={item}
+            onClick={handleClick}
+            // selected={item.selected}
+            tagDeleteClick={tagDeleteClick}
+          />
+        ))}
+      </View>
       {/* {[1, 2, 3].map(step => (
         <View key={step}>
           <Text style={[Text20B.text, {marginTop: 20, marginBottom: 10}]}>
@@ -143,7 +147,7 @@ function PreferenceSettingScreen({ navigation }: any) {
         </View>
       ))} */}
       <CompleteButton
-        onPress={handelSumbit }
+        onPress={handleSubmit}
         title={'설정 저장하기'}
         disabled={!isOneMoreCategorySelected}
       />
@@ -167,22 +171,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    marginBottom:20   
+    marginBottom: 20,
   },
   popCat: {
     fontSize: 18,
-    fontWeight:"600"
-    },
-   popWrapper: {
+    fontWeight: '600',
+  },
+  popWrapper: {
     width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 15,
     padding: 20,
     justifyContent: 'center',
-    
-    },
-   popType: {
+  },
+  popType: {
     color: globalColors.blue,
     textAlign: 'center',
     fontSize: 15,

@@ -16,12 +16,16 @@ const useGetUserSetting = () => {
   });
 
   useEffect(() => {
-    const getUserInfo= async () => {
+    const getUserInfo = async () => {
       setUserSettingInfo(prevState => ({...prevState, loading: true}));
       try {
         const response = await getUserSetting();
         if (response.success) {
-          setUserSettingInfo({loading: false, error: null, data: response.data}); 
+          setUserSettingInfo({
+            loading: false,
+            error: null,
+            data: response.data,
+          });
         } else {
           setUserSettingInfo({
             loading: false,

@@ -1,4 +1,11 @@
-import {Alert, Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import React, {useEffect, useState} from 'react';
@@ -8,14 +15,13 @@ import PasswordCheckTextFormField from '../../components/molecules/form_field/Pa
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
 import useResetPassword from '../../hooks/password/useResetPassword.tsx';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
 import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
-
-function PasswordChangeScreen({ navigation }: any) {
-    const { data: userData } = useGetUserSetting()
+function PasswordChangeScreen({navigation}: any) {
+  const {data: userData} = useGetUserSetting();
   const user = useSelector(state => state.user);
-  const [email, setEmail] = useState(user.email || 'poppin@gmail.com'); 
+  const [email, setEmail] = useState(user.email || 'poppin@gmail.com');
   const [error, setError] = useState('');
   const [touched, setTouched] = useState(true);
   const [password, setPassword] = useState('');
@@ -23,12 +29,9 @@ function PasswordChangeScreen({ navigation }: any) {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [isPasswordSame, setIsPasswordSame] = useState(false);
 
-
   const canGoNext = isPasswordValid && isPasswordSame;
 
-   const {resetUserPassword, resetPasswordStatus} = useResetPassword();
-
- 
+  const {resetUserPassword, resetPasswordStatus} = useResetPassword();
 
   const handleChangePassword = text => {
     setPassword(text);
@@ -58,17 +61,13 @@ function PasswordChangeScreen({ navigation }: any) {
   };
 
   const handleSumbit = async () => {
-    if (
-      isPasswordSame 
-    ) {
-      
-     await resetUserPassword(password, passwordConfirm).then();
+    if (isPasswordSame) {
+      await resetUserPassword(password, passwordConfirm).then();
     } else {
       Alert.alert('Error', 'Passwords do not match or meet the criteria.');
     }
   };
 
-  
   useEffect(() => {
     navigation.setOptions(
       ProfileAppBar({
@@ -79,16 +78,14 @@ function PasswordChangeScreen({ navigation }: any) {
     );
   }, [navigation]);
 
- useEffect(() => {
+  useEffect(() => {
     if (resetPasswordStatus.success === true) {
-       
-       navigation.navigate('MyPage')
-      setPassword("")
-      setIsPasswordValid(false)
+      navigation.navigate('MyPage');
+      setPassword('');
+      setIsPasswordValid(false);
     }
-    
-  },[resetPasswordStatus])
-  
+  }, [resetPasswordStatus]);
+
   return (
     <DismissKeyboardView style={styles.container}>
       <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>
@@ -99,8 +96,8 @@ function PasswordChangeScreen({ navigation }: any) {
       <View style={styles.emailInputContainer}>
         <TextInput
           style={styles.emailInput}
-          value={userData&&userData.email}
-          editable={false} 
+          value={userData && userData.email}
+          editable={false}
         />
       </View>
       <LabelAndInput
@@ -153,7 +150,7 @@ const styles = StyleSheet.create({
     backgroundColor: globalColors.component,
     borderRadius: 30,
     padding: 10,
-    marginBottom:20
+    marginBottom: 20,
   },
   forgotPasswordText: {
     textDecorationLine: 'underline',

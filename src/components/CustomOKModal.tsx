@@ -12,7 +12,8 @@ import AlertSvg from '../assets/images/alert.svg';
 import CheckSvg from '../assets/images/check3.svg';
 import Text14R from '../styles/texts/body_medium/Text14R.ts';
 import Text18B from '../styles/texts/body_large/Text18B.ts';
-import Text12B from '../styles/texts/label/Text12B.ts'; // CheckSvg 경로도 실제 환경에 맞게 조정
+import Text12M from '../styles/texts/label/Text12M.ts';
+import Text14M from '../styles/texts/body_medium/Text14M.ts'; // CheckSvg 경로도 실제 환경에 맞게 조정
 
 const CustomOKModal = ({
   isVisible,
@@ -33,7 +34,7 @@ const CustomOKModal = ({
               {mainTitle}
             </Text>
             {isSuccessModal ? <CheckSvg /> : <AlertSvg />}
-            <Text style={[Text12B.text, styles.subText, {marginTop: 20}]}>
+            <Text style={[Text12M.text, styles.subText, {marginTop: 20}]}>
               {isSuccessModal
                 ? '변경 사항이 저장되었습니다.'
                 : '잠시 후 다시 시도해 주세요.'}
@@ -41,7 +42,7 @@ const CustomOKModal = ({
             <Pressable
               style={[styles.button, styles.okButton]}
               onPress={onClose}>
-              <Text style={[Text14R.text, {color: globalColors.blue}]}>
+              <Text style={[Text14M.text, {color: globalColors.blue}]}>
                 확인
               </Text>
             </Pressable>

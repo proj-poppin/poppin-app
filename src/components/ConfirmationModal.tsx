@@ -13,6 +13,8 @@ import AlertSvg from '../assets/images/alert.svg';
 import Text14R from '../styles/texts/body_medium/Text14R.ts';
 import Text20B from '../styles/texts/title/Text20B.ts';
 import Text18B from '../styles/texts/body_large/Text18B.ts';
+import Text16M from '../styles/texts/body_medium_large/Text16M.ts';
+import Text14M from '../styles/texts/body_medium/Text14M.ts';
 
 const ConfirmationModal = ({
   isVisible,
@@ -34,7 +36,7 @@ const ConfirmationModal = ({
               {mainTitle}
             </Text>
             <View>{isAlertSvg ? <AlertSvg /> : <CheckSvg />}</View>
-            <Text style={[Text18B.text, styles.subText, {marginTop: 20}]}>
+            <Text style={[Text14M.text, styles.subText, {marginTop: 20}]}>
               {subTitle}
             </Text>
             <Pressable
@@ -43,7 +45,7 @@ const ConfirmationModal = ({
               {({pressed}) => (
                 <Text
                   style={[
-                    Text14R.text,
+                    Text16M.text,
                     {
                       color: pressed
                         ? globalColors.buttonPressed
@@ -69,6 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
+    width: '80%',
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,

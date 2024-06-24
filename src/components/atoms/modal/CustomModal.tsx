@@ -8,14 +8,15 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import Text18B from '../../../styles/texts/body_large/Text18B.ts';
-import Text14R from '../../../styles/texts/body_medium/Text14R.ts';
 import globalColors from '../../../styles/color/globalColors.ts';
+import Text14M from '../../../styles/texts/body_medium/Text14M.ts';
 
 interface CustomModalProps {
   isVisible: boolean;
   onClose: () => void;
   SvgIcon: React.ElementType; // SVG 컴포넌트
-  content: string;
+  contentFirstLine: string;
+  contentSecondLine: string;
   checkText: string;
 }
 
@@ -23,7 +24,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
   isVisible,
   onClose,
   SvgIcon,
-  content,
+  contentFirstLine,
+  contentSecondLine,
   checkText,
 }) => {
   return (
@@ -36,12 +38,17 @@ const CustomModal: React.FC<CustomModalProps> = ({
         <View style={styles.overlayStyle}>
           <TouchableWithoutFeedback>
             <View style={styles.modalView}>
-              <SvgIcon />
-              <Text style={[Text18B.text, styles.mainText]}>{content}</Text>
+              <SvgIcon style={{marginBottom: 20}} />
+              <Text style={[Text18B.text, styles.mainText]}>
+                {contentFirstLine}
+              </Text>
+              <Text style={[Text18B.text, styles.mainText]}>
+                {contentSecondLine}
+              </Text>
               <Pressable
                 style={[styles.button, styles.okButton]}
                 onPress={onClose}>
-                <Text style={[Text14R.text, {color: globalColors.blue}]}>
+                <Text style={[Text14M.text, {color: globalColors.blue}]}>
                   {checkText}
                 </Text>
               </Pressable>
@@ -61,6 +68,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
+    width: '80%',
+    height: '21%',
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
@@ -76,8 +85,6 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   mainText: {
-    marginTop: 20,
-    marginBottom: 20,
     textAlign: 'center',
   },
   button: {

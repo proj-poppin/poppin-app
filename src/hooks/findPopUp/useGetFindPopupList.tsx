@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import getFindPopUpList from '../../apis/popup/findPopupList.ts';
 import getPublicFindPopUpList from '../../apis/popup/public_findPopupList.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -25,65 +25,59 @@ const useGetFindPopupList = (
     data: [],
   });
 
-  useEffect(() => {
-    const fetcFindPopupList = async () => {
-      setGetListState(prevState => ({...prevState, loading: true}));
+  const fetchFindPopupList = useCallback(async () => {
+    setGetListState(prevState => ({...prevState, loading: true}));
 
-      const selectedCategoryString = availableTags
-        .slice(0, 14)
-        .map(item => (item.selected ? '1' : '0'))
-        .join('');
+    const selectedCategoryString = availableTags
+      .slice(0, 14)
+      .map(item => (item.selected ? '1' : '0'))
+      .join('');
 
-      const selectedTypeString = availableTags
-        .slice(14, availableTags.length)
-        .map(item => (item.selected ? '1' : '0'))
-        .join('');
+    const selectedTypeString = availableTags
+      .slice(14, availableTags.length)
+      .map(item => (item.selected ? '1' : '0'))
+      .join('');
 
-      const filterParams = {
-        page,
-        size,
-        oper: selectedTab,
-        text: searchKeyword,
-        order: selectedOrder,
-        prepered: selectedCategoryString,
-        taste: selectedTypeString,
-      };
+    const filterParams = {
+      page,
+      size,
+      oper: selectedTab,
+      text: searchKeyword,
+      order: selectedOrder,
+      prepered: selectedCategoryString,
+      taste: selectedTypeString,
+    };
 
-      try {
-        const accessToken = await EncryptedStorage.getItem('accessToken');
-        const response = accessToken
-          ? await getFindPopUpList(filterParams)
-          : await getPublicFindPopUpList(filterParams);
+    try {
+      const accessToken = await EncryptedStorage.getItem('accessToken');
+      const response = accessToken
+        ? await getFindPopUpList(filterParams)
+        : await getPublicFindPopUpList(filterParams);
 
-        if (response.success) {
-          setGetListState(prevState => ({
-            loading: false,
-            error: null,
-            data: triggerFetch
-              ? response.data
-              : [...prevState.data, ...response.data],
-          }));
-        } else {
-          setGetListState({
-            loading: false,
-            error: new Error(response.error?.message || 'Unknown error'),
-            data: null,
-          });
-        }
-      } catch (error: any) {
+      if (response.success) {
+        setGetListState(prevState => ({
+          loading: false,
+          error: null,
+          data: triggerFetch
+            ? response.data
+            : [...prevState.data, ...response.data],
+        }));
+      } else {
         setGetListState({
           loading: false,
-          error:
-            error instanceof Error
-              ? error
-              : new Error('An unexpected error occurred'),
+          error: new Error(response.error?.message || 'Unknown error'),
           data: null,
         });
       }
-    };
-
-    if (triggerFetch || page > 0) {
-      fetcFindPopupList();
+    } catch (error: any) {
+      setGetListState({
+        loading: false,
+        error:
+          error instanceof Error
+            ? error
+            : new Error('An unexpected error occurred'),
+        data: null,
+      });
     }
   }, [
     page,
@@ -95,7 +89,13 @@ const useGetFindPopupList = (
     triggerFetch,
   ]);
 
-  return getListState;
+  useEffect(() => {
+    if (triggerFetch || page > 0) {
+      fetchFindPopupList();
+    }
+  }, [fetchFindPopupList, triggerFetch, page]);
+
+  return {...getListState, refetch: fetchFindPopupList};
 };
 
 export default useGetFindPopupList;

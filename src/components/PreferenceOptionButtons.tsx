@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import OptionSingleButton from './atoms/button/OptionSingleButton.tsx';
+import GradientButton from './GradientButton'; // Adjust the import path accordingly
 
 type PreferenceOptionButtonsProps = {
   step: number;
@@ -10,7 +10,6 @@ type PreferenceOptionButtonsProps = {
   selectedCategory?: string;
   selectedCategories?: string[];
 };
-
 const PreferenceOptionButtons: React.FC<PreferenceOptionButtonsProps> = ({
   step,
   onSelectOption,
@@ -48,18 +47,13 @@ const PreferenceOptionButtons: React.FC<PreferenceOptionButtonsProps> = ({
 
   const handlePress = (option: string) => {
     if (isSingleSelect) {
-      // 이모지 제거 로직을 적용
       const optionWithoutEmoji = removeEmoji(option);
-      onSelectOption(optionWithoutEmoji); // 수정된 옵션 값을 onSelectOption에 전달
+      onSelectOption(optionWithoutEmoji);
     } else {
-      // 복수 선택 모드 로직 (변경 없음)
       onSelectOption(option);
     }
   };
-
   const currentOptions = optionsForSteps[step];
-
-  // 이모티콘을 제거하는 함수
   const removeEmoji = (text: string) =>
     text
       .replace(
@@ -71,16 +65,16 @@ const PreferenceOptionButtons: React.FC<PreferenceOptionButtonsProps> = ({
   return (
     <View style={styles.optionsContainer}>
       {currentOptions.map((option, index) => (
-        <OptionSingleButton
+        <GradientButton
           key={index}
-          id={index.toString()}
-          title={isEmojiRemoved ? removeEmoji(option) : option}
+          title={option}
           onPress={() => handlePress(option)}
           isSelected={
             isSingleSelect
-              ? removeEmoji(option.toString()) === selectedCategory // 단일 선택 모드에서는 selectedCategory를 기준으로 판단
-              : selectedCategories.includes(option) // 복수 선택 모드에서는 기존 로직 유지
+              ? selectedCategory === removeEmoji(option)
+              : selectedCategories.includes(option)
           }
+          isEmojiRemoved={isEmojiRemoved}
         />
       ))}
     </View>

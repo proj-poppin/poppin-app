@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -21,7 +21,7 @@ import useGetDetailPopUp from '../../hooks/detailPopUp/useGetDetailPopUp';
 import ShareSvg from '../../assets/detail/share.svg';
 import StarOffSvg from '../../assets/detail/starOff.svg';
 import StarOnSvg from '../../assets/detail/starOn.svg';
-import MapSvg from '../../assets/detail/map.svg';
+// import MapSvg from '../../assets/detail/map.svg';
 import Text20B from '../../styles/texts/title/Text20B';
 import Text14R from '../../styles/texts/body_medium/Text14R';
 import globalColors from '../../styles/color/globalColors';
@@ -46,12 +46,11 @@ import {VisitorDataDetail} from '../../types/DetailPopUpDataNonPublic';
 import WebSvg from '../../assets/detail/web.svg';
 import InstagramTestSvg from '../../assets/detail/instagramTest.svg';
 import ToastComponent from '../../components/atoms/toast/ToastComponent';
-import VisitButton from '../../components/atoms/button/VisitButton';
 import VisitModalSvg from '../../assets/detail/visitModal.svg';
 import CustomModal from '../../components/atoms/modal/CustomModal';
 import Geolocation from 'react-native-geolocation-service';
 import useAddRecommendReview from '../../hooks/detailPopUp/useAddRecommendReview';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn';
 import useAddVisitor from '../../hooks/detailPopUp/useAddVisitor';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -59,6 +58,12 @@ import {AppNavigatorParamList} from '../../types/AppNavigatorParamList';
 import PopUpDetailOptions from '../../navigators/options/PopUpDetailOptions';
 import {RootState} from '../../redux/stores/reducer';
 import {Share} from 'react-native';
+import getDetailPopUp from '../../apis/popup/detailPopUp.ts';
+import useGetDistanceFromLatLonInKm from '../../utils/function/getDistanceFromLatLonInKm.ts';
+import loadingSlice from '../../redux/slices/loading.ts';
+import VisitCompleteSvg from '../../assets/icons/visitComplete.svg';
+import VisitReadySvg from '../../assets/icons/visitReady.svg';
+
 async function requestPermissions() {
   if (Platform.OS === 'ios') {
     const auth = await Geolocation.requestAuthorization('whenInUse');
@@ -123,13 +128,35 @@ const PopUpDetailScreen = ({route}) => {
   const dispatch = useDispatch();
   const isInterested = useSelector(
     (state: RootState) => state.interestedPopups[id],
-  ); // 추가
+  );
 
-  const {
+  let {
     data: detailPopUpData,
     loading,
     error,
+    refetch,
   } = useGetDetailPopUp(id, !isLoggedIn, fetchTrigger);
+  const {distance, getDistance} = useGetDistanceFromLatLonInKm();
+  const [completeModalVisible, setCompleteModalVisible] = useState(false);
+  const openCompleteModal = () => {
+    setCompleteModalVisible(true);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+      dispatch(loadingSlice.actions.setLoading({isLoading: true}));
+      setTimeout(() => {
+        dispatch(loadingSlice.actions.setLoading({isLoading: false}));
+      }, 200);
+    }, [dispatch, refetch]),
+  );
+
+  // 제보하기 버튼 클릭후 모달 닫기
+  const closeCompleteModal = () => {
+    setCompleteModalVisible(false);
+    // navigation.goBack();
+  };
 
   useEffect(() => {
     if (detailPopUpData) {
@@ -145,8 +172,9 @@ const PopUpDetailScreen = ({route}) => {
           popupId: detailPopUpData.id,
           isInterested: detailPopUpData.isInterested,
         }),
-      ); // 추가
+      );
     }
+    console.log('realVisit!!:', detailPopUpData?.realTimeVisit);
   }, [navigation, detailPopUpData, dispatch]);
 
   const firstImageUrl =
@@ -158,13 +186,10 @@ const PopUpDetailScreen = ({route}) => {
   const {addInterest} = useAddInterestPopUp();
   const {deleteInterest} = useDeleteInterestPopUp();
   const {addVisitorPopUp} = useAddVisitor();
-
   const [isOnlyVerifiedReview, setIsOnlyVerifiedReview] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
-
   const [showFullText, setShowFullText] = useState(false);
 
   useEffect(() => {
@@ -177,25 +202,21 @@ const PopUpDetailScreen = ({route}) => {
   const handleIsOnlyVerifiedReview = () => {
     setIsOnlyVerifiedReview(!isOnlyVerifiedReview);
   };
-
   const handleVisitPress = async () => {
     if (!isLoggedIn) {
       navigation.navigate('Entry');
       return;
     }
-
     const hasPermission = await requestPermissions();
     if (hasPermission) {
       Geolocation.getCurrentPosition(
         position => {
           const {latitude, longitude} = position.coords;
-          setLatitude(latitude);
-          setLongitude(longitude);
-          console.log('Current Location:', latitude, longitude);
-          console.log('사용자 허용상태: ', hasPermission);
-          Alert.alert(
-            '사용자 현재 위치',
-            `위도: ${latitude}, 경도: ${longitude}`,
+          getDistance(
+            latitude ?? 0,
+            longitude ?? 0,
+            detailPopUpData?.latitude ?? 0,
+            detailPopUpData?.longitude ?? 0,
           );
         },
         error => {
@@ -204,8 +225,13 @@ const PopUpDetailScreen = ({route}) => {
         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
       );
     }
-    if (hasPermission) {
-      const response = await addVisitorPopUp(detailPopUpData!.id!);
+    // console.log('latitude:', latitude);
+    // console.log('longitude:', longitude);
+    // console.log('detailPopUpData?.latitude:', detailPopUpData?.latitude);
+    // console.log('detailPopUpData?.longitude:', detailPopUpData?.longitude);
+    // console.log('🎨🎨🎨🎨🎨🎨🎨distance:', distance);
+    if (hasPermission && distance !== null && distance <= 0.05) {
+      const response = await addVisitorPopUp(detailPopUpData!.id!, 'fcmToken');
       if (response.success) {
         setToastMessage('방문 인증 되었습니다.');
         setFetchTrigger(!fetchTrigger);
@@ -213,15 +239,15 @@ const PopUpDetailScreen = ({route}) => {
         setToastMessage(response.error?.message || '방문 인증에 실패했습니다.');
       }
       setIsShowToast(true);
+    } else {
+      openCompleteModal();
     }
   };
-
   const handleCompletePress = () => {
     if (!isLoggedIn) {
       navigation.navigate('Entry');
       return;
     }
-
     setModalVisible(true);
   };
 
@@ -264,7 +290,18 @@ const PopUpDetailScreen = ({route}) => {
     }
     setIsShowToast(true);
   };
-  if (loading) {
+
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 200); // Delay of 0.5 seconds
+
+    return () => clearTimeout(timer);
+  }, [detailPopUpData]);
+
+  if (loading || !isLoaded) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={globalColors.purple} />
@@ -280,11 +317,17 @@ const PopUpDetailScreen = ({route}) => {
     );
   }
 
+  const isVisitComplete = detailPopUpData.isVisited;
+  const buttonTitle = isVisitComplete ? '방문완료' : '방문하기';
+  const buttonColor = isVisitComplete ? globalColors.blue : globalColors.white;
+  const buttonTextColor = isVisitComplete
+    ? globalColors.white
+    : globalColors.blue;
+
   const visitorDataDefault: VisitorDataDetail = {
     congestionRate: '여유',
     congestionRatio: 30,
   };
-
   const weekdayAm =
     detailPopUpData.visitorData?.weekdayAm || visitorDataDefault;
   const weekdayPm =
@@ -334,9 +377,10 @@ const PopUpDetailScreen = ({route}) => {
               )}
             </Pressable>
             <View style={styles.socialIcons}>
-              <Pressable onPress={() => {}}>
-                <MapSvg style={{paddingHorizontal: 20}} />
-              </Pressable>
+              {/*<Pressable onPress={() => {}}>*/}
+              {/*  <MapSvg style={{paddingHorizontal: 20}} />*/}
+              {/*</Pressable>*/}
+
               <Pressable onPress={handleToggleInterest}>
                 {isInterested ? <StarOnSvg /> : <StarOffSvg />}
               </Pressable>
@@ -348,6 +392,7 @@ const PopUpDetailScreen = ({route}) => {
               </Pressable>
             </View>
           </View>
+          <DetailDividerLine />
           {isShowToast && (
             <ToastComponent
               height={40}
@@ -518,25 +563,21 @@ const PopUpDetailScreen = ({route}) => {
           borderColor={globalColors.warmGray}
         />
         <View style={{width: 20}} />
-        <VisitButton
-          onPress={handleVisitPress}
-          onCompletePress={handleCompletePress}
-          isInstagram={false}
-          title={
-            !isLoggedIn
-              ? '방문하기'
-              : !detailPopUpData.isVisited
-              ? '방문하기'
-              : '방문완료'
-          }
-        />
+        {isVisitComplete ? (
+          <VisitCompleteSvg />
+        ) : (
+          <Pressable onPress={handleVisitPress}>
+            <VisitReadySvg />
+          </Pressable>
+        )}
       </View>
       <CustomModal
-        isVisible={modalVisible}
-        onClose={() => setModalVisible(false)}
+        isVisible={completeModalVisible}
+        onClose={closeCompleteModal}
         SvgIcon={VisitModalSvg}
-        content="해당 팝업의 50m 이내에 있으면 방문하기 버튼이 활성화 됩니다!"
-        checkText="OK"
+        contentFirstLine={'해당 팝업의 50m 이내에 있으면'}
+        contentSecondLine={'방문하기 버튼이 활성화 됩니다!'}
+        checkText="확인했어요"
       />
     </>
   );
@@ -639,7 +680,7 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 15,
     flexDirection: 'row',
     borderRadius: 25,
     width: '100%',

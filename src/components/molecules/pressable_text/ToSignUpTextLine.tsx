@@ -6,15 +6,17 @@ import Text14M from '../../../styles/texts/body_medium/Text14M.ts';
 
 // Props 타입 정의, 필요에 따라 추가적인 props를 정의할 수 있습니다
 interface ToSignUpTextLineProps {
+  titleText: string; // 텍스트 내용
   onPress: () => void; // 클릭 시 실행될 함수
 }
 
-const ToSignUpTextLine: React.FC<ToSignUpTextLineProps> = ({onPress}) => {
+const ToSignUpTextLine: React.FC<ToSignUpTextLineProps> = ({
+  titleText,
+  onPress,
+}) => {
   return (
     <View style={styles.container}>
-      <Text style={[Text14M.text, styles.text]}>
-        아직 POPPIN회원이 아니신가요?
-      </Text>
+      <Text style={[Text14M.text, styles.text]}>{titleText}</Text>
       <Pressable onPress={onPress} style={{padding: 10}}>
         <RoundRightSvg />
       </Pressable>
@@ -31,7 +33,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   text: {
-    marginRight: 10,
     color: globalColors.font,
   },
 });

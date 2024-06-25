@@ -23,6 +23,10 @@ import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 import useCreateReview from '../../hooks/review/useCreateReview.tsx';
 import {useImageSelector} from '../../hooks/useImageSelector.tsx';
 import getDetailPopUp from '../../apis/popup/detailPopUp.ts';
+import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
+import Text20B from '../../styles/texts/title/Text20B.ts';
+import ReviewWriteBadgeAuthSvg from '../../assets/icons/reviewWriteBadgeAuth.svg';
+import Text14M from '../../styles/texts/body_medium/Text14M.ts';
 
 type ReviewWriteScreenRouteProp = RouteProp<
   AppNavigatorParamList,
@@ -35,15 +39,15 @@ function ReviewWriteScreen() {
   const {name, id, isVisited} = route.params;
   const {createReview, loading} = useCreateReview();
   const {selectedImages, handleSelectImages, handleRemoveImage} =
-    useImageSelector(); // Use the custom hook
-
+    useImageSelector();
   const popupId = id;
-
-  useEffect(() => {
-    navigation.setOptions({
-      title: isVisited ? '인증 후기 작성' : '일반 후기 작성',
-    });
-  }, [isVisited, navigation]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [completeModalVisible, setCompleteModalVisible] = useState(false);
+  const openCompleteModal = () => setCompleteModalVisible(true);
+  const closeCompleteModal = () => {
+    setCompleteModalVisible(false);
+    navigation.goBack();
+  };
 
   const [selectedVisitTime, setSelectedVisitTime] = useState<string | null>(
     null,
@@ -55,12 +59,19 @@ function ReviewWriteScreen() {
     null,
   );
   const [review, setReview] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: isVisited ? '인증 후기 작성' : '일반 후기 작성',
+    });
+  }, [isVisited, navigation]);
 
   const handleSubmit = async () => {
     if (!isSubmitEnabled) {
       return;
     }
-    let nickname = '뒤져';
+    let nickname = 'OO';
     const response = await createReview(
       popupId ?? 1,
       review,
@@ -74,7 +85,7 @@ function ReviewWriteScreen() {
     if (response.success) {
       const resp = await getDetailPopUp(popupId);
       if (resp.success) {
-        navigation.goBack();
+        closeCompleteModal();
       }
     } else if (response.error) {
       console.error('Review submission error:', response.error.message);
@@ -89,7 +100,16 @@ function ReviewWriteScreen() {
 
   return (
     <DismissKeyboardView style={styles.container}>
-      <Text style={[Text14R.text, {color: globalColors.purple}]}>{name}</Text>
+      <View style={styles.titleRow}>
+        <Text style={[Text20B.text]}>{name}</Text>
+        {isVisited ? (
+          <ReviewWriteBadgeAuthSvg style={{height: '80%'}} />
+        ) : (
+          <Text style={[Text14M.text, {color: globalColors.font}]}>
+            일반 후기
+          </Text>
+        )}
+      </View>
       <View style={styles.sectionContainer}>
         <Text style={[Text14R.text, {color: globalColors.purple}, {width: 65}]}>
           방문 일시
@@ -146,13 +166,18 @@ function ReviewWriteScreen() {
         </View>
       </View>
       <TextInput
-        style={styles.reviewInput}
+        style={[
+          styles.reviewInput,
+          {borderColor: isFocused ? globalColors.blue : globalColors.warmGray},
+        ]}
         multiline
-        placeholder="팝업에 대한 후기를 남겨주세요(선택)"
+        placeholder="팝업에 대한 후기를 입력해 주세요."
         placeholderTextColor={globalColors.font}
         maxLength={1000}
         value={review}
         onChangeText={setReview}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
       />
       <View style={styles.imagesContainer}>
         <ScrollView
@@ -185,37 +210,34 @@ function ReviewWriteScreen() {
       <View style={{paddingBottom: 40}}>
         <CompleteButton
           title="작성 완료"
-          onPress={handleSubmit}
+          onPress={() => setIsModalVisible(true)}
           disabled={!isSubmitEnabled || loading}
         />
       </View>
+      <TwoSelectConfirmationModal
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        onConfirm={handleSubmit}
+        mainAlertTitle="후기를 제출할까요?"
+        subAlertTitle="한번 제출한 후기는 수정할 수 없습니다."
+        selectFirstText="한번 더 확인 할래요"
+        selectSecondText="네, 제출할래요"
+      />
     </DismissKeyboardView>
   );
 }
 
 const styles = StyleSheet.create({
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
   container: {
     flex: 1,
     padding: 20,
     backgroundColor: globalColors.white,
-  },
-  keywordInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    borderRadius: 30,
-    borderWidth: 1,
-    borderColor: globalColors.warmGray,
-    padding: 0,
-  },
-  input: {
-    flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    fontSize: 14,
-  },
-  registerButton: {
-    padding: 10,
   },
   sectionContainer: {
     flexDirection: 'row',

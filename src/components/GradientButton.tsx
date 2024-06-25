@@ -1,18 +1,17 @@
 import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import globalColors from '../../styles/color/globalColors';
 import LinearGradient from 'react-native-linear-gradient';
-import {TFilter} from './constants.ts';
+import globalColors from '../styles/color/globalColors.ts';
+import {TFilter} from './findPopup/constants.ts';
 
-interface CategorySelectButtonProps {
+interface GradientButtonProps {
   item: TFilter;
   onClick: (item: TFilter) => void;
   tagDeleteClick: (id: number) => void;
   selectedTag?: any;
   isMultipleSelectionPossible?: boolean;
 }
-
-const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
+const GradientButton: React.FC<GradientButtonProps> = ({
   item,
   onClick,
   selectedTag,
@@ -53,7 +52,7 @@ const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
   );
 };
 
-export default CategorySelectButton;
+export default GradientButton;
 
 const styles = StyleSheet.create({
   container: {
@@ -61,13 +60,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   tag: {
+    margin: 5,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 30,
-    borderWidth: 1.5, //🎨gradientBorder의 padding와 동일하게!
+    borderWidth: 1.5,
     borderColor: globalColors.warmGray,
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingLeft: 14,
-    paddingRight: 14,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
   },
   selectedTag: {
     backgroundColor: globalColors.blueLight,
@@ -79,10 +80,10 @@ const styles = StyleSheet.create({
   },
   gradientBorder: {
     borderRadius: 30,
-    padding: 1.5, //🎨tag의 borderWidth와 동일하게!
+    padding: 1.5,
   },
   innerContent: {
-    borderRadius: 28,
+    borderRadius: 30,
     backgroundColor: globalColors.blueLight,
     paddingTop: 8,
     paddingBottom: 8,
@@ -90,5 +91,9 @@ const styles = StyleSheet.create({
     paddingRight: 14,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  text: {
+    color: 'black',
+    fontSize: 16,
   },
 });

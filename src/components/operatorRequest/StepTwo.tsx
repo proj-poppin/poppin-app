@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -21,6 +21,8 @@ import PreferenceOptionButtons from '../PreferenceOptionButtons.tsx';
 import CompleteButton from '../atoms/button/CompleteButton.tsx';
 import DownSvg from '../../assets/icons/down.svg';
 import Text12M from '../../styles/texts/label/Text12M.ts';
+import CategorySelectButton from '../findPopup/CategorySelectButton.tsx';
+import {POP_UP_TYPES, TFilter} from '../findPopup/constants.ts';
 
 interface StepTwoProps {
   name: string;
@@ -80,6 +82,23 @@ const StepTwo: React.FC<StepTwoProps> = ({
   renderBackdrop,
   handleConfirmSelection,
 }) => {
+  const [availableTags, setAvailableTags] = useState<TFilter[]>(POP_UP_TYPES);
+  const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
+  const handleClick = (selectedTag: TFilter) => {
+    setSelectedTags(prev =>
+      prev.map(item =>
+        item.id === selectedTag.id
+          ? {...item, selected: true}
+          : {...item, selected: false},
+      ),
+    );
+  };
+
+  const tagDeleteClick = (tid: number) => {
+    setSelectedTags(prev =>
+      prev.map(item => (item.id === tid ? {...item, selected: false} : item)),
+    );
+  };
   return (
     <>
       <View style={styles.purpleInfo}>
@@ -170,13 +189,24 @@ const StepTwo: React.FC<StepTwoProps> = ({
               <Text style={[Text18B.text, {paddingTop: 15, paddingBottom: 40}]}>
                 제보할 팝업의 카테고리를 설정해 주세요
               </Text>
-              <PreferenceOptionButtons
-                step={2}
-                onSelectOption={onSelectSingleOption}
-                isEmojiRemoved={true}
-                isSingleSelect={true}
-                selectedCategory={selectedCategory}
-              />
+              <View style={styles.popWrapper}>
+                {selectedTags.slice(0, 14).map(item => (
+                  <CategorySelectButton
+                    key={item.id}
+                    item={item}
+                    onClick={handleClick}
+                    // selected={item.selected}
+                    tagDeleteClick={tagDeleteClick}
+                  />
+                ))}
+              </View>
+              {/*<PreferenceOptionButtons*/}
+              {/*  step={2}*/}
+              {/*  onSelectOption={onSelectSingleOption}*/}
+              {/*  isEmojiRemoved={true}*/}
+              {/*  isSingleSelect={true}*/}
+              {/*  selectedCategory={selectedCategory}*/}
+              {/*/>*/}
               <CompleteButton
                 onPress={handleConfirmSelection}
                 title={'확인'}
@@ -215,6 +245,18 @@ const StepTwo: React.FC<StepTwoProps> = ({
 };
 
 const styles = StyleSheet.create({
+  popWrapper: {
+    width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 15,
+    padding: 20,
+    justifyContent: 'center',
+  },
+  modalContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   purpleInfo: {
     backgroundColor: globalColors.purpleLight,
     padding: 10,

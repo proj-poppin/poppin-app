@@ -1,18 +1,22 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, Image, StyleSheet, Pressable} from 'react-native';
 import StarOnSvg from '../../../assets/icons/starOn.svg';
+import StarOffSvg from '../../../assets/icons/favorite.svg';
 import Text18B from '../../../styles/texts/body_large/Text18B.ts';
 import Text12B from '../../../styles/texts/label/Text12B.ts';
 import globalColors from '../../../styles/color/globalColors.ts';
 import useDeleteInterestPopUp from '../../../hooks/detailPopUp/useDeleteInterestPopUp.tsx';
-import useGetInterestList from '../../../hooks/popUpList/useGetInterestList.tsx';
+import useAddInterestPopUp from '../../../hooks/detailPopUp/useAddInterestPopUp.tsx';
+import {toggleInterest} from '../../../redux/slices/interestedPopUpSlice.ts';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../redux/stores/reducer.ts';
 
 interface InterestPopUpCardProps {
   image_url: string;
   name: string;
   close_date: string;
   open_date: string;
-  status: 'TERMINATED' | 'OPERATING' | string; // Assuming status is a string that can have multiple predefined values or any string
+  status: 'TERMINATED' | 'OPERATING' | string;
   id: number;
 }
 
@@ -23,7 +27,7 @@ const getStatusText = (status: string): string => {
     case 'OPERATING':
       return '운영 중';
     default:
-      return status.startsWith('D-') ? status : '상태 미정'; // Assuming default status if not matching any case
+      return status.startsWith('D-') ? status : '상태 미정';
   }
 };
 
@@ -36,15 +40,30 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
   id,
 }) => {
   const {deleteInterest} = useDeleteInterestPopUp();
-  const {refetch} = useGetInterestList();
+  const {addInterest} = useAddInterestPopUp();
+  const dispatch = useDispatch();
+  const isInterested = useSelector(
+    (state: RootState) => state.interestedPopups[id],
+  );
+  const [localInterested, setLocalInterested] = useState(isInterested);
+
+  useEffect(() => {
+    setLocalInterested(isInterested);
+  }, [isInterested]);
+
+  const handleToggleInterest = async () => {
+    setLocalInterested(!localInterested);
+    if (localInterested) {
+      await deleteInterest(id);
+    } else {
+      await addInterest(id);
+    }
+    dispatch(toggleInterest(id));
+  };
+
   const date = `${open_date} ~ ${close_date}`;
   const formattedName = name.length > 15 ? `${name.substring(0, 15)}...` : name;
   const statusText = getStatusText(status);
-
-  const handDeleteInteret = (id: number) => {
-    deleteInterest(id);
-    refetch();
-  };
 
   return (
     <View style={styles.cardContainer}>
@@ -54,8 +73,12 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
           <View style={[styles.statusContainer]}>
             <Text style={styles.statusText}>{statusText}</Text>
           </View>
-          <Pressable onPress={() => handDeleteInteret(id)}>
-            <StarOnSvg style={styles.starIcon} />
+          <Pressable onPress={handleToggleInterest}>
+            {localInterested ? (
+              <StarOnSvg style={styles.starIcon} />
+            ) : (
+              <StarOffSvg style={styles.starIcon} />
+            )}
           </Pressable>
         </View>
         <Text style={[Text18B.text, styles.title]}>{formattedName}</Text>

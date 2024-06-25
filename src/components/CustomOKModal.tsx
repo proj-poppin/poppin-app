@@ -37,7 +37,7 @@ const CustomOKModal = ({
             <Text style={[Text12M.text, styles.subText, {marginTop: 20}]}>
               {isSuccessModal
                 ? '변경 사항이 저장되었습니다.'
-                : '잠시 후 다시 시도해 주세요.'}
+                : ' 다시 시도해 주세요.'}
             </Text>
             <Pressable
               style={[styles.button, styles.okButton]}
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
+    width: '90%',
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,

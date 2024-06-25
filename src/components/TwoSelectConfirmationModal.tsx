@@ -56,7 +56,6 @@ const TwoSelectConfirmationModal = ({
                 style={{
                   color: globalColors.warmGray,
                   alignSelf: 'center',
-                  paddingHorizontal: 10,
                   paddingBottom: 8,
                   fontSize: 24,
                 }}>

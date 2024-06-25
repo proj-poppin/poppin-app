@@ -10,17 +10,17 @@ import {
 import globalColors from '../styles/color/globalColors.ts'; // 경로는 실제 환경에 맞게 조정
 import CheckSvg from '../assets/images/check3.svg'; // 경로 확인 필요
 import AlertSvg from '../assets/images/alert.svg';
-import Text14R from '../styles/texts/body_medium/Text14R.ts';
 import Text20B from '../styles/texts/title/Text20B.ts';
-import Text18B from '../styles/texts/body_large/Text18B.ts';
 import Text16M from '../styles/texts/body_medium_large/Text16M.ts';
 import Text14M from '../styles/texts/body_medium/Text14M.ts';
+import LocationSvg from '../assets/images/skip.svg';
 
 const ConfirmationModal = ({
   isVisible,
   onClose,
   mainTitle,
   subTitle,
+  isLocationSvg = false,
   isAlertSvg = false,
 }) => {
   return (
@@ -35,7 +35,15 @@ const ConfirmationModal = ({
             <Text style={[Text20B.text, styles.mainText, {marginTop: 20}]}>
               {mainTitle}
             </Text>
-            <View>{isAlertSvg ? <AlertSvg /> : <CheckSvg />}</View>
+            <View>
+              {isLocationSvg ? (
+                <LocationSvg />
+              ) : isAlertSvg ? (
+                <AlertSvg />
+              ) : (
+                <CheckSvg />
+              )}
+            </View>
             <Text style={[Text14M.text, styles.subText, {marginTop: 20}]}>
               {subTitle}
             </Text>

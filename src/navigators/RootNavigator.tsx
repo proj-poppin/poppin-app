@@ -9,9 +9,8 @@ import getUser from '../apis/user/getUser.ts';
 import LoadingScreen from '../pages/splash/LoadingScreen.tsx';
 import userSlice from '../redux/slices/user.ts';
 import messaging from '@react-native-firebase/messaging';
-import { registerPushToken } from "../apis/push/registerPushToken.ts";
-import { Alert, Platform } from "react-native";
-
+import {registerPushToken} from '../apis/push/registerPushToken.ts';
+import {Platform} from 'react-native';
 const RootNavigator = () => {
   const dispatch = useDispatch();
   const [initialLoading, setInitialLoading] = useState(true);

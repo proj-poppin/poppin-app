@@ -12,7 +12,7 @@ type NotLogginBoxProps = {
   isNeedSvg?: boolean;
 };
 
-const NotLogginBox = ({
+const ForLoginBox = ({
   text1,
   text2,
   buttonText,
@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
   shadowedBox: {
     backgroundColor: globalColors.white,
     borderRadius: 10,
-    marginTop: 10,
     padding: 20,
     shadowColor: '#000',
     shadowOffset: {
@@ -88,4 +87,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NotLogginBox;
+export default ForLoginBox;

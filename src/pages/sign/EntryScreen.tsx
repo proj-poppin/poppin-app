@@ -68,7 +68,10 @@ function EntryScreen() {
         <SvgImgButton SvgComponent={BasicLoginButton} onPress={goBasicLogin} />
       </View>
       <SvgImgButton SvgComponent={KakaoLoginButton} onPress={signInWithKakao} />
-      <ToSignUpTextLine onPress={() => navigation.navigate('SignUpEmail')} />
+      <ToSignUpTextLine
+        titleText={'아직 POPPIN회원이 아니신가요?'}
+        onPress={() => navigation.navigate('SignUpEmail')}
+      />
       <View style={{paddingTop: 80}}>
         <Text style={styles.snsLoginText}>다른 방법으로 로그인하기</Text>
         <SocialLoginButtonRow

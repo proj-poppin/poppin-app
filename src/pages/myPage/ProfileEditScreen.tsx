@@ -6,8 +6,6 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
-  Pressable,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
 import RightSvg from '../../assets/icons/bigRight.svg';
@@ -29,8 +27,16 @@ import {useSelector} from 'react-redux';
 import useChangeProfileImageInfo from '../../hooks/myPage/usePutChangeProfileImage.tsx';
 import ProfileEditOptions from '../../navigators/options/ProfileEditOptions.tsx';
 import ConfirmationModal from '../../components/ConfirmationModal.tsx';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import CustomOKModal from '../../components/CustomOKModal.tsx';
 
-function MyProfileEditScreen({navigation}: any) {
+type ProfileEditScreenRouteProp = RouteProp<
+  AppNavigatorParamList,
+  'ProfileEdit'
+>;
+
+function MyProfileEditScreen() {
   const {changeProfileImageInfo} = useChangeProfileImageInfo();
   const {data: userData, loading, error} = useGetUserSetting();
   const [profileImage, setProfileImage] = useState<any>(PoppinCirclePng);
@@ -40,10 +46,14 @@ function MyProfileEditScreen({navigation}: any) {
   const [isNicknameFocused, setIsNicknameFocused] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
+  const [isBlank, setIsBlank] = useState(false); // 추가된 상태
 
   const nicknameInputRef = useRef<TextInput>(null);
   const user = useSelector(state => state.user);
   const userImageUrl = userData?.userImageUrl;
+
+  const route = useRoute<ProfileEditScreenRouteProp>();
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (userData) {
@@ -92,19 +102,6 @@ function MyProfileEditScreen({navigation}: any) {
     setNickname('');
   };
 
-  const handleBirthDateChange = (text: string) => {
-    let formattedText = text.replace(/[^0-9]/g, '');
-
-    if (formattedText.length > 3) {
-      formattedText = formattedText.slice(0, 4) + '.' + formattedText.slice(4);
-    }
-    if (formattedText.length > 6) {
-      formattedText = formattedText.slice(0, 7) + '.' + formattedText.slice(7);
-    }
-
-    setBirthdate(formattedText);
-  };
-
   const openGallery = () => {
     ImagePicker.openPicker({
       width: 100,
@@ -123,21 +120,21 @@ function MyProfileEditScreen({navigation}: any) {
 
   const {patchUserInfo} = usePatchUserSetting();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleSubmit = async () => {
+  const handleNicknameChange = async () => {
+    if (nickname === userData.nickname || nickname.length < 2) {
+      setIsBlank(nickname.length < 2);
+      setIsModalVisible(true);
+      return;
+    }
+
     const updatedData = {
       nickname: nickname,
-      birthDate: birthdate,
     };
 
     await patchUserInfo(updatedData).then(() => {
       openCompleteModal(); // 모달 열기
     });
   };
-
-  useEffect(() => {
-    navigation.setOptions(ProfileEditOptions({navigation, handleSubmit}));
-  }, [navigation, nickname, birthdate, profileImage, handleSubmit]);
 
   if (loading) {
     return (
@@ -167,9 +164,10 @@ function MyProfileEditScreen({navigation}: any) {
             <GallerySvg />
           </TouchableOpacity>
         </View>
+
         <TouchableOpacity
           style={styles.preferenceButton}
-          onPress={() => navigation.push('PreferenceSetting')}>
+          onPress={() => navigation.navigate('PreferenceSetting')}>
           <Text style={styles.preferenceButtonText}>취향 설정</Text>
         </TouchableOpacity>
         <View style={styles.emailContainer}>
@@ -186,26 +184,36 @@ function MyProfileEditScreen({navigation}: any) {
               editable={false}
             />
           </View>
+
           <View style={{height: 30}} />
           <RequiredTextLabel label={'닉네임'} />
-          <View
-            style={[
-              styles.inputContainer,
-              isNicknameFocused && {borderColor: globalColors.blue},
-            ]}>
-            <TextInput
-              ref={nicknameInputRef}
-              style={styles.input}
-              value={nickname}
-              onChangeText={setNickname}
-              onFocus={handleNicknameFocus}
-              onBlur={handleNicknameBlur}
-            />
-            <TouchableOpacity onPress={handleClearNickname}>
-              <CloseGraySvg style={{paddingHorizontal: 15}} />
+          <View style={styles.nicknameRow}>
+            <View
+              style={[
+                styles.inputContainer,
+                isNicknameFocused && {borderColor: globalColors.blue},
+              ]}>
+              <TextInput
+                ref={nicknameInputRef}
+                style={styles.input}
+                value={nickname}
+                onChangeText={setNickname}
+                onFocus={handleNicknameFocus}
+                onBlur={handleNicknameBlur}
+              />
+              <TouchableOpacity onPress={handleClearNickname}>
+                <CloseGraySvg style={{paddingHorizontal: 15}} />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={styles.nicknameChangeButton}
+              onPress={handleNicknameChange}>
+              <Text style={styles.nicknameChangeButtonText}>닉네임 변경</Text>
             </TouchableOpacity>
           </View>
+
           <View style={{height: 30}} />
+
           <RequiredTextLabel label={'생년월일'} />
           <View style={styles.inputContainer}>
             <TextInput
@@ -216,15 +224,16 @@ function MyProfileEditScreen({navigation}: any) {
           </View>
         </View>
       </View>
-      <View style={styles.middleContainer}>
-        <Text style={Text14R.text}>비밀번호 변경</Text>
-        <RightSvg
-          style={styles.svgStyle}
+      {!user.isSocialLogin && (
+        <TouchableOpacity
+          style={styles.middleContainer}
           onPress={() => {
-            navigation.navigate('PasswordCheck');
-          }}
-        />
-      </View>
+            navigation.navigate('PasswordChange');
+          }}>
+          <Text style={Text14R.text}>비밀번호 변경</Text>
+          <RightSvg style={styles.svgStyle} />
+        </TouchableOpacity>
+      )}
       <Text
         style={{color: globalColors.red, marginLeft: 15}}
         onPress={handleMemberWithdrawalPress}>
@@ -236,10 +245,19 @@ function MyProfileEditScreen({navigation}: any) {
         mainTitle="프로필 설정이 변경됐어요!"
         subTitle={'변경사항이 저장되었습니다.'}
       />
+      <CustomOKModal
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        isSuccessModal={false}
+        mainTitle={
+          isBlank
+            ? '닉네임은 2글자 이상이어야 합니다!'
+            : '닉네임은 기존 닉네임과 달라야 합니다.'
+        }
+      />
     </DismissKeyboardView>
   );
 }
-
 const styles = StyleSheet.create({
   middleContainer: {
     flexDirection: 'row',
@@ -247,7 +265,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 15,
   },
+  birthdayContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderColor: globalColors.warmGray,
+    borderWidth: 1,
+    borderRadius: 30,
+    padding: 10,
+    flex: 1,
+  },
   inputContainer: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
@@ -270,6 +299,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emailContainer: {
+    flex: 1,
     alignItems: 'flex-start',
     marginTop: 15,
     borderRadius: 50,
@@ -280,6 +310,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   emailInputContainer: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: globalColors.component,
@@ -335,6 +366,22 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
     paddingRight: 10,
+  },
+  nicknameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  nicknameChangeButton: {
+    backgroundColor: globalColors.blue,
+    borderRadius: 15,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    marginLeft: 10,
+  },
+  nicknameChangeButtonText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
   },
 });
 

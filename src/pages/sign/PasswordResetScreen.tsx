@@ -12,6 +12,7 @@ import useAuthCode from '../../hooks/signUp/useAuthCode.tsx';
 import useSignUpEmail from '../../hooks/signUp/useSignUpEmail.tsx';
 import useResetPassword from '../../hooks/password/useResetPassword.tsx';
 import usePasswordEmailVerification from '../../hooks/password/usePasswordEmailVerification.tsx';
+import useGetUser from '../../hooks/auth/useGetUser.tsx';
 
 type PasswordResetScreenProps = {
   navigation: any;
@@ -33,10 +34,9 @@ function PasswordResetScreen({navigation}: PasswordResetScreenProps) {
   } = useSignUpEmail();
 
   const {code, setCode, countdown, resetCountdown} = useAuthCode();
-
   const {authCode, verifyEmail} = usePasswordEmailVerification(email);
-
   const {resetUserPassword, resetPasswordStatus} = useResetPassword();
+  const {data: user, loading, error} = useGetUser();
 
   const [pageIndex, setPageIndex] = useState(1);
 
@@ -173,7 +173,6 @@ function PasswordResetScreen({navigation}: PasswordResetScreenProps) {
         return null;
     }
   };
-
   return (
     <DismissKeyboardView>
       <View style={styles.container}>{renderStepContent()}</View>

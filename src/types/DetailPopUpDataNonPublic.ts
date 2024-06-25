@@ -56,6 +56,8 @@ export type DetailPopUpDataPublic = {
 };
 
 export type DetailPopUpDataNonPublic = {
+  latitude: number;
+  longitude: number;
   isVisited: boolean;
   isInterested: boolean;
   isInstagram: boolean;

@@ -1,5 +1,4 @@
-// src/hooks/detailPopUp/useGetDetailPopUp.ts
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {DetailPopUpDataNonPublic} from '../../types/DetailPopUpDataNonPublic';
 import getDetailPopUp from '../../apis/popup/detailPopUp';
 import getDetailPopUpPublic from '../../apis/public/detailPopUpPublic';
@@ -12,7 +11,7 @@ import {
 
 interface DetailPopUpState {
   loading: boolean;
-  data: DetailPopUpDataNonPublic | null;
+  data: DetailPopUpDataNonPublic | null | undefined;
   error: string | null;
 }
 
@@ -20,7 +19,7 @@ function useGetDetailPopUp(
   popUpId: number,
   isPublic: boolean,
   fetchTrigger: boolean,
-): DetailPopUpState {
+): DetailPopUpState & {refetch: () => void} {
   const [getDetailPopUpState, setGetDetailPopUpState] =
     useState<DetailPopUpState>({
       loading: false,
@@ -30,55 +29,58 @@ function useGetDetailPopUp(
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchDetailPopUp = async () => {
-      setGetDetailPopUpState({
-        loading: true,
-        data: null,
-        error: null,
-      });
-      dispatch(setPopupDetailLoading(true));
+  const fetchDetailPopUp = useCallback(async () => {
+    setGetDetailPopUpState({
+      loading: true,
+      data: null,
+      error: null,
+    });
+    dispatch(setPopupDetailLoading(true));
 
-      try {
-        const response = isPublic
-          ? await getDetailPopUpPublic(popUpId)
-          : await getDetailPopUp(popUpId);
+    try {
+      const response = isPublic
+        ? await getDetailPopUpPublic(popUpId)
+        : await getDetailPopUp(popUpId);
 
-        if (response.success && response.data) {
-          setGetDetailPopUpState({
-            loading: false,
-            data: response.data,
-            error: null,
-          });
-          dispatch(setPopupDetailData(response.data));
-        } else {
-          const errorMessage =
-            response.error?.message || 'An unknown error occurred';
-          setGetDetailPopUpState({
-            loading: false,
-            data: null,
-            error: errorMessage,
-          });
-          dispatch(setPopupDetailError(errorMessage));
-        }
-      } catch (error) {
+      if (response.success && response.data) {
+        setGetDetailPopUpState({
+          loading: false,
+          data: response.data,
+          error: null,
+        });
+        dispatch(setPopupDetailData(response.data));
+      } else {
         const errorMessage =
-          error instanceof Error ? error.message : 'An error occurred';
+          response.error?.message || 'An unknown error occurred';
         setGetDetailPopUpState({
           loading: false,
           data: null,
           error: errorMessage,
         });
         dispatch(setPopupDetailError(errorMessage));
-      } finally {
-        dispatch(setPopupDetailLoading(false));
       }
-    };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An error occurred';
+      setGetDetailPopUpState({
+        loading: false,
+        data: null,
+        error: errorMessage,
+      });
+      dispatch(setPopupDetailError(errorMessage));
+    } finally {
+      dispatch(setPopupDetailLoading(false));
+    }
+  }, [popUpId, isPublic, dispatch]);
 
+  useEffect(() => {
     fetchDetailPopUp();
-  }, [popUpId, isPublic, fetchTrigger, dispatch]);
+  }, [fetchDetailPopUp, fetchTrigger]);
 
-  return getDetailPopUpState;
+  return {
+    ...getDetailPopUpState,
+    refetch: fetchDetailPopUp,
+  };
 }
 
 export default useGetDetailPopUp;

@@ -14,6 +14,7 @@ type TkewordRecord = {
   id: number;
   keyword: string;
 };
+
 function FindInputScreen({navigation}: any) {
   const [text, setText] = useState('');
   const [keywordsRecord, setKeywordRecord] = useState<TkewordRecord[]>([]);
@@ -89,11 +90,7 @@ function FindInputScreen({navigation}: any) {
       </View>
       <View style={{width: '100%', paddingLeft: 20, paddingRight: 20}}>
         <DividerLine height={1} style={{marginBottom: 20}} />
-        <Text
-          style={{
-            marginBottom: 20,
-            color: globalColors.stroke2,
-          }}>
+        <Text style={{marginBottom: 20, color: globalColors.stroke2}}>
           최근 검색어
         </Text>
         <View style={styles.keywordWrapper}>
@@ -111,25 +108,23 @@ function FindInputScreen({navigation}: any) {
             </View>
           ) : (
             <>
-              {keywordsRecord.map(keyword => {
-                return (
-                  <Pressable
-                    onPress={() => handlekeywordClickSubmit(keyword.keyword)}>
-                    <View
-                      key={keyword.id}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        flexDirection: 'row',
-                      }}>
-                      <Text>{keyword.keyword}</Text>
-                      <Pressable onPress={() => handleClickKeyword(keyword.id)}>
-                        <InputCancel />
-                      </Pressable>
-                    </View>
-                  </Pressable>
-                );
-              })}
+              {keywordsRecord.map(keyword => (
+                <Pressable
+                  key={keyword.id} // Add key prop here
+                  onPress={() => handlekeywordClickSubmit(keyword.keyword)}>
+                  <View
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      flexDirection: 'row',
+                    }}>
+                    <Text>{keyword.keyword}</Text>
+                    <Pressable onPress={() => handleClickKeyword(keyword.id)}>
+                      <InputCancel />
+                    </Pressable>
+                  </View>
+                </Pressable>
+              ))}
               <Pressable onPress={handleAllRecordDelete}>
                 <Text style={{textAlign: 'right', color: globalColors.stroke2}}>
                   전체 삭제하기
@@ -149,7 +144,6 @@ const styles = StyleSheet.create({
   inputWrapper: {
     width: '100%',
     height: 70,
-
     paddingLeft: 10,
     paddingRight: 10,
     display: 'flex',
@@ -157,7 +151,6 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
-
     marginBottom: 20,
   },
   backbutton: {

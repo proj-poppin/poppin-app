@@ -1,3 +1,4 @@
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Pressable,
@@ -6,86 +7,117 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useSelector} from 'react-redux';
 import globalColors from '../../styles/color/globalColors.ts';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
-import React, {useEffect, useState} from 'react';
-import ProfileAppBar from '../../components/ProfileAppBar.tsx';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
-import PasswordCheckTextFormField from '../../components/molecules/form_field/PasswordCheckTextFormField.tsx';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
-import useResetPassword from '../../hooks/password/useResetPassword.tsx';
-import {useSelector} from 'react-redux';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
 import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
+import useConfirmPassword from '../../hooks/myPage/useConfirmPassword.tsx';
+import useResetPassword from '../../hooks/password/useResetPassword.tsx';
+import GoBackSvg from '../../assets/icons/goBack.svg';
+import ToSignUpTextLine from '../../components/molecules/pressable_text/ToSignUpTextLine.tsx';
+
+type PasswordChangeScreenNavigationProp = NativeStackNavigationProp<
+  AuthNavigatorParamList,
+  'PasswordChange'
+>;
+
+export const PasswordChangeOptions = ({
+  navigation,
+}: {
+  navigation: PasswordChangeScreenNavigationProp;
+}) => ({
+  headerTitle: '비밀번호 변경',
+  headerLeft: () => (
+    <Pressable onPress={() => navigation.goBack()} style={{padding: 10}}>
+      <GoBackSvg />
+    </Pressable>
+  ),
+});
+
 function PasswordChangeScreen({navigation}: any) {
   const {data: userData} = useGetUserSetting();
-  const user = useSelector(state => state.user);
-  const [email, setEmail] = useState(user.email || 'poppin@gmail.com');
-  const [error, setError] = useState('');
-  const [touched, setTouched] = useState(true);
-  const [password, setPassword] = useState('');
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
-  const [passwordConfirm, setPasswordConfirm] = useState('');
-  const [isPasswordSame, setIsPasswordSame] = useState(false);
-
-  const canGoNext = isPasswordValid && isPasswordSame;
-
+  const {confirmPassword, ...confirmPasswordState} = useConfirmPassword();
   const {resetUserPassword, resetPasswordStatus} = useResetPassword();
+  const user = useSelector(state => state.user);
 
-  const handleChangePassword = text => {
-    setPassword(text);
-    // 비밀번호 유효성 검사
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+
+  const [isCurrentPasswordValid, setIsCurrentPasswordValid] = useState(false);
+  const [isNewPasswordValid, setIsNewPasswordValid] = useState(false);
+  const [isNewPasswordSame, setIsNewPasswordSame] = useState(false);
+  const [isPasswordCheckDone, setIsPasswordCheckDone] = useState(false);
+
+  const canGoNext = isNewPasswordValid && isNewPasswordSame;
+
+  const handleCurrentPasswordChange = (text: string) => {
+    setCurrentPassword(text);
     const isValidPassword =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(
         text,
       );
-    setIsPasswordValid(isValidPassword);
-    // 비밀번호 확인 필드와의 일치 여부 검사
-    checkPasswordMatch(text, passwordConfirm);
+    setIsCurrentPasswordValid(isValidPassword);
   };
 
-  const handleSamePassword = (text: React.SetStateAction<string>) => {
-    setPasswordConfirm(text);
-    // 비밀번호 필드와의 일치 여부 검사
-    checkPasswordMatch(password, text);
+  const handleNewPasswordChange = (text: string) => {
+    setNewPassword(text);
+    const isValidPassword =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(
+        text,
+      );
+    setIsNewPasswordValid(isValidPassword);
+    checkPasswordMatch(text, confirmNewPassword);
   };
 
-  const checkPasswordMatch = (password, passwordConfirm) => {
-    const isMatch = password === passwordConfirm;
-    setIsPasswordSame(isMatch);
-    if (isMatch && isPasswordValid) {
-      // 비밀번호가 유효하고, 비밀번호와 비밀번호 확인이 일치할 경우 추가 로직 처리
-      console.log('비밀번호 일치 및 유효성 통과');
-    }
+  const handleConfirmNewPasswordChange = (text: string) => {
+    setConfirmNewPassword(text);
+    checkPasswordMatch(newPassword, text);
   };
 
-  const handleSumbit = async () => {
-    if (isPasswordSame) {
-      await resetUserPassword(password, passwordConfirm).then();
+  const checkPasswordMatch = (password: string, confirmPassword: string) => {
+    const isMatch = password === confirmPassword;
+    setIsNewPasswordSame(isMatch);
+  };
+
+  const handlePasswordCheckSubmit = async () => {
+    await confirmPassword(currentPassword);
+  };
+
+  const handlePasswordChangeSubmit = async () => {
+    if (isNewPasswordSame) {
+      await resetUserPassword(newPassword, confirmNewPassword);
     } else {
       Alert.alert('Error', 'Passwords do not match or meet the criteria.');
     }
   };
 
-  useEffect(() => {
-    navigation.setOptions(
-      ProfileAppBar({
-        navigation,
-        appBarTitle: '비밀번호 변경',
-        isHeaderRight: false,
-      }),
-    );
-  }, [navigation]);
+  const handleForgotPasswordPress = () => {
+    navigation.navigate('PasswordReset');
+  };
 
   useEffect(() => {
-    if (resetPasswordStatus.success === true) {
+    if (confirmPasswordState.success) {
+      setIsPasswordCheckDone(true);
+      setCurrentPassword('');
+      setIsCurrentPasswordValid(false);
+    }
+  }, [confirmPasswordState]);
+
+  useEffect(() => {
+    if (resetPasswordStatus.success) {
       navigation.navigate('MyPage');
-      setPassword('');
-      setIsPasswordValid(false);
+      setNewPassword('');
+      setConfirmNewPassword('');
+      setIsNewPasswordValid(false);
     }
   }, [resetPasswordStatus]);
-
   return (
     <DismissKeyboardView style={styles.container}>
       <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>
@@ -100,38 +132,88 @@ function PasswordChangeScreen({navigation}: any) {
           editable={false}
         />
       </View>
-      <LabelAndInput
-        onChangeText={handleChangePassword}
-        placeholder="새 비밀번호"
-        labelText={'비밀번호 설정'}
-        isPassword={true}
-        containerStyle={{marginBottom: 20}}
-      />
-      <LabelAndInput
-        onChangeText={handleSamePassword}
-        placeholder="새 비밀번호 확인"
-        labelText={'비밀번호 확인'}
-        isPassword={true}
-        isPasswordSame={isPasswordSame}
-        isPasswordSameSetting={true}
-      />
-      <Text
-        style={[
-          Text12R.text,
-          {color: globalColors.font},
-          {paddingVertical: 20},
-        ]}>
-        • 개인정보(연락처/생일)와 관련된 숫자 등 다른 사람이 알아낼 수 있는
-        비밀번호는 사용하지 마세요.
-      </Text>
-      <CompleteButton
-        title="완료"
-        onPress={handleSumbit}
-        loading={false}
-        disabled={!canGoNext}
-        alwaysActive={false}
-        // onDisabledPress={() => setError('✕ 아이디를 입력해주세요')}
-      />
+      {!isPasswordCheckDone ? (
+        <>
+          <LabelAndInput
+            onChangeText={handleCurrentPasswordChange}
+            placeholder="현재 비밀번호"
+            labelText={'현재 비밀번호'}
+            isPassword={true}
+            containerStyle={{marginBottom: 20}}
+            value={currentPassword}
+          />
+          {!confirmPasswordState.success && (
+            <Text style={{color: 'red', marginLeft: 10, marginBottom: 20}}>
+              {confirmPasswordState.error?.message}
+            </Text>
+          )}
+
+          <ToSignUpTextLine
+            titleText={'현재 비밀번호가 기억나지 않으세요?'}
+            onPress={handleForgotPasswordPress}
+          />
+          <Pressable
+            disabled={!isCurrentPasswordValid}
+            onPress={handlePasswordCheckSubmit}
+            style={{
+              height: 60,
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <View
+              style={{
+                height: '80%',
+                width: '80%',
+                backgroundColor: globalColors.blue,
+                borderRadius: 30,
+                display: 'flex',
+                justifyContent: 'center',
+              }}>
+              <Text style={{textAlign: 'center', color: 'white', fontSize: 18}}>
+                다음
+              </Text>
+            </View>
+          </Pressable>
+        </>
+      ) : (
+        <>
+          <LabelAndInput
+            onChangeText={handleNewPasswordChange}
+            placeholder="새 비밀번호"
+            labelText={'새 비밀번호'}
+            isPassword={true}
+            containerStyle={{marginBottom: 20}}
+            value={newPassword}
+          />
+          <LabelAndInput
+            onChangeText={handleConfirmNewPasswordChange}
+            placeholder="새 비밀번호 확인"
+            labelText={'새 비밀번호 확인'}
+            isPassword={true}
+            isPasswordSame={isNewPasswordSame}
+            containerStyle={{marginBottom: 20}}
+            value={confirmNewPassword}
+          />
+          <Text
+            style={[
+              Text12R.text,
+              {color: globalColors.font},
+              {paddingVertical: 20},
+            ]}>
+            • 개인정보(연락처/생일)와 관련된 숫자 등 다른 사람이 알아낼 수 있는
+            비밀번호는 사용하지 마세요.
+          </Text>
+          <CompleteButton
+            title="완료"
+            onPress={handlePasswordChangeSubmit}
+            loading={false}
+            disabled={!canGoNext}
+            alwaysActive={false}
+          />
+        </>
+      )}
     </DismissKeyboardView>
   );
 }
@@ -154,12 +236,13 @@ const styles = StyleSheet.create({
   },
   forgotPasswordText: {
     textDecorationLine: 'underline',
-    color: 'black',
+    color: globalColors.font,
     marginBottom: 30,
+    textAlign: 'center',
   },
   emailInput: {
-    flex: 1, // 나머지 공간 채우기
-    marginLeft: 10, // 아이콘과의 간격
+    flex: 1,
+    marginLeft: 10,
     color: globalColors.font,
   },
 });

@@ -1,6 +1,13 @@
-import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React, {useEffect, useState, useCallback} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  RefreshControl,
+} from 'react-native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import DownBlackSvg from '../../assets/icons/downBlack.svg';
 import OrderSvg from '../../assets/icons/order.svg';
 import globalColors from '../../styles/color/globalColors';
@@ -8,6 +15,8 @@ import DividerLine from '../../components/DividerLine';
 import InterestPopUpCard from '../../components/molecules/card/InterestPopUpCard';
 import CustomSelectDropdown from '../../components/CustomDropDown';
 import Text18B from '../../styles/texts/body_large/Text18B';
+import useGetInterestList from '../../hooks/popUpList/useGetInterestList.tsx';
+import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 
 interface ListViewProps {
   popUpTypes: string[];
@@ -22,6 +31,7 @@ interface ListViewProps {
     open_date: string;
     status: string;
   }[];
+  onRefresh: () => void;
 }
 
 const ListView: React.FC<ListViewProps> = ({
@@ -30,8 +40,33 @@ const ListView: React.FC<ListViewProps> = ({
   setSelectedPopUpType,
   setSelectedOrderType,
   sortedInterestList,
+  onRefresh,
 }) => {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
+  const {data, refetch} = useGetInterestList();
+  const [currentDate, setCurrentDate] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+  const [interestList, setInterestList] = useState(sortedInterestList);
+
+  const handleRefresh = useCallback(() => {
+    setRefreshing(true);
+    onRefresh();
+    setRefreshing(false);
+  }, [onRefresh]);
+
+  useEffect(() => {
+    const today = new Date();
+    const month = today.getMonth() + 1; // getMonth() is zero-based
+    const day = today.getDate();
+    setCurrentDate(`${month}월 ${day}일`);
+  }, []);
+
+  useEffect(() => {
+    if (isFocused) {
+      refetch();
+    }
+  }, [isFocused, refetch]);
 
   return (
     <View style={{flex: 1}}>
@@ -44,7 +79,6 @@ const ListView: React.FC<ListViewProps> = ({
           buttonTextAfterSelection={selectedItem => selectedItem}
           buttonTextStyle={{color: globalColors.font}}
         />
-
         <View style={{width: 100}} />
         <CustomSelectDropdown
           data={orderTypes.map(type => ({label: type}))}
@@ -61,30 +95,37 @@ const ListView: React.FC<ListViewProps> = ({
           {color: globalColors.font},
           styles.bodyContainer,
         ]}>
-        1월 15일
+        {currentDate}
       </Text>
       <DividerLine height={1} />
-      <View style={styles.listContainer}>
-        {sortedInterestList?.length > 0 ? (
-          sortedInterestList.map(item => (
-            <TouchableOpacity
-              key={item.id}
-              onPress={() => navigation.navigate('PopUpDetail', {id: item.id})}>
-              <InterestPopUpCard
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }>
+        <DismissKeyboardView>
+          {sortedInterestList?.length > 0 ? (
+            sortedInterestList.map(item => (
+              <TouchableOpacity
                 key={item.id}
-                image_url={item.image_url}
-                name={item.name}
-                close_date={item.close_date}
-                open_date={item.open_date}
-                status={item.status}
-                id={item.id}
-              />
-            </TouchableOpacity>
-          ))
-        ) : (
-          <Text style={styles.noItemsText}>조건에 맞는 팝업이 없습니다.</Text>
-        )}
-      </View>
+                onPress={() =>
+                  navigation.navigate('PopUpDetail', {id: item.id})
+                }>
+                <InterestPopUpCard
+                  key={item.id}
+                  image_url={item.image_url}
+                  name={item.name}
+                  close_date={item.close_date}
+                  open_date={item.open_date}
+                  status={item.status}
+                  id={item.id}
+                />
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text style={styles.noItemsText}>조건에 맞는 팝업이 없습니다.</Text>
+          )}
+        </DismissKeyboardView>
+      </ScrollView>
       <DividerLine height={3} />
     </View>
   );
@@ -114,21 +155,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   dropdownButtonStyle: {
-    backgroundColor: 'white', // Set button background color to white
+    backgroundColor: 'white',
     borderRadius: 20,
-    height: 40, // Set a fixed height for the button
-    justifyContent: 'center', // Center the content vertically
-    paddingHorizontal: 10, // Add some padding to the sides
-    borderWidth: 1, // Add border width for better visibility
-    borderColor: globalColors.font, // Border color
+    height: 40,
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: globalColors.font,
   },
   rowTextStyle: {
     backgroundColor: globalColors.white,
   },
   buttonInnerContainer: {
-    flexDirection: 'row', // Align text and icon horizontally
-    alignItems: 'center', // Center align vertically
-    justifyContent: 'flex-start', // Distribute space between text and icon
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   dropdownIcon: {
     marginLeft: 5,

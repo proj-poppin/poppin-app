@@ -87,8 +87,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    marginTop: 35,
-    marginBottom: 10,
+    // marginTop: 35,
+    // marginBottom: 10,
   },
   disabledButton: {
     backgroundColor: globalColors.component,

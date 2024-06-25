@@ -8,9 +8,8 @@ import {
 import useIsLoggedIn from '../hooks/auth/useIsLoggedIn.tsx';
 import HomeMainTitle from './organisms/header/HomeMainTitle';
 import RowPopUpCard from './molecules/card/RowPopUpCard';
-import NotLogginBox from './NotLogginBox';
+import ForLoginBox from './ForLoginBox.tsx';
 import useGetTasteList from '../hooks/popUpList/useGetTasteList.tsx';
-import HomeHeader from './organisms/header/HomeHeader';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../types/AppNavigatorParamList.ts';
 import {useNavigation} from '@react-navigation/native';
@@ -41,7 +40,6 @@ export default function HomeLoginHeader() {
 
   return isLoggedIn ? (
     <View style={styles.container}>
-      <HomeHeader onClickAlarm={goToAlarmScreen} />
       <HomeMainTitle
         text1={`안녕하세요, ${user?.nickname}님`}
         text2={'취향저격 팝업을 알려드릴게요'}
@@ -67,9 +65,8 @@ export default function HomeLoginHeader() {
     </View>
   ) : (
     <View style={styles.container}>
-      <HomeHeader onClickAlarm={goToAlarmScreen} />
-
-      <NotLogginBox
+      <ForLoginBox
+        isNeedSvg={false}
         text1={'로그인하고'}
         text2={'팝업 추천을 받아보세요!'}
         buttonText={'로그인 하러 가기'}

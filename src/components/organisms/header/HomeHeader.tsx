@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import PoppinSvg from '../../../assets/icons/poppin.svg';
 import AlarmOffSvg from '../../../assets/icons/alarmOff.svg';
 import HeaderInfoSvg from '../../../assets/icons/headerInfo.svg';
@@ -14,7 +14,7 @@ const HomeHeader = ({onClickAlarm}: any) => {
     // Automatically show the HeaderInfoSvg for 5 seconds when the component mounts
     const timer = setTimeout(() => {
       setShowInfo(false);
-    }, 6000);
+    }, 4000);
 
     // Return a cleanup function that clears the timer if the component unmounts
     return () => clearTimeout(timer);
@@ -44,11 +44,11 @@ const HomeHeader = ({onClickAlarm}: any) => {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 70,
+    marginHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
-    marginTop: 15,
   },
   iconsContainer: {
     flexDirection: 'row', // Arrange icons in a row

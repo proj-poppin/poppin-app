@@ -4,7 +4,6 @@ import createPopUpReview from '../../apis/popup/createReview.tsx';
 import {ImageType} from '../../types/ImageType.ts';
 import {useDispatch} from 'react-redux';
 import {setReviewSubmitted} from '../../redux/slices/reviewSubmittedSlice.ts';
-import getDetailPopUp from '../../apis/popup/detailPopUp';
 
 interface CreateReviewState {
   loading: boolean;

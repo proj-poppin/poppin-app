@@ -1,5 +1,10 @@
-import {ActivityIndicator, ScrollView, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {
+  ActivityIndicator,
+  RefreshControl,
+  ScrollView,
+  View,
+} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
 import DividerLine from '../../../components/DividerLine.tsx';
 import FindCard from '../../../components/findPopup/FindCard.tsx';
 import useGetFindPopupList from '../../../hooks/findPopUp/useGetFindPopupList.tsx';
@@ -11,11 +16,13 @@ function ClosedTab({type, selectedOrder, availableTags, searchKeyword}: any) {
   const [size, setSize] = useState(5);
   const [loadingMore, setLoadingMore] = useState(false);
   const [triggerFetch, setTriggerFetch] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const {
     data: findPopupListData,
     loading: findPopupListLoading,
     error: findPopupListError,
+    refetch,
   } = useGetFindPopupList(
     page,
     size,
@@ -25,6 +32,11 @@ function ClosedTab({type, selectedOrder, availableTags, searchKeyword}: any) {
     searchKeyword,
     triggerFetch,
   );
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refetch().finally(() => setRefreshing(false));
+  }, [refetch]);
 
   const handleScroll = (event: any) => {
     const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
@@ -42,11 +54,6 @@ function ClosedTab({type, selectedOrder, availableTags, searchKeyword}: any) {
     setTriggerFetch(true);
   }, [selectedOrder, availableTags, searchKeyword]);
 
-  useEffect(() => {
-    if (triggerFetch) {
-      setTriggerFetch(false);
-    }
-  }, [triggerFetch]);
   if (findPopupListData.length === 0 && !findPopupListLoading) {
     return <NotList />;
   } else if (findPopupListLoading && page === 0) {
@@ -57,7 +64,12 @@ function ClosedTab({type, selectedOrder, availableTags, searchKeyword}: any) {
     );
   }
   return (
-    <ScrollView onScroll={handleScroll} style={{marginBottom: 100}}>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      onScroll={handleScroll}
+      style={{marginBottom: 100}}>
       <DividerLine height={1} />
       {findPopupListData && findPopupListData.length > 0 ? (
         findPopupListData.map((item: any) => {

@@ -18,9 +18,10 @@ import Text24B from '../../styles/texts/headline/Text24B';
 import ListView from './ListView';
 import NoLikesSvg from '../../assets/likes/noLikes.svg';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
-import NotLogginBox from '../../components/NotLogginBox.tsx';
+import ForLoginBox from '../../components/ForLoginBox.tsx';
 import {useFocusEffect} from '@react-navigation/native';
 import CalendarComponent from './calendar/CalendarComponent.tsx';
+
 const popUpTypes = ['오픈 예정인 팝업', '운영 중인 팝업', '운영 종료 팝업'];
 const orderTypes = ['오픈일순', '마감일순', '저장순'];
 
@@ -41,27 +42,7 @@ function LikesScreen({navigation}) {
       }, 2000);
     }, [dispatch, refetch]),
   );
-
   const dispatch = useAppDispatch();
-
-  const handleDateSelected = (day: any) => {
-    setSelectedDate({
-      [day.dateString]: {selected: true, marked: true},
-    });
-  };
-
-  const handleRefetch = () => {
-    refetch();
-  };
-
-  const renderBottomSheetContent = () => (
-    <View style={styles.bottomSheetContent}>
-      <View style={styles.titleContainer}>
-        <Text style={Text24B.text}>{Object.keys(selectedDate)[0]} Events</Text>
-      </View>
-      {/* Add more content as needed */}
-    </View>
-  );
 
   const getMarkedDates = () => {
     const today = new Date().toISOString().split('T')[0];
@@ -150,7 +131,7 @@ function LikesScreen({navigation}) {
   if (!isLoggedIn) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <NotLogginBox
+        <ForLoginBox
           text1={'로그인하고'}
           text2={'팝업 추천을 받아보세요!'}
           buttonText={'로그인 하러 가기'}
@@ -161,7 +142,6 @@ function LikesScreen({navigation}) {
       </View>
     );
   }
-
   if (loading) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -212,6 +192,7 @@ function LikesScreen({navigation}) {
             setSelectedPopUpType={setSelectedPopUpType}
             setSelectedOrderType={setSelectedOrderType}
             sortedInterestList={sortedInterestList}
+            onRefresh={refetch}
           />
         )}
       </BottomSheetModalProvider>

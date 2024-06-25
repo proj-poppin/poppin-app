@@ -16,10 +16,11 @@ const useAddVisitor = () => {
 
   const addVisitorPopUp = async (
     popUpId: number,
+    fcmToken: string,
   ): Promise<AddVisitorResponse> => {
     setAddVisitorState({loading: true, error: null, success: null});
     try {
-      const response: AddVisitorResponse = await addVisitor(popUpId);
+      const response: AddVisitorResponse = await addVisitor(popUpId, fcmToken);
       if (response.success) {
         setAddVisitorState({loading: false, error: null, success: true});
         return response;

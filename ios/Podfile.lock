@@ -2344,7 +2344,7 @@ PODS:
     - FirebaseCoreExtension
     - React-Core
     - RNFBApp
-  - RNGestureHandler (2.17.1):
+  - RNGestureHandler (2.15.0):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -2365,7 +2365,7 @@ PODS:
     - React
   - RNPermissions (4.1.5):
     - React-Core
-  - RNReanimated (3.12.1):
+  - RNReanimated (3.7.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -2794,12 +2794,12 @@ SPEC CHECKSUMS:
   RNFBApp: 614f1621b49db54ebd258df8c45427370d8d84a2
   RNFBAuth: fbfd567c34579b2a081b9ae5d6f0e33c2f4d1205
   RNFBMessaging: 74754ed198239360950f54f3e3de365fe85db451
-  RNGestureHandler: 3e87b5059b54bf1315bba9bc0252fb08d8e2d7b2
+  RNGestureHandler: 7feb85c5a30ebbcd4d5c7a851ba9e7eafb9860cb
   RNGoogleSignin: fc408799f1990a12497a32f64280c0fe353ffcc1
   RNImageCropPicker: e7ab6fb43d2fc3e84651e786ef4a080d63b0ed3d
   RNNaverLogin: dc2758a157dafaa1ffca63079cad4d4c75208a30
   RNPermissions: 294531ede5a64d1528463e88fffef05675842042
-  RNReanimated: 5fdbe436bdb843bb5fcf081539fd03cd9f2a5705
+  RNReanimated: 06342ad46707263f3009e00b88beca6188c3675d
   RNScreens: 2b73f5eb2ac5d94fbd61fa4be0bfebd345716825
   RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a
   RNVectorIcons: ee070291bc6c7b4c880181b214534d4657ea1905

@@ -10,8 +10,8 @@ interface VisitButtonProps {
   disabled?: boolean;
   alwaysActive?: boolean;
   buttonWidth?: number | string;
-  isInstagram: boolean;
-  onCompletePress?: () => void;
+  backgroundColor: string;
+  textColor: string;
 }
 
 const VisitButton: React.FC<VisitButtonProps> = ({
@@ -21,51 +21,27 @@ const VisitButton: React.FC<VisitButtonProps> = ({
   disabled = false,
   alwaysActive = false,
   buttonWidth = '50%',
-  isInstagram,
-  onCompletePress,
+  backgroundColor,
+  textColor,
 }) => {
-  const isVisitComplete = title === '방문완료';
-
   return (
     <Pressable
-      style={({pressed}) => [
+      style={[
         styles.button,
         {
-          backgroundColor: isVisitComplete
-            ? globalColors.blue
-            : isInstagram
-            ? pressed
-              ? globalColors.buttonPressed
-              : globalColors.blue
-            : globalColors.white,
-          borderColor:
-            isInstagram || isVisitComplete ? 'transparent' : globalColors.blue,
-          borderWidth: isInstagram || isVisitComplete ? 0 : 2,
+          backgroundColor,
+          borderColor: textColor,
+          borderWidth: 2,
           width: buttonWidth,
         },
-        (disabled && !alwaysActive) || isVisitComplete
-          ? styles.disabledButton
-          : null,
+        disabled && !alwaysActive ? styles.disabledButton : null,
       ]}
       onPress={onPress}
-      disabled={(disabled && !alwaysActive) || isVisitComplete}>
+      disabled={disabled && !alwaysActive}>
       {loading ? (
-        <ActivityIndicator
-          color={isInstagram ? globalColors.white : globalColors.blue}
-        />
+        <ActivityIndicator color={textColor} />
       ) : (
-        <Text
-          style={[
-            Text18B.text,
-            {
-              color:
-                isVisitComplete || isInstagram
-                  ? globalColors.white
-                  : globalColors.blue,
-            },
-          ]}>
-          {title}
-        </Text>
+        <Text style={[Text18B.text, {color: textColor}]}>{title}</Text>
       )}
     </Pressable>
   );

@@ -53,9 +53,10 @@ import {useNavigation} from '@react-navigation/native';
 import {initFirebaseNotification} from '../apis/push/firebase.ts';
 import PreferenceSettingScreen from '../pages/myPage/preferenceSetting/PreferenceSettingScreen.tsx';
 import FAQFormScreen from '../pages/myPage/FAQFormScreen.tsx';
-import PasswordCheckScreen from '../pages/myPage/PasswordCheckScreen.tsx';
 import MyReviewsList from '../pages/myPage/MyReviewsList.tsx';
 import {MyPagePreferenceSettingScreenOptions} from './options/MyPagePreferenceSettingOptions.tsx';
+import {PasswordChangeOptions} from './options/PasswordChangeOptions.tsx';
+import ProfileEditOptions from './options/ProfileEditOptions.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -95,7 +96,6 @@ function AppNavigator() {
         component={PreferenceSettingScreen}
         options={MyPagePreferenceSettingScreenOptions}
       />
-
       <Stack.Screen
         name="Alarm"
         component={AlarmScreen}
@@ -179,27 +179,13 @@ function AppNavigator() {
       <Stack.Screen
         name="ProfileEdit"
         component={MyProfileEditScreen}
-        options={({navigation}) => ({
-          headerShown: true,
-          title: '프로필 설정',
-          headerRight: () => (
-            <Text
-              onPress={navigation.navigate('ProfileEdit')}
-              style={{color: globalColors.blue, marginRight: 10}}>
-              완료
-            </Text>
-          ),
-          headerLeft: () => (
-            <Pressable
-              onPress={() => navigation.goBack()}
-              style={({pressed}) => ({opacity: pressed ? 0.5 : 1})}>
-              <GoBackSvg />
-            </Pressable>
-          ),
-        })}
+        options={ProfileEditOptions}
       />
-      <Stack.Screen name="PasswordChange" component={PasswordChangeScreen} />
-      <Stack.Screen name="PasswordCheck" component={PasswordCheckScreen} />
+      <Stack.Screen
+        name="PasswordChange"
+        component={PasswordChangeScreen}
+        options={PasswordChangeOptions}
+      />
       <Stack.Screen name="MyReviewsList" component={MyReviewsList} />
       <Stack.Screen
         name="FAQ"

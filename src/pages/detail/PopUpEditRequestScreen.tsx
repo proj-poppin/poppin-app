@@ -24,7 +24,7 @@ function PopUpEditRequestScreen() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
   const [isSuccess, setIsSuccess] = useState(true); // New state to track success or failure
-
+  const [isFocused, setIsFocused] = useState(false);
   const route = useRoute<PopUpEditRequestScreenRouteProp>();
   const navigation = useNavigation();
   const {name, id} = route.params;
@@ -92,13 +92,18 @@ function PopUpEditRequestScreen() {
       <Text style={styles.labelText}>{name}</Text>
       <View style={{height: 20}} />
       <TextInput
-        style={styles.reviewInput}
+        style={[
+          styles.reviewInput,
+          {borderColor: isFocused ? globalColors.blue : globalColors.warmGray},
+        ]}
         multiline
         placeholder="팝업 정보 수정 요청"
         placeholderTextColor={globalColors.font}
         maxLength={1000}
         value={content}
         onChangeText={setContent}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
       />
       <Text style={styles.labelText}>{'관련사진'}</Text>
       <View style={styles.modalContainer} />

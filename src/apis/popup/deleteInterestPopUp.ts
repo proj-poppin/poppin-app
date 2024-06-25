@@ -1,11 +1,9 @@
 import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 
-
 interface AddInterestPopupParams {
   popupId: number;
   fcm_token: string;
 }
-
 const deleteInterestPopUp = async (params: AddInterestPopupParams) => {
   try {
     const response = await nonPublicApiInstance.delete(

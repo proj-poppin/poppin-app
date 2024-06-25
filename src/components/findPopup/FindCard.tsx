@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -28,23 +28,25 @@ const FindCard = ({item, type}: any) => {
   const isInterested = useSelector(
     (state: RootState) => state.interestedPopups[item.id],
   );
+  const [localInterested, setLocalInterested] = useState(isInterested);
   const formattedTitle =
     item.name.length > 20 ? `${item.name.substring(0, 20)}...` : item.name;
+
   const calculateRemainingDays = (serverDate: string) => {
     const closeDate = new Date(serverDate);
-
     const currentDate = new Date();
-
     const timeDifference = closeDate.getTime() - currentDate.getTime();
     const remainingDays = Math.ceil(timeDifference / (1000 * 3600 * 24));
     return remainingDays;
   };
+
   const {addInterest} = useAddInterestPopUp();
   const {deleteInterest} = useDeleteInterestPopUp();
   const remainingDays = calculateRemainingDays(item.closeDate);
 
   const handleToggleInterest = async () => {
-    if (isInterested) {
+    setLocalInterested(!localInterested);
+    if (localInterested) {
       await deleteInterest(item.id, 'fcmToken');
     } else {
       await addInterest(item.id, 'fcmToken');
@@ -75,7 +77,7 @@ const FindCard = ({item, type}: any) => {
           <View style={styles.statusAndStarContainer}>
             <Text style={[Text18B.text, styles.title]}>{formattedTitle}</Text>
             <Pressable onPress={handleToggleInterest} style={styles.starIcon}>
-              {isInterested ? (
+              {localInterested ? (
                 <StarOnSvg style={styles.starIcon} />
               ) : (
                 <Favorite style={styles.starIcon} />
@@ -83,16 +85,13 @@ const FindCard = ({item, type}: any) => {
             </Pressable>
           </View>
           <Text style={styles.location}>{item.address}</Text>
-
           <Text style={[Text12B.text, styles.date]}>
             {item.openDate}~{item.closeDate}
           </Text>
-
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             {Object.entries(item.prefered).map(([key, value]) => {
               if (value) {
                 const matchingTag = POP_UP_TYPES.find(tag => tag.name === key);
-
                 if (matchingTag) {
                   return (
                     <View
@@ -110,7 +109,6 @@ const FindCard = ({item, type}: any) => {
             {Object.entries(item.taste).map(([key, value]) => {
               if (value) {
                 const matchingTag = POP_UP_TYPES.find(tag => tag.name === key);
-
                 if (matchingTag) {
                   return (
                     <View
@@ -158,9 +156,9 @@ const styles = StyleSheet.create({
   },
   statusAndStarContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // 상태와 별 아이콘 사이 공간을 균등하게 배분
+    justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%', // 부모 컨테이너의 전체 너비 사용
+    width: '100%',
   },
   statusContainer: {
     backgroundColor: globalColors.purpleLight,
@@ -229,5 +227,4 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
-
 export default FindCard;

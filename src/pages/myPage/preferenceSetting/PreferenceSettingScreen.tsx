@@ -56,7 +56,6 @@ function PreferenceSettingScreen({navigation}: any) {
 
     return isRange1Selected && isRange2Selected && isRange3Selected;
   };
-
   const handleSubmit = async () => {
     setModalVisible(true);
     const response = await putPreference(selectedTags);
@@ -64,7 +63,6 @@ function PreferenceSettingScreen({navigation}: any) {
       await getHotList();
       await hotList();
       await newList();
-      console.log('success!!!');
     }
   };
 

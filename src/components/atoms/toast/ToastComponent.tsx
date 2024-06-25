@@ -1,5 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {Text, Animated, StyleSheet, ViewStyle} from 'react-native';
+import Text14B from '../../../styles/texts/body_medium/Text14B.ts';
+import Text12B from '../../../styles/texts/label/Text12B.ts';
 
 interface ToastComponentProps {
   message: string;
@@ -11,7 +13,7 @@ interface ToastComponentProps {
 
 const ToastComponent: React.FC<ToastComponentProps> = ({
   message,
-  height = 50,
+  height = 40,
   onClose,
   duration = 3000,
   fadeDuration = 500,
@@ -43,19 +45,17 @@ const ToastComponent: React.FC<ToastComponentProps> = ({
       width: 368,
       height: height,
       borderRadius: 14,
-      marginTop: 100,
+      marginTop: 110,
       marginLeft: 16,
       marginRight: 16,
       backgroundColor: 'rgba(0, 0, 0, 0.7)',
-      opacity: 1.0,
+      opacity: 1,
     } as ViewStyle,
     toastText: {
       width: '100%',
       height: height,
-      fontSize: 15,
       marginTop: 10,
       marginLeft: 10,
-      fontWeight: 'normal',
       lineHeight: 20,
       justifyContent: 'center',
       textAlign: 'center',
@@ -69,7 +69,9 @@ const ToastComponent: React.FC<ToastComponentProps> = ({
 
   return (
     <Animated.View style={styles.container}>
-      <Text style={styles.toastText}>{message}</Text>
+      <Text style={[styles.toastText, Text14B.text, {color: 'white'}]}>
+        {message}
+      </Text>
     </Animated.View>
   );
 };

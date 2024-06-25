@@ -101,17 +101,17 @@ function MyPageScreen({navigation}) {
       : navigation.navigate('Entry');
   };
 
-  const navigateToReviewWrite = () => {
-    isLoggedIn
-      ? navigation.navigate('ReviewWrite')
-      : navigation.navigate('Entry');
-  };
-
-  const navigateToKeywordAlarm = () => {
-    isLoggedIn
-      ? navigation.navigate('KeywordAlarm')
-      : navigation.navigate('Entry');
-  };
+  // const navigateToReviewWrite = () => {
+  //   isLoggedIn
+  //     ? navigation.navigate('ReviewWrite')
+  //     : navigation.navigate('Entry');
+  // };
+  //
+  // const navigateToKeywordAlarm = () => {
+  //   isLoggedIn
+  //     ? navigation.navigate('KeywordAlarm')
+  //     : navigation.navigate('Entry');
+  // };
 
   const renderBackdrop = useCallback(
     (
@@ -147,7 +147,7 @@ function MyPageScreen({navigation}) {
   const reviewCount = 10;
 
   return (
-    <DismissKeyboardView style={styles.container}>
+    <View style={styles.container}>
       <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
         <View style={styles.titleContainer}>
           <Text style={text24B.text}>마이 페이지</Text>
@@ -243,7 +243,7 @@ function MyPageScreen({navigation}) {
           <Text style={Text14M.text}>앱 버전</Text>
           <View style={styles.rowHeaderContainer}>
             <Text style={[Text13R.text, {color: globalColors.stroke2}]}>
-              1.16.0
+              1.0.0
             </Text>
           </View>
         </Pressable>
@@ -319,7 +319,7 @@ function MyPageScreen({navigation}) {
           </BottomSheetModal>
         </View>
       </SafeAreaView>
-    </DismissKeyboardView>
+    </View>
   );
 }
 
@@ -330,6 +330,7 @@ const styles = StyleSheet.create({
     borderRadius: 40, // 이미지가 원형이 되도록
   },
   container: {
+    flex: 1,
     backgroundColor: 'white',
     paddingHorizontal: 20,
     marginBottom: 50,

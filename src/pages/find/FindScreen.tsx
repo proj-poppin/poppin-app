@@ -70,10 +70,20 @@ function FindScreen({navigation, route}: FindScreenProps) {
     bottomSheetModalRef.current?.present();
   }, [availableTags]);
 
+  // const handleClick = (selectedTag: TFilter) => {
+  //   setSelectedTags(prev =>
+  //     prev.map(item =>
+  //       item.id === selectedTag.id ? {...item, selected: !item.selected} : item,
+  //     ),
+  //   );
+  // };
+
   const handleClick = (selectedTag: TFilter) => {
     setSelectedTags(prev =>
       prev.map(item =>
-        item.id === selectedTag.id ? {...item, selected: !item.selected} : item,
+        item.id === selectedTag.id
+          ? {...item, selected: true}
+          : {...item, selected: false},
       ),
     );
   };
@@ -249,6 +259,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
                   key={item.id}
                   item={item}
                   onClick={handleClick}
+                  isMultipleSelectionPossible={false}
                   // selected={item.selected}
                   tagDeleteClick={tagDeleteClick}
                 />

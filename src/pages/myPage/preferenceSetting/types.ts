@@ -18,15 +18,14 @@ export const POP_UP_TYPES: TFilter[] = [
   {id: 11, name: 'kpop', label: 'K-POP', selected: false},
   {id: 12, name: 'alcchol', label: '주류', selected: false},
   {id: 13, name: 'animalPlant', label: '동물/식물', selected: false},
-  
 
-  {id: 14, name: 'market', label: '🛍️마켓형', selected: false},
+  {id: 14, name: 'market', label: '🛍️소비형', selected: false},
   {id: 15, name: 'display', label: '🖼️전시형', selected: false},
-  { id: 16, name: 'experience', label: '🏃체험형', selected: false },
-  { id: 17, name: 'wantFree', label: '💸무료였으면 좋겠어요', selected: false },
+  {id: 16, name: 'experience', label: '🏃체험형', selected: false},
+  {id: 17, name: 'wantFree', label: '💸무료였으면 좋겠어요', selected: false},
 
   {id: 18, name: 'solo', label: '나 혼자 방문해요', selected: false},
-  { id: 19, name: 'withFriend', label: '친구와 방문해요', selected: false },
-  { id: 20, name: 'withFamily', label: '가족과 방문해요', selected: false },
+  {id: 19, name: 'withFriend', label: '친구와 방문해요', selected: false},
+  {id: 20, name: 'withFamily', label: '가족과 방문해요', selected: false},
   {id: 21, name: 'withLover', label: '연인과 방문해요', selected: false},
 ];

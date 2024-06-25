@@ -8,10 +8,17 @@ export interface AddVisitorResponse {
   };
 }
 
-const addVisitor = async (popupId: number): Promise<AddVisitorResponse> => {
+const addVisitor = async (
+  popupId: number,
+  fcmToken: string,
+): Promise<AddVisitorResponse> => {
   try {
     const response = await nonPublicApiInstance.post(
-      `/api/v1/rtvisit/add-visitors?popupId=${popupId}`,
+      '/api/v1/rtvisit/add-visitors',
+      {
+        popupId,
+        fcmToken,
+      },
     );
     console.log('addVisitor response:', response.data);
 

@@ -1,21 +1,36 @@
 import React from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import globalColors from '../../styles/color/globalColors';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';
-import {TAlarmProps} from '../../types/alarm/AlarmCard';
 
 type NoticeDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
   'NoticeDetail'
 >;
-const AlarmCard = ({type, elem}: TAlarmProps) => {
-  const navigation = useNavigation<NoticeDetailScreenNavigationProp>();
 
+interface AlarmCardProps {
+  props: AlarmCardInfoProps;
+  type: string;
+}
+
+interface AlarmCardInfoProps {
+  id: number;
+  title: string;
+  body: string;
+  createdAt: number[];
+  iconUrl: string;
+  isRead: boolean;
+}
+
+const AlarmCard: React.FC<AlarmCardProps> = ({props, type}) => {
+  const navigation = useNavigation<NoticeDetailScreenNavigationProp>();
   const handlePress = () => {
     if (type === 'notice') {
-      navigation.navigate('NoticeDetail', {nid: elem.id});
+      navigation.navigate('NoticeDetail', {nid: props.id});
+    } else {
+      navigation.navigate('PopUpDetail', {id: props.id});
     }
   };
   return (
@@ -23,10 +38,15 @@ const AlarmCard = ({type, elem}: TAlarmProps) => {
       <View
         style={[
           styles.container,
-          {backgroundColor: elem.isRead ? 'white' : globalColors.purpleLight},
+          {backgroundColor: props.isRead ? 'white' : globalColors.purpleLight},
         ]}>
         <View style={styles.leftWrapper}>
-          <View style={styles.imgWrapper}></View>
+          <View style={styles.imgWrapper}>
+            <Image
+              source={{uri: props.iconUrl}}
+              style={{width: 28, height: 28, borderRadius: 100}}
+            />
+          </View>
         </View>
         <View style={styles.contentsWrapper}>
           <View style={styles.titleWrapper}>
@@ -34,26 +54,30 @@ const AlarmCard = ({type, elem}: TAlarmProps) => {
               style={[
                 styles.title,
                 type !== 'notice' && {
-                  color: elem.isRead ? globalColors.stroke2 : 'black',
+                  color: props.isRead ? globalColors.stroke2 : 'black',
                 },
               ]}>
-              {elem.title}
+              {props.title}
             </Text>
             <Text
               style={[
                 styles.content,
                 type !== 'notice' && {
-                  color: elem.isRead ? globalColors.stroke2 : 'black',
+                  color: props.isRead ? globalColors.stroke2 : 'black',
                 },
               ]}>
-              {elem.content}
+              {props.body}
             </Text>
           </View>
-          <Text style={styles.time}>{elem.createdAt}</Text>
+          <Text style={styles.time}>{convertTime(props.createdAt)}</Text>
         </View>
       </View>
     </Pressable>
   );
+};
+
+const convertTime = (time: number[]) => {
+  return `${time[0]}년 ${time[1]}월 ${time[2]}일`;
 };
 
 export default AlarmCard;
@@ -80,6 +104,8 @@ const styles = StyleSheet.create({
     height: 48,
     backgroundColor: 'white',
     borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   contentsWrapper: {
     width: '80%',

@@ -24,6 +24,10 @@ import useCreateReview from '../../hooks/review/useCreateReview.tsx';
 import {useImageSelector} from '../../hooks/useImageSelector.tsx';
 import getDetailPopUp from '../../apis/popup/detailPopUp.ts';
 import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
+import Text20B from '../../styles/texts/title/Text20B.ts';
+import ReviewWriteBadgeAuthSvg from '../../assets/icons/reviewWriteBadgeAuth.svg';
+import Text14M from '../../styles/texts/body_medium/Text14M.ts';
+
 type ReviewWriteScreenRouteProp = RouteProp<
   AppNavigatorParamList,
   'ReviewWrite'
@@ -36,7 +40,6 @@ function ReviewWriteScreen() {
   const {createReview, loading} = useCreateReview();
   const {selectedImages, handleSelectImages, handleRemoveImage} =
     useImageSelector();
-
   const popupId = id;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
@@ -68,7 +71,7 @@ function ReviewWriteScreen() {
     if (!isSubmitEnabled) {
       return;
     }
-    let nickname = '뒤져';
+    let nickname = 'OO';
     const response = await createReview(
       popupId ?? 1,
       review,
@@ -97,7 +100,16 @@ function ReviewWriteScreen() {
 
   return (
     <DismissKeyboardView style={styles.container}>
-      <Text style={[Text14R.text, {color: globalColors.purple}]}>{name}</Text>
+      <View style={styles.titleRow}>
+        <Text style={[Text20B.text]}>{name}</Text>
+        {isVisited ? (
+          <ReviewWriteBadgeAuthSvg style={{height: '80%'}} />
+        ) : (
+          <Text style={[Text14M.text, {color: globalColors.font}]}>
+            일반 후기
+          </Text>
+        )}
+      </View>
       <View style={styles.sectionContainer}>
         <Text style={[Text14R.text, {color: globalColors.purple}, {width: 65}]}>
           방문 일시
@@ -216,6 +228,12 @@ function ReviewWriteScreen() {
 }
 
 const styles = StyleSheet.create({
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
   container: {
     flex: 1,
     padding: 20,

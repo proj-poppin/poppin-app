@@ -7,30 +7,19 @@ import {
   NativeStackNavigationOptions,
 } from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
+import BackSvg from '../../assets/icons/goBack.svg';
 
 interface ProfileEditOptionsProps {
   navigation: NativeStackNavigationProp<AppNavigatorParamList, 'ProfileEdit'>;
-  handleSubmit: () => void;
 }
-
 const ProfileEditOptions = ({
   navigation,
-  handleSubmit,
 }: ProfileEditOptionsProps): Partial<NativeStackNavigationOptions> => {
   return {
     title: '프로필 설정',
-    headerRight: () => (
-      <Text
-        onPress={handleSubmit}
-        style={{color: globalColors.blue, marginRight: 10}}>
-        완료
-      </Text>
-    ),
     headerLeft: () => (
-      <Pressable
-        onPress={() => navigation.goBack()}
-        style={({pressed}) => ({opacity: pressed ? 0.5 : 1})}>
-        <GoBackSvg />
+      <Pressable onPress={() => navigation.goBack()} style={{padding: 10}}>
+        <BackSvg />
       </Pressable>
     ),
   };

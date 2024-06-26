@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Switch, Text, View} from 'react-native';
 import globalColors from '../../styles/color/globalColors';
 
@@ -6,26 +6,50 @@ type Props = {
   label: string;
   desc?: string;
   name: string;
+  isAlarm: boolean;
+  isEnable: boolean;
   onChange: (name: string, value: boolean) => void;
 };
 
-function SettingSwitch({label, desc, name, onChange}: Props) {
-  const [isAlarmAll, setIsAlarmAll] = useState(false);
-
+function SettingSwitch({
+  label,
+  desc,
+  name,
+  isAlarm,
+  isEnable,
+  onChange,
+}: Props) {
+  const [isAlarmAll, setIsAlarmAll] = useState(isAlarm);
   const toggleSwitch = () => {
     setIsAlarmAll(previousState => !previousState);
-    onChange(name, isAlarmAll);
+    onChange(name, !isAlarmAll);
   };
+
+  useEffect(() => {
+    console.log('isAlarmAll', isAlarmAll);
+  }, [isAlarmAll]);
+
   return (
     <View style={styles.container}>
       <View style={styles.textWrapper}>
-        <Text style={styles.title}>{label}</Text>
-        {desc && <Text style={styles.desc}>{desc}</Text>}
+        <Text style={[styles.title, !isEnable && styles.disabledText]}>
+          {label}
+        </Text>
+        {desc && (
+          <Text style={[styles.desc, !isEnable && styles.disabledText]}>
+            {desc}
+          </Text>
+        )}
       </View>
-
       <Switch
-        trackColor={{false: globalColors.stroke2, true: globalColors.blue}}
-        thumbColor={isAlarmAll ? 'white' : 'white'}
+        disabled={!isEnable}
+        trackColor={{
+          false: globalColors.stroke2,
+          true: isEnable ? globalColors.blue : globalColors.stroke2,
+        }}
+        thumbColor={
+          isEnable ? (isAlarmAll ? 'white' : 'white') : globalColors.stroke2
+        }
         ios_backgroundColor="#DDDDDD"
         onValueChange={toggleSwitch}
         value={isAlarmAll}
@@ -55,6 +79,9 @@ const styles = StyleSheet.create({
   },
   desc: {
     fontSize: 13,
+    color: globalColors.stroke2,
+  },
+  disabledText: {
     color: globalColors.stroke2,
   },
 });

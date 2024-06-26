@@ -16,6 +16,7 @@ const PopupTab = ({navigation}) => {
         emptyAlarm(navigation)
       ) : (
         <FlatList
+          keyExtractor={(item, index) => index.toString()}
           data={popupAlarmList}
           renderItem={({item}) => {
             return <AlarmCard type="popup" props={item} />;

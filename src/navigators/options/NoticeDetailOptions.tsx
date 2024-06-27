@@ -19,7 +19,7 @@ export const NoticeDetailOptions = ({
   headerLeft: () => (
     <Pressable
       onPress={() => {
-        navigation.replace('Alarm');
+        navigation.goBack();
       }}
       style={{padding: 10}}>
       <CloseSvg />

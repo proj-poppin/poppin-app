@@ -2,24 +2,17 @@ import {
   ActivityIndicator,
   RefreshControl,
   ScrollView,
-  Text,
   View,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import DividerLine from '../../../components/DividerLine.tsx';
-import FindCard from '../../../components/findPopup/FindCard.tsx';
-import useGetFindPopupList from '../../../hooks/findPopUp/useGetFindPopupList.tsx';
-import NotList from '../../../components/findPopup/NotList.tsx';
-import globalColors from '../../../styles/color/globalColors.ts';
-
-function OperationTab({
-  type,
-  selectedOrder,
-  availableTags,
-  searchKeyword,
-}: any) {
+import useGetFindPopupList from '../../hooks/findPopUp/useGetFindPopupList.tsx';
+import NotList from '../../components/findPopup/NotList.tsx';
+import globalColors from '../../styles/color/globalColors.ts';
+import DividerLine from '../../components/DividerLine.tsx';
+import FindCard from '../../components/findPopup/FindCard.tsx';
+function FindTab({selectedOrder, availableTags, searchKeyword, status}: any) {
   const [page, setPage] = useState(0);
-  const [size, setSize] = useState(5);
+  const [size] = useState(5);
   const [loadingMore, setLoadingMore] = useState(false);
   const [triggerFetch, setTriggerFetch] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -27,12 +20,11 @@ function OperationTab({
   const {
     data: findPopupListData,
     loading: findPopupListLoading,
-    error: findPopupListError,
     refetch,
   } = useGetFindPopupList(
     page,
     size,
-    'OPERATING',
+    status,
     selectedOrder,
     availableTags,
     searchKeyword,
@@ -41,32 +33,38 @@ function OperationTab({
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    refetch().finally(() => setRefreshing(false));
-  }, [refetch]);
+    setPage(0); // 페이지를 0으로 초기화
+    setTriggerFetch(true); // 데이터 가져오기 트리거
+  }, []);
+
+  useEffect(() => {
+    setPage(0); // 페이지를 0으로 초기화
+    setTriggerFetch(true); // 데이터 가져오기 트리거
+  }, [selectedOrder, availableTags, searchKeyword]);
+
+  useEffect(() => {
+    if (triggerFetch) {
+      refetch();
+      setTriggerFetch(false);
+      setLoadingMore(false); // 추가 데이터를 로딩하지 않음
+      if (refreshing) {
+        setRefreshing(false);
+      }
+    }
+  }, [triggerFetch, refetch, refreshing]);
 
   const handleScroll = (event: any) => {
     const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
     const isEndReached =
       layoutMeasurement.height + contentOffset.y >= contentSize.height;
-    const isStartReached = contentOffset.y <= 0;
-
     if (isEndReached && !loadingMore) {
       setLoadingMore(true);
-      setPage(prev => prev + 1);
-    }
 
-    if (isStartReached && page > 0) {
-      setPage(0);
-      setTriggerFetch(true);
+      setPage(page + 1);
     }
   };
 
-  useEffect(() => {
-    setPage(0);
-    setTriggerFetch(true);
-  }, [selectedOrder, availableTags, searchKeyword]);
-
-  if (findPopupListData.length === 0 && !findPopupListLoading) {
+  if (page === 0 && findPopupListData.length === 0 && !findPopupListLoading) {
     return <NotList />;
   } else if (findPopupListLoading && page === 0) {
     return (
@@ -85,13 +83,9 @@ function OperationTab({
       onScroll={handleScroll}
       style={{marginBottom: 100}}>
       <DividerLine height={1} />
-      {findPopupListData && findPopupListData.length > 0 ? (
-        findPopupListData.map((item: any, index: number) => (
-          <FindCard type={type} key={item.id || index} item={item} />
-        ))
-      ) : (
-        <NotList />
-      )}
+      {findPopupListData.map((item: any, index: number) => (
+        <FindCard status={status} key={item.id || index} item={item} />
+      ))}
       {findPopupListLoading && (
         <View
           style={{
@@ -100,7 +94,7 @@ function OperationTab({
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text>데이터를 불러오고 있습니다.</Text>
+          <ActivityIndicator size="large" color={globalColors.purple} />
         </View>
       )}
       <DividerLine height={1} />
@@ -108,4 +102,4 @@ function OperationTab({
   );
 }
 
-export default OperationTab;
+export default FindTab;

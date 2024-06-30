@@ -14,7 +14,7 @@ export type GetInterestPopUpListResponse = {
   saved_count: any;
   id: number;
   image_url: string;
-  status: string;
+  status: 'TERMINATED' | 'OPERATING' | 'NOTYET';
   name: string;
   open_date: string;
   close_date: string;

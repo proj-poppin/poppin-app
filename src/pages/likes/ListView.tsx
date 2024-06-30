@@ -29,7 +29,7 @@ interface ListViewProps {
     name: string;
     close_date: string;
     open_date: string;
-    status: string;
+    status: 'TERMINATED' | 'OPERATING' | 'NOTYET';
   }[];
   onRefresh: () => void;
 }
@@ -47,7 +47,6 @@ const ListView: React.FC<ListViewProps> = ({
   const {data, refetch} = useGetInterestList();
   const [currentDate, setCurrentDate] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  const [interestList, setInterestList] = useState(sortedInterestList);
 
   const handleRefresh = useCallback(() => {
     setRefreshing(true);
@@ -118,6 +117,7 @@ const ListView: React.FC<ListViewProps> = ({
                   open_date={item.open_date}
                   status={item.status}
                   id={item.id}
+                  isInterested={true}
                 />
               </TouchableOpacity>
             ))

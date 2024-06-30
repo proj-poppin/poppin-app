@@ -51,6 +51,7 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
     <View style={styles.cardContainer}>
       <Spinner
         visible={addLoading || deleteLoading}
+        textContent={'로딩중...'}
         textStyle={{color: '#FFF'}}
       />
       <View style={styles.svgContainer}>

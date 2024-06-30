@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState, useCallback} from 'react';
 import {
   TouchableOpacity,
   View,
@@ -6,6 +6,8 @@ import {
   StyleSheet,
   Text,
   ActivityIndicator,
+  RefreshControl,
+  ScrollView,
 } from 'react-native';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {useAppDispatch} from '../../redux/stores';
@@ -16,11 +18,10 @@ import ListIconSvg from '../../assets/icons/listIcon.svg';
 import useGetInterestList from '../../hooks/popUpList/useGetInterestList';
 import Text24B from '../../styles/texts/headline/Text24B';
 import ListView from './ListView';
-import NoLikesSvg from '../../assets/likes/noLikes.svg';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import ForLoginBox from '../../components/ForLoginBox.tsx';
-import {useFocusEffect} from '@react-navigation/native';
 import CalendarComponent from './calendar/CalendarComponent.tsx';
+import NoSavedPopupsComponent from './NoSavedPopupComponent.tsx';
 
 const popUpTypes = ['오픈 예정인 팝업', '운영 중인 팝업', '운영 종료 팝업'];
 const orderTypes = ['오픈일순', '마감일순', '저장순'];
@@ -28,54 +29,17 @@ const orderTypes = ['오픈일순', '마감일순', '저장순'];
 function LikesScreen({navigation}) {
   const [selectedPopUpType, setSelectedPopUpType] = useState<string>('');
   const [selectedOrderType, setSelectedOrderType] = useState<string>('');
-  const [selectedDate, setSelectedDate] = useState<Record<string, any>>({});
   const [isCalendarView, setIsCalendarView] = useState(false);
 
-  const {data: interestList, refetch, loading, error} = useGetInterestList();
-
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-      dispatch(loadingSlice.actions.setLoading({isLoading: true}));
-      setTimeout(() => {
-        dispatch(loadingSlice.actions.setLoading({isLoading: false}));
-      }, 2000);
-    }, [dispatch, refetch]),
-  );
+  const {data: interestList = [], refetch, loading} = useGetInterestList();
   const dispatch = useAppDispatch();
 
-  const getMarkedDates = () => {
-    const today = new Date().toISOString().split('T')[0];
-
-    let markedDates = {
-      ...selectedDate,
-      [today]: {
-        selectedDate: true,
-        textColor: 'black',
-        selectedColor: globalColors.purpleLight,
-      },
-    };
-
-    markedDates[selectedDate] = {
-      selected: true,
-      selectedColor: globalColors.purple,
-      textColor: globalColors.white,
-    };
-
-    if (!markedDates[today]) {
-      markedDates[today] = {
-        marked: true,
-        primaryColors: globalColors.purple,
-        dots: [
-          {color: globalColors.blue, selectedDotColor: globalColors.blue},
-          {color: globalColors.purple, selectedDotColor: globalColors.purple},
-          {color: globalColors.white, selectedDotColor: globalColors.white},
-        ],
-      };
-    }
-
-    return markedDates;
-  };
+  useEffect(() => {
+    dispatch(loadingSlice.actions.setLoading({isLoading: true}));
+    setTimeout(() => {
+      dispatch(loadingSlice.actions.setLoading({isLoading: false}));
+    }, 2000);
+  }, [dispatch]);
 
   const toggleView = () => {
     setIsCalendarView(!isCalendarView);
@@ -93,40 +57,41 @@ function LikesScreen({navigation}) {
   const filteredInterestList = useMemo(() => {
     switch (selectedPopUpType) {
       case '오픈 예정인 팝업':
-        return interestList?.filter(item => item.status === 'D-N');
+        return interestList.filter(item => item.status === 'NOTYET');
       case '운영 중인 팝업':
-        return interestList?.filter(item => item.status === 'OPERATING');
+        return interestList.filter(item => item.status === 'OPERATING');
       case '운영 종료 팝업':
-        return interestList?.filter(item => item.status === 'TERMINATED');
+        return interestList.filter(item => item.status === 'TERMINATED');
       default:
         return interestList;
     }
   }, [selectedPopUpType, interestList]);
 
   const sortedInterestList = useMemo(() => {
+    let list = [...(filteredInterestList || [])];
+
+    // Always sort by open_date first
+    list.sort((a, b) => new Date(a.open_date) - new Date(b.open_date));
+
     switch (selectedOrderType) {
-      case '오픈일순':
-        return filteredInterestList?.sort(
-          (a, b) =>
-            new Date(a.open_date).getTime() - new Date(b.open_date).getTime(),
-        );
       case '마감일순':
-        return filteredInterestList?.sort(
-          (a, b) =>
-            new Date(a.close_date).getTime() - new Date(b.close_date).getTime(),
+        return list.sort(
+          (a, b) => new Date(a.close_date) - new Date(b.close_date),
         );
       case '저장순':
-        return filteredInterestList?.sort(
-          (a, b) => b.saved_count - a.saved_count,
-        );
+        return list.sort((a, b) => b.saved_count - a.saved_count);
       default:
-        return filteredInterestList;
+        return list;
     }
   }, [selectedOrderType, filteredInterestList]);
 
   const handlePress = () => {
     navigation.replace('Entry');
   };
+
+  const handleRefresh = useCallback(() => {
+    refetch();
+  }, [refetch]);
 
   if (!isLoggedIn) {
     return (
@@ -142,37 +107,32 @@ function LikesScreen({navigation}) {
       </View>
     );
   }
+
   if (loading) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" color={globalColors.blue} />
+        <ActivityIndicator size="large" color={globalColors.purple} />
       </View>
     );
   }
-  if (isLoggedIn && interestList?.length === 0) {
+
+  if (isLoggedIn && interestList.length === 0) {
     return (
-      <SafeAreaView style={{flex: 1}}>
-        <View style={styles.header}>
-          <Text style={[Text24B.text]}>관심 목록</Text>
-        </View>
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <NoLikesSvg />
-          <View>
-            <Text style={styles.text}>
-              {'저장한 팝업이 없어요🫤'} {'\n'}
-              {'관심있는 팝업을 저장해 보세요.'}
-            </Text>
-          </View>
-        </View>
-      </SafeAreaView>
+      <ScrollView
+        contentContainerStyle={{flex: 1}}
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={refetch} />
+        }>
+        <NoSavedPopupsComponent />
+      </ScrollView>
     );
   }
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={[{flex: 1}, {marginBottom: 100}]}>
       <BottomSheetModalProvider>
         <View style={styles.header}>
-          <Text style={[Text24B.text]}>관심 목록</Text>
+          <Text style={[Text24B.text]}>팝업 목록</Text>
           <TouchableOpacity style={styles.iconButton} onPress={toggleView}>
             {isCalendarView ? (
               <ListIconSvg width={24} height={24} fill={globalColors.font} />
@@ -186,14 +146,22 @@ function LikesScreen({navigation}) {
             <CalendarComponent data={interestList} />
           </View>
         ) : (
-          <ListView
-            popUpTypes={popUpTypes}
-            orderTypes={orderTypes}
-            setSelectedPopUpType={setSelectedPopUpType}
-            setSelectedOrderType={setSelectedOrderType}
-            sortedInterestList={sortedInterestList}
-            onRefresh={refetch}
-          />
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={loading} onRefresh={handleRefresh} />
+            }>
+            <ListView
+              popUpTypes={popUpTypes}
+              orderTypes={orderTypes}
+              setSelectedPopUpType={setSelectedPopUpType}
+              setSelectedOrderType={setSelectedOrderType}
+              sortedInterestList={sortedInterestList.map(item => ({
+                ...item,
+                isInterested: true, // Ensure all items from the interest list are marked as interested
+              }))}
+              onRefresh={refetch}
+            />
+          </ScrollView>
         )}
       </BottomSheetModalProvider>
     </SafeAreaView>

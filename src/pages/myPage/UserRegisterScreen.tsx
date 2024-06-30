@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useLayoutEffect} from 'react';
+import React, {useState, useCallback, useLayoutEffect, useRef} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import LabelAndInputWithCloseSvg from '../../components/LabelAndInputWithCloseSvg.tsx';
@@ -12,39 +12,39 @@ import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
 import globalColors from '../../styles/color/globalColors.ts';
 import {useImageSelector} from '../../hooks/useImageSelector'; // Import the custom hook
-import {useCategorySelector} from '../../hooks/useCategorySelector'; // Import the custom hook
-import TextInputWithSvgIconInRight from '../../components/TextInputWithSvgIconInRight.tsx';
-import PreferenceOptionButtons from '../../components/PreferenceOptionButtons.tsx';
 import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
 import DownSvg from '../../assets/icons/down.svg';
-import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
-import RequiredTextLabel from '../../components/RequiredTextLabel.tsx';
+import CategorySelectButton from '../../components/findPopup/CategorySelectButton.tsx';
+import {POP_UP_TYPES, TFilter} from '../../components/findPopup/constants.ts';
 import {useNavigation} from '@react-navigation/native';
 import useUserReportPopUp from '../../hooks/myPage/useUserReportPopUp.tsx';
-import {useReducedMotion} from 'react-native-reanimated';
+import TextInputWithSvgIconInRight from '../../components/TextInputWithSvgIconInRight.tsx';
+import RequiredTextLabel from '../../components/RequiredTextLabel.tsx';
 
 function UserRegisterScreen() {
-  const reducedMotion = useReducedMotion();
-  const navigation = useNavigation();
   const [storeName, setStoreName] = useState('');
   const [infoLink, setInfoLink] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
-
-  const {loading, userReportPopUp} = useUserReportPopUp(); // Use the custom hook
-
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const {selectedImages, handleSelectImages, handleRemoveImage} =
     useImageSelector(); // Use the custom hook
+  const {loading, userReportPopUp} = useUserReportPopUp(); // Use the custom hook
+  const navigation = useNavigation();
 
-  const {
-    selectedCategory,
-    setSelectedCategory,
-    bottomSheetModalRef,
-    snapPoints,
-    handlePresentModal,
-    onSelectOption,
-    handleConfirmSelection,
-  } = useCategorySelector(); // Use the custom hook
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <Pressable
+          onPress={() => setIsModalVisible(true)}
+          style={({pressed}) => [{opacity: pressed ? 0.5 : 1}]}
+          hitSlop={{top: 30, bottom: 30, left: 30, right: 30}}>
+          <GoBackSvg />
+        </Pressable>
+      ),
+    });
+  }, [navigation]);
 
   const openCompleteModal = () => {
     setCompleteModalVisible(true);
@@ -68,28 +68,23 @@ function UserRegisterScreen() {
     setIsModalVisible(false);
   };
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <Pressable
-          onPress={() => setIsModalVisible(true)}
-          style={({pressed}) => [{opacity: pressed ? 0.5 : 1}]}
-          hitSlop={{top: 30, bottom: 30, left: 30, right: 30}}>
-          <GoBackSvg />
-        </Pressable>
+  const handleClick = selectedTag => {
+    setSelectedCategory(selectedTag.label);
+    setSelectedTags(tags =>
+      tags.map(tag =>
+        tag.id === selectedTag.id
+          ? {...tag, selected: true}
+          : {...tag, selected: false},
       ),
-    });
-  }, [navigation]);
+    );
+  };
 
-  const isSubmitEnabled =
-    storeName.trim() !== '' &&
-    selectedCategory !== '' &&
-    selectedImages.length > 0;
+  const handleConfirmSelection = () => {
+    bottomSheetModalRef.current?.close();
+  };
 
   const renderBackdrop = useCallback(
-    (
-      props: React.JSX.IntrinsicAttributes & BottomSheetDefaultBackdropProps,
-    ) => (
+    props => (
       <BottomSheetBackdrop
         {...props}
         pressBehavior="close"
@@ -100,16 +95,24 @@ function UserRegisterScreen() {
     [],
   );
 
-  const handleSheetChanges = useCallback((index: number) => {
+  const handleSheetChanges = useCallback(index => {
     console.log('handleSheetChanges', index);
   }, []);
+
+  const handlePresentModal = () => {
+    bottomSheetModalRef.current?.present();
+  };
+
+  const isSubmitEnabled =
+    storeName.trim() !== '' &&
+    selectedCategory !== '' &&
+    selectedImages.length > 0;
 
   const handleReportSubmit = async () => {
     if (!isSubmitEnabled) {
       console.log('Submit is not enabled');
       return;
     }
-
     const response = await userReportPopUp(
       storeName,
       infoLink,
@@ -135,6 +138,10 @@ function UserRegisterScreen() {
       console.error(response.error?.message || 'Failed to submit report');
     }
   };
+
+  const [availableTags, setAvailableTags] = useState<TFilter[]>(POP_UP_TYPES);
+  const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
+
   return (
     <DismissKeyboardView style={styles.container}>
       <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>
@@ -163,27 +170,36 @@ function UserRegisterScreen() {
         isRequired={true}
         isClickableTextInput={true}
       />
-      <BottomSheetModal
-        animateOnMount={!reducedMotion}
-        ref={bottomSheetModalRef}
-        index={0}
-        backdropComponent={renderBackdrop}
-        snapPoints={snapPoints}
-        onChange={handleSheetChanges}>
-        <View style={styles.contentContainer}>
-          <Text style={[Text18B.text, {paddingTop: 15, paddingBottom: 40}]}>
-            제보할 팝업의 카테고리를 설정해 주세요
-          </Text>
-          <PreferenceOptionButtons
-            step={2}
-            onSelectOption={onSelectOption}
-            isEmojiRemoved={true}
-            isSingleSelect={false}
-            selectedCategory={selectedCategory}
-          />
-          <CompleteButton onPress={handleConfirmSelection} title={'확인'} />
-        </View>
-      </BottomSheetModal>
+      <View style={styles.modalContainer}>
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={0}
+          backdropComponent={renderBackdrop}
+          snapPoints={['65%']}
+          onChange={handleSheetChanges}>
+          <View style={styles.contentContainer}>
+            <Text style={[Text18B.text, {paddingTop: 15, paddingBottom: 40}]}>
+              제보할 팝업의 카테고리를 설정해 주세요
+            </Text>
+            <View style={styles.popWrapper}>
+              {selectedTags.slice(0, 14).map(item => (
+                <CategorySelectButton
+                  isMultipleSelectionPossible={false}
+                  key={item.id}
+                  item={item}
+                  onClick={handleClick}
+                  selectedTag={selectedCategory}
+                />
+              ))}
+            </View>
+            <CompleteButton
+              onPress={handleConfirmSelection}
+              title={'확인'}
+              buttonWidth={'90%'}
+            />
+          </View>
+        </BottomSheetModal>
+      </View>
       <View style={{paddingTop: 10}} />
       <RequiredTextLabel label={'관련사진'} isRequired={true} />
       <ImageContainerRow
@@ -199,9 +215,9 @@ function UserRegisterScreen() {
         *저품질의 사진은 정보 제공이 불가할 수 있습니다.{'\n'}
       </Text>
       <CompleteButton
-        onPress={handleReportSubmit} // Use the report submit handler
+        onPress={handleReportSubmit}
         title={'제보하기'}
-        disabled={!isSubmitEnabled || loading} // Disable button when loading
+        disabled={!isSubmitEnabled || loading}
       />
       <TwoSelectConfirmationModal
         isVisible={isModalVisible}
@@ -226,62 +242,26 @@ function UserRegisterScreen() {
 }
 
 const styles = StyleSheet.create({
+  modalContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: globalColors.white,
     paddingHorizontal: 20,
   },
-  modalContainer: {
-    flex: 1,
-    alignItems: 'center',
+  popWrapper: {
+    width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 15,
+    padding: 20,
     justifyContent: 'center',
-  },
-  labelText: {
-    color: globalColors.black,
-    fontSize: 15,
   },
   contentContainer: {
-    flex: 1,
-    flexDirection: 'column',
     alignItems: 'center',
-    paddingHorizontal: 10,
-  },
-  imagesContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  addImageButton: {
-    borderColor: globalColors.component,
-    borderWidth: 2,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 120,
-    height: 120,
-    marginRight: 10,
-  },
-  selectedImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 10,
-    marginRight: 10,
-  },
-  addImageText: {
-    color: globalColors.font,
-    paddingTop: 8,
-    textAlign: 'center',
-  },
-  deleteIcon: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    padding: 10,
-    color: 'black',
-  },
-  imageContainer: {
-    position: 'relative',
-    marginRight: 10,
+    paddingTop: 20,
   },
 });
 

@@ -2,7 +2,7 @@ import {useState, useCallback, useRef, useMemo} from 'react';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 
 export const useCategorySelector = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>();
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['60%'], []);
 

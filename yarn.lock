@@ -2424,6 +2424,11 @@
   resolved "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.15.tgz"
   integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
 
+"@types/lodash@^4.17.6":
+  version "4.17.6"
+  resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.17.6.tgz"
+  integrity sha512-OpXEVoCKSS3lQqjx9GGGOapBeuW5eUboYHRlHP9urXPX25IKZ6AnP5ZRxtVf63iieUbsHxLn8NQ5Nlftc6yzAA==
+
 "@types/mute-stream@^0.0.4":
   version "0.0.4"
   resolved "https://registry.npmjs.org/@types/mute-stream/-/mute-stream-0.0.4.tgz"

@@ -1,10 +1,13 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, Pressable} from 'react-native';
 import SettingSwitch from '../../components/alarm/SettingSwitch';
 import globalColors from '../../styles/color/globalColors';
 import useGetAlarmSettings from '../../hooks/alarm/useGetAlarmSettings.ts';
 import setAlarmSettings from '../../apis/alarm/setAlarmSettings.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import PushNotification from 'react-native-push-notification';
+import RightSvg from '../../assets/icons/bigRight.svg';
+import text18M from '../../styles/texts/body_large/Text18M.ts';
 
 interface AlarmSettingsProps {
   pushYn: string;
@@ -20,6 +23,15 @@ function AlaramSettingScreen({navigation}) {
   const [settings, setSettings] = useState<AlarmSettingsProps>();
   const settingsRef = useRef<AlarmSettingsProps>();
   const pushYnRef = useRef<string>();
+
+  useEffect(() => {
+    PushNotification.configure({
+      onNotification: function (notification) {
+        console.log('LOCAL NOTIFICATION ==>', notification);
+      },
+      requestPermissions: true,
+    });
+  }, []);
 
   useEffect(() => {
     if (fetchedAlarmSettings) {
@@ -66,7 +78,6 @@ function AlaramSettingScreen({navigation}) {
   const onChange = (name: string, value: boolean) => {
     console.log(name, value);
     if (name === 'pushYn') {
-      // setPushYn(value ? '1' : '0');
       pushYnRef.current = value ? '1' : '0';
       console.log(name, value);
     }
@@ -74,6 +85,14 @@ function AlaramSettingScreen({navigation}) {
       const newSettings = {...prevSettings, [name]: value ? '1' : '0'};
       settingsRef.current = newSettings;
       return newSettings;
+    });
+  };
+
+  const handleTestNotification = () => {
+    PushNotification.localNotification({
+      channelId: 'test-channel',
+      title: '테스트 알림',
+      message: '테스트 알림이 도착했습니다!',
     });
   };
 
@@ -102,7 +121,7 @@ function AlaramSettingScreen({navigation}) {
           onChange={onChange}
         />
       </View>
-      <View style={styles.diver} />
+      <View />
 
       <View style={styles.content}>
         <View>
@@ -141,6 +160,15 @@ function AlaramSettingScreen({navigation}) {
           onChange={onChange}
         />
       </View>
+      <View />
+      <View style={styles.content}>
+        <Pressable
+          style={styles.testNotificationContainer}
+          onPress={handleTestNotification}>
+          <Text style={text18M.text}>테스트 알림 보내기</Text>
+          <RightSvg />
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -158,13 +186,18 @@ const styles = StyleSheet.create({
     display: 'flex',
     gap: 15,
   },
-  diver: {
-    width: '100%',
-    height: 10,
-    backgroundColor: globalColors.warmGray,
-  },
-
+  // diver: {
+  //   width: '100%',
+  //   height: 10,
+  //   backgroundColor: globalColors.warmGray,
+  // },
   label: {
-    color: globalColors.stroke2,
+    // color: globalColors.stroke2,
+  },
+  testNotificationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: globalColors.white,
   },
 });

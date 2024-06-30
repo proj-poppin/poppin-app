@@ -12,6 +12,7 @@ const colorSystem = {
   icon: '#B8CAD2',
   subWhite: '#FAF4FC',
   component: '#F2F4F6',
+  toggleBackground: '#E9E9EA',
   warmGray: '#DDDDDD',
   warmGray2: '#E6E9ED',
   red: '#EF4452',

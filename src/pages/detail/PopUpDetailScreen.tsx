@@ -4,24 +4,16 @@ import {
   Alert,
   Image,
   Linking,
-  PermissionsAndroid,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {
-  toggleInterest,
-  setInterest,
-} from '../../redux/slices/interestedPopUpSlice'; // 추가
 import useGetDetailPopUp from '../../hooks/detailPopUp/useGetDetailPopUp';
 import ShareSvg from '../../assets/detail/share.svg';
 import StarOffSvg from '../../assets/detail/starOff.svg';
 import StarOnSvg from '../../assets/detail/starOn.svg';
-// import MapSvg from '../../assets/detail/map.svg';
 import Text20B from '../../styles/texts/title/Text20B';
 import Text14R from '../../styles/texts/body_medium/Text14R';
 import globalColors from '../../styles/color/globalColors';
@@ -39,7 +31,7 @@ import SvgWithNameBoxLabel from '../../components/SvgWithNameBoxLabel';
 import UnderlinedTextButton from '../../components/UnderlineTextButton';
 import LikeReviewSvg from '../../assets/detail/likesReview.svg';
 import Text16M from '../../styles/texts/body_medium_large/Text16M';
-import OrderSvg from '../../assets/icons/order';
+import SortingSvg from '../../assets/detail/sorting.svg';
 import ReasonItem from '../../components/ReasonItem';
 import CongestionSection from '../../components/organisms/section/CongestionSection';
 import {VisitorDataDetail} from '../../types/DetailPopUpDataNonPublic';
@@ -56,80 +48,37 @@ import useAddVisitor from '../../hooks/detailPopUp/useAddVisitor';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList';
 import PopUpDetailOptions from '../../navigators/options/PopUpDetailOptions';
-import {RootState} from '../../redux/stores/reducer';
 import {Share} from 'react-native';
-import getDetailPopUp from '../../apis/popup/detailPopUp.ts';
 import useGetDistanceFromLatLonInKm from '../../utils/function/getDistanceFromLatLonInKm.ts';
-import loadingSlice from '../../redux/slices/loading.ts';
 import VisitCompleteSvg from '../../assets/icons/visitComplete.svg';
 import VisitReadySvg from '../../assets/icons/visitReady.svg';
-
-async function requestPermissions() {
-  if (Platform.OS === 'ios') {
-    const auth = await Geolocation.requestAuthorization('whenInUse');
-    if (auth === 'granted') {
-      return true;
-    } else if (auth === 'denied') {
-      Alert.alert(
-        'Permission Denied',
-        'Location permission is required. Please enable it in the app settings.',
-        [
-          {text: 'Cancel', style: 'cancel'},
-          {
-            text: 'Open Settings',
-            onPress: () => Linking.openURL('app-settings:'),
-          },
-        ],
-      );
-    }
-    return false;
-  } else if (Platform.OS === 'android') {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        title: 'Location Permission',
-        message: 'App needs access to your location',
-        buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
-      },
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      return true;
-    } else if (granted === PermissionsAndroid.RESULTS.DENIED) {
-      // User denied permission without checking 'Don't ask again'
-      return false;
-    } else if (granted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      // User denied permission and checked 'Don't ask again'
-      Alert.alert(
-        'Permission Denied',
-        'Location permission is required. Please enable it in the app settings.',
-        [
-          {text: 'Cancel', style: 'cancel'},
-          {text: 'Open Settings', onPress: () => Linking.openSettings()},
-        ],
-      );
-    }
-    return false;
-  }
-  return false;
-}
+import {requestPermissions} from '../../utils/function/permissionUtil.ts';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {useSelector} from 'react-redux';
 
 export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
   'PopUpDetail'
 >;
 
+interface Review {
+  reviewId: number;
+  nickname: string;
+  reviewCnt: number;
+  text: string;
+  imageUrls: string[];
+  isCertificated: boolean;
+  recommendCnt: number;
+}
+
 const PopUpDetailScreen = ({route}) => {
   const isLoggedIn = useIsLoggedIn();
   const navigation = useNavigation<PopUpDetailScreenNavigationProp>();
   const [fetchTrigger, setFetchTrigger] = useState(false);
-  const {id, name} = route.params;
-  const dispatch = useDispatch();
-  const isInterested = useSelector(
-    (state: RootState) => state.interestedPopups[id],
-  );
-
+  const {id} = route.params;
+  const [isInterested, setIsInterested] = useState(false);
+  const [reviews, setReviews] = useState<Review[]>([]); // Correctly set the initial state to an empty array
+  const reviewSubmitted = useSelector(state => state.reviewSubmitted);
   let {
     data: detailPopUpData,
     loading,
@@ -142,20 +91,13 @@ const PopUpDetailScreen = ({route}) => {
     setCompleteModalVisible(true);
   };
 
-  useFocusEffect(
-    useCallback(() => {
+  useEffect(() => {
+    if (reviewSubmitted) {
       refetch();
-      dispatch(loadingSlice.actions.setLoading({isLoading: true}));
-      setTimeout(() => {
-        dispatch(loadingSlice.actions.setLoading({isLoading: false}));
-      }, 200);
-    }, [dispatch, refetch]),
-  );
-
-  // 제보하기 버튼 클릭후 모달 닫기
-  const closeCompleteModal = () => {
-    setCompleteModalVisible(false);
-    // navigation.goBack();
+    }
+  }, [reviewSubmitted, refetch]);
+  const handleReviewComplete = () => {
+    refetch();
   };
 
   useEffect(() => {
@@ -167,37 +109,35 @@ const PopUpDetailScreen = ({route}) => {
           name: detailPopUpData.name,
         }),
       );
-      dispatch(
-        setInterest({
-          popupId: detailPopUpData.id,
-          isInterested: detailPopUpData.isInterested,
-        }),
-      );
+      setIsInterested(detailPopUpData.isInterested);
+      setReviews(detailPopUpData.review); // Set the reviews state
     }
-    console.log('realVisit!!:', detailPopUpData?.realTimeVisit);
-  }, [navigation, detailPopUpData, dispatch]);
+  }, [navigation, detailPopUpData]);
 
   const firstImageUrl =
     detailPopUpData?.images?.[0] ??
     'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/4/1.jpg';
   const [isShowToast, setIsShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-  const {addRecommendCount} = useAddRecommendReview();
-  const {addInterest} = useAddInterestPopUp();
-  const {deleteInterest} = useDeleteInterestPopUp();
+  const {addRecommendCount, loading: recommendLoading} =
+    useAddRecommendReview(); // Updated line
+  const {addInterest, loading: addLoading} = useAddInterestPopUp();
+  const {deleteInterest, loading: deleteLoading} = useDeleteInterestPopUp();
   const {addVisitorPopUp} = useAddVisitor();
   const [isOnlyVerifiedReview, setIsOnlyVerifiedReview] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
   const [showFullText, setShowFullText] = useState(false);
 
   useEffect(() => {
-    if (detailPopUpData) {
+    if (
+      detailPopUpData?.isVisited === false &&
+      distance !== null &&
+      distance <= 0.05
+    ) {
       setToastMessage('이 팝업이 근처에 있어요!!');
       setIsShowToast(true);
     }
-  }, [detailPopUpData]);
+  }, [distance, detailPopUpData]);
 
   const handleIsOnlyVerifiedReview = () => {
     setIsOnlyVerifiedReview(!isOnlyVerifiedReview);
@@ -225,12 +165,8 @@ const PopUpDetailScreen = ({route}) => {
         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
       );
     }
-    // console.log('latitude:', latitude);
-    // console.log('longitude:', longitude);
-    // console.log('detailPopUpData?.latitude:', detailPopUpData?.latitude);
-    // console.log('detailPopUpData?.longitude:', detailPopUpData?.longitude);
-    // console.log('🎨🎨🎨🎨🎨🎨🎨distance:', distance);
-    if (hasPermission && distance !== null && distance <= 0.05) {
+    //if (hasPermission && distance !== null && distance <= 0.05)
+    if (hasPermission) {
       const response = await addVisitorPopUp(detailPopUpData!.id!, 'fcmToken');
       if (response.success) {
         setToastMessage('방문 인증 되었습니다.');
@@ -260,25 +196,30 @@ const PopUpDetailScreen = ({route}) => {
       setToastMessage('관심팝업에 저장되었어요!');
     }
     setIsShowToast(true);
-    dispatch(toggleInterest(id)); // 추가
+    setIsInterested(!isInterested);
+    setTimeout(() => setIsShowToast(false), 1500);
   };
-
-  const handleOpenLink = url => {
-    if (url) {
-      Linking.openURL(url).then(r => console.log('Link opened:', r));
-    }
+  const closeCompleteModal = () => {
+    setCompleteModalVisible(false);
+  };
+  const handleOpenLink = (link: string) => {
+    Linking.openURL(link)
+      .then(r => console.log(r))
+      .catch(e => console.log(e));
   };
 
   const handleRecommendPress = async (reviewId: number) => {
     try {
       const response = await addRecommendCount(detailPopUpData?.id!, reviewId);
       if (response.success) {
-        detailPopUpData!.review = detailPopUpData!.review.map(review => {
-          if (review.reviewId === reviewId) {
-            return {...review, recommendCnt: review.recommendCnt + 1};
-          }
-          return review;
-        });
+        console.log('review recommend success');
+        setReviews(reviews =>
+          reviews.map(review =>
+            review.reviewId === reviewId
+              ? {...review, recommendCnt: review.recommendCnt + 1}
+              : review,
+          ),
+        );
       } else if (response.error && response.error.code === '40020') {
         Alert.alert('이미 추천한 리뷰입니다.');
       } else {
@@ -318,16 +259,12 @@ const PopUpDetailScreen = ({route}) => {
   }
 
   const isVisitComplete = detailPopUpData.isVisited;
-  const buttonTitle = isVisitComplete ? '방문완료' : '방문하기';
-  const buttonColor = isVisitComplete ? globalColors.blue : globalColors.white;
-  const buttonTextColor = isVisitComplete
-    ? globalColors.white
-    : globalColors.blue;
 
   const visitorDataDefault: VisitorDataDetail = {
     congestionRate: '여유',
     congestionRatio: 30,
   };
+
   const weekdayAm =
     detailPopUpData.visitorData?.weekdayAm || visitorDataDefault;
   const weekdayPm =
@@ -338,8 +275,8 @@ const PopUpDetailScreen = ({route}) => {
     detailPopUpData.visitorData?.weekendPm || visitorDataDefault;
 
   const filteredReviews = isOnlyVerifiedReview
-    ? detailPopUpData.review.filter(review => review.isCertificated)
-    : detailPopUpData.review;
+    ? reviews.filter(review => review.isCertificated)
+    : reviews;
 
   return (
     <>
@@ -361,7 +298,7 @@ const PopUpDetailScreen = ({route}) => {
           )}
           <View style={styles.iconContainer}>
             <Pressable
-              onPress={() => handleOpenLink(detailPopUpData.homepageLink)}>
+              onPress={() => handleOpenLink(detailPopUpData!.homepageLink)}>
               {detailPopUpData.isInstagram ? (
                 <SvgWithNameBoxLabel
                   Icon={InstagramTestSvg}
@@ -377,10 +314,6 @@ const PopUpDetailScreen = ({route}) => {
               )}
             </Pressable>
             <View style={styles.socialIcons}>
-              {/*<Pressable onPress={() => {}}>*/}
-              {/*  <MapSvg style={{paddingHorizontal: 20}} />*/}
-              {/*</Pressable>*/}
-
               <Pressable onPress={handleToggleInterest}>
                 {isInterested ? <StarOnSvg /> : <StarOffSvg />}
               </Pressable>
@@ -393,14 +326,7 @@ const PopUpDetailScreen = ({route}) => {
             </View>
           </View>
           <DetailDividerLine />
-          {isShowToast && (
-            <ToastComponent
-              height={40}
-              onClose={() => setIsShowToast(false)}
-              message={toastMessage}
-            />
-          )}
-          {/*<DetailDividerLine />*/}
+
           <View style={styles.iconContainer}>
             <Text style={[Text20B.text, {color: globalColors.purple}]}>
               상세 정보
@@ -481,9 +407,9 @@ const PopUpDetailScreen = ({route}) => {
                   return;
                 }
                 navigation.navigate('ReviewWrite', {
-                  name: detailPopUpData.name,
-                  id: detailPopUpData.id,
-                  isVisited: detailPopUpData.isVisited,
+                  name: detailPopUpData!.name,
+                  id: detailPopUpData!.id,
+                  isVisited: detailPopUpData!.isVisited,
                 });
               }}>
               <SvgWithNameBoxLabel
@@ -502,7 +428,7 @@ const PopUpDetailScreen = ({route}) => {
             </View>
             <View style={styles.recentReviewHeader}>
               <Text>추천순</Text>
-              <OrderSvg />
+              <SortingSvg />
             </View>
           </View>
           {filteredReviews.map(review => (
@@ -578,6 +504,19 @@ const PopUpDetailScreen = ({route}) => {
         contentFirstLine={'해당 팝업의 50m 이내에 있으면'}
         contentSecondLine={'방문하기 버튼이 활성화 됩니다!'}
         checkText="확인했어요"
+      />
+      {isShowToast && (
+        <ToastComponent
+          height={35}
+          onClose={() => setIsShowToast(false)}
+          message={toastMessage}
+          bottom={40}
+        />
+      )}
+      <Spinner
+        visible={addLoading || deleteLoading || recommendLoading} // Updated line
+        textContent={'로딩중...'}
+        textStyle={{color: '#FFF'}}
       />
     </>
   );

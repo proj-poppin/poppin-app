@@ -4,7 +4,6 @@ import globalColors from '../../styles/color/globalColors';
 
 import FindPopupNoList from '../../assets/images/findPopupNoList.svg';
 import NoListText from '../../assets/images/findPopupText.svg';
-import Text24B from '../../styles/texts/headline/Text24B.ts';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 
 function NotList() {
@@ -24,15 +23,17 @@ function NotList() {
       <NoListText width={250} height={120} />
       <View
         style={{
-          width: '90%',
-          height: 60,
+          width: '95%',
+          height: 55,
           backgroundColor: globalColors.blue,
           borderRadius: 80,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Text style={{fontSize: 25, color: 'white'}}>제보하러 가기</Text>
+        <Text style={[Text20B.text, {color: globalColors.white}]}>
+          제보하러 가기
+        </Text>
       </View>
     </View>
   );

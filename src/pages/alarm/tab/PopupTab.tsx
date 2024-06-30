@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   buttonContainer: {
-    width: '100%',
+    width: '85%',
     alignItems: 'center',
     marginBottom: 40,
   },

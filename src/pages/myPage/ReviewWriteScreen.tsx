@@ -27,6 +27,8 @@ import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationMo
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import ReviewWriteBadgeAuthSvg from '../../assets/icons/reviewWriteBadgeAuth.svg';
 import Text14M from '../../styles/texts/body_medium/Text14M.ts';
+import {useDispatch} from 'react-redux';
+import {setReviewSubmitted} from '../../redux/slices/reviewSubmittedSlice.ts';
 
 type ReviewWriteScreenRouteProp = RouteProp<
   AppNavigatorParamList,
@@ -34,6 +36,7 @@ type ReviewWriteScreenRouteProp = RouteProp<
 >;
 
 function ReviewWriteScreen() {
+  const dispatch = useDispatch();
   const route = useRoute<ReviewWriteScreenRouteProp>();
   const navigation = useNavigation();
   const {name, id, isVisited} = route.params;
@@ -86,6 +89,7 @@ function ReviewWriteScreen() {
       const resp = await getDetailPopUp(popupId);
       if (resp.success) {
         closeCompleteModal();
+        dispatch(setReviewSubmitted(true));
       }
     } else if (response.error) {
       console.error('Review submission error:', response.error.message);

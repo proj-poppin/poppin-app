@@ -1,41 +1,47 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Pressable} from 'react-native';
 import PoppinSvg from '../../../assets/icons/poppin.svg';
 import AlarmOffSvg from '../../../assets/icons/alarmOff.svg';
 import HeaderInfoSvg from '../../../assets/icons/headerInfo.svg';
 import InfoSvg from '../../../assets/icons/info.svg';
 import {useNavigation} from '@react-navigation/native';
 import {EntryScreenNavigationProp} from '../../HomeLoginHeader';
+import useIsLoggedIn from '../../../hooks/auth/useIsLoggedIn.tsx';
 
-const HomeHeader = ({onClickAlarm}: any) => {
+const HomeHeader = () => {
   const [showInfo, setShowInfo] = useState(false);
+  const isLoggedIn = useIsLoggedIn();
 
   useEffect(() => {
-    // Automatically show the HeaderInfoSvg for 5 seconds when the component mounts
     const timer = setTimeout(() => {
       setShowInfo(false);
     }, 4000);
 
-    // Return a cleanup function that clears the timer if the component unmounts
     return () => clearTimeout(timer);
   }, []);
 
   const toggleInfo = () => {
-    setShowInfo(prev => !prev); // Toggle the visibility of HeaderInfoSvg
+    setShowInfo(prev => !prev);
   };
+
   const navigation = useNavigation<EntryScreenNavigationProp>();
-  const goToAlarmScreen = () => {
-    navigation.navigate('Alarm');
+
+  const handleAlarmPress = () => {
+    if (isLoggedIn) {
+      navigation.navigate('Alarm');
+    } else {
+      navigation.navigate('Entry');
+    }
   };
 
   return (
     <View style={styles.container}>
       <PoppinSvg />
       <View style={styles.iconsContainer}>
-        <TouchableOpacity onPress={toggleInfo} style={styles.iconTouchable}>
+        <Pressable onPress={toggleInfo} style={styles.iconTouchable}>
           <InfoSvg style={{marginRight: 20}} />
-        </TouchableOpacity>
-        <AlarmOffSvg style={styles.alarmStyle} onPress={goToAlarmScreen} />
+        </Pressable>
+        <AlarmOffSvg style={styles.alarmStyle} onPress={handleAlarmPress} />
         {showInfo && <HeaderInfoSvg style={styles.headerInfoSvg} />}
       </View>
     </View>

@@ -1,14 +1,5 @@
-/* eslint-disable */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  FlatList,
-  TouchableOpacity,
-  Modal,
-} from 'react-native';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import {BottomSheetModal, BottomSheetView} from '@gorhom/bottom-sheet';
 import globalColors from '../../../styles/color/globalColors.ts';
 import DateData from 'react-native-calendars';
@@ -24,9 +15,7 @@ import {
   createDateData,
   createTodayDateData,
   formatDate,
-  getTodayDate,
   setCircle,
-  updateDate,
 } from './calendarUtils.ts';
 import BottomSheetItem from './BottomSheetItem.tsx';
 import NoItemComponent from './NoItemComponent.tsx';
@@ -60,7 +49,9 @@ const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({data}) => {
   const [selDate, setSelDate] = useState<DateData>(createTodayDateData()); // 캘린더 내부사용 포맷
   const [markedDates, setMarkedDates] = useState<MarkedDates>({});
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
-  const [calendarType, setCalendarType] = useState<CalendarType>(CalendarType.NORMAL);
+  const [calendarType, setCalendarType] = useState<CalendarType>(
+    CalendarType.NORMAL,
+  );
   const reducedMotion = useReducedMotion();
 
   // useRef
@@ -251,10 +242,12 @@ const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({data}) => {
                   data={filteredData}
                   renderItem={props => (
                     <BottomSheetItem
+                      key={props.item.id} // 고유한 key 속성 추가
                       item={props.item}
                       navigation={navigation}
                     />
-                  )}></FlatList>
+                  )}
+                />
               )}
             </View>
           </BottomSheetView>

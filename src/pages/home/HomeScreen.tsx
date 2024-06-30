@@ -13,7 +13,6 @@ import DividerLine from '../../components/DividerLine.tsx';
 import QuestionSvg from '../../assets/icons/question.svg';
 import DownSvg from '../../assets/icons/down.svg';
 import RightSvg from '../../assets/icons/smallright.svg';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import useGetHotList from '../../hooks/popUpList/useGetHotList.tsx';
 import useGetNewList from '../../hooks/popUpList/useGetNewList.tsx';
@@ -29,19 +28,16 @@ import HomeHeader from '../../components/organisms/header/HomeHeader.tsx';
 
 function HomeScreen({navigation}) {
   const [showNotice, setShowNotice] = useState(false);
-
   const {
     data: hotList,
     loading: hotListLoading,
     error: hotListError,
   } = useGetHotList();
-
   const {
     data: newList,
     loading: newListLoading,
     error: newListError,
   } = useGetNewList();
-
   const {
     data: closingList,
     loading: closingListLoading,
@@ -50,9 +46,7 @@ function HomeScreen({navigation}) {
   const goToAlarmScreen = () => {
     navigation.navigate('Alarm');
   };
-
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -64,13 +58,13 @@ function HomeScreen({navigation}) {
   }
   return (
     <View>
-      <HomeHeader onClickAlarm={goToAlarmScreen} />
+      <HomeHeader />
       <DismissKeyboardView>
         <View
           style={[
             {flex: 1},
             {backgroundColor: globalColors.white},
-            {marginTop: 20},
+            {marginTop: 20, marginBottom: 120},
           ]}>
           <HomeLoginHeader />
           <DividerLine height={12} />

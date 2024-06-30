@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,29 +6,24 @@ import {
   ScrollView,
   Image,
   Pressable,
-  TouchableOpacity,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {toggleInterest} from '../../redux/slices/interestedPopUpSlice.ts';
 import StarOnSvg from '../../assets/icons/starOn.svg';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text12B from '../../styles/texts/label/Text12B.ts';
 import globalColors from '../../styles/color/globalColors.ts';
 import DividerLine from '../DividerLine.tsx';
-import Favorite from '../../assets/icons/favorite.svg';
+import StarOffSvg from '../../assets/icons/favorite.svg';
 import {POP_UP_TYPES} from './constants.ts';
 import {useNavigation} from '@react-navigation/native';
 import useAddInterestPopUp from '../../hooks/detailPopUp/useAddInterestPopUp.tsx';
 import useDeleteInterestPopUp from '../../hooks/detailPopUp/useDeleteInterestPopUp.tsx';
-import {RootState} from '../../redux/stores/reducer.ts';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-const FindCard = ({item, type}: any) => {
+const FindCard = ({item, status, showToast}: any) => {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const isInterested = useSelector(
-    (state: RootState) => state.interestedPopups[item.id],
-  );
-  const [localInterested, setLocalInterested] = useState(isInterested);
+  const [localInterested, setLocalInterested] = useState(false);
+  const {addInterest, loading: addLoading} = useAddInterestPopUp();
+  const {deleteInterest, loading: deleteLoading} = useDeleteInterestPopUp();
   const formattedTitle =
     item.name.length > 20 ? `${item.name.substring(0, 20)}...` : item.name;
 
@@ -40,32 +35,39 @@ const FindCard = ({item, type}: any) => {
     return remainingDays;
   };
 
-  const {addInterest} = useAddInterestPopUp();
-  const {deleteInterest} = useDeleteInterestPopUp();
   const remainingDays = calculateRemainingDays(item.closeDate);
 
+  useEffect(() => {
+    setLocalInterested(item.isInterested);
+  }, [item.isInterested]);
+
   const handleToggleInterest = async () => {
-    setLocalInterested(!localInterested);
     if (localInterested) {
-      await deleteInterest(item.id, 'fcmToken');
+      await deleteInterest(item.id);
+      showToast('관심팝업에서 삭제되었어요!');
     } else {
-      await addInterest(item.id, 'fcmToken');
+      await addInterest(item.id);
+      showToast('관심팝업에 저장되었어요!');
     }
-    dispatch(toggleInterest(item.id));
+    setLocalInterested(!localInterested);
   };
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={() => navigation.navigate('PopUpDetail', {id: item.id})}>
       <View style={styles.cardContainer}>
+        <Spinner
+          visible={addLoading || deleteLoading}
+          textStyle={{color: '#FFF'}}
+        />
         <View style={styles.svgContainer}>
           <Image
             source={{uri: item.posterUrl}}
             style={{width: 120, height: 120}}
           />
-          {type === 'close' ? (
+          {status === 'TERMINATED' ? (
             <View style={styles.closeWrapper}>
-              <Text style={styles.closeText}>팝업 종료</Text>
+              <Text style={styles.closeText}>운영 종료</Text>
             </View>
           ) : (
             <View style={styles.deadlineWrapper}>
@@ -76,11 +78,14 @@ const FindCard = ({item, type}: any) => {
         <View style={styles.textContainer}>
           <View style={styles.statusAndStarContainer}>
             <Text style={[Text18B.text, styles.title]}>{formattedTitle}</Text>
-            <Pressable onPress={handleToggleInterest} style={styles.starIcon}>
+            <Pressable
+              onPress={handleToggleInterest}
+              style={styles.starIcon}
+              disabled={addLoading || deleteLoading}>
               {localInterested ? (
                 <StarOnSvg style={styles.starIcon} />
               ) : (
-                <Favorite style={styles.starIcon} />
+                <StarOffSvg style={styles.starIcon} />
               )}
             </Pressable>
           </View>
@@ -127,7 +132,7 @@ const FindCard = ({item, type}: any) => {
         </View>
       </View>
       <DividerLine height={1} />
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -175,10 +180,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   location: {
-    color: globalColors.stroke2,
+    color: globalColors.font,
   },
   date: {
-    color: globalColors.stroke2,
+    color: globalColors.font,
     marginBottom: 10,
   },
   starIcon: {
@@ -227,4 +232,5 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
+
 export default FindCard;

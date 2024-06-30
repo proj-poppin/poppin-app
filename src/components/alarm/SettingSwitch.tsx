@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Switch, Text, View} from 'react-native';
+import {Text, View, StyleSheet, Switch} from 'react-native';
 import globalColors from '../../styles/color/globalColors';
+import text14M from '../../styles/texts/body_medium/Text14M.ts';
+import text18M from '../../styles/texts/body_large/Text18M.ts';
 
-type Props = {
+type SettingSwitchProps = {
   label: string;
   desc?: string;
   name: string;
@@ -11,15 +13,16 @@ type Props = {
   onChange: (name: string, value: boolean) => void;
 };
 
-function SettingSwitch({
+const SettingSwitch: React.FC<SettingSwitchProps> = ({
   label,
   desc,
   name,
   isAlarm,
   isEnable,
   onChange,
-}: Props) {
+}) => {
   const [isAlarmAll, setIsAlarmAll] = useState(isAlarm);
+
   const toggleSwitch = () => {
     setIsAlarmAll(previousState => !previousState);
     onChange(name, !isAlarmAll);
@@ -30,58 +33,48 @@ function SettingSwitch({
   }, [isAlarmAll]);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.switchContainer}>
       <View style={styles.textWrapper}>
-        <Text style={[styles.title, !isEnable && styles.disabledText]}>
-          {label}
-        </Text>
-        {desc && (
-          <Text style={[styles.desc, !isEnable && styles.disabledText]}>
-            {desc}
-          </Text>
-        )}
+        <Text style={[text18M.text]}>{label}</Text>
+        <Text style={[text14M.text, {color: globalColors.font}]}>{desc}</Text>
       </View>
       <Switch
+        ios_backgroundColor={globalColors.toggleBackground}
         disabled={!isEnable}
         trackColor={{
-          false: globalColors.stroke2,
-          true: isEnable ? globalColors.blue : globalColors.stroke2,
+          false: isEnable ? globalColors.white : globalColors.component,
+          true: isEnable ? globalColors.blue : globalColors.component,
         }}
-        thumbColor={
-          isEnable ? (isAlarmAll ? 'white' : 'white') : globalColors.stroke2
-        }
-        ios_backgroundColor="#DDDDDD"
+        thumbColor={globalColors.white}
         onValueChange={toggleSwitch}
         value={isAlarmAll}
       />
     </View>
   );
-}
-
-export default SettingSwitch;
+};
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    display: 'flex',
+  switchContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingVertical: 10,
   },
   textWrapper: {
-    textAlign: 'center',
-    display: 'flex',
-    gap: 5,
-    justifyContent: 'center',
+    flex: 1,
+    paddingRight: 10,
   },
-  title: {
+  label: {
     fontSize: 18,
+    fontWeight: '500',
   },
   desc: {
-    fontSize: 13,
-    color: globalColors.stroke2,
+    fontSize: 14,
+    color: globalColors.black,
   },
   disabledText: {
-    color: globalColors.stroke2,
+    // color: globalColors.toggleBackground,
   },
 });
+
+export default SettingSwitch;

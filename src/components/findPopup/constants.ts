@@ -23,4 +23,20 @@ export const POP_UP_TYPES: TFilter[] = [
   {id: 15, name: 'market', label: '🛍️소비형', selected: false},
   {id: 16, name: 'display', label: '🖼️전시형', selected: false},
   {id: 17, name: 'experience', label: '🏃체험형', selected: false},
+  {
+    id: 18,
+    name: 'freeExperience',
+    label: '무료 체험이었으면 좋겠어요',
+    selected: false,
+  },
+  {id: 19, name: 'alone', label: '나 혼자 방문해요', selected: false},
+  {id: 20, name: 'withFriend', label: '친구와 방문해요', selected: false},
+  {id: 21, name: 'withFamily', label: '가족과 방문해요', selected: false},
+  {id: 22, name: 'withLover', label: '연인과 방문해요', selected: false},
+
+  {id: 23, name: 'G_RATED', label: '전체', selected: false},
+  {id: 24, name: 'PG_7', label: '7세 이상', selected: false},
+  {id: 25, name: 'PG_12', label: '12세 이상', selected: false},
+  {id: 26, name: 'PG_15', label: '15세 이상', selected: false},
+  {id: 27, name: 'PG_18', label: '성인', selected: false},
 ];

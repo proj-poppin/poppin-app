@@ -1,11 +1,10 @@
-import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import globalColors from '../../styles/color/globalColors';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import SearchBlueSvg from '../../assets/icons/searchBlue.svg';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import DividerLine from '../../components/DividerLine';
 import CustomSelectDropdown from '../../components/CustomDropDown';
 import OrderSvg from '../../assets/icons/order.svg';
 import Text24B from '../../styles/texts/headline/Text24B';
@@ -15,12 +14,12 @@ import CategorySelectButton from '../../components/findPopup/CategorySelectButto
 import BackMiddleButton from '../../components/atoms/button/BackMiddleButton';
 import NextMiddleButton from '../../components/atoms/button/NextMiddleButton';
 import {POP_UP_TYPES, TFilter} from '../../components/findPopup/constants';
-import NotyetTab from './tab/NotyetTab';
-import OperationTab from './tab/OperatonTab';
-import ClosedTab from './tab/ClosedTab';
 import BackSvg from '../../assets/icons/goBack.svg';
 import useBackdrop from '../../hooks/common/useBackDrop.tsx';
 import {useReducedMotion} from 'react-native-reanimated';
+import FindTab from './FindTab.tsx';
+import ToastComponent from '../../components/atoms/toast/ToastComponent.tsx';
+
 export const FIND_ORDER_TYPES = [
   {label: '최근 오픈 순', value: 'OPEN'},
   {label: '종료 임박 순', value: 'CLOSE'},
@@ -41,11 +40,12 @@ function FindScreen({navigation, route}: FindScreenProps) {
   const [selectedTab, setSelectedTab] = useState('운영 중');
   const [selectedOrder, setSelectedOrder] = useState('OPEN');
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [isRefetchSearchKeyword, setIsRefetchSearchKeyword] = useState(false);
   const [isSettingApplied, setIsSettingApplied] = useState(false);
   const reducedMotion = useReducedMotion();
   const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
     useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [isShowToast, setIsShowToast] = useState(false);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -62,41 +62,21 @@ function FindScreen({navigation, route}: FindScreenProps) {
     setSelectedOrder(orderValue);
   };
 
-  // variables
-  const snapPoints = useMemo(() => ['77%'], []);
+  const snapPoints = useMemo(() => ['75%'], []);
 
   const handlePresentModal = useCallback(() => {
     setSelectedTags(availableTags);
     bottomSheetModalRef.current?.present();
   }, [availableTags]);
 
-  // const handleClick = (selectedTag: TFilter) => {
-  //   setSelectedTags(prev =>
-  //     prev.map(item =>
-  //       item.id === selectedTag.id ? {...item, selected: !item.selected} : item,
-  //     ),
-  //   );
-  // };
-
   const handleClick = (selectedTag: TFilter) => {
     setSelectedTags(prev =>
       prev.map(item =>
-        item.id === selectedTag.id
-          ? {...item, selected: true}
-          : {...item, selected: false},
+        item.id === selectedTag.id ? {...item, selected: !item.selected} : item,
       ),
     );
   };
 
-  const tagDeleteClick = (tid: number) => {
-    setSelectedTags(prev =>
-      prev.map(item => (item.id === tid ? {...item, selected: false} : item)),
-    );
-  };
-
-  /**
-   * useEffect
-   */
   useEffect(() => {
     if (route.params) {
       const {searchText} = route.params;
@@ -108,6 +88,12 @@ function FindScreen({navigation, route}: FindScreenProps) {
     const isSelected = selectedTags.some(tag => tag.selected);
     setIsOneMoreCategorySelected(isSelected);
   }, [selectedTags]);
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setIsShowToast(true);
+    setTimeout(() => setIsShowToast(false), 1500);
+  };
 
   return (
     <>
@@ -201,29 +187,34 @@ function FindScreen({navigation, route}: FindScreenProps) {
           }}>
           <Tab.Screen name="운영 중">
             {() => (
-              <OperationTab
+              <FindTab
+                status="OPERATING"
                 selectedOrder={selectedOrder}
                 availableTags={availableTags}
                 searchKeyword={searchKeyword}
+                showToast={showToast}
               />
             )}
           </Tab.Screen>
           <Tab.Screen name="오픈 예정">
             {() => (
-              <NotyetTab
+              <FindTab
+                status="NOTYET"
                 selectedOrder={selectedOrder}
                 availableTags={availableTags}
                 searchKeyword={searchKeyword}
+                showToast={showToast}
               />
             )}
           </Tab.Screen>
           <Tab.Screen name="운영 종료">
             {() => (
-              <ClosedTab
-                type="close"
+              <FindTab
+                status="TERMINATED"
                 selectedOrder={selectedOrder}
                 availableTags={availableTags}
                 searchKeyword={searchKeyword}
+                showToast={showToast}
               />
             )}
           </Tab.Screen>
@@ -247,44 +238,24 @@ function FindScreen({navigation, route}: FindScreenProps) {
                   key={item.id}
                   item={item}
                   onClick={handleClick}
-                  // selected={item.selected}
-                  tagDeleteClick={tagDeleteClick}
+                  selectedTag={selectedTags}
+                  isMultipleSelectionPossible={true}
                 />
               ))}
             </View>
             <Text style={styles.popType}>팝업 유형</Text>
             <View style={styles.popWrapper}>
-              {selectedTags.slice(14, POP_UP_TYPES.length).map(item => (
+              {selectedTags.slice(14, 17).map(item => (
                 <CategorySelectButton
                   key={item.id}
                   item={item}
                   onClick={handleClick}
-                  isMultipleSelectionPossible={false}
-                  // selected={item.selected}
-                  tagDeleteClick={tagDeleteClick}
+                  isMultipleSelectionPossible={true}
+                  selectedTag={selectedTags}
                 />
               ))}
             </View>
           </View>
-          {/*<DividerLine height={2} />*/}
-          {/*<ScrollView*/}
-          {/*  horizontal={true}*/}
-          {/*  showsHorizontalScrollIndicator={false}*/}
-          {/*  scrollEventThrottle={16}>*/}
-          {/*  <View style={styles.popSelectedWrapper}>*/}
-          {/*    {selectedTags.map(tag =>*/}
-          {/*      tag.selected ? (*/}
-          {/*        <CategorySelectButton*/}
-          {/*          key={tag.id}*/}
-          {/*          item={tag}*/}
-          {/*          onClick={() => {}}*/}
-          {/*          seletedTag*/}
-          {/*          tagDeleteClick={tagDeleteClick}*/}
-          {/*        />*/}
-          {/*      ) : null,*/}
-          {/*    )}*/}
-          {/*  </View>*/}
-          {/*</ScrollView>*/}
           <View style={styles.buttonsWrapper}>
             <BackMiddleButton
               onPress={() => {
@@ -308,6 +279,14 @@ function FindScreen({navigation, route}: FindScreenProps) {
           </View>
         </BottomSheetModal>
       </View>
+      {isShowToast && (
+        <ToastComponent
+          height={35}
+          onClose={() => setIsShowToast(false)}
+          message={toastMessage}
+          bottom={'40%'}
+        />
+      )}
     </>
   );
 }

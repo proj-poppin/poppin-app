@@ -47,7 +47,6 @@ const useGetFindPopupList = (
       prepered: selectedCategoryString,
       taste: selectedTypeString,
     };
-
     try {
       const accessToken = await EncryptedStorage.getItem('accessToken');
       const response = accessToken
@@ -58,9 +57,8 @@ const useGetFindPopupList = (
         setGetListState(prevState => ({
           loading: false,
           error: null,
-          data: triggerFetch
-            ? response.data
-            : [...prevState.data, ...response.data],
+          data:
+            page === 0 ? response.data : [...prevState.data, ...response.data],
         }));
       } else {
         setGetListState({
@@ -79,21 +77,12 @@ const useGetFindPopupList = (
         data: null,
       });
     }
-  }, [
-    page,
-    size,
-    selectedOrder,
-    selectedTab,
-    availableTags,
-    searchKeyword,
-    triggerFetch,
-  ]);
+  }, [page, size, selectedOrder, selectedTab, availableTags, searchKeyword]);
 
   useEffect(() => {
-    if (triggerFetch || page > 0) {
-      fetchFindPopupList();
-    }
-  }, [fetchFindPopupList, triggerFetch, page]);
+    console.log('triggerFetch$', triggerFetch);
+    fetchFindPopupList();
+  }, [fetchFindPopupList, page, triggerFetch]);
 
   return {...getListState, refetch: fetchFindPopupList};
 };

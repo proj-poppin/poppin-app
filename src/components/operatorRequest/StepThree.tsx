@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, TextInput, StyleSheet} from 'react-native';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import DownSvg from '../../assets/icons/down.svg';
@@ -7,8 +7,9 @@ import globalColors from '../../styles/color/globalColors.ts';
 import RequiredTextLabel from '../RequiredTextLabel.tsx';
 import SelectButtonsGroup from '../atoms/button/SelectButtonGroup.tsx';
 import TextInputWithSvgIconInRight from '../TextInputWithSvgIconInRight.tsx';
-import PreferenceOptionButtons from '../PreferenceOptionButtons.tsx';
 import CompleteButton from '../atoms/button/CompleteButton.tsx';
+import CategorySelectButton from '../findPopup/CategorySelectButton.tsx';
+import {POP_UP_TYPES, TFilter} from '../findPopup/constants.ts';
 
 export type AgeGroup = '전체' | '7세 이상' | '12세 이상' | '15세 이상' | '성인';
 
@@ -29,7 +30,7 @@ interface StepThreeProps {
   snapPoints2: string[];
   renderBackdrop: any;
   handleOpenAgeSheet: () => void;
-  onSelectSingleOption: (option: string) => void;
+  onSelectSingleOption: (option: TFilter) => void;
   handleConfirmAgeSelection: () => void;
   selectedCategory: string;
 }
@@ -72,6 +73,25 @@ const StepThree: React.FC<StepThreeProps> = ({
   handleConfirmAgeSelection,
   selectedCategory,
 }) => {
+  const [availableTags, setAvailableTags] = useState<TFilter[]>(POP_UP_TYPES);
+  const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+
+  const handleClick = (selectedTag: TFilter) => {
+    setSelectedTags(prev =>
+      prev.map(item =>
+        item.id === selectedTag.id
+          ? {...item, selected: true}
+          : {...item, selected: false},
+      ),
+    );
+    onSelectSingleOption(selectedTag); // Pass the entire selectedTag object
+  };
+
+  const handleSheetChanges = (index: number) => {
+    setIsBottomSheetOpen(index >= 0);
+  };
+
   return (
     <>
       <View style={styles.purpleInfo}>
@@ -106,18 +126,22 @@ const StepThree: React.FC<StepThreeProps> = ({
           index={0}
           backdropComponent={renderBackdrop}
           snapPoints={snapPoints2}
-          onChange={handleOpenAgeSheet}>
+          onChange={handleSheetChanges}>
           <View style={styles.contentContainer}>
             <Text style={[Text18B.text, {paddingTop: 15, paddingBottom: 40}]}>
               제보할 팝업의 이용 가능 연령을 선택해 주세요
             </Text>
-            <PreferenceOptionButtons
-              step={4}
-              onSelectOption={onSelectSingleOption}
-              isEmojiRemoved={true}
-              isSingleSelect={true}
-              selectedCategory={selectedCategory}
-            />
+            <View style={styles.popWrapper}>
+              {selectedTags.slice(22, 27).map(item => (
+                <CategorySelectButton
+                  isMultipleSelectionPossible={false}
+                  key={item.id}
+                  item={item}
+                  onClick={handleClick}
+                  selectedTag={selectedCategory}
+                />
+              ))}
+            </View>
             <CompleteButton
               onPress={handleConfirmAgeSelection}
               title={'확인'}
@@ -173,6 +197,14 @@ const styles = StyleSheet.create({
   contentContainer: {
     alignItems: 'center',
     paddingTop: 20,
+  },
+  popWrapper: {
+    width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 15,
+    padding: 20,
+    justifyContent: 'center',
   },
 });
 

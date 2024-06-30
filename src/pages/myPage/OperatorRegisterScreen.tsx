@@ -1,6 +1,6 @@
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
-import React, {useCallback, useMemo, useRef, useState} from 'react';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import BackMiddleButton from '../../components/atoms/button/BackMiddleButton.tsx';
 import NextMiddleButton from '../../components/atoms/button/NextMiddleButton.tsx';
@@ -19,6 +19,7 @@ import StepThree, {
 import PostalCodeModal from '../../components/operatorRequest/PostalCodeModal.tsx';
 import useManagerReportPopUp from '../../hooks/myPage/useManagerReportPopUp.tsx';
 import {useReducedMotion} from 'react-native-reanimated';
+import {TFilter} from '../../components/findPopup/constants.ts';
 
 const OperatorRegisterScreen = ({navigation}) => {
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
@@ -27,7 +28,7 @@ const OperatorRegisterScreen = ({navigation}) => {
     navigation.goBack();
   };
   const [step, setStep] = useState<number>(1);
-  const {loading, managerReportPopUp} = useManagerReportPopUp(); // Use the custom hook
+  const {loading, managerReportPopUp} = useManagerReportPopUp();
 
   const [affiliation, setAffiliation] = useState<string>('');
   const [informerEmail, setInformerEmail] = useState<string>('');
@@ -40,9 +41,12 @@ const OperatorRegisterScreen = ({navigation}) => {
     end: string;
   }>({start: '', end: ''});
   const [name, setName] = useState<string>('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedAge, setSelectedAge] = useState<AgeGroup>('전체');
-  const [selectedPopupType, setSelectedPopupType] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedCategoryValue, setSelectedCategoryValue] =
+    useState<string>('');
+  const [selectedAge, setSelectedAge] = useState<AgeGroup>('전체'); // Initialize with a valid AgeGroup value
+  const [selectedAgeValue, setSelectedAgeValue] = useState<string>(''); // Internal value
+  const [selectedPopupType, setSelectedPopupType] = useState<string>('');
   const [operationExcept, setOperationExcept] = useState<string>('');
   const [introduce, setIntroduce] = useState<string>('');
   const [homepageLink, setHomepageLink] = useState<string>('');
@@ -50,67 +54,59 @@ const OperatorRegisterScreen = ({navigation}) => {
   const bottomSheetAgeModalRef = useRef<BottomSheetModal>(null);
   const [isPostalSearchModalVisible, setIsPostalSearchModalVisible] =
     useState(false);
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState<string>('');
   const reducedMotion = useReducedMotion();
   const {selectedImages, handleSelectImages, handleRemoveImage} =
-    useImageSelector(); // Use the custom hook
-  // Add a state to track the reservation requirement selection
-  const [resvRequired, setResvRequired] = useState(null); // null, 'notRequired', or 'required'
-  const [entranceFeeRequired, setEntranceFeeRequired] = useState(null); // null, 'noFee', or 'fee'
-  const [parkingAvailability, setParkingAvailability] = useState(null); // null, 'noParking', or 'parking'
-  const [entranceFee, setEntranceFee] = useState(''); // 입장료 상세 내용
+    useImageSelector();
+  const [resvRequired, setResvRequired] = useState<string | null>(null);
+  const [entranceFeeRequired, setEntranceFeeRequired] = useState<string | null>(
+    null,
+  );
+  const [parkingAvailability, setParkingAvailability] = useState<string | null>(
+    null,
+  );
+  const [entranceFee, setEntranceFee] = useState<string>('');
+  const [addressDetail, setAddressDetail] = useState<string>('');
 
-  // OperatorRegisterScreen 컴포넌트 내
-  const [isAgeSheetVisible, setIsAgeSheetVisible] = useState(false); // 바텀 시트 보여짐 상태
   const openCompleteModal = () => {
     setCompleteModalVisible(true);
   };
-  // 이용 가능 연령 바텀 시트를 띄우는 함수
+
   const handleOpenAgeSheet = () => {
-    setIsAgeSheetVisible(true);
+    bottomSheetAgeModalRef.current?.present();
   };
 
-  // 예약 필수 여부를 선택하는 함수
-  const handleReservationRequiredSelect = value => {
+  const handleReservationRequiredSelect = (value: string) => {
     setResvRequired(value);
   };
 
-  // 입장료 유무를 선택하는 함수
-  const handleEntranceFeeStatusSelect = value => {
+  const handleEntranceFeeStatusSelect = (value: string) => {
     setEntranceFeeRequired(value);
   };
 
-  // 주차 가능 여부를 선택하는 함수
-  const handleParkingAvailabilitySelect = value => {
+  const handleParkingAvailabilitySelect = (value: string) => {
     setParkingAvailability(value);
   };
 
   const handlePostalCodeSearch = () => {
-    console.log('우편번호 검색 버튼 클릭');
-    setIsPostalSearchModalVisible(true); // 우편번호 검색 모달을 띄웁니다.
+    setIsPostalSearchModalVisible(true);
   };
-  // 카테고리 바텀시트 높이
+
   const snapPoints = useMemo(() => ['65%'], []);
   const snapPoints2 = useMemo(() => ['45%'], []);
-  // Handling popup type selection
-  const onSelectPopupType = value => {
-    console.log('Selected Popup Type: ', value);
+
+  const onSelectPopupType = (value: string) => {
     setSelectedPopupType(value);
   };
-  // ref
+
   const handlePresentModal = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
-  const handleAgePresentModal = useCallback(() => {
-    bottomSheetAgeModalRef.current?.present();
-  }, []);
-  // callbacks
+
   const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
     // handleOpenBottomSheet();
   }, []);
 
-  // render backdrop
   const renderBackdrop = useCallback(
     props => (
       <BottomSheetBackdrop
@@ -123,21 +119,22 @@ const OperatorRegisterScreen = ({navigation}) => {
     [],
   );
 
-  const onSelectSingleOption = option => {
-    setSelectedCategory(option);
+  const onSelectSingleOption = (option: TFilter) => {
+    setSelectedCategory(option.label); // For display
+    setSelectedCategoryValue(option.name); // For internal value
+  };
+
+  const onSelectAgeOption = (option: TFilter) => {
+    setSelectedAge(option.label as AgeGroup); // Cast to AgeGroup to ensure type safety
+    setSelectedAgeValue(option.name);
   };
 
   const handleConfirmSelection = useCallback(() => {
-    console.log('Selected Category: ', selectedCategory); // 콘솔에 선택된 카테고리 출력
-
-    bottomSheetModalRef.current?.close(); // 바텀 시트 닫기
-    // setSelectedCategory(''); // 선택 상태 초기화
+    bottomSheetModalRef.current?.close();
   }, [selectedCategory]);
 
   const handleConfirmAgeSelection = useCallback(() => {
-    console.log('Selected Age: ', selectedCategory); // 콘솔에 선택된 카테고리 출력
-    setSelectedAge(selectedAge); // 선택된 연령 상태 업데이트
-    bottomSheetAgeModalRef.current?.close(); // 바텀 시트 닫기
+    bottomSheetAgeModalRef.current?.close();
   }, [selectedAge]);
 
   const handleNext = () => {
@@ -145,6 +142,7 @@ const OperatorRegisterScreen = ({navigation}) => {
       setStep(step + 1);
     }
   };
+
   const handleBack = () => {
     if (step > 1) {
       setStep(step - 1);
@@ -162,7 +160,7 @@ const OperatorRegisterScreen = ({navigation}) => {
         address,
         addressDetail,
         entranceFee,
-        mapAgeGroupToApiValue(selectedAge),
+        mapAgeGroupToApiValue(selectedAgeValue), // Use internal value here
         parkingAvailability === 'parking',
         resvRequired === 'required',
         selectedDates.start ?? '2000-01-01',
@@ -176,38 +174,30 @@ const OperatorRegisterScreen = ({navigation}) => {
         selectedPopupType === 'display',
         selectedPopupType === 'experience',
         selectedPopupType === 'wantFree',
-        selectedCategory.includes('fashionBeauty'),
-        selectedCategory.includes('characters'),
-        selectedCategory.includes('foodBeverage'),
-        selectedCategory.includes('webtoonAni'),
-        selectedCategory.includes('interiorThings'),
-        selectedCategory.includes('movie'),
-        selectedCategory.includes('musical'),
-        selectedCategory.includes('sports'),
-        selectedCategory.includes('game'),
-        selectedCategory.includes('itTech'),
-        selectedCategory.includes('kpop'),
-        selectedCategory.includes('alcohol'),
-        selectedCategory.includes('animalPlant'),
+        selectedCategoryValue.includes('fashionBeauty'),
+        selectedCategoryValue.includes('characters'),
+        selectedCategoryValue.includes('foodBeverage'),
+        selectedCategoryValue.includes('webtoonAni'),
+        selectedCategoryValue.includes('interiorThings'),
+        selectedCategoryValue.includes('movie'),
+        selectedCategoryValue.includes('musical'),
+        selectedCategoryValue.includes('sports'),
+        selectedCategoryValue.includes('game'),
+        selectedCategoryValue.includes('itTech'),
+        selectedCategoryValue.includes('kpop'),
+        selectedCategoryValue.includes('alcohol'),
+        selectedCategoryValue.includes('animalPlant'),
         selectedImages,
       );
       if (response.success) {
         openCompleteModal();
       } else {
         openCompleteModal();
-        // Alert.alert(
-        //   'Error',
-        //   response.error?.message || 'Failed to submit report',
-        // );
       }
     } catch (error) {
-      /// 배포 안터지게 임시 성공처리
       openCompleteModal();
-      // Alert.alert('Error', error.message || 'An unexpected error occurred');
     }
   };
-
-  const [addressDetail, setAddressDetail] = useState(''); // 상세 주소 상태
 
   return (
     <View style={[styles.container]}>
@@ -258,16 +248,18 @@ const OperatorRegisterScreen = ({navigation}) => {
               handleSheetChanges={handleSheetChanges}
               renderBackdrop={renderBackdrop}
               handleConfirmSelection={handleConfirmSelection}
+              selectedCategoryValue={selectedCategoryValue}
             />
           )}
           {step === 3 && (
             <StepThree
+              handleOpenAgeSheet={handleOpenAgeSheet}
+              handleAgePresentModal={handleOpenAgeSheet}
               introduce={introduce}
               setIntroduce={setIntroduce}
               resvRequired={resvRequired}
               handleReservationRequiredSelect={handleReservationRequiredSelect}
               selectedAge={selectedAge}
-              handleAgePresentModal={handleAgePresentModal}
               entranceFeeRequired={entranceFeeRequired}
               handleEntranceFeeStatusSelect={handleEntranceFeeStatusSelect}
               entranceFee={entranceFee}
@@ -277,10 +269,9 @@ const OperatorRegisterScreen = ({navigation}) => {
               bottomSheetAgeModalRef={bottomSheetAgeModalRef}
               snapPoints2={snapPoints2}
               renderBackdrop={renderBackdrop}
-              handleOpenAgeSheet={handleOpenAgeSheet}
-              onSelectSingleOption={onSelectSingleOption}
+              onSelectSingleOption={onSelectAgeOption} // Ensure this function is properly defined and passed
               handleConfirmAgeSelection={handleConfirmAgeSelection}
-              selectedCategory={selectedCategory}
+              selectedCategory={selectedAge} // Ensure selectedCategory is correctly typed and used
             />
           )}
         </ScrollView>
@@ -306,19 +297,7 @@ const OperatorRegisterScreen = ({navigation}) => {
             <View style={styles.buttonRow}>
               <BackMiddleButton onPress={handleBack} title={'이전'} />
               <View style={{width: 30}} />
-              <NextMiddleButton
-                onPress={handleNext}
-                title={'다음'}
-                // disabled={
-                //   storeName === '' ||
-                //   selectedCategory === '' ||
-                //   selectedPopupType === '' ||
-                //   Object.keys(selectedDates).length === 0 ||
-                //   postalAddress === '' ||
-                //   detailedAddress === '' ||
-                //   selectedImages.length === 0
-                // }
-              />
+              <NextMiddleButton onPress={handleNext} title={'다음'} />
             </View>
           )}
           {step === 3 && (

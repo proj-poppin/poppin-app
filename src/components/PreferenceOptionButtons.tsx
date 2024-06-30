@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import GradientButton from './GradientButton'; // Adjust the import path accordingly
+import OptionSingleButton from './atoms/button/OptionSingleButton.tsx';
 
 type PreferenceOptionButtonsProps = {
   step: number;
@@ -10,6 +10,7 @@ type PreferenceOptionButtonsProps = {
   selectedCategory?: string;
   selectedCategories?: string[];
 };
+
 const PreferenceOptionButtons: React.FC<PreferenceOptionButtonsProps> = ({
   step,
   onSelectOption,
@@ -53,7 +54,9 @@ const PreferenceOptionButtons: React.FC<PreferenceOptionButtonsProps> = ({
       onSelectOption(option);
     }
   };
+
   const currentOptions = optionsForSteps[step];
+
   const removeEmoji = (text: string) =>
     text
       .replace(
@@ -65,16 +68,16 @@ const PreferenceOptionButtons: React.FC<PreferenceOptionButtonsProps> = ({
   return (
     <View style={styles.optionsContainer}>
       {currentOptions.map((option, index) => (
-        <GradientButton
+        <OptionSingleButton
           key={index}
-          title={option}
+          id={index.toString()}
+          title={isEmojiRemoved ? removeEmoji(option) : option}
           onPress={() => handlePress(option)}
           isSelected={
             isSingleSelect
-              ? selectedCategory === removeEmoji(option)
+              ? removeEmoji(option) === selectedCategory
               : selectedCategories.includes(option)
           }
-          isEmojiRemoved={isEmojiRemoved}
         />
       ))}
     </View>

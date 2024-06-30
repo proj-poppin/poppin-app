@@ -17,7 +17,6 @@ import OperationCalendarBottomSheet from '../OperationCalendarBottomSheet.tsx';
 import OperationHoursBottomSheet from '../OperationHoursBottomSheet.tsx';
 import Text12R from '../../styles/texts/label/Text12R.ts';
 import ImageContainerRow from '../ImageContainerRow.tsx';
-import PreferenceOptionButtons from '../PreferenceOptionButtons.tsx';
 import CompleteButton from '../atoms/button/CompleteButton.tsx';
 import DownSvg from '../../assets/icons/down.svg';
 import Text12M from '../../styles/texts/label/Text12M.ts';
@@ -28,8 +27,9 @@ interface StepTwoProps {
   name: string;
   setName: (text: string) => void;
   selectedCategory: string;
+  selectedCategoryValue: string; // Add this prop to store internal value
   handlePresentModal: () => void;
-  onSelectSingleOption: (option: string) => void;
+  onSelectSingleOption: (option: TFilter) => void; // Update type to TFilter
   selectedPopupType: string;
   onSelectPopupType: (value: string) => void;
   selectedDates: {start: string; end: string};
@@ -58,6 +58,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
   name,
   setName,
   selectedCategory,
+  selectedCategoryValue, // Add this prop to access internal value
   handlePresentModal,
   onSelectSingleOption,
   selectedPopupType,
@@ -84,6 +85,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
 }) => {
   const [availableTags, setAvailableTags] = useState<TFilter[]>(POP_UP_TYPES);
   const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
+
   const handleClick = (selectedTag: TFilter) => {
     setSelectedTags(prev =>
       prev.map(item =>
@@ -92,6 +94,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
           : {...item, selected: false},
       ),
     );
+    onSelectSingleOption(selectedTag); // Pass the entire selectedTag object
   };
 
   const tagDeleteClick = (tid: number) => {
@@ -99,6 +102,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
       prev.map(item => (item.id === tid ? {...item, selected: false} : item)),
     );
   };
+
   return (
     <>
       <View style={styles.purpleInfo}>
@@ -115,7 +119,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
         />
         <TextInputWithSvgIconInRight
           label={'카테고리'}
-          value={selectedCategory} // 변경됨
+          value={selectedCategory}
           onIconPress={handlePresentModal}
           IconComponent={<DownSvg />}
           isRequired={true}
@@ -159,9 +163,9 @@ const StepTwo: React.FC<StepTwoProps> = ({
             style={[styles.addressInputContainer, {flex: 7, marginRight: 10}]}>
             <TextInput
               style={styles.input}
-              value={address} // 우편번호 검색을 통해 선택된 주소를 표시
+              value={address}
               placeholder="주소"
-              editable={false} // 우편번호는 사용자가 직접 수정할 수 없도록 설정
+              editable={false}
             />
           </View>
           <TouchableOpacity
@@ -192,21 +196,14 @@ const StepTwo: React.FC<StepTwoProps> = ({
               <View style={styles.popWrapper}>
                 {selectedTags.slice(0, 14).map(item => (
                   <CategorySelectButton
+                    isMultipleSelectionPossible={false}
                     key={item.id}
                     item={item}
                     onClick={handleClick}
-                    // selected={item.selected}
-                    tagDeleteClick={tagDeleteClick}
+                    selectedTag={selectedCategory}
                   />
                 ))}
               </View>
-              {/*<PreferenceOptionButtons*/}
-              {/*  step={2}*/}
-              {/*  onSelectOption={onSelectSingleOption}*/}
-              {/*  isEmojiRemoved={true}*/}
-              {/*  isSingleSelect={true}*/}
-              {/*  selectedCategory={selectedCategory}*/}
-              {/*/>*/}
               <CompleteButton
                 onPress={handleConfirmSelection}
                 title={'확인'}
@@ -261,18 +258,17 @@ const styles = StyleSheet.create({
     backgroundColor: globalColors.purpleLight,
     padding: 10,
     borderRadius: 10,
-    // 기타 필요한 스타일
   },
   exceptionalInput: {
-    height: 60, // 입력 필드의 높이
+    height: 60,
     borderWidth: 1,
-    borderColor: globalColors.warmGray, // 테두리 색상
-    borderRadius: 10, // 모서리 둥글기
-    padding: 10, // 내부 패딩
-    marginTop: 10, // 레이블과의 간격
-    marginBottom: 10, // 힌트 텍스트와의 간격
-    backgroundColor: 'white', // 배경색
-    textAlignVertical: 'top', // 여러 줄 입력 시 텍스트 상단 정렬
+    borderColor: globalColors.warmGray,
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: 'white',
+    textAlignVertical: 'top',
   },
   addressContainer: {
     flexDirection: 'row',
@@ -309,11 +305,6 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-  },
-  modalContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   contentContainer: {
     alignItems: 'center',

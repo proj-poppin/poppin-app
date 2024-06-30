@@ -2,12 +2,11 @@ import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import globalColors from '../../styles/color/globalColors';
 import LinearGradient from 'react-native-linear-gradient';
-import {TFilter} from './constants.ts';
+import {TFilter} from './constants';
 
 interface CategorySelectButtonProps {
   item: TFilter;
   onClick: (item: TFilter) => void;
-  tagDeleteClick: (id: number) => void;
   selectedTag?: any;
   isMultipleSelectionPossible?: boolean;
 }
@@ -17,24 +16,10 @@ const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
   onClick,
   selectedTag,
 }) => {
-  if (selectedTag) {
-    return (
-      <Pressable onPress={() => onClick(item)}>
-        <LinearGradient
-          colors={globalColors.blueToPurpleGradient}
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 1}}
-          style={styles.gradientBorder}>
-          <View style={styles.innerContent}>
-            <Text>{item.label}</Text>
-          </View>
-        </LinearGradient>
-      </Pressable>
-    );
-  }
+  const isSelected = item.selected;
   return (
     <Pressable onPress={() => onClick(item)}>
-      {item.selected ? (
+      {isSelected ? (
         <LinearGradient
           colors={globalColors.blueToPurpleGradient}
           start={{x: 0, y: 0}}

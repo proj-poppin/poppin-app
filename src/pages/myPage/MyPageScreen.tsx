@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Linking,
 } from 'react-native';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import globalColors from '../../styles/color/globalColors.ts';
@@ -35,6 +36,7 @@ import Text14M from '../../styles/texts/body_medium/Text14M.ts';
 import {useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import getUser from '../../apis/user/getUser.ts';
+
 function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
   const reducedMotion = useReducedMotion();
@@ -146,6 +148,10 @@ function MyPageScreen({navigation}) {
 
   const reviewCount = 10;
 
+  const handleFaqPress = useCallback(() => {
+    Linking.openURL('https://open.kakao.com/o/sOj6HP5f');
+  }, []);
+
   return (
     <View style={styles.container}>
       <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
@@ -173,7 +179,7 @@ function MyPageScreen({navigation}) {
               <Text
                 style={[
                   Text18B.text,
-                  {color: globalColors.warmGray},
+                  {color: globalColors.font},
                   styles.profileLabel,
                 ]}>
                 내 정보 및 취향 관리
@@ -226,18 +232,9 @@ function MyPageScreen({navigation}) {
         {/*  <Text style={Text14M.text}>키워드 알림 설정</Text>*/}
         {/*  <RightSvg style={styles.svgStyle} onPress={navigateToKeywordAlarm} />*/}
         {/*</Pressable>*/}
-        <Pressable
-          onPress={() => {
-            navigation.navigate('FAQ');
-          }}
-          style={styles.middleContainer}>
+        <Pressable onPress={handleFaqPress} style={styles.middleContainer}>
           <Text style={Text14M.text}>문의하기/FAQ</Text>
-          <RightSvg
-            style={styles.svgStyle}
-            onPress={() => {
-              navigation.navigate('FAQ');
-            }}
-          />
+          <RightSvg style={styles.svgStyle} onPress={handleFaqPress} />
         </Pressable>
         <Pressable style={styles.appVersionContainer}>
           <Text style={Text14M.text}>앱 버전</Text>
@@ -489,4 +486,5 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
+
 export default MyPageScreen;

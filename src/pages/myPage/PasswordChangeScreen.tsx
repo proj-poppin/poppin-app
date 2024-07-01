@@ -109,7 +109,6 @@ function PasswordChangeScreen({navigation}: any) {
       setIsCurrentPasswordValid(false);
     }
   }, [confirmPasswordState]);
-
   useEffect(() => {
     if (resetPasswordStatus.success) {
       navigation.navigate('MyPage');
@@ -117,7 +116,7 @@ function PasswordChangeScreen({navigation}: any) {
       setConfirmNewPassword('');
       setIsNewPasswordValid(false);
     }
-  }, [resetPasswordStatus]);
+  }, [navigation, resetPasswordStatus]);
   return (
     <DismissKeyboardView style={styles.container}>
       <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>
@@ -139,7 +138,6 @@ function PasswordChangeScreen({navigation}: any) {
             placeholder="현재 비밀번호"
             labelText={'현재 비밀번호'}
             isPassword={true}
-            containerStyle={{marginBottom: 20}}
             value={currentPassword}
           />
           {!confirmPasswordState.success && (
@@ -147,35 +145,17 @@ function PasswordChangeScreen({navigation}: any) {
               {confirmPasswordState.error?.message}
             </Text>
           )}
-
-          <ToSignUpTextLine
-            titleText={'현재 비밀번호가 기억나지 않으세요?'}
-            onPress={handleForgotPasswordPress}
-          />
-          <Pressable
-            disabled={!isCurrentPasswordValid}
+          <View style={{marginTop: 220}}>
+            <ToSignUpTextLine
+              titleText={'현재 비밀번호가 기억나지 않으세요?'}
+              onPress={() => navigation.navigate('PasswordReset')}
+            />
+          </View>
+          <CompleteButton
             onPress={handlePasswordCheckSubmit}
-            style={{
-              height: 60,
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <View
-              style={{
-                height: '80%',
-                width: '80%',
-                backgroundColor: globalColors.blue,
-                borderRadius: 30,
-                display: 'flex',
-                justifyContent: 'center',
-              }}>
-              <Text style={{textAlign: 'center', color: 'white', fontSize: 18}}>
-                다음
-              </Text>
-            </View>
-          </Pressable>
+            title={'다음 '}
+            disabled={!isCurrentPasswordValid}
+          />
         </>
       ) : (
         <>
@@ -184,7 +164,6 @@ function PasswordChangeScreen({navigation}: any) {
             placeholder="새 비밀번호"
             labelText={'새 비밀번호'}
             isPassword={true}
-            containerStyle={{marginBottom: 20}}
             value={newPassword}
           />
           <LabelAndInput
@@ -193,7 +172,6 @@ function PasswordChangeScreen({navigation}: any) {
             labelText={'새 비밀번호 확인'}
             isPassword={true}
             isPasswordSame={isNewPasswordSame}
-            containerStyle={{marginBottom: 20}}
             value={confirmNewPassword}
           />
           <Text

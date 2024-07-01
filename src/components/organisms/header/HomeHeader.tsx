@@ -1,16 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import PoppinSvg from '../../../assets/icons/poppin.svg';
 import AlarmOffSvg from '../../../assets/icons/alarmOff.svg';
 import HeaderInfoSvg from '../../../assets/icons/headerInfo.svg';
 import InfoSvg from '../../../assets/icons/info.svg';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {EntryScreenNavigationProp} from '../../HomeLoginHeader';
 import useIsLoggedIn from '../../../hooks/auth/useIsLoggedIn.tsx';
+import useGetAlarmStatus from '../../../hooks/alarm/useGetAlarmStatus.ts';
 
 const HomeHeader = () => {
   const [showInfo, setShowInfo] = useState(false);
   const isLoggedIn = useIsLoggedIn();
+  // 알람 빨간점 불러오기
+  const {alarmStatus, fetchAlarmStatus} = useGetAlarmStatus();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -23,6 +26,15 @@ const HomeHeader = () => {
   const toggleInfo = () => {
     setShowInfo(prev => !prev);
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchAlarmStatus().then();
+      return () => {
+        // Cleanup if needed
+      };
+    }, [fetchAlarmStatus]),
+  );
 
   const navigation = useNavigation<EntryScreenNavigationProp>();
 
@@ -39,9 +51,26 @@ const HomeHeader = () => {
       <PoppinSvg />
       <View style={styles.iconsContainer}>
         <Pressable onPress={toggleInfo} style={styles.iconTouchable}>
-          <InfoSvg style={{marginRight: 20}} />
+          <InfoSvg style={{marginRight: 5}} />
         </Pressable>
-        <AlarmOffSvg style={styles.alarmStyle} onPress={handleAlarmPress} />
+        <Pressable style={[styles.iconTouchable]} onPress={handleAlarmPress}>
+          <View>
+            <AlarmOffSvg style={styles.alarmStyle} />
+            {alarmStatus ? (
+              <View
+                style={{
+                  position: 'absolute',
+                  right: -2,
+                  top: -2,
+                  width: 6,
+                  height: 6,
+                  borderRadius: 5,
+                  backgroundColor: 'red',
+                }}
+              />
+            ) : null}
+          </View>
+        </Pressable>
         {showInfo && <HeaderInfoSvg style={styles.headerInfoSvg} />}
       </View>
     </View>

@@ -1,10 +1,4 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import useIsLoggedIn from '../hooks/auth/useIsLoggedIn.tsx';
 import HomeMainTitle from './organisms/header/HomeMainTitle';
 import RowPopUpCard from './molecules/card/RowPopUpCard';
@@ -33,10 +27,6 @@ export default function HomeLoginHeader() {
     loading: newTasteLoading,
     error: newTastePopUpError,
   } = useGetTasteList();
-
-  const goToAlarmScreen = () => {
-    navigation.navigate('Alarm');
-  };
 
   return isLoggedIn ? (
     <View style={styles.container}>

@@ -7,6 +7,7 @@ import {
   Text,
   View,
   Linking,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import globalColors from '../../styles/color/globalColors.ts';
@@ -28,45 +29,31 @@ import text20B from '../../styles/texts/title/Text20B.ts';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text13R from '../../styles/texts/label/Text12R.ts';
 import useLogout from '../../hooks/auth/useLogout.tsx';
-import useGetUser from '../../hooks/auth/useGetUser.tsx';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
 import {useReducedMotion} from 'react-native-reanimated';
 import Text14M from '../../styles/texts/body_medium/Text14M.ts';
-import {useSelector} from 'react-redux';
-import {useFocusEffect} from '@react-navigation/native';
-import getUser from '../../apis/user/getUser.ts';
+import {useDispatch, useSelector} from 'react-redux';
+import useIsImageOrNicknameChanged from '../../hooks/myPage/useIsImageOrNicknameChanged.ts';
+import {RootState} from '../../redux/stores/reducer.ts';
 
 function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
   const reducedMotion = useReducedMotion();
-  const [userData, setUserData] = useState<string | undefined>('');
-  const [userImageUrl, setUserImageUrl] = useState<string | null>(null);
-  const {data, loading, error} = useGetUser();
-
+  const [loadingUser, setLoadingUser] = useState(true);
+  const dispatch = useDispatch();
+  const isChanged = useIsImageOrNicknameChanged();
+  const user = useSelector((state: RootState) => state.user);
   const isLoggedIn = useIsLoggedIn();
-  // mount, unmount 제대로 이해해야 가능
+
+  console.log('user:', user);
+
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await getUser();
-      setUserData(result?.data?.nickname);
-      setUserImageUrl(result?.data?.userImageUrl ?? null);
-    };
-
-    fetchData();
-  }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      const fetchData = async () => {
-        const result = await getUser();
-        setUserData(result?.data?.nickname);
-        setUserImageUrl(result?.data?.userImageUrl ?? null);
-      };
-
-      fetchData();
-    }, []),
-  );
+    console.log('userimage:', user.userImageUrl);
+    if (user.nickname) {
+      setLoadingUser(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (logoutStatus.success) {
@@ -103,18 +90,6 @@ function MyPageScreen({navigation}) {
       : navigation.navigate('Entry');
   };
 
-  // const navigateToReviewWrite = () => {
-  //   isLoggedIn
-  //     ? navigation.navigate('ReviewWrite')
-  //     : navigation.navigate('Entry');
-  // };
-  //
-  // const navigateToKeywordAlarm = () => {
-  //   isLoggedIn
-  //     ? navigation.navigate('KeywordAlarm')
-  //     : navigation.navigate('Entry');
-  // };
-
   const renderBackdrop = useCallback(
     (
       props: React.JSX.IntrinsicAttributes & BottomSheetDefaultBackdropProps,
@@ -137,6 +112,7 @@ function MyPageScreen({navigation}) {
       if (isLoggedIn) {
         bottomSheetModalRef.current?.present();
       } else {
+        action();
       }
     },
     [isLoggedIn],
@@ -146,11 +122,18 @@ function MyPageScreen({navigation}) {
     console.log('handleSheetChanges', index);
   }, []);
 
-  const reviewCount = 10;
-
   const handleFaqPress = useCallback(() => {
     Linking.openURL('https://open.kakao.com/o/sOj6HP5f');
   }, []);
+
+  const handleNavigation = (route: string) => {
+    navigation.navigate(route);
+    bottomSheetModalRef.current?.dismiss();
+  };
+
+  if (loadingUser) {
+    return <ActivityIndicator />;
+  }
 
   return (
     <View style={styles.container}>
@@ -159,23 +142,19 @@ function MyPageScreen({navigation}) {
           <Text style={text24B.text}>마이 페이지</Text>
         </View>
         <View style={styles.rowHeaderContainer}>
-          {userImageUrl ? (
+          {user.userImageUrl ? (
             <Image
-              source={{uri: userImageUrl}}
-              style={styles.profileImage} // 스타일 추가 필요
+              source={{uri: user.userImageUrl}}
+              style={styles.profileImage}
             />
           ) : (
             <ProfileSvg />
           )}
           <View style={styles.colCloseContainer}>
             <Text style={[text20B.text]}>
-              {' '}
-              {isLoggedIn ? userData : '로그인 후 이용해주세요'}
+              {isLoggedIn ? user.nickname : '로그인 후 이용해주세요'}
             </Text>
-            <Pressable
-              style={styles.profileInfoContainer}
-              onPress={navigateToProfileEdit}
-              style={styles.infoRow}>
+            <Pressable style={styles.infoRow} onPress={navigateToProfileEdit}>
               <Text
                 style={[
                   Text18B.text,
@@ -190,48 +169,10 @@ function MyPageScreen({navigation}) {
             </Pressable>
           </View>
         </View>
-        <CompleteButton onPress={handlePresentModal} title={'팝업 제보하기'} />
-        {/*<View style={styles.rowBodyContainer}>*/}
-        {/*  <View style={styles.colMidContainer}>*/}
-        {/*    <Text style={Text13R.text}>후기 작성하기</Text>*/}
-        {/*    <View style={styles.infoRow}>*/}
-        {/*      /!* <Pressable onPress={navigateToReviewWrite}> *!/*/}
-        {/*      <FeedBackSvg style={styles.iconPadding} />*/}
-        {/*      /!* </Pressable> *!/*/}
-        {/*      <Text style={[Text18B.text, {color: globalColors.blue}]}>*/}
-        {/*        {reviewCount}*/}
-        {/*      </Text>*/}
-        {/*    </View>*/}
-        {/*  </View>*/}
-        {/*  <DividerSvg style={styles.dividerPadding} />*/}
-        {/*  <View style={styles.colMidContainer}>*/}
-        {/*    <Text style={Text13R.text}>작성 완료한 후기</Text>*/}
-        {/*    <View style={styles.infoRow}>*/}
-        {/*      <CompleteSvg style={styles.iconPadding} />*/}
-        {/*      <Text style={[Text18B.text, {color: 'gray'}]}>{reviewCount}</Text>*/}
-        {/*    </View>*/}
-        {/*  </View>*/}
-        {/*</View>*/}
-        {/*<View style={styles.titleContainer}>*/}
-        {/*  <Text style={Text20B.text}>최근 본 팝업</Text>*/}
-        {/*</View>*/}
-        {/*<ScrollView*/}
-        {/*  horizontal={true}*/}
-        {/*  showsHorizontalScrollIndicator={false}*/}
-        {/*  style={styles.popUpScrollView}>*/}
-        {/*  {[...Array(10).keys()].map(index => (*/}
-        {/*    <PopUpCard*/}
-        {/*      key={index}*/}
-        {/*      Svg={FeedBackSvg} // 예시로 사용, 필요에 따라 다른 SVG 컴포넌트를 사용하세요*/}
-        {/*      title={`팝업 ${index + 1}`}*/}
-        {/*    />*/}
-        {/*  ))}*/}
-        {/*</ScrollView>*/}
-        {/*<Pressable onPress={navigateToKeywordAlarm}*/}
-        {/*  style={styles.middleContainer}>*/}
-        {/*  <Text style={Text14M.text}>키워드 알림 설정</Text>*/}
-        {/*  <RightSvg style={styles.svgStyle} onPress={navigateToKeywordAlarm} />*/}
-        {/*</Pressable>*/}
+        <CompleteButton
+          onPress={() => handlePresentModal(() => {})}
+          title={'팝업 제보하기'}
+        />
         <Pressable onPress={handleFaqPress} style={styles.middleContainer}>
           <Text style={Text14M.text}>문의하기/FAQ</Text>
           <RightSvg style={styles.svgStyle} onPress={handleFaqPress} />
@@ -275,10 +216,7 @@ function MyPageScreen({navigation}) {
               </Text>
               <Pressable
                 style={styles.optionContainer}
-                onPress={() => {
-                  navigation.navigate('UserRegister'); // 사용자 등록 화면으로 이동
-                  bottomSheetModalRef.current?.dismiss(); // 바텀시트 닫기
-                }}>
+                onPress={() => handleNavigation('UserRegister')}>
                 <View style={styles.optionRow}>
                   <Text style={[Text18B.text, {color: globalColors.blue}]}>
                     팝업 이용자
@@ -295,10 +233,7 @@ function MyPageScreen({navigation}) {
               <View style={styles.divider} />
               <Pressable
                 style={styles.optionContainer}
-                onPress={() => {
-                  navigation.navigate('OperatorRegister'); // 운영자 등록 화면으로 이동
-                  bottomSheetModalRef.current?.dismiss(); // 바텀시트 닫기
-                }}>
+                onPress={() => handleNavigation('OperatorRegister')}>
                 <View style={styles.optionRow}>
                   <Text style={[Text18B.text, {color: globalColors.purple}]}>
                     팝업 운영자
@@ -322,9 +257,9 @@ function MyPageScreen({navigation}) {
 
 const styles = StyleSheet.create({
   profileImage: {
-    width: 70, // 원하는 이미지 크기로 조정
-    height: 70, // 원하는 이미지 크기로 조정
-    borderRadius: 40, // 이미지가 원형이 되도록
+    width: 70,
+    height: 70,
+    borderRadius: 40,
   },
   container: {
     flex: 1,
@@ -334,15 +269,13 @@ const styles = StyleSheet.create({
   },
   infoRow: {
     flexDirection: 'row',
-    alignItems: 'center', // 세로 중앙 정렬
+    alignItems: 'center',
   },
-  // 기존 스타일 유지
   profileInfoContainer: {
-    flexDirection: 'row', // 가로로 배열
-    alignItems: 'center', // 세로 중앙 정렬
-    marginTop: 10, // 필요한 경우 마진 조정
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
   },
-
   middleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -362,7 +295,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 15,
   },
-
   profileLabel: {
     paddingTop: 10,
   },
@@ -388,10 +320,9 @@ const styles = StyleSheet.create({
     marginTop: 15,
     paddingHorizontal: 10,
   },
-
   iconPadding: {
-    paddingTop: 5, // 기존의 패딩 유지
-    marginBottom: -5, // 아이콘과 텍스트 사이의 간격 조정
+    paddingTop: 5,
+    marginBottom: -5,
     marginHorizontal: 3,
   },
   dividerPadding: {
@@ -405,56 +336,50 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   calendarIcon: {
-    marginLeft: 5, //small gap between the text and the icon
+    marginLeft: 5,
   },
   dropdownButtonStyle: {
-    backgroundColor: 'white', // 버튼 배경색을 흰색으로 설정
-    // 필요한 경우 여기에 다른 스타일 추가
+    backgroundColor: 'white',
   },
   rowTextStyle: {
     backgroundColor: globalColors.white,
   },
   buttonInnerContainer: {
-    flexDirection: 'row', // 텍스트와 아이콘을 가로로 배열
-    alignItems: 'center', // 세로 중앙 정렬
-    justifyContent: 'flex-start', // 내용물 사이의 공간 동일하게 배분
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   dropdownIcon: {
     marginLeft: 5,
   },
   dropdownStyle: {
-    borderRadius: 10, // 모서리 둥글기 적용
-    // 필요한 경우 여기에 추가 스타일 설정
+    borderRadius: 10,
   },
   popUpScrollView: {
     marginTop: 15,
-    paddingHorizontal: 5, // 스크롤뷰의 좌우 패딩
+    paddingHorizontal: 5,
   },
   svgStyle: {
-    height: 30, // SVG 높이를 30으로 설정
-    width: 30, // SVG 너비를 30으로 설정
-    paddingRight: 10, // SVG 우측 패딩 유지
+    height: 30,
+    width: 30,
+    paddingRight: 10,
   },
-
   settingContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-
   labelSubStroke: {
     fontFamily: 'Pretandard-Regular',
     fontSize: 13,
     fontWeight: '400',
     color: globalColors.stroke2,
   },
-
   modalContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-
   contentContainer: {
     flex: 1,
     alignItems: 'center',

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import globalColors from '../../styles/color/globalColors.ts';
 import DividerLine from '../../components/DividerLine.tsx';
 import QuestionSvg from '../../assets/icons/question.svg';
@@ -23,8 +23,16 @@ import UpSvg from '../../assets/icons/up.svg';
 import HotListCard from '../../components/molecules/card/HotListCard.tsx';
 import useGetClosingList from '../../hooks/popUpList/useGetClosingList.tsx';
 import HotListNoticeSvg from '../../assets/images/hotListNotice.svg';
-import HomeLoginHeader from '../../components/HomeLoginHeader.tsx';
+import HomeMainTitle from '../../components/organisms/header/HomeMainTitle';
+import ForLoginBox from '../../components/ForLoginBox.tsx';
+import useGetTasteList from '../../hooks/popUpList/useGetTasteList.tsx';
+import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
+import useGetUser from '../../hooks/auth/useGetUser.tsx';
 import HomeHeader from '../../components/organisms/header/HomeHeader.tsx';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../redux/stores/reducer.ts';
+import getUserSetting from '../../apis/myPage/getUserSetting.ts';
+import userSlice from '../../redux/slices/user.ts';
 
 function HomeScreen({navigation}) {
   const [showNotice, setShowNotice] = useState(false);
@@ -43,19 +51,61 @@ function HomeScreen({navigation}) {
     loading: closingListLoading,
     error: closingListError,
   } = useGetClosingList();
-  const goToAlarmScreen = () => {
-    navigation.navigate('Alarm');
-  };
+  const {
+    data: tasteList,
+    loading: newTasteLoading,
+    error: newTastePopUpError,
+  } = useGetTasteList();
+
+  const isLoggedIn = useIsLoggedIn();
+  const user = useSelector((state: RootState) => state.user);
+
+  const dispatch = useDispatch();
+  const [loadingUser, setLoadingUser] = useState(true);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userResponse = await getUserSetting();
+        console.log('✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨');
+        console.log(userResponse);
+        if (userResponse.success) {
+          console.log(userResponse.data);
+          dispatch(userSlice.actions.setUser(userResponse.data));
+        } else {
+          dispatch(userSlice.actions.resetUser());
+        }
+      } catch (error) {
+        console.log('Error fetching user info:', error);
+        dispatch(userSlice.actions.resetUser());
+      } finally {
+        setLoadingUser(false);
+      }
+    };
+
+    fetchUserData();
+  }, [dispatch]);
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+
   const navigateToFind = () => {
     navigation.navigate('Find');
   };
-  if (hotListLoading || newListLoading) {
-    return <ActivityIndicator />;
+
+  const goToAlarmScreen = () => {
+    navigation.navigate('Alarm');
+  };
+
+  if (hotListLoading || newListLoading || loadingUser) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={globalColors.blue} />
+      </View>
+    );
   }
+
   return (
     <View>
       <HomeHeader />
@@ -66,7 +116,43 @@ function HomeScreen({navigation}) {
             {backgroundColor: globalColors.white},
             {marginTop: 20, marginBottom: 120},
           ]}>
-          <HomeLoginHeader />
+          {isLoggedIn ? (
+            <View style={styles.container}>
+              <HomeMainTitle
+                text1={`안녕하세요, ${user?.nickname}님`}
+                text2={'취향저격 팝업을 알려드릴게요'}
+              />
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                style={styles.popUpScrollView}>
+                {tasteList?.popupSummaryDtos.map(item => (
+                  <TouchableOpacity
+                    key={item.id}
+                    onPress={() =>
+                      navigation.navigate('PopUpDetail', {id: item.id})
+                    }>
+                    <RowPopUpCard
+                      id={item.id}
+                      imageUrl={item.image_url}
+                      name={item.name}
+                      introduce={item.introduce}
+                    />
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          ) : (
+            <View style={styles.container}>
+              <ForLoginBox
+                isNeedSvg={false}
+                text1={'로그인하고'}
+                text2={'팝업 추천을 받아보세요!'}
+                buttonText={'로그인 하러 가기'}
+                onPress={() => navigation.replace('Entry')}
+              />
+            </View>
+          )}
           <DividerLine height={12} />
           <View style={styles.bottomContainer}>
             <View style={styles.middleContainer}>
@@ -114,12 +200,11 @@ function HomeScreen({navigation}) {
               style={styles.popUpScrollView}>
               {newList?.map(item => (
                 <TouchableOpacity
-                  key={item.id} // `key` should be here
+                  key={item.id}
                   onPress={() =>
                     navigation.navigate('PopUpDetail', {id: item.id})
                   }>
                   <RowPopUpCard
-                    key={item.id}
                     id={item.id}
                     imageUrl={item.image_url}
                     name={item.name}
@@ -145,10 +230,11 @@ function HomeScreen({navigation}) {
               style={styles.popUpScrollView}>
               {closingList?.map(item => (
                 <TouchableOpacity
-                  key={item.id} // `key` should be here
-                  onPress={() => navigation.navigate('PopUpDetail', {id: 1})}>
+                  key={item.id}
+                  onPress={() =>
+                    navigation.navigate('PopUpDetail', {id: item.id})
+                  }>
                   <RowPopUpCard
-                    key={item.id}
                     id={item.id}
                     imageUrl={item.image_url}
                     name={item.name}
@@ -165,6 +251,11 @@ function HomeScreen({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     paddingHorizontal: 20,
     backgroundColor: 'white',
@@ -202,4 +293,5 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
 });
+
 export default HomeScreen;

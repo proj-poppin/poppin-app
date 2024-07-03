@@ -21,15 +21,18 @@ import KakaoCirclePng from '../../assets/png/kakaoCircle.png';
 import GoogleCirclePng from '../../assets/png/googleCircle.png';
 import AppleCirclePng from '../../assets/png/appleCircle.png';
 import PoppinCirclePng from '../../assets/png/poppinCircle.png';
-import useGetUserSetting from '../../hooks/myPage/useGetUserSetting';
 import usePatchUserSetting from '../../hooks/myPage/usePatchUserSetting';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import useChangeProfileImageInfo from '../../hooks/myPage/usePutChangeProfileImage.tsx';
-import ProfileEditOptions from '../../navigators/options/ProfileEditOptions.tsx';
 import ConfirmationModal from '../../components/ConfirmationModal.tsx';
+import CustomOKModal from '../../components/CustomOKModal.tsx';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import CustomOKModal from '../../components/CustomOKModal.tsx';
+import {
+  setProfileImageUrl,
+  setProfileNickname,
+} from '../../redux/slices/user.ts';
+import {RootState} from '../../redux/stores/reducer.ts';
 
 type ProfileEditScreenRouteProp = RouteProp<
   AppNavigatorParamList,
@@ -38,7 +41,6 @@ type ProfileEditScreenRouteProp = RouteProp<
 
 function MyProfileEditScreen() {
   const {changeProfileImageInfo} = useChangeProfileImageInfo();
-  const {data: userData, loading, error} = useGetUserSetting();
   const [profileImage, setProfileImage] = useState<any>(PoppinCirclePng);
   const [nickname, setNickname] = useState('');
   const [birthdate, setBirthdate] = useState('');
@@ -46,20 +48,20 @@ function MyProfileEditScreen() {
   const [isNicknameFocused, setIsNicknameFocused] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
-  const [isBlank, setIsBlank] = useState(false); // 추가된 상태
+  const [isBlank, setIsBlank] = useState(false);
 
   const nicknameInputRef = useRef<TextInput>(null);
-  const user = useSelector(state => state.user);
-  const userImageUrl = userData?.userImageUrl;
+  const user = useSelector((state: RootState) => state.user);
 
   const route = useRoute<ProfileEditScreenRouteProp>();
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (userData) {
-      setNickname(userData.nickname);
-      setBirthdate(userData.birthDate);
-      switch (userData.provider) {
+    if (user) {
+      setNickname(user.nickname);
+      setBirthdate(user.birthDate);
+      switch (user.provider) {
         case 'KAKAO':
           setEmailIcon(KakaoCirclePng);
           break;
@@ -76,12 +78,11 @@ function MyProfileEditScreen() {
           setEmailIcon(null);
           break;
       }
-
-      if (userData.userImageUrl) {
-        setProfileImage({uri: userData.userImageUrl});
+      if (user.userImageUrl) {
+        setProfileImage({uri: user.userImageUrl});
       }
     }
-  }, [userData, userImageUrl]);
+  }, [dispatch, user]);
 
   const openCompleteModal = () => {
     setCompleteModalVisible(true);
@@ -102,26 +103,31 @@ function MyProfileEditScreen() {
     setNickname('');
   };
 
-  const openGallery = () => {
-    ImagePicker.openPicker({
-      width: 100,
-      height: 100,
-      cropping: true,
-      cropperCircleOverlay: true,
-    }).then(image => {
+  const openGallery = async () => {
+    try {
+      const image = await ImagePicker.openPicker({
+        width: 100,
+        height: 100,
+        cropping: true,
+        cropperCircleOverlay: true,
+      });
       setProfileImage({uri: image.path});
-      changeProfileImageInfo({
+      await changeProfileImageInfo({
         uri: image.path,
         type: image.mime,
         name: image.filename || 'profileImage',
-      }).then(r => console.log('r:', r));
-    });
+      });
+      console.log('ImagePicker Success: ', image);
+      dispatch(setProfileImageUrl({userImageUrl: image.path}));
+    } catch (error) {
+      console.log('ImagePicker Error: ', error);
+    }
   };
 
   const {patchUserInfo} = usePatchUserSetting();
 
   const handleNicknameChange = async () => {
-    if (nickname === userData.nickname || nickname.length < 2) {
+    if (nickname === user.nickname || nickname.length < 2) {
       setIsBlank(nickname.length < 2);
       setIsModalVisible(true);
       return;
@@ -131,23 +137,19 @@ function MyProfileEditScreen() {
       nickname: nickname,
     };
 
-    await patchUserInfo(updatedData).then(() => {
-      openCompleteModal(); // 모달 열기
-    });
+    try {
+      await patchUserInfo(updatedData);
+      dispatch(setProfileNickname({nickname: nickname}));
+      openCompleteModal();
+    } catch (error) {
+      console.log('Nickname change error: ', error);
+    }
   };
 
-  if (loading) {
+  if (!user) {
     return (
       <View style={[styles.container, styles.centered]}>
         <ActivityIndicator size="large" color={globalColors.blue} />
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={[styles.container, styles.centered]}>
-        <Text style={{color: globalColors.red}}>{error.message}</Text>
       </View>
     );
   }
@@ -172,7 +174,9 @@ function MyProfileEditScreen() {
         </TouchableOpacity>
         <View style={styles.emailContainer}>
           <Text style={styles.labelText}>
-            {user.isSocialLogin ? '이메일' : '아이디'}
+            {['KAKAO', 'NAVER', 'GOOGLE', 'APPLE'].includes(user.provider)
+              ? '이메일'
+              : '아이디'}
           </Text>
           <View style={styles.emailInputContainer}>
             {emailIcon && (
@@ -180,7 +184,7 @@ function MyProfileEditScreen() {
             )}
             <TextInput
               style={styles.emailInput}
-              value={userData?.email || 'test@poppin.com'}
+              value={user.email || 'test@poppin.com'}
               editable={false}
             />
           </View>
@@ -224,7 +228,7 @@ function MyProfileEditScreen() {
           </View>
         </View>
       </View>
-      {!user.isSocialLogin && (
+      {!['KAKAO', 'NAVER', 'GOOGLE', 'APPLE'].includes(user.provider) && (
         <TouchableOpacity
           style={styles.middleContainer}
           onPress={() => {
@@ -258,6 +262,7 @@ function MyProfileEditScreen() {
     </DismissKeyboardView>
   );
 }
+
 const styles = StyleSheet.create({
   middleContainer: {
     flexDirection: 'row',

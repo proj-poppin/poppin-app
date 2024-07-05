@@ -1,19 +1,19 @@
 import {Alert, Linking, PermissionsAndroid, Platform} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 
-export async function requestPermissions() {
+export async function requestLocationPermission() {
   if (Platform.OS === 'ios') {
     const auth = await Geolocation.requestAuthorization('whenInUse');
     if (auth === 'granted') {
       return true;
     } else if (auth === 'denied') {
       Alert.alert(
-        'Permission Denied',
-        'Location permission is required. Please enable it in the app settings.',
+        '권한 거부됨',
+        '위치 권한이 필요합니다. 앱 설정에서 위치 권한을 허용해주세요.',
         [
-          {text: 'Cancel', style: 'cancel'},
+          {text: '취소', style: 'cancel'},
           {
-            text: 'Open Settings',
+            text: '설정 열기',
             onPress: () => Linking.openURL('app-settings:'),
           },
         ],
@@ -24,11 +24,11 @@ export async function requestPermissions() {
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       {
-        title: 'Location Permission',
-        message: 'App needs access to your location',
-        buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
+        title: '위치 권한',
+        message: '앱에서 위치에 접근할 수 있어야 합니다.',
+        buttonNeutral: '나중에 묻기',
+        buttonNegative: '취소',
+        buttonPositive: '확인',
       },
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -37,11 +37,11 @@ export async function requestPermissions() {
       return false;
     } else if (granted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
       Alert.alert(
-        'Permission Denied',
-        'Location permission is required. Please enable it in the app settings.',
+        '권한 거부됨',
+        '위치 권한이 필요합니다. 앱 설정에서 위치 권한을 허용해주세요.',
         [
-          {text: 'Cancel', style: 'cancel'},
-          {text: 'Open Settings', onPress: () => Linking.openSettings()},
+          {text: '취소', style: 'cancel'},
+          {text: '설정 열기', onPress: () => Linking.openSettings()},
         ],
       );
     }

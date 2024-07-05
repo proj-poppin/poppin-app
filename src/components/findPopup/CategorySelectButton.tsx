@@ -8,15 +8,19 @@ interface CategorySelectButtonProps {
   item: TFilter;
   onClick: (item: TFilter) => void;
   selectedTag?: any;
-  isMultipleSelectionPossible?: boolean;
+  isMultipleNeeded?: boolean;
 }
 
 const CategorySelectButton: React.FC<CategorySelectButtonProps> = ({
   item,
   onClick,
   selectedTag,
+  isMultipleNeeded = false,
 }) => {
-  const isSelected = item.selected;
+  const isSelected = isMultipleNeeded
+    ? selectedTag.some((tag: TFilter) => tag.id === item.id)
+    : item.selected;
+
   return (
     <Pressable onPress={() => onClick(item)}>
       {isSelected ? (

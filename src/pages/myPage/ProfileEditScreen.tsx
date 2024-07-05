@@ -7,6 +7,9 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  ActionSheetIOS,
+  Linking,
+  Alert,
 } from 'react-native';
 import RightSvg from '../../assets/icons/bigRight.svg';
 import globalColors from '../../styles/color/globalColors';
@@ -33,6 +36,7 @@ import {
   setProfileNickname,
 } from '../../redux/slices/user.ts';
 import {RootState} from '../../redux/stores/reducer.ts';
+import {requestGalleryPermissions} from '../../utils/function/requestGalleryPermission.ts';
 
 type ProfileEditScreenRouteProp = RouteProp<
   AppNavigatorParamList,
@@ -104,6 +108,19 @@ function MyProfileEditScreen() {
   };
 
   const openGallery = async () => {
+    const hasPermission = await requestGalleryPermissions();
+    if (!hasPermission) {
+      Alert.alert(
+        '갤러리 권한 필요',
+        '갤러리 접근 권한이 필요합니다. 앱 설정에서 갤러리 접근 권한을 허용해주세요.',
+        [
+          {text: '취소', style: 'cancel'},
+          {text: '설정 열기', onPress: () => Linking.openSettings()},
+        ],
+      );
+      return;
+    }
+
     try {
       const image = await ImagePicker.openPicker({
         width: 100,
@@ -122,6 +139,25 @@ function MyProfileEditScreen() {
     } catch (error) {
       console.log('ImagePicker Error: ', error);
     }
+  };
+  const showActionSheet = () => {
+    const options = ['기본 프로필 설정', '사진 선택하기', '취소'];
+    const cancelButtonIndex = 2;
+
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+      },
+      buttonIndex => {
+        if (buttonIndex === 0) {
+          setProfileImage(PoppinCirclePng);
+          dispatch(setProfileImageUrl({userImageUrl: null}));
+        } else if (buttonIndex === 1) {
+          openGallery();
+        }
+      },
+    );
   };
 
   const {patchUserInfo} = usePatchUserSetting();
@@ -162,7 +198,9 @@ function MyProfileEditScreen() {
             style={styles.image}
             source={profileImage.uri ? profileImage : PoppinCirclePng}
           />
-          <TouchableOpacity style={styles.galleryIcon} onPress={openGallery}>
+          <TouchableOpacity
+            style={styles.galleryIcon}
+            onPress={showActionSheet}>
             <GallerySvg />
           </TouchableOpacity>
         </View>

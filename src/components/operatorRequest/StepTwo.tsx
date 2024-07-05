@@ -5,6 +5,8 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  Alert,
+  Linking,
 } from 'react-native';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
@@ -12,7 +14,6 @@ import globalColors from '../../styles/color/globalColors.ts';
 import LabelAndInputWithCloseSvg from '../LabelAndInputWithCloseSvg.tsx';
 import TextInputWithSvgIconInRight from '../TextInputWithSvgIconInRight.tsx';
 import RequiredTextLabel from '../RequiredTextLabel.tsx';
-import PopupTypeOptions from '../PopUpTypeOptions.tsx';
 import OperationCalendarBottomSheet from '../OperationCalendarBottomSheet.tsx';
 import OperationHoursBottomSheet from '../OperationHoursBottomSheet.tsx';
 import Text12R from '../../styles/texts/label/Text12R.ts';
@@ -22,6 +23,8 @@ import DownSvg from '../../assets/icons/down.svg';
 import Text12M from '../../styles/texts/label/Text12M.ts';
 import CategorySelectButton from '../findPopup/CategorySelectButton.tsx';
 import {POP_UP_TYPES, TFilter} from '../findPopup/constants.ts';
+import DismissKeyboardView from '../DismissKeyboardView.tsx';
+import {requestGalleryPermissions} from '../../utils/function/requestGalleryPermission.ts';
 
 interface StepTwoProps {
   name: string;
@@ -85,6 +88,36 @@ const StepTwo: React.FC<StepTwoProps> = ({
 }) => {
   const [availableTags, setAvailableTags] = useState<TFilter[]>(POP_UP_TYPES);
   const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
+  const [selectedPopupTypeTags, setSelectedPopupTypeTags] = useState<TFilter[]>(
+    [],
+  );
+
+  const handleSelectImagesWithPermission = async () => {
+    const hasPermission = await requestGalleryPermissions();
+    if (!hasPermission) {
+      Alert.alert(
+        '갤러리 권한 필요',
+        '갤러리 접근 권한이 필요합니다. 앱 설정에서 갤러리 접근 권한을 허용해주세요.',
+        [
+          {text: '취소', style: 'cancel'},
+          {text: '설정 열기', onPress: () => Linking.openSettings()},
+        ],
+      );
+      return;
+    }
+    handleSelectImages();
+  };
+
+  const handlePopupTypeClick = (selectedTag: TFilter) => {
+    setSelectedPopupTypeTags(prev => {
+      const exists = prev.find(item => item.id === selectedTag.id);
+      if (exists) {
+        return prev.filter(item => item.id !== selectedTag.id);
+      } else {
+        return [...prev, selectedTag];
+      }
+    });
+  };
 
   const handleClick = (selectedTag: TFilter) => {
     setSelectedTags(prev =>
@@ -104,7 +137,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
   };
 
   return (
-    <>
+    <DismissKeyboardView>
       <View style={styles.purpleInfo}>
         <Text style={[Text18B.text, {color: globalColors.purple}]}>
           📝팝업의 기본 정보를 알려주세요
@@ -136,10 +169,17 @@ const StepTwo: React.FC<StepTwoProps> = ({
             {'*복수 선택 가능'}
           </Text>
         </View>
-        <PopupTypeOptions
-          onSelectOption={onSelectPopupType}
-          selectedPopUpType={selectedPopupType}
-        />
+        <View style={styles.popupTypeContainer}>
+          {availableTags.slice(14, 17).map(item => (
+            <CategorySelectButton
+              key={item.id}
+              item={item}
+              onClick={handlePopupTypeClick}
+              isMultipleNeeded={true}
+              selectedTag={selectedPopupTypeTags}
+            />
+          ))}
+        </View>
         <RequiredTextLabel label={'운영 기간'} isRequired={true} />
         <OperationCalendarBottomSheet setSelectedDates={setSelectedDates} />
         <RequiredTextLabel label={'운영 시간'} isRequired={true} />
@@ -196,7 +236,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
               <View style={styles.popWrapper}>
                 {selectedTags.slice(0, 14).map(item => (
                   <CategorySelectButton
-                    isMultipleSelectionPossible={false}
+                    isMultipleNeeded={false}
                     key={item.id}
                     item={item}
                     onClick={handleClick}
@@ -221,7 +261,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
         <RequiredTextLabel label={'관련사진'} isRequired={true} />
         <ImageContainerRow
           selectedImages={selectedImages}
-          handleSelectImages={handleSelectImages}
+          handleSelectImages={handleSelectImagesWithPermission}
           handleRemoveImage={handleRemoveImage}
         />
         <Text
@@ -237,11 +277,16 @@ const StepTwo: React.FC<StepTwoProps> = ({
           *저품질의 사진은 정보 제공이 불가할 수 있습니다.{'\n'}
         </Text>
       </View>
-    </>
+    </DismissKeyboardView>
   );
 };
 
 const styles = StyleSheet.create({
+  popupTypeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginHorizontal: -5,
+  },
   popWrapper: {
     width: '100%',
     flexDirection: 'row',

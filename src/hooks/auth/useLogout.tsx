@@ -2,6 +2,7 @@ import {useState, useCallback} from 'react';
 import {useAppDispatch} from '../../redux/stores';
 import userSlice from '../../redux/slices/user.ts';
 import logout from '../../apis/auth/logout.ts';
+import {resetInterests} from '../../redux/slices/interestSlice.ts';
 
 const useLogout = () => {
   const dispatch = useAppDispatch();
@@ -22,6 +23,7 @@ const useLogout = () => {
         );
 
         dispatch(userSlice.actions.resetUser());
+        dispatch(resetInterests());
         setLogoutStatus({success: true, error: null});
         return setLogoutStatus({success: true, error: null});
       }

@@ -16,6 +16,7 @@ import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationMo
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
 import useDeleteUser from '../../hooks/myPage/useDeleteUser.tsx';
+import {useAppDispatch} from '../../redux/stores';
 
 const reasons = [
   '앱 사용이 불편해요',
@@ -41,7 +42,8 @@ function MemberDeleteScreen({navigation}: any) {
   };
 
   const confirmDelete = async () => {
-    await handleDeleteUser();
+    const resp = await handleDeleteUser();
+
     setIsDeleted(true);
     closeModal();
   };

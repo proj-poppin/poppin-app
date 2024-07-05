@@ -11,6 +11,7 @@ import messaging from '@react-native-firebase/messaging';
 import {registerPushToken} from '../apis/push/registerPushToken.ts';
 import {Platform} from 'react-native';
 import getUserSetting from '../apis/myPage/getUserSetting.ts';
+import {resetInterests} from '../redux/slices/interestSlice.ts';
 
 const RootNavigator = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,8 @@ const RootNavigator = () => {
 
   useEffect(() => {
     const initializeApp = async () => {
+      // Reset interests and user state on app start
+      dispatch(resetInterests());
       const accessToken = await EncryptedStorage.getItem('accessToken');
       const refreshToken = await EncryptedStorage.getItem('refreshToken');
 

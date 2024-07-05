@@ -1,5 +1,7 @@
 import {useState, useCallback} from 'react';
 import deleteUser, {GetUserInfoResponse} from '../../apis/myPage/deleteUser.ts';
+import {useAppDispatch} from '../../redux/stores';
+import {resetInterests} from '../../redux/slices/interestSlice.ts';
 
 interface DeleteUserState {
   loading: boolean;
@@ -8,6 +10,7 @@ interface DeleteUserState {
 }
 
 const useDeleteUser = () => {
+  const dispatch = useAppDispatch();
   const [deleteUserState, setDeleteUserState] = useState<DeleteUserState>({
     loading: false,
     error: null,
@@ -18,6 +21,7 @@ const useDeleteUser = () => {
     setDeleteUserState({loading: true, error: null, data: null});
     try {
       const response = await deleteUser();
+      dispatch(resetInterests());
       setDeleteUserState({loading: false, error: null, data: response});
     } catch (error: any) {
       setDeleteUserState({

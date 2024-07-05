@@ -19,8 +19,12 @@ const interestSlice = createSlice({
     setInitialInterests(state, action: PayloadAction<InterestState>) {
       return {...state, ...action.payload};
     },
+    resetInterests(state) {
+      return initialState;
+    },
   },
 });
 
-export const {setInterest, setInitialInterests} = interestSlice.actions;
+export const {setInterest, setInitialInterests, resetInterests} =
+  interestSlice.actions;
 export default interestSlice;

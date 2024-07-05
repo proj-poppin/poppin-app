@@ -13,6 +13,7 @@ import userSlice from '../../redux/slices/user.ts';
 import usePreferenceSetting from '../../hooks/password/usePreferenceSetting.tsx';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/stores/reducer.ts';
+import {resetInterests} from '../../redux/slices/interestSlice.ts';
 
 function SignUpSucceedScreen({route, navigation}) {
   const dispatch = useAppDispatch();
@@ -28,6 +29,7 @@ function SignUpSucceedScreen({route, navigation}) {
   );
 
   useEffect(() => {
+    dispatch(resetInterests());
     if (isFinishedPreferenceSetting) {
       navigation.navigate('MainTabNavigator');
     }

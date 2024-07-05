@@ -18,7 +18,7 @@ import Text12R from '../../styles/texts/label/Text12R.ts';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
 import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
 import useConfirmPassword from '../../hooks/myPage/useConfirmPassword.tsx';
-import useResetPassword from '../../hooks/password/useResetPassword.tsx';
+import useResetPasswordNonPublic from '../../hooks/password/useResetPasswordNonPublic.tsx';
 import GoBackSvg from '../../assets/icons/goBack.svg';
 import ToSignUpTextLine from '../../components/molecules/pressable_text/ToSignUpTextLine.tsx';
 
@@ -43,7 +43,8 @@ export const PasswordChangeOptions = ({
 function PasswordChangeScreen({navigation}: any) {
   const {data: userData} = useGetUserSetting();
   const {confirmPassword, ...confirmPasswordState} = useConfirmPassword();
-  const {resetUserPassword, resetPasswordStatus} = useResetPassword();
+  const {resetUserPasswordNonPublic, resetPasswordStatus} =
+    useResetPasswordNonPublic();
   const user = useSelector(state => state.user);
 
   const [currentPassword, setCurrentPassword] = useState('');
@@ -92,16 +93,11 @@ function PasswordChangeScreen({navigation}: any) {
 
   const handlePasswordChangeSubmit = async () => {
     if (isNewPasswordSame) {
-      await resetUserPassword(newPassword, confirmNewPassword);
+      await resetUserPasswordNonPublic(newPassword, confirmNewPassword);
     } else {
       Alert.alert('Error', 'Passwords do not match or meet the criteria.');
     }
   };
-
-  const handleForgotPasswordPress = () => {
-    navigation.navigate('PasswordReset');
-  };
-
   useEffect(() => {
     if (confirmPasswordState.success) {
       setIsPasswordCheckDone(true);

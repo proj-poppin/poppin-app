@@ -1,26 +1,18 @@
-import Config from 'react-native-config';
-import axios from 'axios';
 import nonPublicApiInstance from '../../apis/apiInstance/NonPublicApiInstance';
 
-// 회원가입을 시도하는 함수
-const resetPassword = async (password: string, passwordConfirm: string) => {
+// 로그인시 비밀번호 재설정을 시도하는 함수
+const resetPasswordNonPublic = async (
+  password: string,
+  passwordConfirm: string,
+) => {
   try {
-
-     const response = await nonPublicApiInstance.put(
-       `/api/v1/auth/reset-password`,
-        {
+    const response = await nonPublicApiInstance.put(
+      '/api/v1/auth/reset-password',
+      {
         password,
         passwordConfirm,
       },
-     );
-    console.log("res",response)
-    // const response = await axios.put(
-    //   `${Config.API_URL}/api/v1/auth/reset-password`,
-    //   {
-    //     password,
-    //     passwordConfirm,
-    //   },
-    // );
+    );
     if (response.data.success) {
       console.log('resetpassword successful', response.data);
       return response.data;
@@ -39,4 +31,4 @@ const resetPassword = async (password: string, passwordConfirm: string) => {
   }
 };
 
-export default resetPassword;
+export default resetPasswordNonPublic;

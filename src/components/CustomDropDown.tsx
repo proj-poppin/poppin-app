@@ -11,6 +11,7 @@ type CustomSelectDropdownProps = {
   iconComponent: JSX.Element;
   buttonTextAfterSelection: (selectedItem: string, index: number) => string;
   buttonTextStyle?: object;
+  defaultValue?: string; // Optional defaultValue prop
 };
 
 const CustomSelectDropdown: React.FC<CustomSelectDropdownProps> = ({
@@ -20,6 +21,7 @@ const CustomSelectDropdown: React.FC<CustomSelectDropdownProps> = ({
   iconComponent,
   buttonTextAfterSelection,
   buttonTextStyle,
+  defaultValue, // Destructure the defaultValue prop
 }) => {
   return (
     <SelectDropdown
@@ -27,6 +29,7 @@ const CustomSelectDropdown: React.FC<CustomSelectDropdownProps> = ({
       onSelect={onSelect}
       buttonTextAfterSelection={buttonTextAfterSelection}
       rowTextForSelection={(item, index) => item}
+      defaultButtonText={defaultValue || data[0]?.label} // Set default text
       dropdownStyle={[
         styles.dropdownStyle,
         {width: buttonWidth}, // Set dropdown width dynamically
@@ -36,7 +39,7 @@ const CustomSelectDropdown: React.FC<CustomSelectDropdownProps> = ({
       renderCustomizedButtonChild={(selectedItem, index) => (
         <View style={styles.buttonInnerContainer}>
           <Text style={[Text14M.text, buttonTextStyle, styles.buttonText]}>
-            {selectedItem || data[0].label}
+            {selectedItem || defaultValue || data[0]?.label}
           </Text>
           {iconComponent}
         </View>
@@ -64,7 +67,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: globalColors.black, // Ensure text color is set to font color
     fontWeight: '600',
-    fontSize: 16, // Set font size to 14
+    fontSize: 16, // Set font size to 16
   },
 });
 

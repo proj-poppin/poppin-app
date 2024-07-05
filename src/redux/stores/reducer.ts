@@ -6,7 +6,6 @@ import preferenceSlice from '../slices/preferenceSlice.ts';
 import popupDetailSlice from '../slices/popupDetailSlice.ts';
 import reviewSubmittedSlice from '../slices/reviewSubmittedSlice.ts';
 import interestSlice from '../slices/interestSlice.ts';
-import profileImageSlice from '../slices/profileImageSlice.ts';
 import refreshSlice from '../slices/refreshSlice.ts';
 // 모든 상태를 결합
 const rootReducer = combineReducers({
@@ -17,7 +16,6 @@ const rootReducer = combineReducers({
   popupDetail: popupDetailSlice.reducer, // 추가
   reviewSubmitted: reviewSubmittedSlice.reducer,
   interest: interestSlice.reducer,
-  profileImage: profileImageSlice.reducer,
   refresh: refreshSlice.reducer,
 });
 

@@ -6,12 +6,10 @@ import {RootState} from '../../redux/stores/reducer.ts';
 
 const useIsLoggedIn = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   const refreshToken = useSelector(
     (state: RootState) => state.user.refreshToken,
   );
-
   useEffect(() => {
     if (accessToken && refreshToken) {
       console.log('📝User is logged in.');
@@ -21,7 +19,6 @@ const useIsLoggedIn = () => {
       setIsLoggedIn(false);
     }
   }, [accessToken, refreshToken]);
-
   return isLoggedIn;
 };
 

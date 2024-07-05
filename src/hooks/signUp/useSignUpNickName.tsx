@@ -20,7 +20,6 @@ const useSignUpNickName = () => {
           /^[a-zA-Z가-힣](?!.*\s$)[a-zA-Z가-힣\s]{0,9}$/.test(text);
         setIsNicknameValid(isValidNickname);
       }
-      console.log('Nickname valid:', isNicknameValid, 'Nickname:', text);
     },
     [isNicknameValid],
   );
@@ -30,7 +29,6 @@ const useSignUpNickName = () => {
       setBirthDate(text);
       const isValidBirthDate = /^\d{4}\.\d{2}\.\d{2}$/.test(text);
       setIsBirthDateValid(isValidBirthDate);
-      console.log('Birthdate valid:', isBirthDateValid, 'Birthdate:', text);
     },
     [isBirthDateValid],
   );

@@ -35,10 +35,7 @@ const RootNavigator = () => {
 
       try {
         const userResponse = await getUserSetting();
-        console.log('🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛');
-        console.log(userResponse);
         if (userResponse.success) {
-          console.log(userResponse.data);
           dispatch(userSlice.actions.setUser(userResponse.data));
         } else {
           dispatch(userSlice.actions.resetUser());
@@ -46,7 +43,6 @@ const RootNavigator = () => {
         }
       } catch (error) {
         dispatch(userSlice.actions.resetUser());
-        console.log('Error fetching user info:', error);
       } finally {
         setInitialLoading(false);
         SplashScreen.hide();
@@ -56,6 +52,9 @@ const RootNavigator = () => {
     initializeApp();
   }, [dispatch, isFinishedPreferenceSetting]);
 
+  // 앱 최초 시작시 권한 요청 원할때 사용
+  // usePermissions();
+
   useEffect(() => {
     async function getToken() {
       try {
@@ -63,7 +62,6 @@ const RootNavigator = () => {
           await messaging().registerDeviceForRemoteMessages();
         }
         const token = await messaging().getToken();
-        console.log('phone token', token);
         const response = await registerPushToken({
           token: token,
           device: Platform.OS,

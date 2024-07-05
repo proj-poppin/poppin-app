@@ -21,7 +21,6 @@ const useReportPopup = () => {
     setReportPopupState({loading: true, error: null, success: null});
     try {
       const response: CommonResponse<any> = await reportPopup(popupId, content);
-      console.log(response);
       if (response.success) {
         setReportPopupState({loading: false, error: null, success: true});
         return response;

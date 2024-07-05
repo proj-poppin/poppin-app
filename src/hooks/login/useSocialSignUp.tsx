@@ -25,7 +25,6 @@ function useSocialSignUp() {
 
         await setTokens({accessToken, refreshToken});
 
-        console.log('SignUp successful with social account!!!:', response.data);
         setSignUpStatus({loading: false, error: null, success: true});
       } else {
         setSignUpStatus({

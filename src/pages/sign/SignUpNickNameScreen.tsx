@@ -10,6 +10,7 @@ import {useDispatch} from 'react-redux';
 import userSlice from '../../redux/slices/user.ts';
 import useSignUp from '../../hooks/signUp/useSignUp.tsx';
 import useRandomNickname from '../../hooks/signUp/useRandomNickname.tsx';
+import BirthDateInput from '../../components/BirthDateInput.tsx';
 
 function SignUpNickNameScreen({navigation}) {
   const dispatch = useDispatch();
@@ -30,7 +31,6 @@ function SignUpNickNameScreen({navigation}) {
 
   useEffect(() => {
     if (randomNickname) {
-      console.log('randomNickname', randomNickname);
       setNickname(randomNickname);
     }
   }, [randomNickname, setNickname]);
@@ -39,7 +39,6 @@ function SignUpNickNameScreen({navigation}) {
     if (signUpStatus.success) {
       navigation.navigate('SignUpSucceed', {nickname: nickname});
     }
-    console.log('valid:', isNicknameValid, isBirthDateValid);
     dispatch(
       userSlice.actions.setSignUpNickNameScreen({
         nickname: nickname,
@@ -91,16 +90,11 @@ function SignUpNickNameScreen({navigation}) {
           errorText={nicknameError}
         />
       )}
-      <LabelAndInput
-        onChangeText={handleBirthDateChange}
+      <BirthDateInput
+        onChange={handleChangeBirthDate}
         value={birthDate}
-        placeholder="YYYY.MM.DD"
-        keyboardType="default"
-        labelText={'생년월일'}
+        labelText="생년월일"
       />
-      <Text style={styles.helperText}>
-        .은 자동 기입됩니다. 숫자만 입력해주세요!
-      </Text>
       <CompleteButton
         title="완료"
         onPress={handlePress}

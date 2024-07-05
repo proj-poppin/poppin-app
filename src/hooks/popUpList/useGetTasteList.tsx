@@ -26,7 +26,6 @@ const useGetTasteList = () => {
             error: null,
             data: response.data!,
           });
-          console.log('Taste list fetched successfully', response.data);
         } else {
           setTasteListState({
             loading: false,

@@ -10,7 +10,6 @@ const getClosingList = async (): Promise<
     );
 
     if (response.data.success) {
-      console.log('getClosingList response:', response.data);
       return response.data;
     } else {
       return {

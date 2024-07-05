@@ -4,7 +4,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -66,10 +65,7 @@ function HomeScreen({navigation}) {
     const fetchUserData = async () => {
       try {
         const userResponse = await getUserSetting();
-        console.log('✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨');
-        console.log(userResponse);
         if (userResponse.success) {
-          console.log(userResponse.data);
           dispatch(userSlice.actions.setUser(userResponse.data));
         } else {
           dispatch(userSlice.actions.resetUser());
@@ -127,7 +123,7 @@ function HomeScreen({navigation}) {
                 showsHorizontalScrollIndicator={false}
                 style={styles.popUpScrollView}>
                 {tasteList?.popupSummaryDtos.map(item => (
-                  <TouchableOpacity
+                  <Pressable
                     key={item.id}
                     onPress={() =>
                       navigation.navigate('PopUpDetail', {id: item.id})
@@ -138,7 +134,7 @@ function HomeScreen({navigation}) {
                       name={item.name}
                       introduce={item.introduce}
                     />
-                  </TouchableOpacity>
+                  </Pressable>
                 ))}
               </ScrollView>
             </View>
@@ -168,13 +164,13 @@ function HomeScreen({navigation}) {
                     </View>
                   )}
                 </View>
-                <TouchableOpacity onPress={toggleDropdown}>
+                <Pressable onPress={toggleDropdown}>
                   {isDropdownOpen ? (
                     <UpSvg style={{paddingLeft: 420}} />
                   ) : (
                     <DownSvg style={{paddingLeft: 420}} />
                   )}
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </View>
 
@@ -186,11 +182,11 @@ function HomeScreen({navigation}) {
             <View style={styles.middleContainer}>
               <Text style={Text18B.text}>새로 오픈</Text>
               <View style={styles.textAndQuestionContainer}>
-                <TouchableOpacity onPress={navigateToFind}>
+                <Pressable onPress={navigateToFind}>
                   <Text style={[Text14R.text, {color: globalColors.black}]}>
                     전체 보기
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
                 <RightSvg style={{paddingLeft: 20}} />
               </View>
             </View>
@@ -199,7 +195,7 @@ function HomeScreen({navigation}) {
               showsHorizontalScrollIndicator={false}
               style={styles.popUpScrollView}>
               {newList?.map(item => (
-                <TouchableOpacity
+                <Pressable
                   key={item.id}
                   onPress={() =>
                     navigation.navigate('PopUpDetail', {id: item.id})
@@ -210,17 +206,17 @@ function HomeScreen({navigation}) {
                     name={item.name}
                     introduce={item.introduce}
                   />
-                </TouchableOpacity>
+                </Pressable>
               ))}
             </ScrollView>
             <View style={styles.middleContainer}>
               <Text style={Text18B.text}>종료 임박</Text>
               <View style={styles.textAndQuestionContainer}>
-                <TouchableOpacity onPress={navigateToFind}>
+                <Pressable onPress={navigateToFind}>
                   <Text style={[Text14R.text, {color: globalColors.black}]}>
                     전체 보기
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
                 <RightSvg style={{paddingLeft: 20}} />
               </View>
             </View>
@@ -229,7 +225,7 @@ function HomeScreen({navigation}) {
               showsHorizontalScrollIndicator={false}
               style={styles.popUpScrollView}>
               {closingList?.map(item => (
-                <TouchableOpacity
+                <Pressable
                   key={item.id}
                   onPress={() =>
                     navigation.navigate('PopUpDetail', {id: item.id})
@@ -240,7 +236,7 @@ function HomeScreen({navigation}) {
                     name={item.name}
                     introduce={item.introduce}
                   />
-                </TouchableOpacity>
+                </Pressable>
               ))}
             </ScrollView>
           </View>

@@ -8,7 +8,6 @@ const getHotList = async (): Promise<
     const response = await nonPublicApiInstance.get('/api/v1/popup/hot-list');
 
     if (response.data.success) {
-      console.log('Hot list fetched successfully', response.data);
       // 성공적으로 데이터를 가져온 경우, error는 null입니다.
       return {
         success: true,

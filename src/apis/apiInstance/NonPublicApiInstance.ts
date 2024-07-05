@@ -58,7 +58,6 @@ nonPublicApiInstance.interceptors.response.use(
           return Promise.reject(error);
         }
       } catch (refreshError) {
-        console.log('please help me help me help me');
         await performLogout();
         return Promise.reject(refreshError);
       }

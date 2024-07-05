@@ -54,7 +54,6 @@ const createPopUpReview = async (
       transformRequest: data => data,
     });
     if (response.data.success) {
-      console.log('response.data', response.data);
       return response.data;
     } else {
       return {

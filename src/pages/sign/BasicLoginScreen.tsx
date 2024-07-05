@@ -30,8 +30,6 @@ function BasicLoginScreen() {
 
   const navigation = useNavigation<BasicLoginScreenNavigationProp>();
 
-  console.log(email, password, emailError, passwordError, isLoginButtonEnabled);
-
   const navigateToSignUpEmail = () => {
     navigation.navigate('SignUpEmail');
   };

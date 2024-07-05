@@ -10,7 +10,6 @@ const getInterestList = async (): Promise<
     );
 
     if (response.data.success) {
-      console.log('Hot list fetched successfully', response.data);
       return {
         success: true,
         data: response.data.data,

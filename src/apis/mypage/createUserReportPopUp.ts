@@ -70,7 +70,6 @@ const createUserReportPopUp = async (
     });
 
     if (response.data.success) {
-      console.log('User report submitted successfully');
       console.log(response.data);
       return response.data;
     } else {

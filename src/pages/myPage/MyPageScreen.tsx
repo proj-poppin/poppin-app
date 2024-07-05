@@ -33,16 +33,13 @@ import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
 import {useReducedMotion} from 'react-native-reanimated';
 import Text14M from '../../styles/texts/body_medium/Text14M.ts';
-import {useDispatch, useSelector} from 'react-redux';
-import useIsImageOrNicknameChanged from '../../hooks/myPage/useIsImageOrNicknameChanged.ts';
+import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/stores/reducer.ts';
 
 function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
   const reducedMotion = useReducedMotion();
   const [loadingUser, setLoadingUser] = useState(true);
-  const dispatch = useDispatch();
-  const isChanged = useIsImageOrNicknameChanged();
   const user = useSelector((state: RootState) => state.user);
   const isLoggedIn = useIsLoggedIn();
 
@@ -199,7 +196,9 @@ function MyPageScreen({navigation}) {
           />
         </Pressable>
         <Pressable style={styles.middleContainer} onPress={onLogoutClick}>
-          <Text style={Text13R.text}>로그아웃</Text>
+          <Text style={Text14M.text}>
+            {isLoggedIn ? '로그아웃' : '로그인 하러 가기'}
+          </Text>
           <RightSvg style={styles.svgStyle} />
         </Pressable>
         <View style={styles.modalContainer}>

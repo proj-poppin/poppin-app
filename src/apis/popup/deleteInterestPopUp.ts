@@ -4,13 +4,16 @@ interface AddInterestPopupParams {
   popupId: number;
   fcm_token: string;
 }
+
 const deleteInterestPopUp = async (params: AddInterestPopupParams) => {
   try {
     const response = await nonPublicApiInstance.delete(
       '/api/v1/interest/remove-interest',
       {
-        data: null,
-        params: params,
+        data: {
+          popupId: params.popupId,
+          fcmToken: params.fcm_token,
+        },
       },
     );
 

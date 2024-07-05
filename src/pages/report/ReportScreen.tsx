@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 import ShallowDividerLine from '../../components/ShallowDividerLine.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
@@ -10,6 +10,8 @@ import Text12R from '../../styles/texts/label/Text12R.ts';
 import Text12M from '../../styles/texts/label/Text12M.ts';
 import useReportPopup from '../../hooks/report/useReportPopUp.tsx';
 import useReportReview from '../../hooks/report/useReportReview.tsx';
+import ReportCheckSvg from '../../assets/images/reportCheck.svg';
+import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
 
 const reasons = [
   '고의의 잘못된 내용이 혼동을 일으켜요',
@@ -26,6 +28,10 @@ function ReportScreen({navigation, route}) {
   const [modalVisible, setModalVisible] = useState(false);
   const {reportPopupDetails} = useReportPopup();
   const {reportReviewDetails} = useReportReview();
+  const [content, setContent] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+
+  console.log(id, isReview, reviewId);
 
   const openModal = () => {
     setModalVisible(true);
@@ -38,11 +44,16 @@ function ReportScreen({navigation, route}) {
   const confirmDelete = async () => {
     setIsDeleted(true);
     closeModal();
-    const content = reasons[selectedReason];
+    const reportContent =
+      selectedReason === reasons.length - 1 ? content : reasons[selectedReason];
     if (isReview) {
-      await reportReviewDetails(reviewId, content);
+      const resp = await reportReviewDetails(
+        reviewId.toString(),
+        reportContent,
+      );
+      console.log(resp);
     } else {
-      await reportPopupDetails(id, content);
+      await reportPopupDetails(id, reportContent);
     }
   };
 
@@ -86,24 +97,52 @@ function ReportScreen({navigation, route}) {
               <Pressable
                 style={styles.reasonRow}
                 onPress={() => setSelectedReason(index)}>
-                <View
-                  style={[
-                    styles.circle,
-                    selectedReason === index && {
-                      backgroundColor: globalColors.purple,
-                    },
-                  ]}
-                />
-                <Text style={styles.reasonText}>{reason}</Text>
+                {selectedReason === index ? (
+                  <ReportCheckSvg
+                    width={24}
+                    height={24}
+                    style={styles.svgIcon}
+                  />
+                ) : (
+                  <View style={styles.circle} />
+                )}
+                <Text style={Text16M.text}>{reason}</Text>
               </Pressable>
               {index < reasons.length - 1 && <ShallowDividerLine />}
             </View>
           ))}
         </View>
+        {selectedReason === reasons.length - 1 && (
+          <TextInput
+            style={[
+              styles.reportInput,
+              {
+                borderColor: isFocused
+                  ? globalColors.blue
+                  : globalColors.warmGray,
+              },
+            ]}
+            multiline
+            placeholder="신고 사유를 알려주세요."
+            placeholderTextColor={globalColors.font}
+            maxLength={1000}
+            value={content}
+            onChangeText={setContent}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+          />
+        )}
+        <Text style={[Text12R.text, {color: globalColors.font}]}>
+          *문의사항은 접수 후 수정이 불가능합니다.{'\n'}
+          *최대 24시간 이내에 검토 후 조치하도록 하겠습니다.{'\n'}
+        </Text>
         <CompleteButton
           onPress={openModal}
           title={'신고하기'}
-          disabled={selectedReason === null}
+          disabled={
+            selectedReason === null ||
+            (selectedReason === reasons.length - 1 && !content)
+          }
           style={styles.reportButton}
         />
       </DismissKeyboardView>
@@ -129,12 +168,12 @@ const styles = StyleSheet.create({
   },
   reasonContainer: {
     marginTop: 30,
-    marginBottom: 30,
   },
   reasonRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginTop: 15,
+    marginBottom: 15,
   },
   circle: {
     width: 24,
@@ -144,10 +183,9 @@ const styles = StyleSheet.create({
     borderColor: globalColors.purple,
     backgroundColor: globalColors.white,
     marginRight: 12,
-    marginTop: 10,
   },
-  reasonText: {
-    fontSize: 16,
+  svgIcon: {
+    marginRight: 12,
   },
   completeContainer: {
     flex: 1,
@@ -165,9 +203,17 @@ const styles = StyleSheet.create({
   },
   reportButton: {
     position: 'absolute',
-    bottom: 100,
-    left: 15,
-    right: 15,
+    top: 600,
+  },
+  reportInput: {
+    borderWidth: 1,
+    borderColor: globalColors.warmGray,
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+    textAlignVertical: 'top',
+    height: 120,
+    fontSize: 14,
   },
 });
 

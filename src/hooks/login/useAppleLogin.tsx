@@ -36,9 +36,6 @@ export const useAppleLogin = () => {
 
       // 인증 상태가 AUTHORIZED인 경우
       if (credentialState === appleAuth.State.AUTHORIZED) {
-        // 사용자가 인증된 경우
-        console.log('appleAuthRequestResponse:', appleAuthRequestResponse);
-
         const {identityToken} = appleAuthRequestResponse;
         if (identityToken) {
           const loginResult = await loginSocial('apple', identityToken);
@@ -50,6 +47,10 @@ export const useAppleLogin = () => {
             dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
             navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
           } else {
+            if (loginResult.error?.code === '40024') {
+              console.log('User not found');
+              navigation.navigate('Entry', {loginError: loginResult.error});
+            }
             // 신규 유저라면 닉네입 입력 화면으로 이동
             setAppleLoginStatus({newUser: true});
             const accessToken = loginResult.data!.accessToken;

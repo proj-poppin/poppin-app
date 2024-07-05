@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Text, Image, StyleSheet, Pressable} from 'react-native';
 import StarOnSvg from '../../../assets/icons/starOn.svg';
 import StarOffSvg from '../../../assets/icons/favorite.svg';
@@ -9,6 +9,9 @@ import useAddInterestPopUp from '../../../hooks/detailPopUp/useAddInterestPopUp.
 import {calculateDaysRemaining} from '../../../utils/function/calculateDaysRemaining.tsx';
 import Text14M from '../../../styles/texts/body_medium/Text14M.ts';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../redux/stores/reducer.ts';
+import {setInterest} from '../../../redux/slices/interestSlice.ts';
 
 interface InterestPopUpCardProps {
   image_url: string;
@@ -17,7 +20,6 @@ interface InterestPopUpCardProps {
   open_date: string;
   status: 'TERMINATED' | 'OPERATING' | 'NOTYET';
   id: number;
-  isInterested: boolean; // true 고정으로 받은뒤, toggle 가능하게 처리
 }
 
 const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
@@ -27,23 +29,22 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
   open_date,
   status,
   id,
-  isInterested: initialInterest,
 }) => {
   const {deleteInterest, loading: deleteLoading} = useDeleteInterestPopUp();
   const {addInterest, loading: addLoading} = useAddInterestPopUp();
-  const [isInterested, setIsInterested] = useState(initialInterest);
+  const dispatch = useDispatch();
+  const interestState = useSelector((state: RootState) => state.interest);
+  const isInterested = interestState[id] || false;
 
   const handleToggleInterest = async () => {
     if (isInterested) {
       await deleteInterest(id);
+      dispatch(setInterest({id, isInterested: false}));
     } else {
       await addInterest(id);
+      dispatch(setInterest({id, isInterested: true}));
     }
-    setIsInterested(!isInterested);
   };
-
-  const date = `${open_date} ~ ${close_date}`;
-  const formattedName = name.length > 15 ? `${name.substring(0, 15)}...` : name;
 
   const remainingDays = calculateDaysRemaining(close_date);
 
@@ -70,7 +71,7 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
         <View style={styles.statusAndStarContainer}>
           <View style={[styles.statusContainer]}>
             <Text style={styles.statusText}>
-              {status === 'TERMINATED' ? '운영 종료' : `D-${remainingDays}`}
+              {status === 'TERMINATED' ? '팝업 종료' : `D-${remainingDays}`}
             </Text>
           </View>
           <Pressable
@@ -84,8 +85,12 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
             )}
           </Pressable>
         </View>
-        <Text style={[Text18B.text, styles.title]}>{formattedName}</Text>
-        <Text style={[Text14M.text, styles.date]}>{date}</Text>
+        <Text style={[Text18B.text, styles.title]}>{name}</Text>
+        <Text
+          style={[
+            Text14M.text,
+            styles.date,
+          ]}>{`${open_date} ~ ${close_date}`}</Text>
       </View>
     </View>
   );
@@ -136,9 +141,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
-  starIcon: {
-    // Assuming no style changes needed here
-  },
+  starIcon: {},
   closeWrapper: {
     width: 120,
     height: 120,

@@ -1,6 +1,8 @@
 import {useState, useEffect, useCallback} from 'react';
+import {useDispatch} from 'react-redux';
 import {GetInterestPopUpListResponse} from '../../types/PopUpListData.ts';
 import getInterestList from '../../apis/popup/getInterestList.ts'; // 업데이트된 타입을 import
+import {setInitialInterests} from '../../redux/slices/interestSlice'; // Redux slice import
 
 interface InterestListState {
   loading: boolean;
@@ -17,20 +19,28 @@ const useGetInterestList = () => {
     },
   );
 
-  const fetchInterestList = useCallback(async () => {
+  const dispatch = useDispatch();
+
+  const refetchInterestList = useCallback(async () => {
     setInterestListState(prevState => ({...prevState, loading: true}));
     try {
       const response = await getInterestList();
       if (response.success) {
+        // Redux 상태에 관심 목록 저장
+        const initialInterests = response.data!.reduce(
+          (acc: any, item: any) => {
+            acc[item.id] = true; // 관심 팝업으로 표시
+            return acc;
+          },
+          {},
+        );
+        dispatch(setInitialInterests(initialInterests));
+
         setInterestListState({
           loading: false,
           error: null,
           data: response.data!,
         });
-        console.log(
-          'Interest list fetched successfully@@@@@@@@',
-          response.data,
-        );
       } else {
         setInterestListState({
           loading: false,
@@ -48,13 +58,13 @@ const useGetInterestList = () => {
         data: null,
       });
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    fetchInterestList();
-  }, [fetchInterestList]);
+    refetchInterestList();
+  }, [refetchInterestList]);
 
-  return {...interestListState, refetch: fetchInterestList};
+  return {...interestListState, refetch: refetchInterestList};
 };
 
 export default useGetInterestList;

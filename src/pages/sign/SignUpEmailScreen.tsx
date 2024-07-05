@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, Alert} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
@@ -32,11 +33,20 @@ function SignUpEmailScreen({navigation}: SignUpEmailScreenProps) {
     containsNumAndLetter,
     containsSpecialChar,
     isPasswordSame,
+    resetForm, // Add resetForm function from hook
   } = useSignUpEmail();
 
   const dispatch = useDispatch();
   const {verifyEmail} = useEmailVerification(email);
   const [loading, setLoading] = useState(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        resetForm(); // Reset form when the screen loses focus
+      };
+    }, [resetForm]),
+  );
 
   const handlePress = () => {
     setLoading(true);
@@ -52,8 +62,6 @@ function SignUpEmailScreen({navigation}: SignUpEmailScreenProps) {
           }),
         );
 
-        console.log('email', email);
-        console.log('authCode', receivedAuthCode);
         navigation.navigate('SignUpAuthCode', {
           fromScreen: 'SignUpEmail',
           authCode: receivedAuthCode,

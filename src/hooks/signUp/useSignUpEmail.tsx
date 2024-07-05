@@ -32,6 +32,13 @@ const useSignUpEmail = () => {
     setPasswordConfirm(text);
   }, []);
 
+  const resetForm = useCallback(() => {
+    setEmail('');
+    setPassword('');
+    setPasswordConfirm('');
+    setEmailError('');
+  }, []);
+
   const isEmailValid = validateEmail(email);
   const isValidLength = password.length >= 8;
   const containsNumAndLetter = /(?=.*[A-Za-z])(?=.*\d)/.test(password);
@@ -56,6 +63,7 @@ const useSignUpEmail = () => {
     containsNumAndLetter,
     containsSpecialChar,
     isPasswordSame,
+    resetForm, // Return resetForm function
   };
 };
 

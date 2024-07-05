@@ -2,6 +2,7 @@ import nonPublicApiInstance from '../../apis/apiInstance/NonPublicApiInstance';
 
 export interface GetUserInfoResponse {
   success: boolean;
+  data: string;
   error?: {
     code: string;
     message: string;
@@ -10,8 +11,8 @@ export interface GetUserInfoResponse {
 
 const deleteUser = async (): Promise<GetUserInfoResponse> => {
   try {
-    const response = await nonPublicApiInstance.post(
-      `/api/v1/user/withdrawal`,
+    const response = await nonPublicApiInstance.delete(
+      '/api/v1/user/withdrawal',
     );
     console.log('deleteUser response:', response.data);
 
@@ -20,6 +21,7 @@ const deleteUser = async (): Promise<GetUserInfoResponse> => {
     } else {
       return {
         success: false,
+        data: '회원탈퇴 실패',
         error: response.data.error,
       };
     }
@@ -27,6 +29,7 @@ const deleteUser = async (): Promise<GetUserInfoResponse> => {
     console.log('Error fetching pop up detail:', error);
     return {
       success: false,
+      data: '회원탈퇴 실패',
       error: {
         code: 'Network',
         message: 'Network error',

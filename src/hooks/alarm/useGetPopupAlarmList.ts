@@ -1,8 +1,7 @@
 import {useEffect, useState} from 'react';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import getPopupAlarmList from '../../apis/alarm/getPopupAlarmList.ts';
+import getNoticeAlarmList from '../../apis/alarm/getNoticeAlarmList';
 
-interface AlarmCardInfoProps {
+export interface AlarmCardInfoProps {
   id: number;
   title: string;
   body: string;
@@ -12,27 +11,32 @@ interface AlarmCardInfoProps {
 }
 
 const useGetPopupAlarmList = () => {
-  const [noticeAlarmList, setNoticeAlarmList] = useState<AlarmCardInfoProps[]>(
-    [],
-  );
-  useEffect(() => {
-    const fetchNoticeAlarmList = async () => {
-      try {
-        const storedToken = await EncryptedStorage.getItem('pushToken');
-        if (!storedToken) {
-          throw new Error('No push token');
-        }
+  const [popupAlarmList, setPopupAlarmList] = useState<
+    AlarmCardInfoProps[] | null
+  >(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-        const response = await getPopupAlarmList(storedToken);
-        setNoticeAlarmList(response.data);
+  useEffect(() => {
+    const fetchPopupAlarmList = async () => {
+      try {
+        const response = await getNoticeAlarmList();
+        if (response.success) {
+          setPopupAlarmList(response.data);
+        } else {
+          setError(response.error);
+        }
       } catch (error: any) {
-        console.error(error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchNoticeAlarmList().then();
+
+    fetchPopupAlarmList();
   }, []);
 
-  return noticeAlarmList;
+  return {popupAlarmList, loading, error};
 };
 
 export default useGetPopupAlarmList;

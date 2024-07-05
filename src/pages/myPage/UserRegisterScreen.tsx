@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useLayoutEffect, useRef} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Alert, Linking, Pressable, StyleSheet, Text, View} from 'react-native';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import LabelAndInputWithCloseSvg from '../../components/LabelAndInputWithCloseSvg.tsx';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
@@ -20,6 +20,8 @@ import {useNavigation} from '@react-navigation/native';
 import useUserReportPopUp from '../../hooks/myPage/useUserReportPopUp.tsx';
 import TextInputWithSvgIconInRight from '../../components/TextInputWithSvgIconInRight.tsx';
 import RequiredTextLabel from '../../components/RequiredTextLabel.tsx';
+import {useReducedMotion} from 'react-native-reanimated';
+import {requestGalleryPermissions} from '../../utils/function/requestGalleryPermission.ts';
 
 function UserRegisterScreen() {
   const [storeName, setStoreName] = useState('');
@@ -32,6 +34,22 @@ function UserRegisterScreen() {
     useImageSelector(); // Use the custom hook
   const {loading, userReportPopUp} = useUserReportPopUp(); // Use the custom hook
   const navigation = useNavigation();
+
+  const handleSelectImagesWithPermission = async () => {
+    const hasPermission = await requestGalleryPermissions();
+    if (!hasPermission) {
+      Alert.alert(
+        '갤러리 권한 필요',
+        '갤러리 접근 권한이 필요합니다. 앱 설정에서 갤러리 접근 권한을 허용해주세요.',
+        [
+          {text: '취소', style: 'cancel'},
+          {text: '설정 열기', onPress: () => Linking.openSettings()},
+        ],
+      );
+      return;
+    }
+    handleSelectImages();
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -95,9 +113,10 @@ function UserRegisterScreen() {
     [],
   );
 
-  const handleSheetChanges = useCallback(index => {
-    console.log('handleSheetChanges', index);
-  }, []);
+  const handleSheetChanges = useCallback((index: number) => {}, []);
+
+  // useReducedMotion()
+  const reducedMotion = useReducedMotion();
 
   const handlePresentModal = () => {
     bottomSheetModalRef.current?.present();
@@ -110,7 +129,6 @@ function UserRegisterScreen() {
 
   const handleReportSubmit = async () => {
     if (!isSubmitEnabled) {
-      console.log('Submit is not enabled');
       return;
     }
     const response = await userReportPopUp(
@@ -172,6 +190,7 @@ function UserRegisterScreen() {
       />
       <View style={styles.modalContainer}>
         <BottomSheetModal
+          animateOnMount={!reducedMotion}
           ref={bottomSheetModalRef}
           index={0}
           backdropComponent={renderBackdrop}
@@ -204,7 +223,7 @@ function UserRegisterScreen() {
       <RequiredTextLabel label={'관련사진'} isRequired={true} />
       <ImageContainerRow
         selectedImages={selectedImages}
-        handleSelectImages={handleSelectImages}
+        handleSelectImages={handleSelectImagesWithPermission}
         handleRemoveImage={handleRemoveImage}
       />
       <Text style={[Text12R.text, {color: globalColors.font}]}>

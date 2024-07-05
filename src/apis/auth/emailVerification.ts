@@ -15,8 +15,6 @@ const emailVerification = async (
       {email},
     );
 
-    console.log('Server response:', response.data);
-
     if (response.data.success && response.data.data) {
       console.log(
         `Email verification success, AuthCode: ${response.data.data.authCode}`,

@@ -1,22 +1,20 @@
 import {useState} from 'react';
-import resetPassword from '../../apis/auth/resetPassword.ts';
+import resetPasswordNonPublic from '../../apis/auth/resetPasswordNonPublic.ts';
 
-const useResetPassword = () => {
+const useResetPasswordNonPublic = () => {
   const [resetPasswordStatus, setResetPasswordStatus] = useState({
     loading: false,
     error: null as string | null,
     success: false,
   });
 
-  const resetUserPassword = async (
+  const resetUserPasswordNonPublic = async (
     password: string,
     passwordConfirm: string,
   ) => {
     try {
-      const response = await resetPassword(password, passwordConfirm);
-      
+      const response = await resetPasswordNonPublic(password, passwordConfirm);
       if (response.success) {
-        console.log('Password reset successful:', response.data);
         setResetPasswordStatus({
           ...resetPasswordStatus,
           success: true,
@@ -39,9 +37,9 @@ const useResetPassword = () => {
     }
   };
   return {
-    resetUserPassword,
+    resetUserPasswordNonPublic: resetUserPasswordNonPublic,
     resetPasswordStatus,
   };
 };
 
-export default useResetPassword;
+export default useResetPasswordNonPublic;

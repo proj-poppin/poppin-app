@@ -11,7 +11,6 @@ const useEmailVerification = (email: string) => {
       try {
         const response = await emailVerification(email);
         if (response.success && response.data) {
-          console.log('authcode:', response.data.authCode);
           setAuthCode(response.data.authCode);
           return Promise.resolve(response.data.authCode);
         } else {

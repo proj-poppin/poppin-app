@@ -26,7 +26,6 @@ const basicSignUp = async (
     );
 
     if (response.data.success) {
-      console.log('Sign up successful', response.data);
       return response.data;
     } else {
       return {
@@ -35,7 +34,6 @@ const basicSignUp = async (
       };
     }
   } catch (error) {
-    console.log('Email verification error:', error);
     return {
       success: false,
       error: {code: 'Network', message: 'Network error'},

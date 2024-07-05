@@ -1,5 +1,13 @@
 import React, {useLayoutEffect, useState} from 'react';
-import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+  Alert,
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import globalColors from '../../styles/color/globalColors.ts';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
@@ -12,7 +20,8 @@ import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 import useModifyPopUpInfo from '../../hooks/modify/useModifyPopUpInfo.tsx';
-import {useImageSelector} from '../../hooks/useImageSelector'; // Import the custom hook
+import {useImageSelector} from '../../hooks/useImageSelector';
+import {requestGalleryPermissions} from '../../utils/function/requestGalleryPermission.ts'; // Import the custom hook
 
 type PopUpEditRequestScreenRouteProp = RouteProp<
   AppNavigatorParamList,
@@ -31,6 +40,8 @@ function PopUpEditRequestScreen() {
   const {modifyInfoDetails} = useModifyPopUpInfo();
   const {selectedImages, handleSelectImages, handleRemoveImage} =
     useImageSelector(); // Use the custom hook
+
+  const [isSubmitEnabled, setIsSubmitEnabled] = useState(true);
 
   const openCompleteModal = () => {
     setCompleteModalVisible(true);
@@ -72,13 +83,31 @@ function PopUpEditRequestScreen() {
     });
   }, [navigation]);
 
+  const handleSelectImagesWithPermission = async () => {
+    const hasPermission = await requestGalleryPermissions();
+    if (!hasPermission) {
+      Alert.alert(
+        '갤러리 권한 필요',
+        '갤러리 접근 권한이 필요합니다. 앱 설정에서 갤러리 접근 권한을 허용해주세요.',
+        [
+          {text: '취소', style: 'cancel'},
+          {text: '설정 열기', onPress: () => Linking.openSettings()},
+        ],
+      );
+      return;
+    }
+    handleSelectImages();
+  };
+
   const handleSubmit = async () => {
     const response = await modifyInfoDetails(id, content, selectedImages);
+    setIsSubmitEnabled(false);
     if (response.success) {
       setIsSuccess(true);
     } else if (response.error) {
       setIsSuccess(false);
     }
+    setIsSubmitEnabled(true);
     openCompleteModal();
   };
 
@@ -109,7 +138,7 @@ function PopUpEditRequestScreen() {
       <View style={styles.modalContainer} />
       <ImageContainerRow
         selectedImages={selectedImages}
-        handleSelectImages={handleSelectImages}
+        handleSelectImages={handleSelectImagesWithPermission}
         handleRemoveImage={handleRemoveImage}
       />
       <Text style={[Text12R.text, {color: globalColors.font}]}>
@@ -122,6 +151,10 @@ function PopUpEditRequestScreen() {
       </Text>
       <CompleteButton
         onPress={handleSubmit}
+        disabled={
+          (content.length > 10 && selectedImages.length === 0) ||
+          !isSubmitEnabled
+        }
         title={'요청하기'}
         // disabled={isSubmitEnabled}
       />

@@ -1,75 +1,105 @@
-import React, {useEffect, useRef} from 'react';
-import {Text, Animated, StyleSheet, ViewStyle} from 'react-native';
-import Text14B from '../../../styles/texts/body_medium/Text14B';
+import React, {useCallback, useEffect, useRef} from 'react';
+import {
+  Text,
+  Animated,
+  StyleSheet,
+  ViewStyle,
+  Platform,
+  StatusBar,
+  Pressable,
+} from 'react-native';
+import globalColors from '../../../styles/color/globalColors.ts';
+import Text16M from '../../../styles/texts/body_medium_large/Text16M.ts';
 
 interface ToastComponentProps {
   message: string;
   height?: number;
   onClose: () => void;
-  duration?: number;
-  fadeDuration?: number;
-  bottom?: string | number; // Add bottom prop
 }
 
 const ToastComponent: React.FC<ToastComponentProps> = ({
   message,
-  height = 35,
+  height = 50,
   onClose,
-  duration = 1500,
-  fadeDuration = 500,
-  bottom = '40%', // Default value for bottom
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const translateYAnim = useRef(new Animated.Value(-height * 2)).current;
+  const fadeInDuration = 1000;
+  const visibleDuration = 3000; // 지속 시간을 3초로 변경
+  const fadeOutDuration = 1000;
+
+  const hideToast = useCallback(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: fadeOutDuration,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateYAnim, {
+        toValue: -height * 2,
+        duration: fadeOutDuration,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      onClose();
+    });
+  }, [fadeOutDuration, fadeAnim, translateYAnim, height, onClose]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
+      hideToast();
+    }, visibleDuration);
+
+    Animated.parallel([
       Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: fadeDuration,
+        toValue: 1,
+        duration: fadeInDuration,
         useNativeDriver: true,
-      }).start(() => {
-        onClose();
-      });
-    }, duration);
-
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: fadeDuration,
-      useNativeDriver: true,
-    }).start();
-
+      }),
+      Animated.timing(translateYAnim, {
+        toValue: 0,
+        duration: fadeInDuration,
+        useNativeDriver: true,
+      }),
+    ]).start();
     return () => clearTimeout(timer);
-  }, [duration, fadeDuration, onClose, fadeAnim]);
+  }, [
+    visibleDuration,
+    fadeOutDuration,
+    onClose,
+    fadeAnim,
+    translateYAnim,
+    height,
+    hideToast,
+  ]);
 
   const styles = StyleSheet.create({
     container: {
       position: 'absolute',
-      bottom: typeof bottom === 'string' ? bottom : `${bottom}%`, // Apply bottom prop
+      top: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
       alignSelf: 'center',
       alignItems: 'center',
       justifyContent: 'center',
-      width: 368,
-      height: height,
-      borderRadius: 20,
-      backgroundColor: 'rgba(0, 0, 0, 0.75)',
-      zIndex: 2,
-    } as ViewStyle,
-    toastText: {
       width: '100%',
       height: height,
-      lineHeight: 20,
-      justifyContent: 'center',
-      textAlign: 'center',
-      color: '#ffffff',
-    },
+      backgroundColor: globalColors.subBlack,
+      zIndex: 2,
+      paddingHorizontal: 10,
+    } as ViewStyle,
   });
 
   return (
-    <Animated.View style={[styles.container, {opacity: fadeAnim}]}>
-      <Text style={[styles.toastText, Text14B.text, {color: 'white'}]}>
-        {message}
-      </Text>
-    </Animated.View>
+    <Pressable style={StyleSheet.absoluteFill} onPress={hideToast}>
+      <Animated.View
+        style={[
+          styles.container,
+          {opacity: fadeAnim, transform: [{translateY: translateYAnim}]},
+        ]}>
+        <Text style={[Text16M.text, {color: globalColors.white}]}>
+          {message}
+        </Text>
+      </Animated.View>
+    </Pressable>
   );
 };
 

@@ -42,9 +42,6 @@ const modifyPopUpInfo = async (
       },
     );
 
-    // Server response output
-    console.log('Response:', response);
-
     if (response.data.success) {
       return response.data;
     } else {

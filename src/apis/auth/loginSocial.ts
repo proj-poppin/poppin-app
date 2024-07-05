@@ -2,7 +2,6 @@ import Config from 'react-native-config';
 import axios from 'axios';
 import {LoginResponseData} from './basicLogin.ts';
 
-// 소셜 로그인 공통 함수
 const loginSocial = async (
   type: string,
   token: string,
@@ -22,11 +21,8 @@ const loginSocial = async (
 
     if (response.data.success) {
       console.log(`${type} login success`);
-
-      // 전체 응답 객체를 반환
       return response.data;
     } else {
-      // API 응답이 success=false인 경우
       return {
         success: false,
         error: response.data.error,
@@ -34,7 +30,6 @@ const loginSocial = async (
     }
   } catch (error) {
     console.log(`${type} login error:`, error);
-    // 네트워크 에러 또는 기타 예외 처리
     return {
       success: false,
       error: {

@@ -3,9 +3,7 @@ import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 
 const getPreferenceSetting = async () => {
   try {
-    const response = await nonPublicApiInstance.get(
-      '/api/v1/user/popup-taste',
-    );
+    const response = await nonPublicApiInstance.get('/api/v1/user/popup-taste');
     if (response.data.success) {
       console.log('getPreference setting response:', response.data.data);
       return {

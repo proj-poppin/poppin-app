@@ -10,7 +10,6 @@ export interface GetUserData {
 const getUser = async (): Promise<CommonResponse<GetUserData>> => {
   try {
     const response = await nonPublicApiInstance.get('/api/v1/user');
-    console.log("ㄱㄷ네ㅐㅜㄴ",response)
     if (response.data.success) {
       return response.data;
     } else {

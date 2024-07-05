@@ -12,7 +12,14 @@ interface AlarmSettingsProps {
 }
 
 const useGetAlarmSettings = () => {
-  const [alarmSettings, setAlarmSettings] = useState<AlarmSettingsProps>();
+  const [alarmSettings, setAlarmSettings] = useState<AlarmSettingsProps>({
+    pushYn: '0',
+    pushNightYn: '0',
+    hoogiYn: '0',
+    openYn: '0',
+    magamYn: '0',
+    changeInfoYn: '0',
+  });
 
   useEffect(() => {
     const fetchAlarmSettings = async () => {
@@ -21,14 +28,31 @@ const useGetAlarmSettings = () => {
         if (!storedToken) {
           throw new Error('No push token');
         }
-        const response = await getAlarmSettings(storedToken);
-        setAlarmSettings(response.data);
+        const response = await getAlarmSettings(
+          storedToken,
+          alarmSettings.pushYn,
+          alarmSettings.pushNightYn,
+          alarmSettings.hoogiYn,
+          alarmSettings.openYn,
+          alarmSettings.magamYn,
+          alarmSettings.changeInfoYn,
+        );
+        if (response.success) {
+          setAlarmSettings(response.data);
+        }
       } catch (error: any) {
-        console.error(error);
+        console.error('Error fetching alarm settings:', error);
       }
     };
-    fetchAlarmSettings().then();
-  }, []);
+    fetchAlarmSettings();
+  }, [
+    alarmSettings.pushYn,
+    alarmSettings.pushNightYn,
+    alarmSettings.hoogiYn,
+    alarmSettings.openYn,
+    alarmSettings.magamYn,
+    alarmSettings.changeInfoYn,
+  ]);
 
   return alarmSettings;
 };

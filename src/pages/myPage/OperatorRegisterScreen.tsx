@@ -14,6 +14,8 @@ import StepOne from '../../components/operatorRequest/StepOne.tsx';
 import StepTwo from '../../components/operatorRequest/StepTwo.tsx';
 import StepThree, {
   AgeGroup,
+  AgeGroupType,
+  AgeGroupValueType,
   mapAgeGroupToApiValue,
 } from '../../components/operatorRequest/StepThree.tsx';
 import PostalCodeModal from '../../components/operatorRequest/PostalCodeModal.tsx';
@@ -45,7 +47,7 @@ const OperatorRegisterScreen = ({navigation}) => {
   const [selectedCategoryValue, setSelectedCategoryValue] =
     useState<string>('');
   const [selectedAge, setSelectedAge] = useState<AgeGroup>('전체'); // Initialize with a valid AgeGroup value
-  const [selectedAgeValue, setSelectedAgeValue] = useState<string>(''); // Internal value
+  const [selectedAgeValue, setSelectedAgeValue] = useState<String>(''); // Internal value
   const [selectedPopupType, setSelectedPopupType] = useState<string>('');
   const [operationExcept, setOperationExcept] = useState<string>('');
   const [introduce, setIntroduce] = useState<string>('');
@@ -59,19 +61,15 @@ const OperatorRegisterScreen = ({navigation}) => {
   const {selectedImages, handleSelectImages, handleRemoveImage} =
     useImageSelector();
   const [resvRequired, setResvRequired] = useState<string | null>(null);
-  const [entranceFeeRequired, setEntranceFeeRequired] = useState<string | null>(
-    null,
-  );
+  const [entranceRequired, setEntranceRequired] = useState<string | null>(null);
   const [parkingAvailability, setParkingAvailability] = useState<string | null>(
     null,
   );
   const [entranceFee, setEntranceFee] = useState<string>('');
   const [addressDetail, setAddressDetail] = useState<string>('');
-
   const openCompleteModal = () => {
     setCompleteModalVisible(true);
   };
-
   const handleOpenAgeSheet = () => {
     bottomSheetAgeModalRef.current?.present();
   };
@@ -81,7 +79,7 @@ const OperatorRegisterScreen = ({navigation}) => {
   };
 
   const handleEntranceFeeStatusSelect = (value: string) => {
-    setEntranceFeeRequired(value);
+    setEntranceRequired(value);
   };
 
   const handleParkingAvailabilitySelect = (value: string) => {
@@ -101,10 +99,6 @@ const OperatorRegisterScreen = ({navigation}) => {
 
   const handlePresentModal = useCallback(() => {
     bottomSheetModalRef.current?.present();
-  }, []);
-
-  const handleSheetChanges = useCallback((index: number) => {
-    // handleOpenBottomSheet();
   }, []);
 
   const renderBackdrop = useCallback(
@@ -131,11 +125,13 @@ const OperatorRegisterScreen = ({navigation}) => {
 
   const handleConfirmSelection = useCallback(() => {
     bottomSheetModalRef.current?.close();
-  }, [selectedCategory]);
+  }, []);
 
   const handleConfirmAgeSelection = useCallback(() => {
     bottomSheetAgeModalRef.current?.close();
-  }, [selectedAge]);
+  }, []);
+
+  const handleSheetChanges = useCallback((index: number) => {}, []);
 
   const handleNext = () => {
     if (step < 3) {
@@ -159,6 +155,7 @@ const OperatorRegisterScreen = ({navigation}) => {
         introduce,
         address,
         addressDetail,
+        entranceRequired,
         entranceFee,
         mapAgeGroupToApiValue(selectedAgeValue), // Use internal value here
         parkingAvailability === 'parking',
@@ -260,7 +257,7 @@ const OperatorRegisterScreen = ({navigation}) => {
               resvRequired={resvRequired}
               handleReservationRequiredSelect={handleReservationRequiredSelect}
               selectedAge={selectedAge}
-              entranceFeeRequired={entranceFeeRequired}
+              entranceRequired={entranceRequired}
               handleEntranceFeeStatusSelect={handleEntranceFeeStatusSelect}
               entranceFee={entranceFee}
               setEntranceFee={setEntranceFee}

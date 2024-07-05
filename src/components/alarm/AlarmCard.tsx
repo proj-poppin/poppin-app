@@ -11,39 +11,45 @@ type NoticeDetailScreenNavigationProp = NativeStackNavigationProp<
 >;
 
 interface AlarmCardProps {
-  props: AlarmCardInfoProps;
-  type: string;
-}
-
-interface AlarmCardInfoProps {
   id: number;
   title: string;
   body: string;
   createdAt: number[];
   iconUrl: string;
   isRead: boolean;
+  type: string;
 }
 
-const AlarmCard: React.FC<AlarmCardProps> = ({props, type}) => {
+const AlarmCard: React.FC<AlarmCardProps> = ({
+  id,
+  title,
+  body,
+  createdAt,
+  iconUrl,
+  isRead,
+  type,
+}) => {
   const navigation = useNavigation<NoticeDetailScreenNavigationProp>();
+
   const handlePress = () => {
     if (type === 'notice') {
-      navigation.navigate('NoticeDetail', {nid: props.id});
+      navigation.navigate('NoticeDetail', {nid: id});
     } else {
-      navigation.navigate('PopUpDetail', {id: props.id});
+      navigation.navigate('PopUpDetail', {id: id});
     }
   };
+
   return (
     <Pressable onPress={handlePress}>
       <View
         style={[
           styles.container,
-          {backgroundColor: props.isRead ? 'white' : globalColors.purpleLight},
+          {backgroundColor: isRead ? 'white' : globalColors.purpleLight},
         ]}>
         <View style={styles.leftWrapper}>
           <View style={styles.imgWrapper}>
             <Image
-              source={{uri: props.iconUrl}}
+              source={{uri: iconUrl}}
               style={{width: 28, height: 28, borderRadius: 100}}
             />
           </View>
@@ -54,22 +60,22 @@ const AlarmCard: React.FC<AlarmCardProps> = ({props, type}) => {
               style={[
                 styles.title,
                 type !== 'notice' && {
-                  color: props.isRead ? globalColors.stroke2 : 'black',
+                  color: isRead ? globalColors.stroke2 : 'black',
                 },
               ]}>
-              {props.title}
+              {title}
             </Text>
             <Text
               style={[
                 styles.content,
                 type !== 'notice' && {
-                  color: props.isRead ? globalColors.stroke2 : 'black',
+                  color: isRead ? globalColors.stroke2 : 'black',
                 },
               ]}>
-              {props.body}
+              {body}
             </Text>
           </View>
-          <Text style={styles.time}>{convertTime(props.createdAt)}</Text>
+          <Text style={styles.time}>{convertTime(createdAt)}</Text>
         </View>
       </View>
     </Pressable>
@@ -88,14 +94,10 @@ const styles = StyleSheet.create({
     padding: 16,
     height: 80,
     marginBottom: 5,
-    backgroundColor: globalColors.purpleLight,
     gap: 10,
   },
   leftWrapper: {
-    height: '100%',
-
     width: '20%',
-    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -109,12 +111,9 @@ const styles = StyleSheet.create({
   },
   contentsWrapper: {
     width: '80%',
-    display: 'flex',
     gap: 5,
   },
   titleWrapper: {
-    height: '80%',
-    display: 'flex',
     gap: 5,
   },
   title: {

@@ -17,7 +17,7 @@ const useReportReview = () => {
   );
 
   const reportReviewDetails = async (
-    reviewId: number,
+    reviewId: string,
     content: string,
   ): Promise<CommonResponse<any>> => {
     setReportReviewState({loading: true, error: null, success: null});
@@ -26,7 +26,6 @@ const useReportReview = () => {
         reviewId,
         content,
       );
-      console.log(response);
       if (response.success) {
         setReportReviewState({loading: false, error: null, success: true});
         return response;

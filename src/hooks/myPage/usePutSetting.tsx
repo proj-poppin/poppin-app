@@ -26,6 +26,7 @@ const usePutPreferenceSetting = () => {
     try {
       const response = await putPreferenceSetting(transformedData);
       if (response.success) {
+        console.log('Preference setting response:', response.data);
         setPreference({loading: false, error: null, success: true, response});
       } else {
         throw new Error(response.error?.message || 'Failed to add interest');

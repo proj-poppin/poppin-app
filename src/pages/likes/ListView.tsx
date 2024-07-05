@@ -21,6 +21,7 @@ import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 interface ListViewProps {
   popUpTypes: string[];
   orderTypes: string[];
+  selectedPopUpType: string;
   setSelectedPopUpType: (selectedItem: string) => void;
   setSelectedOrderType: (selectedItem: string) => void;
   sortedInterestList: {
@@ -37,6 +38,7 @@ interface ListViewProps {
 const ListView: React.FC<ListViewProps> = ({
   popUpTypes,
   orderTypes,
+  selectedPopUpType,
   setSelectedPopUpType,
   setSelectedOrderType,
   sortedInterestList,
@@ -72,11 +74,12 @@ const ListView: React.FC<ListViewProps> = ({
       <View style={styles.dropdownContainer}>
         <CustomSelectDropdown
           data={popUpTypes.map(type => ({label: type}))}
-          onSelect={(selectedItem, index) => setSelectedPopUpType(selectedItem)}
+          onSelect={selectedItem => setSelectedPopUpType(selectedItem)}
           buttonWidth={150}
           iconComponent={<DownBlackSvg />}
           buttonTextAfterSelection={selectedItem => selectedItem}
           buttonTextStyle={{color: globalColors.font}}
+          defaultValue="운영 중인 팝업" // Set the default value
         />
         <View style={{width: 100}} />
         <CustomSelectDropdown
@@ -84,6 +87,7 @@ const ListView: React.FC<ListViewProps> = ({
           onSelect={setSelectedOrderType}
           buttonWidth={150}
           iconComponent={<OrderSvg />}
+          defaultValue="오픈일순" // Set the default value
           buttonTextAfterSelection={selectedItem => selectedItem}
           buttonTextStyle={{color: globalColors.font}}
         />

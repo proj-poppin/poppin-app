@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Platform} from 'react-native';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import SocialLoginButtonRow from '../../utils/function/SocialLoginButtonRow.tsx';
@@ -14,6 +14,7 @@ import TermsAndPrivacyPolicyAgreement from '../../components/molecules/pressable
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
+import ConfirmationModal from '../../components/ConfirmationModal.tsx';
 
 export type EntryScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
@@ -22,6 +23,7 @@ export type EntryScreenNavigationProp = NativeStackNavigationProp<
 
 function EntryScreen() {
   const navigation = useNavigation<EntryScreenNavigationProp>();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const {signInWithKakao, kakaoLoginStatus} = useKakaoLogin();
   const {signInWithGoogle, googleLoginStatus} = useGoogleLogin();
@@ -31,7 +33,6 @@ function EntryScreen() {
   useEffect(() => {
     let newUserType = null;
     if (kakaoLoginStatus.newUser) {
-      console.log('kakaoLoginStatus.newUser: ', kakaoLoginStatus.newUser);
       newUserType = 'KAKAO';
     } else if (googleLoginStatus.newUser) {
       newUserType = 'GOOGLE';
@@ -52,6 +53,12 @@ function EntryScreen() {
     appleLoginStatus,
     navigation,
   ]);
+
+  const handleLoginError = (error: any) => {
+    if (error?.code === '40400') {
+      setIsModalVisible(true);
+    }
+  };
 
   const goBasicLogin = () => {
     navigation.navigate('BasicLogin');
@@ -83,6 +90,13 @@ function EntryScreen() {
       <TermsAndPrivacyPolicyAgreement
         onPrivacyPolicyPress={() => navigation.navigate('PrivacyPolicy')}
         onTermsOfServicePress={() => navigation.navigate('ServicePolicy')}
+      />
+      <ConfirmationModal
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        mainTitle="등록되지 않은 사용자에요"
+        subTitle="해당 계정은 존재하지 않습니다."
+        isAlertSvg={true}
       />
     </View>
   );

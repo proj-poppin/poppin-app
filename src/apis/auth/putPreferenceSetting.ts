@@ -2,14 +2,12 @@
 import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 
 const putPreferenceSetting = async (selectedTags: any) => {
-  console.log("셀렉티드",selectedTags)
   try {
     const response = await nonPublicApiInstance.put(
       '/api/v1/user/popup-taste',
-      selectedTags
+      selectedTags,
     );
     if (response.data.success) {
-     
       console.log('getPreference setting response:', response.data.data);
       return {
         success: true,

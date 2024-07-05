@@ -92,134 +92,139 @@ function FindScreen({navigation, route}: FindScreenProps) {
   const showToast = (message: string) => {
     setToastMessage(message);
     setIsShowToast(true);
-    setTimeout(() => setIsShowToast(false), 1500);
   };
 
   return (
-    <>
-      <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
-        {searchKeyword !== '' ? (
-          <View style={styles.searchKeywordContainer}>
-            <Pressable
-              onPress={() => navigation.navigate('Find', {searchText: ''})}
-              style={{padding: 10}}>
-              <BackSvg />
-            </Pressable>
-            <Pressable
-              onPress={() => navigation.navigate('findInputScreen')}
-              style={styles.searchInputWrapper}>
-              <Text>{searchKeyword}</Text>
-              <Pressable
-                onPress={() => navigation.navigate('findInputScreen')}
-                style={styles.calendarViewContainer}>
-                <SearchBlueSvg />
-              </Pressable>
-            </Pressable>
-          </View>
-        ) : (
-          <View style={styles.headerContainer}>
-            <Text style={Text24B.text}>팝업 목록</Text>
+    <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
+      {searchKeyword !== '' ? (
+        <View style={styles.searchKeywordContainer}>
+          <Pressable
+            onPress={() => navigation.navigate('Find', {searchText: ''})}
+            style={{padding: 10}}>
+            <BackSvg />
+          </Pressable>
+          <Pressable
+            onPress={() => navigation.navigate('findInputScreen')}
+            style={styles.searchInputWrapper}>
+            <Text>{searchKeyword}</Text>
             <Pressable
               onPress={() => navigation.navigate('findInputScreen')}
               style={styles.calendarViewContainer}>
               <SearchBlueSvg />
             </Pressable>
-          </View>
-        )}
-
-        <Tab.Navigator
-          initialRouteName={'운영 중'}
-          tabBar={({state, navigation}) => {
-            return (
-              <View style={styles.tabBarContainer}>
-                <View style={styles.tabBar}>
-                  {state.routes.map((route, index) => {
-                    return (
-                      <Pressable
-                        key={route.key}
-                        style={[
-                          styles.tabItem,
-                          {
-                            borderBottomWidth: state.index === index ? 5 : 0,
-                            borderColor: globalColors.blue,
-                          },
-                        ]}
-                        onPress={() => {
-                          handleTabPress(route.name);
-                          navigation.navigate(route.name);
-                        }}>
-                        <Text
-                          style={
-                            selectedTab === route.name
-                              ? styles.activeTab
-                              : styles.inactiveTab
-                          }>
-                          {route.name === '운영 중'
-                            ? '운영 중'
-                            : route.name === '오픈 예정'
-                            ? '오픈 예정'
-                            : '운영 종료'}
-                        </Text>
-                      </Pressable>
-                    );
-                  })}
-                </View>
-                <View style={styles.filterContainer}>
-                  <FilterSettingButton
-                    onPress={handlePresentModal}
-                    isSetting={isSettingApplied}
-                  />
-                  <CustomSelectDropdown
-                    data={FIND_ORDER_TYPES}
-                    onSelect={(selectedItem: any, index: any) =>
-                      handleOrderSelect(index)
-                    }
-                    buttonWidth={120}
-                    iconComponent={<OrderSvg style={styles.dropdownIcon} />}
-                    buttonTextAfterSelection={(selectedItem: any) =>
-                      selectedItem.label
-                    }
-                    buttonTextStyle={Text14M.text}
-                  />
-                </View>
+          </Pressable>
+        </View>
+      ) : (
+        <View style={styles.headerContainer}>
+          <Text style={Text24B.text}>팝업 목록</Text>
+          <Pressable
+            onPress={() => navigation.navigate('findInputScreen')}
+            style={styles.calendarViewContainer}>
+            <SearchBlueSvg />
+          </Pressable>
+        </View>
+      )}
+      {isShowToast && (
+        <View style={styles.toastContainer}>
+          <ToastComponent
+            height={45}
+            onClose={() => setIsShowToast(false)}
+            message={toastMessage}
+          />
+        </View>
+      )}
+      <Tab.Navigator
+        initialRouteName={'운영 중'}
+        tabBar={({state, navigation}) => {
+          return (
+            <View style={styles.tabBarContainer}>
+              <View style={styles.tabBar}>
+                {state.routes.map((route, index) => {
+                  return (
+                    <Pressable
+                      key={route.key}
+                      style={[
+                        styles.tabItem,
+                        {
+                          borderBottomWidth: state.index === index ? 5 : 0,
+                          borderColor: globalColors.blue,
+                        },
+                      ]}
+                      onPress={() => {
+                        handleTabPress(route.name);
+                        navigation.navigate(route.name);
+                      }}>
+                      <Text
+                        style={
+                          selectedTab === route.name
+                            ? styles.activeTab
+                            : styles.inactiveTab
+                        }>
+                        {route.name === '운영 중'
+                          ? '운영 중'
+                          : route.name === '오픈 예정'
+                          ? '오픈 예정'
+                          : '운영 종료'}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
               </View>
-            );
-          }}>
-          <Tab.Screen name="운영 중">
-            {() => (
-              <FindTab
-                status="OPERATING"
-                selectedOrder={selectedOrder}
-                availableTags={availableTags}
-                searchKeyword={searchKeyword}
-                showToast={showToast}
-              />
-            )}
-          </Tab.Screen>
-          <Tab.Screen name="오픈 예정">
-            {() => (
-              <FindTab
-                status="NOTYET"
-                selectedOrder={selectedOrder}
-                availableTags={availableTags}
-                searchKeyword={searchKeyword}
-                showToast={showToast}
-              />
-            )}
-          </Tab.Screen>
-          <Tab.Screen name="운영 종료">
-            {() => (
-              <FindTab
-                status="TERMINATED"
-                selectedOrder={selectedOrder}
-                availableTags={availableTags}
-                searchKeyword={searchKeyword}
-                showToast={showToast}
-              />
-            )}
-          </Tab.Screen>
-        </Tab.Navigator>
-      </SafeAreaView>
+              <View style={styles.filterContainer}>
+                <FilterSettingButton
+                  onPress={handlePresentModal}
+                  isSetting={isSettingApplied}
+                />
+                <CustomSelectDropdown
+                  data={FIND_ORDER_TYPES}
+                  onSelect={(selectedItem: any, index: any) =>
+                    handleOrderSelect(index)
+                  }
+                  buttonWidth={120}
+                  iconComponent={<OrderSvg style={styles.dropdownIcon} />}
+                  buttonTextAfterSelection={(selectedItem: any) =>
+                    selectedItem.label
+                  }
+                  buttonTextStyle={Text14M.text}
+                />
+              </View>
+            </View>
+          );
+        }}>
+        <Tab.Screen name="운영 중">
+          {() => (
+            <FindTab
+              status="OPERATING"
+              selectedOrder={selectedOrder}
+              availableTags={availableTags}
+              searchKeyword={searchKeyword}
+              showToast={showToast}
+            />
+          )}
+        </Tab.Screen>
+        <Tab.Screen name="오픈 예정">
+          {() => (
+            <FindTab
+              status="NOTYET"
+              selectedOrder={selectedOrder}
+              availableTags={availableTags}
+              searchKeyword={searchKeyword}
+              showToast={showToast}
+            />
+          )}
+        </Tab.Screen>
+        <Tab.Screen name="운영 종료">
+          {() => (
+            <FindTab
+              status="TERMINATED"
+              selectedOrder={selectedOrder}
+              availableTags={availableTags}
+              searchKeyword={searchKeyword}
+              showToast={showToast}
+            />
+          )}
+        </Tab.Screen>
+      </Tab.Navigator>
       <View style={styles.modalContainer}>
         <BottomSheetModal
           animateOnMount={!reducedMotion}
@@ -239,7 +244,6 @@ function FindScreen({navigation, route}: FindScreenProps) {
                   item={item}
                   onClick={handleClick}
                   selectedTag={selectedTags}
-                  isMultipleSelectionPossible={true}
                 />
               ))}
             </View>
@@ -279,15 +283,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
           </View>
         </BottomSheetModal>
       </View>
-      {isShowToast && (
-        <ToastComponent
-          height={35}
-          onClose={() => setIsShowToast(false)}
-          message={toastMessage}
-          bottom={'40%'}
-        />
-      )}
-    </>
+    </SafeAreaView>
   );
 }
 
@@ -491,6 +487,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  toastContainer: {
+    position: 'absolute',
+    top: 60, // 원하는 위치로 조정
+    width: '100%',
+    alignItems: 'center',
   },
 });
 

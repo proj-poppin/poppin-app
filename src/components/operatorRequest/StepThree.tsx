@@ -12,7 +12,13 @@ import CategorySelectButton from '../findPopup/CategorySelectButton.tsx';
 import {POP_UP_TYPES, TFilter} from '../findPopup/constants.ts';
 
 export type AgeGroup = '전체' | '7세 이상' | '12세 이상' | '15세 이상' | '성인';
-
+export type AgeGroupValueType =
+  | 'G_RATED'
+  | 'PG_7'
+  | 'PG_12'
+  | 'PG_15'
+  | 'PG_18'
+  | 'G_RATED';
 interface StepThreeProps {
   introduce: string;
   setIntroduce: (text: string) => void;
@@ -20,7 +26,7 @@ interface StepThreeProps {
   handleReservationRequiredSelect: (value: any) => void;
   selectedAge: AgeGroup;
   handleAgePresentModal: () => void;
-  entranceFeeRequired: any;
+  entranceRequired: any;
   handleEntranceFeeStatusSelect: (value: any) => void;
   entranceFee: string;
   setEntranceFee: (text: string) => void;
@@ -59,7 +65,7 @@ const StepThree: React.FC<StepThreeProps> = ({
   handleReservationRequiredSelect,
   selectedAge,
   handleAgePresentModal,
-  entranceFeeRequired,
+  entranceRequired,
   handleEntranceFeeStatusSelect,
   entranceFee,
   setEntranceFee,
@@ -152,7 +158,7 @@ const StepThree: React.FC<StepThreeProps> = ({
         <RequiredTextLabel label={'입장료 유무'} isRequired={true} />
         <SelectButtonsGroup
           titles={['없음', '있음']}
-          selected={entranceFeeRequired}
+          selected={entranceRequired}
           onSelect={handleEntranceFeeStatusSelect}
         />
         <RequiredTextLabel label={'입장료'} isRequired={false} />

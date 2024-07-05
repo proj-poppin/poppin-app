@@ -1,5 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 import ShallowDividerLine from '../../components/ShallowDividerLine.tsx';
 import BackMiddleButton from '../../components/atoms/button/BackMiddleButton.tsx';
@@ -11,8 +17,6 @@ import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
 import useDeleteUser from '../../hooks/myPage/useDeleteUser.tsx';
 
-
-
 const reasons = [
   '앱 사용이 불편해요',
   '팝업 스토어 찾기가 어려워요',
@@ -22,10 +26,11 @@ const reasons = [
   '기타',
 ];
 
-function MemberDeleteScreen({navigation}:any) {
+function MemberDeleteScreen({navigation}: any) {
   const [selectedReason, setSelectedReason] = useState(null);
   const [isDeleted, setIsDeleted] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const {loading, error, data, handleDeleteUser} = useDeleteUser();
 
   const openModal = () => {
     setModalVisible(true);
@@ -35,10 +40,9 @@ function MemberDeleteScreen({navigation}:any) {
     setModalVisible(false);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
+    await handleDeleteUser();
     setIsDeleted(true);
-    const { data } = useDeleteUser()
-    // console.log("data",data)
     closeModal();
   };
 
@@ -99,6 +103,17 @@ function MemberDeleteScreen({navigation}:any) {
           <View style={{width: 100}} />
           <NextMiddleButton onPress={openModal} title={'탈퇴하기'} />
         </View>
+        {loading && (
+          <ActivityIndicator size="large" color={globalColors.blue} />
+        )}
+        {error && (
+          <Text style={{color: 'red', textAlign: 'center'}}>
+            {error.message}
+          </Text>
+        )}
+        {data && !data.success && (
+          <Text style={{color: 'red', textAlign: 'center'}}>{data.data}</Text>
+        )}
       </DismissKeyboardView>
       <TwoSelectConfirmationModal
         mainAlertTitle={'정말 탈퇴 하시겠습니까?'}

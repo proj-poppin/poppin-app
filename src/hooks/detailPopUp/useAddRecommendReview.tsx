@@ -28,11 +28,9 @@ const useAddRecommendReview = () => {
         reviewId,
       );
       if (response.success) {
-        console.log('response', response);
         setAddInterestState({loading: false, error: null, success: true});
         return response;
       } else {
-        console.log('response', response);
         setAddInterestState({
           loading: false,
           error: new Error(response.error?.message || 'Failed to add interest'),

@@ -1,38 +1,31 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
+  TouchableOpacity,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import globalColors from '../../../styles/color/globalColors.ts';
-import CategoryButtonDeleteSvg from '../../../assets/icons/categoryButtonClose.svg'; // Adjust the path as needed
+import CategoryButtonDeleteSvg from '../../../assets/icons/categoryButtonClose.svg';
 
 interface OptionMultipleButtonProps {
   id: string;
   title: string;
   onPress: (isSelected: boolean) => void;
   isSelected: boolean;
-  tagDeleteClick?: (id: string) => void; // Make this optional
+  tagDeleteClick?: (id: string) => void;
 }
 
 const OptionMultipleButton: React.FC<OptionMultipleButtonProps> = ({
   id,
   title,
   onPress,
-  isSelected: initialSelected,
+  isSelected,
   tagDeleteClick,
 }) => {
-  const [isSelected, setIsSelected] = useState(initialSelected);
-
-  useEffect(() => {
-    setIsSelected(initialSelected);
-  }, [initialSelected]);
-
   const handlePress = () => {
-    setIsSelected(!isSelected);
     onPress(!isSelected);
   };
 
@@ -65,7 +58,7 @@ const OptionMultipleButton: React.FC<OptionMultipleButtonProps> = ({
 const styles = StyleSheet.create({
   tag: {
     borderRadius: 30,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: globalColors.warmGray,
     paddingTop: 8,
     paddingBottom: 8,
@@ -75,7 +68,7 @@ const styles = StyleSheet.create({
   },
   gradientBorder: {
     borderRadius: 30,
-    padding: 2,
+    padding: 1.5,
     margin: 5,
   },
   innerContent: {

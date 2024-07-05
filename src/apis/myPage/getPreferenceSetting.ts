@@ -9,13 +9,8 @@ export interface PatchUserSettingResponse {
 }
 
 const getPreferenceSetting = async (): Promise<PatchUserSettingResponse> => {
- 
   try {
-    const response = await nonPublicApiInstance.get(
-      `/api/v1/user/popup-taste`,
-      
-    );
-    console.log('preferenceGet response:', response.data);
+    const response = await nonPublicApiInstance.get('/api/v1/user/popup-taste');
 
     if (response.data.success) {
       return response.data;

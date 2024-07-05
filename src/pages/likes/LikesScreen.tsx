@@ -22,12 +22,15 @@ import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import ForLoginBox from '../../components/ForLoginBox.tsx';
 import CalendarComponent from './calendar/CalendarComponent.tsx';
 import NoSavedPopupsComponent from './NoSavedPopupComponent.tsx';
-
+import refreshSlice from '../../redux/slices/refreshSlice';
 const popUpTypes = ['오픈 예정인 팝업', '운영 중인 팝업', '운영 종료 팝업'];
-const orderTypes = ['오픈일순', '마감일순', '저장순'];
+// const orderTypes = ['오픈일순', '마감일순', '저장순'];
+const orderTypes = ['오픈일순', '마감일순']; // 저장순 구현되면 넣기!
+type PopupType = '오픈 예정인 팝업' | '운영 중인 팝업' | '운영 종료 팝업';
 
 function LikesScreen({navigation}) {
-  const [selectedPopUpType, setSelectedPopUpType] = useState<string>('');
+  const [selectedPopUpType, setSelectedPopUpType] =
+    useState<PopupType>('운영 중인 팝업');
   const [selectedOrderType, setSelectedOrderType] = useState<string>('');
   const [isCalendarView, setIsCalendarView] = useState(false);
 
@@ -48,6 +51,10 @@ function LikesScreen({navigation}) {
   const isLoggedIn = useIsLoggedIn();
 
   useEffect(() => {
+    dispatch(refreshSlice.actions.setOnRefresh(handleRefresh));
+  }, [handleRefresh, dispatch]);
+
+  useEffect(() => {
     dispatch(loadingSlice.actions.setLoading({isLoading: true}));
     setTimeout(() => {
       dispatch(loadingSlice.actions.setLoading({isLoading: false}));
@@ -55,6 +62,10 @@ function LikesScreen({navigation}) {
   }, [dispatch]);
 
   const filteredInterestList = useMemo(() => {
+    if (!interestList) {
+      return [];
+    }
+
     switch (selectedPopUpType) {
       case '오픈 예정인 팝업':
         return interestList.filter(item => item.status === 'NOTYET');
@@ -116,7 +127,7 @@ function LikesScreen({navigation}) {
     );
   }
 
-  if (isLoggedIn && interestList.length === 0) {
+  if (isLoggedIn && interestList?.length === 0) {
     return (
       <ScrollView
         contentContainerStyle={{flex: 1}}
@@ -151,6 +162,7 @@ function LikesScreen({navigation}) {
               <RefreshControl refreshing={loading} onRefresh={handleRefresh} />
             }>
             <ListView
+              selectedPopUpType={selectedPopUpType}
               popUpTypes={popUpTypes}
               orderTypes={orderTypes}
               setSelectedPopUpType={setSelectedPopUpType}

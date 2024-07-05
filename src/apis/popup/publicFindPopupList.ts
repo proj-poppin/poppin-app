@@ -1,18 +1,13 @@
 import PublicApiInstance from '../../apis/apiInstance/PublicApiInstance.ts';
-import {TfindPopupType} from '../../types/FindPopUpData.ts';
+import {
+  CommonResponse,
+  ResponseData,
+  TFilterparmas,
+} from '../../types/FindPopupType.ts';
 
-export type TFilterparmas = {
-  text: string;
-  prepared: string;
-  page: number;
-  oper: string;
-  order: string;
-  taste: string;
-  size: number;
-};
 const getPublicFindPopUpList = async (
-  params: any,
-): Promise<CommonResponse<TfindPopupType>> => {
+  params: TFilterparmas,
+): Promise<CommonResponse<ResponseData>> => {
   try {
     const response = await PublicApiInstance.get('/api/v1/popup/guest/search', {
       params: params,

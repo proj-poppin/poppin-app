@@ -18,7 +18,7 @@ import Text12R from '../../styles/texts/label/Text12R.ts';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
 import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
 import useConfirmPassword from '../../hooks/myPage/useConfirmPassword.tsx';
-import useResetPassword from '../../hooks/password/useResetPassword.tsx';
+import useResetPasswordNonPublic from '../../hooks/password/useResetPasswordNonPublic.tsx';
 import GoBackSvg from '../../assets/icons/goBack.svg';
 import ToSignUpTextLine from '../../components/molecules/pressable_text/ToSignUpTextLine.tsx';
 
@@ -43,7 +43,8 @@ export const PasswordChangeOptions = ({
 function PasswordChangeScreen({navigation}: any) {
   const {data: userData} = useGetUserSetting();
   const {confirmPassword, ...confirmPasswordState} = useConfirmPassword();
-  const {resetUserPassword, resetPasswordStatus} = useResetPassword();
+  const {resetUserPasswordNonPublic, resetPasswordStatus} =
+    useResetPasswordNonPublic();
   const user = useSelector(state => state.user);
 
   const [currentPassword, setCurrentPassword] = useState('');
@@ -92,16 +93,11 @@ function PasswordChangeScreen({navigation}: any) {
 
   const handlePasswordChangeSubmit = async () => {
     if (isNewPasswordSame) {
-      await resetUserPassword(newPassword, confirmNewPassword);
+      await resetUserPasswordNonPublic(newPassword, confirmNewPassword);
     } else {
       Alert.alert('Error', 'Passwords do not match or meet the criteria.');
     }
   };
-
-  const handleForgotPasswordPress = () => {
-    navigation.navigate('PasswordReset');
-  };
-
   useEffect(() => {
     if (confirmPasswordState.success) {
       setIsPasswordCheckDone(true);
@@ -109,7 +105,6 @@ function PasswordChangeScreen({navigation}: any) {
       setIsCurrentPasswordValid(false);
     }
   }, [confirmPasswordState]);
-
   useEffect(() => {
     if (resetPasswordStatus.success) {
       navigation.navigate('MyPage');
@@ -117,7 +112,7 @@ function PasswordChangeScreen({navigation}: any) {
       setConfirmNewPassword('');
       setIsNewPasswordValid(false);
     }
-  }, [resetPasswordStatus]);
+  }, [navigation, resetPasswordStatus]);
   return (
     <DismissKeyboardView style={styles.container}>
       <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>
@@ -139,7 +134,6 @@ function PasswordChangeScreen({navigation}: any) {
             placeholder="현재 비밀번호"
             labelText={'현재 비밀번호'}
             isPassword={true}
-            containerStyle={{marginBottom: 20}}
             value={currentPassword}
           />
           {!confirmPasswordState.success && (
@@ -147,35 +141,17 @@ function PasswordChangeScreen({navigation}: any) {
               {confirmPasswordState.error?.message}
             </Text>
           )}
-
-          <ToSignUpTextLine
-            titleText={'현재 비밀번호가 기억나지 않으세요?'}
-            onPress={handleForgotPasswordPress}
-          />
-          <Pressable
-            disabled={!isCurrentPasswordValid}
+          <View style={{marginTop: 220}}>
+            <ToSignUpTextLine
+              titleText={'현재 비밀번호가 기억나지 않으세요?'}
+              onPress={() => navigation.navigate('PasswordReset')}
+            />
+          </View>
+          <CompleteButton
             onPress={handlePasswordCheckSubmit}
-            style={{
-              height: 60,
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <View
-              style={{
-                height: '80%',
-                width: '80%',
-                backgroundColor: globalColors.blue,
-                borderRadius: 30,
-                display: 'flex',
-                justifyContent: 'center',
-              }}>
-              <Text style={{textAlign: 'center', color: 'white', fontSize: 18}}>
-                다음
-              </Text>
-            </View>
-          </Pressable>
+            title={'다음 '}
+            disabled={!isCurrentPasswordValid}
+          />
         </>
       ) : (
         <>
@@ -184,7 +160,6 @@ function PasswordChangeScreen({navigation}: any) {
             placeholder="새 비밀번호"
             labelText={'새 비밀번호'}
             isPassword={true}
-            containerStyle={{marginBottom: 20}}
             value={newPassword}
           />
           <LabelAndInput
@@ -193,7 +168,6 @@ function PasswordChangeScreen({navigation}: any) {
             labelText={'새 비밀번호 확인'}
             isPassword={true}
             isPasswordSame={isNewPasswordSame}
-            containerStyle={{marginBottom: 20}}
             value={confirmNewPassword}
           />
           <Text

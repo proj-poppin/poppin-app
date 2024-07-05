@@ -51,7 +51,6 @@ const useSignUp = () => {
           error: null,
           loading: false, // Set loading to false when sign up is successful
         }));
-        console.log('SignUp successful:', signUpResult.data);
       } else {
         console.log('SignUp failed:', signUpResult.error);
         setSignUpStatus(prevState => ({

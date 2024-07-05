@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import useGetNoticeDetail from '../../hooks/alarm/useGetNoticeDetail.ts';

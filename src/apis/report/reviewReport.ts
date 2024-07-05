@@ -1,7 +1,7 @@
 import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 
 const reportReview = async (
-  reviewId: number,
+  reviewId: string,
   content: string,
 ): Promise<CommonResponse<any>> => {
   try {

@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import getNoticeAlarmList from '../../apis/alarm/getNoticeAlarmList.ts';
 
-interface AlarmCardInfoProps {
+export interface AlarmCardInfoProps {
   id: number;
   title: string;
   body: string;
@@ -11,22 +11,35 @@ interface AlarmCardInfoProps {
 }
 
 const useGetNoticeAlarmList = () => {
-  const [noticeAlarmList, setNoticeAlarmList] = useState<AlarmCardInfoProps[]>(
-    [],
-  );
+  const [data, setData] = useState<{
+    data: AlarmCardInfoProps[] | null;
+    error: string | null;
+  }>({
+    data: null,
+    error: null,
+  });
+
   useEffect(() => {
     const fetchNoticeAlarmList = async () => {
       try {
         const response = await getNoticeAlarmList();
-        setNoticeAlarmList(response.data);
+        if (response.success) {
+          console.log('Notice alarm list:', response.data);
+          setData({data: response.data, error: null});
+        } else {
+          setData({data: null, error: response.error});
+          console.error('Error fetching notice alarm list:', response.error);
+        }
       } catch (error: any) {
-        console.error(error);
+        setData({data: null, error: error.message});
+        console.error('Error fetching notice alarm list:', error);
       }
     };
-    fetchNoticeAlarmList().then();
+
+    fetchNoticeAlarmList();
   }, []);
 
-  return noticeAlarmList;
+  return data;
 };
 
 export default useGetNoticeAlarmList;

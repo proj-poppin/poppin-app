@@ -7,18 +7,21 @@ export interface AddRecommendReviewResponse {
     message: string;
   };
 }
+
 interface AddInterestPopupParams {
   popupId: number;
   fcm_token: string;
 }
+
 const addInterestPopup = async (params: AddInterestPopupParams) => {
   try {
     const response = await nonPublicApiInstance.post(
       '/api/v1/interest/add-interest',
-      null,
-      {params: params},
+      {
+        popupId: params.popupId,
+        fcmToken: params.fcm_token,
+      },
     );
-    console.log('addInterestPopup response:', response.data);
 
     if (response.data.success) {
       return response.data;

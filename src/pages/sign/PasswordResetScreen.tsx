@@ -1,18 +1,20 @@
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Alert} from 'react-native';
-import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
-import MainTitle from '../../components/organisms/header/MainTitle.tsx';
-import LabelText20B from '../../components/atoms/label/LabelText20B.tsx';
-import CommonTextFormField from '../../components/molecules/form_field/CommonTextFormField.tsx';
-import AuthCodeTextFormField from '../../components/molecules/form_field/AuthCodeTextFormField.tsx';
-import PasswordCheckTextFormField from '../../components/molecules/form_field/PasswordCheckTextFormField.tsx';
-import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
-import ResendButton from '../../components/molecules/pressable_text/ResendButton.tsx';
-import useAuthCode from '../../hooks/signUp/useAuthCode.tsx';
-import useSignUpEmail from '../../hooks/signUp/useSignUpEmail.tsx';
-import useResetPassword from '../../hooks/password/useResetPassword.tsx';
-import usePasswordEmailVerification from '../../hooks/password/usePasswordEmailVerification.tsx';
-import useGetUser from '../../hooks/auth/useGetUser.tsx';
+import DismissKeyboardView from '../../components/DismissKeyboardView';
+import MainTitle from '../../components/organisms/header/MainTitle';
+import LabelText20B from '../../components/atoms/label/LabelText20B';
+import CommonTextFormField from '../../components/molecules/form_field/CommonTextFormField';
+import AuthCodeTextFormField from '../../components/molecules/form_field/AuthCodeTextFormField';
+import PasswordCheckTextFormField from '../../components/molecules/form_field/PasswordCheckTextFormField';
+import CompleteButton from '../../components/atoms/button/CompleteButton';
+import ResendButton from '../../components/molecules/pressable_text/ResendButton';
+import useAuthCode from '../../hooks/signUp/useAuthCode';
+import useSignUpEmail from '../../hooks/signUp/useSignUpEmail';
+import useResetPasswordNonPublic from '../../hooks/password/useResetPasswordNonPublic.tsx';
+import useResetPasswordPublic from '../../hooks/password/useResetPasswordPublic.tsx';
+import usePasswordEmailVerification from '../../hooks/password/usePasswordEmailVerification';
+import useGetUser from '../../hooks/auth/useGetUser';
+import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 
 type PasswordResetScreenProps = {
   navigation: any;
@@ -35,20 +37,28 @@ function PasswordResetScreen({navigation}: PasswordResetScreenProps) {
 
   const {code, setCode, countdown, resetCountdown} = useAuthCode();
   const {authCode, verifyEmail} = usePasswordEmailVerification(email);
-  const {resetUserPassword, resetPasswordStatus} = useResetPassword();
+  const {
+    resetUserPasswordNonPublic: resetUserPasswordNonPublic,
+    resetPasswordStatus: resetPasswordStatusNonPublic,
+  } = useResetPasswordNonPublic();
+  const {
+    resetUserPasswordPublic: resetUserPasswordPublic,
+    resetPasswordStatus: resetPasswordStatusPublic,
+  } = useResetPasswordPublic();
   const {data: user, loading, error} = useGetUser();
-
   const [pageIndex, setPageIndex] = useState(1);
+  const isLoggedIn = useIsLoggedIn();
 
-  const handlePress = () => {
-    verifyEmail()
-      .then(() => setPageIndex(2))
-      .catch(error =>
-        Alert.alert(
-          'Error',
-          error.message || '이메일 인증 중 알 수 없는 오류가 발생했습니다.',
-        ),
+  const handlePress = async () => {
+    try {
+      await verifyEmail();
+      setPageIndex(2);
+    } catch (error) {
+      Alert.alert(
+        'Error',
+        error.message || '이메일 인증 중 알 수 없는 오류가 발생했습니다.',
       );
+    }
   };
 
   const handlePressAuthCode = () => {
@@ -60,23 +70,38 @@ function PasswordResetScreen({navigation}: PasswordResetScreenProps) {
   };
 
   useEffect(() => {
-    if (resetPasswordStatus.success) {
+    if (
+      resetPasswordStatusNonPublic.success ||
+      resetPasswordStatusPublic.success
+    ) {
       Alert.alert(
         '비밀번호 변경 성공',
         '비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요.',
       );
       navigation.navigate('BasicLogin');
     }
-  }, [resetPasswordStatus.success, navigation]);
+  }, [
+    resetPasswordStatusNonPublic.success,
+    resetPasswordStatusPublic.success,
+    navigation,
+  ]);
 
-  const handleResetPassword = () => {
+  const handleResetPassword = async () => {
     if (
       isPasswordSame &&
       isValidLength &&
       containsNumAndLetter &&
       containsSpecialChar
     ) {
-      resetUserPassword(password, passwordConfirm).then();
+      try {
+        if (isLoggedIn) {
+          await resetUserPasswordNonPublic(password, passwordConfirm);
+        } else {
+          await resetUserPasswordPublic(email, password, passwordConfirm);
+        }
+      } catch (error) {
+        Alert.alert('Error', 'Passwords do not match or meet the criteria.');
+      }
     } else {
       Alert.alert('Error', 'Passwords do not match or meet the criteria.');
     }
@@ -173,6 +198,7 @@ function PasswordResetScreen({navigation}: PasswordResetScreenProps) {
         return null;
     }
   };
+
   return (
     <DismissKeyboardView>
       <View style={styles.container}>{renderStepContent()}</View>

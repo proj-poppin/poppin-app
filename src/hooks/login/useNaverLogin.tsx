@@ -44,6 +44,10 @@ export const useNaverLogin = () => {
           dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
           navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
         } else {
+          if (loginResult.error?.code === '40024') {
+            console.log('User not found');
+            navigation.navigate('Entry', {loginError: loginResult.error});
+          }
           // 신규 유저라면 닉네입 입력 화면으로 이동
           setNaverLoginStatus({newUser: true});
           const accessToken = loginResult.data!.accessToken;

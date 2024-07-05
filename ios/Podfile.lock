@@ -2363,6 +2363,8 @@ PODS:
   - RNNaverLogin (3.0.0):
     - naveridlogin-sdk-ios (~> 4.1.5)
     - React
+  - RNOpenAppSettings (1.0.0):
+    - React
   - RNPermissions (4.1.5):
     - React-Core
   - RNReanimated (3.7.1):
@@ -2373,6 +2375,8 @@ PODS:
   - RNScreens (3.29.0):
     - glog
     - RCT-Folly (= 2022.05.16.00)
+    - React-Core
+  - RNSharedElement (0.8.9):
     - React-Core
   - RNSVG (14.1.0):
     - React-Core
@@ -2470,9 +2474,11 @@ DEPENDENCIES:
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - "RNNaverLogin (from `../node_modules/@react-native-seoul/naver-login`)"
+  - RNOpenAppSettings (from `../node_modules/react-native-app-settings`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSharedElement (from `../node_modules/react-native-shared-element`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -2672,12 +2678,16 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-crop-picker"
   RNNaverLogin:
     :path: "../node_modules/@react-native-seoul/naver-login"
+  RNOpenAppSettings:
+    :path: "../node_modules/react-native-app-settings"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSharedElement:
+    :path: "../node_modules/react-native-shared-element"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
@@ -2798,15 +2808,17 @@ SPEC CHECKSUMS:
   RNGoogleSignin: fc408799f1990a12497a32f64280c0fe353ffcc1
   RNImageCropPicker: e7ab6fb43d2fc3e84651e786ef4a080d63b0ed3d
   RNNaverLogin: dc2758a157dafaa1ffca63079cad4d4c75208a30
-  RNPermissions: 294531ede5a64d1528463e88fffef05675842042
+  RNOpenAppSettings: 1169b90a275e9e18c5973e1608949f97d426e7f3
+  RNPermissions: cfffc8a8c01299b0d8114b82a0890b19dd28a969
   RNReanimated: 06342ad46707263f3009e00b88beca6188c3675d
   RNScreens: 2b73f5eb2ac5d94fbd61fa4be0bfebd345716825
+  RNSharedElement: 3fd05877bd6bc95f71b332801bf4356ca69ab7f6
   RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a
   RNVectorIcons: ee070291bc6c7b4c880181b214534d4657ea1905
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
   Yoga: 1b901a6d6eeba4e8a2e8f308f708691cdb5db312
 
-PODFILE CHECKSUM: fd2a613359847f218a06c2543a6295b8f61fbd04
+PODFILE CHECKSUM: 6009d7910eafb4dcce922f72249fba9a0356bc25
 
 COCOAPODS: 1.15.2

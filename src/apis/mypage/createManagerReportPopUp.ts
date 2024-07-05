@@ -9,6 +9,7 @@ const createManagerReportPopUp = async (
   introduce: string,
   address: string,
   addressDetail: string,
+  entranceRequired: boolean,
   entranceFee: string,
   availableAge: string,
   parkingAvailable: boolean,
@@ -72,6 +73,7 @@ const createManagerReportPopUp = async (
     formData.append('introduce', introduce);
     formData.append('address', address);
     formData.append('addressDetail', addressDetail);
+    formData.append('entranceRequired', entranceRequired);
     formData.append('entranceFee', entranceFee);
     formData.append('availableAge', availableAge);
     formData.append('parkingAvailable', parkingAvailable);

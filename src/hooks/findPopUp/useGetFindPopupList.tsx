@@ -1,20 +1,20 @@
 import {useState, useEffect, useCallback} from 'react';
 import getFindPopUpList from '../../apis/popup/findPopupList.ts';
-import getPublicFindPopUpList from '../../apis/popup/public_findPopupList.ts';
+import getPublicFindPopUpList from '../../apis/popup/publicFindPopupList.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
-
-interface GetClosingState {
-  loading: boolean;
-  error: Error | null;
-  data: any | null;
-}
-type TFilter = {id: number; name: string; selected: boolean};
+import {
+  GetClosingState,
+  TFilter,
+  OperationStatus,
+  Order,
+  TFilterparmas,
+} from '../../types/FindPopupType.ts';
 
 const useGetFindPopupList = (
   page: number,
   size: number,
-  selectedTab: any,
-  selectedOrder: string,
+  selectedTab: OperationStatus,
+  selectedOrder: Order,
   availableTags: TFilter[],
   searchKeyword: string,
   triggerFetch: boolean,
@@ -24,47 +24,59 @@ const useGetFindPopupList = (
     error: null,
     data: [],
   });
+  const [isLastPage, setIsLastPage] = useState(false);
 
   const fetchFindPopupList = useCallback(async () => {
-    setGetListState(prevState => ({...prevState, loading: true}));
+    if (isLastPage && page > 0) {
+      return;
+    } // Stop fetching if it's the last page and not the initial load
 
-    const selectedCategoryString = availableTags
+    setGetListState((prevState: GetClosingState) => ({
+      ...prevState,
+      loading: true,
+    }));
+
+    const selectedPreparedString = availableTags
       .slice(0, 14)
       .map(item => (item.selected ? '1' : '0'))
       .join('');
 
-    const selectedTypeString = availableTags
-      .slice(14, availableTags.length)
+    const selectedTasteString = availableTags
+      .slice(14)
       .map(item => (item.selected ? '1' : '0'))
       .join('');
 
-    const filterParams = {
+    const filterParams: TFilterparmas = {
       page,
       size,
       oper: selectedTab,
       text: searchKeyword,
       order: selectedOrder,
-      prepered: selectedCategoryString,
-      taste: selectedTypeString,
+      prepered: selectedPreparedString,
+      taste: selectedTasteString,
     };
+
     try {
       const accessToken = await EncryptedStorage.getItem('accessToken');
       const response = accessToken
         ? await getFindPopUpList(filterParams)
         : await getPublicFindPopUpList(filterParams);
 
-      if (response.success) {
-        setGetListState(prevState => ({
+      if (response.success && response.data) {
+        setGetListState((prevState: GetClosingState) => ({
           loading: false,
           error: null,
           data:
-            page === 0 ? response.data : [...prevState.data, ...response.data],
+            page === 0 || triggerFetch
+              ? response.data!.items
+              : [...prevState.data, ...response.data!.items],
         }));
+        setIsLastPage(response.data.pageInfo.isLast); // Update the isLastPage state
       } else {
         setGetListState({
           loading: false,
           error: new Error(response.error?.message || 'Unknown error'),
-          data: null,
+          data: [],
         });
       }
     } catch (error: any) {
@@ -74,17 +86,27 @@ const useGetFindPopupList = (
           error instanceof Error
             ? error
             : new Error('An unexpected error occurred'),
-        data: null,
+        data: [],
       });
     }
-  }, [page, size, selectedOrder, selectedTab, availableTags, searchKeyword]);
+  }, [
+    page,
+    size,
+    selectedOrder,
+    selectedTab,
+    availableTags,
+    searchKeyword,
+    triggerFetch,
+    isLastPage,
+  ]);
 
   useEffect(() => {
-    console.log('triggerFetch$', triggerFetch);
-    fetchFindPopupList();
+    if (triggerFetch || page > 0) {
+      fetchFindPopupList();
+    }
   }, [fetchFindPopupList, page, triggerFetch]);
 
-  return {...getListState, refetch: fetchFindPopupList};
+  return {...getListState, refetch: fetchFindPopupList, isLastPage};
 };
 
 export default useGetFindPopupList;

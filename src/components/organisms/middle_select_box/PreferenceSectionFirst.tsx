@@ -9,10 +9,8 @@ import {
 } from '../../../constants/PreferenceTypes.ts';
 
 const PreferenceSectionFirst = ({updatePreference, preferences, nickname}) => {
-  const handlePress = (key: string, isSelected: boolean) => {
+  const handlePress = (key, isSelected) => {
     updatePreference(PreferenceCategories.PREFERENCE, key, isSelected);
-    console.log('key:', key);
-    console.log('preferences:', preferences);
   };
 
   return (

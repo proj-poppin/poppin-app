@@ -9,11 +9,12 @@ import PreferenceSectionSecond from '../../components/organisms/middle_select_bo
 import PreferenceSectionThird from '../../components/organisms/middle_select_box/PreferenceSectionThird.tsx';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useAppDispatch} from '../../redux/stores';
+import {RootState} from '../../redux/stores/reducer.ts';
 import userSlice from '../../redux/slices/user.ts';
 import usePreferenceSetting from '../../hooks/password/usePreferenceSetting.tsx';
-import {RootState} from '../../redux/stores/reducer.ts';
-import {useSelector} from 'react-redux';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
+import {setPreference} from '../../redux/slices/preferenceSlice.ts';
+import {useSelector} from 'react-redux';
 
 type PreferenceScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
@@ -22,11 +23,12 @@ type PreferenceScreenNavigationProp = NativeStackNavigationProp<
 
 function SignUpPreferenceSettingScreen({route}) {
   const {nickname} = route.params;
-  const {preferences, updatePreference, submitPreferences} =
-    usePreferenceSetting();
   const [step, setStep] = useState<number>(1);
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation<PreferenceScreenNavigationProp>();
+
+  const {preferences, updatePreference, submitPreferences} =
+    usePreferenceSetting(); // <- Using the custom hook
 
   const dispatch = useAppDispatch();
 
@@ -38,29 +40,22 @@ function SignUpPreferenceSettingScreen({route}) {
   const isFinishedPreferenceSetting = useSelector(
     (state: RootState) => state.user.isFinishedPreferenceSetting,
   );
-  console.log(
-    '🍉🍉🍉isFinishedPreferenceSetting in screen',
-    isFinishedPreferenceSetting,
-  );
 
   useEffect(() => {
-    console.log(
-      '✅✅✅✅✅isFinishedPreferenceSetting in SignUpPreferenceSettingScreen',
-      isFinishedPreferenceSetting,
-    );
     if (isFinishedPreferenceSetting) {
       navigation.navigate('MainTabNavigator');
     }
   }, [isFinishedPreferenceSetting, navigation]);
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     setModalVisible(false);
-    submitPreferences().then(response => {
-      if (response.success) {
-        dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
-        navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
-      }
-    });
+    const response = await submitPreferences(); // <- Call submitPreferences
+    if (response.success) {
+      dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
+      navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
+    } else {
+      console.error('Failed to submit preferences:', response.error);
+    }
   };
 
   useLayoutEffect(() => {
@@ -81,7 +76,10 @@ function SignUpPreferenceSettingScreen({route}) {
       case 1:
         return (
           <PreferenceSectionFirst
-            updatePreference={updatePreference}
+            updatePreference={(category, key, value) => {
+              console.log('Updating preference:', {category, key, value}); // <- Log the update
+              dispatch(setPreference({category, key, value}));
+            }}
             preferences={preferences}
             nickname={nickname}
           />
@@ -89,7 +87,10 @@ function SignUpPreferenceSettingScreen({route}) {
       case 2:
         return (
           <PreferenceSectionSecond
-            updatePreference={updatePreference}
+            updatePreference={(category, key, value) => {
+              console.log('Updating preference:', {category, key, value}); // <- Log the update
+              dispatch(setPreference({category, key, value}));
+            }}
             preferences={preferences}
             nickname={nickname}
           />
@@ -97,7 +98,9 @@ function SignUpPreferenceSettingScreen({route}) {
       case 3:
         return (
           <PreferenceSectionThird
-            updatePreference={updatePreference}
+            updatePreference={(category, key, value) =>
+              dispatch(setPreference({category, key, value}))
+            }
             preferences={preferences}
             nickname={nickname}
           />

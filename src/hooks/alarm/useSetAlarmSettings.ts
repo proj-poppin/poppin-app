@@ -1,51 +1,47 @@
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import setAlarmSettings from '../../apis/alarm/setAlarmSettings.ts';
 
 interface AlarmSettingsProps {
-  pushYn: string;
-  pushNightYn: string;
-  hoogiYn: string;
-  openYn: string;
-  magamYn: string;
-  changeInfoYn: string;
+  pushYn: string | undefined;
+  pushNightYn: string | undefined;
+  hoogiYn: string | undefined;
+  openYn: string | undefined;
+  magamYn: string | undefined;
+  changeInfoYn: string | undefined;
 }
 
-const useSetAlarmSettings = (
-  pushYn: string | undefined,
-  pushNightYn: string | undefined,
-  hoogiYn: string | undefined,
-  openYn: string | undefined,
-  magamYn: string | undefined,
-  changeInfoYn: string | undefined,
-) => {
-  const [settings, setSettings] = useState<AlarmSettingsProps>();
-
+const useSetAlarmSettings = (settings: AlarmSettingsProps) => {
   useEffect(() => {
-    const fetchAlarmSettings = async () => {
+    const updateAlarmSettings = async () => {
       try {
         const storedToken = await EncryptedStorage.getItem('pushToken');
         if (!storedToken) {
           throw new Error('No push token');
         }
-        const response = await setAlarmSettings(
+        await setAlarmSettings(
           storedToken,
-          pushYn,
-          pushNightYn,
-          hoogiYn,
-          openYn,
-          magamYn,
-          changeInfoYn,
+          settings.pushYn,
+          settings.pushNightYn,
+          settings.hoogiYn,
+          settings.openYn,
+          settings.magamYn,
+          settings.changeInfoYn,
         );
-        setSettings(response.data);
       } catch (error: any) {
-        console.error(error);
+        console.error('Error updating alarm settings:', error);
       }
     };
-    fetchAlarmSettings().then();
-  }, [changeInfoYn, hoogiYn, magamYn, openYn, pushNightYn, pushYn]);
 
-  return settings;
+    updateAlarmSettings();
+  }, [
+    settings.pushYn,
+    settings.pushNightYn,
+    settings.hoogiYn,
+    settings.openYn,
+    settings.magamYn,
+    settings.changeInfoYn,
+  ]);
 };
 
 export default useSetAlarmSettings;

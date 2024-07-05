@@ -9,17 +9,21 @@ const setAlarmSettings = async (
   magamYn: string | undefined,
   changeInfoYn: string | undefined,
 ) => {
-  const response = await nonPublicApiInstance.post('/api/v1/alarm/set', {
-    fcmToken: fcm_token,
-    pushYn: pushYn,
-    pushNightYn: pushNightYn,
-    hoogiYn: hoogiYn,
-    openYn: openYn,
-    magamYn: magamYn,
-    changeInfoYn: changeInfoYn,
-  });
+  const response = await nonPublicApiInstance.post(
+    '/api/v1/alarm/update/setting',
+    {
+      fcmToken: fcm_token,
+      pushYn: pushYn,
+      pushNightYn: pushNightYn,
+      hoogiYn: hoogiYn,
+      openYn: openYn,
+      magamYn: magamYn,
+      changeInfoYn: changeInfoYn,
+    },
+  );
 
   if (response.data.success) {
+    console.log('setAlarmSettings response:', response.data);
     return response.data;
   } else {
     return {

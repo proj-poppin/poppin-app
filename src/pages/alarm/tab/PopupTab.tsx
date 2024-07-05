@@ -9,18 +9,32 @@ import BlueDotsThreeSvg from '../../../assets/icons/blueDotsThree.svg';
 import CompleteButton from '../../../components/atoms/button/CompleteButton.tsx';
 
 const PopupTab = ({navigation}) => {
-  const popupAlarmList = useGetPopupAlarmList();
+  const {popupAlarmList, loading, error} = useGetPopupAlarmList();
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text>Error: {error}</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView>
       {!popupAlarmList || popupAlarmList.length === 0 ? (
         emptyAlarm(navigation)
       ) : (
         <FlatList
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={item => item.id.toString()}
           data={popupAlarmList}
-          renderItem={({item}) => {
-            return <AlarmCard type="popup" props={item} />;
-          }}
+          renderItem={({item}) => <AlarmCard type="popup" props={item} />}
         />
       )}
     </ScrollView>
@@ -29,16 +43,9 @@ const PopupTab = ({navigation}) => {
 
 const emptyAlarm = navigation => {
   return (
-    <ScrollView style={{}}>
+    <ScrollView>
       <View style={{alignItems: 'center'}}>
-        <Text
-          style={[
-            Text20B.text,
-            {
-              paddingTop: 94,
-              paddingBottom: 80,
-            },
-          ]}>
+        <Text style={[Text20B.text, {paddingTop: 94, paddingBottom: 80}]}>
           아직 알림이 없어요!
         </Text>
         <NoAlarmSvg />
@@ -60,16 +67,18 @@ const emptyAlarm = navigation => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  loadingContainer: {
     flex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'space-between',
-  },
-  contentContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
-  svgStyle: {},
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f8d7da',
+    padding: 20,
+  },
   informationText: {
     color: globalColors.blue,
     textAlign: 'center',
@@ -80,6 +89,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 40,
   },
+  svgStyle: {},
 });
 
 export default PopupTab;

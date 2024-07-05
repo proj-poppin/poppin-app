@@ -18,11 +18,19 @@ interface AlarmSettingsProps {
   changeInfoYn: string;
 }
 
-function AlaramSettingScreen({navigation}) {
+function AlarmSettingScreen({navigation}) {
   const fetchedAlarmSettings = useGetAlarmSettings();
-  const [settings, setSettings] = useState<AlarmSettingsProps>();
-  const settingsRef = useRef<AlarmSettingsProps>();
-  const pushYnRef = useRef<string>();
+  const [settings, setSettings] = useState<AlarmSettingsProps>({
+    pushYn: '0',
+    pushNightYn: '0',
+    hoogiYn: '0',
+    openYn: '0',
+    magamYn: '0',
+    changeInfoYn: '0',
+  });
+
+  const settingsRef = useRef<AlarmSettingsProps>(settings);
+  const pushYnRef = useRef<string>('0');
 
   useEffect(() => {
     PushNotification.configure({
@@ -37,55 +45,63 @@ function AlaramSettingScreen({navigation}) {
     if (fetchedAlarmSettings) {
       setSettings(fetchedAlarmSettings);
       settingsRef.current = fetchedAlarmSettings;
+      pushYnRef.current = fetchedAlarmSettings.pushYn;
     }
   }, [fetchedAlarmSettings]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', e => {
-      const requestApi = async () => {
-        try {
-          const storedToken = await EncryptedStorage.getItem('pushToken');
-          if (!storedToken) {
-            throw new Error('No push token');
-          }
-          if (pushYnRef.current === '0') {
-            await setAlarmSettings(storedToken, '0', '0', '0', '0', '0', '0');
-          } else {
-            await setAlarmSettings(
-              storedToken,
-              settingsRef.current?.pushYn,
-              settingsRef.current?.pushNightYn,
-              settingsRef.current?.hoogiYn,
-              settingsRef.current?.openYn,
-              settingsRef.current?.magamYn,
-              settingsRef.current?.changeInfoYn,
-            );
-          }
-        } catch (error: any) {
-          console.error(error);
+    const unsubscribe = navigation.addListener('beforeRemove', async () => {
+      try {
+        const storedToken = await EncryptedStorage.getItem('pushToken');
+        if (!storedToken) {
+          throw new Error('No push token');
         }
-      };
-      requestApi().then();
+        if (pushYnRef.current === '0') {
+          await setAlarmSettings(storedToken, '0', '0', '0', '0', '0', '0');
+        } else {
+          await setAlarmSettings(
+            storedToken,
+            settingsRef.current?.pushYn,
+            settingsRef.current?.pushNightYn,
+            settingsRef.current?.hoogiYn,
+            settingsRef.current?.openYn,
+            settingsRef.current?.magamYn,
+            settingsRef.current?.changeInfoYn,
+          );
+        }
+      } catch (error: any) {
+        console.error('Error setting alarm settings:', error);
+      }
     });
 
     return unsubscribe;
   }, [navigation]);
 
-  useEffect(() => {
-    settingsRef.current = settings;
-  }, [settings]);
-
-  const onChange = (name: string, value: boolean) => {
-    console.log(name, value);
+  const onChange = async (name: string, value: boolean) => {
+    const updatedSettings = {...settings, [name]: value ? '1' : '0'};
+    setSettings(updatedSettings);
+    settingsRef.current = updatedSettings;
     if (name === 'pushYn') {
       pushYnRef.current = value ? '1' : '0';
-      console.log(name, value);
     }
-    setSettings(prevSettings => {
-      const newSettings = {...prevSettings, [name]: value ? '1' : '0'};
-      settingsRef.current = newSettings;
-      return newSettings;
-    });
+
+    try {
+      const storedToken = await EncryptedStorage.getItem('pushToken');
+      if (!storedToken) {
+        throw new Error('No push token');
+      }
+      await setAlarmSettings(
+        storedToken,
+        updatedSettings.pushYn,
+        updatedSettings.pushNightYn,
+        updatedSettings.hoogiYn,
+        updatedSettings.openYn,
+        updatedSettings.magamYn,
+        updatedSettings.changeInfoYn,
+      );
+    } catch (error: any) {
+      console.error('Error updating alarm settings:', error);
+    }
   };
 
   const handleTestNotification = () => {
@@ -173,7 +189,7 @@ function AlaramSettingScreen({navigation}) {
   );
 }
 
-export default AlaramSettingScreen;
+export default AlarmSettingScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -186,13 +202,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     gap: 15,
   },
-  // diver: {
-  //   width: '100%',
-  //   height: 10,
-  //   backgroundColor: globalColors.warmGray,
-  // },
   label: {
-    // color: globalColors.stroke2,
+    color: globalColors.stroke2,
   },
   testNotificationContainer: {
     flexDirection: 'row',

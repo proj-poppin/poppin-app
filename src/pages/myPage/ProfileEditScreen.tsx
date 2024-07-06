@@ -37,6 +37,7 @@ import {
 } from '../../redux/slices/user.ts';
 import {RootState} from '../../redux/stores/reducer.ts';
 import {requestGalleryPermissions} from '../../utils/function/requestGalleryPermission.ts';
+import useDeleteProfileImage from '../../hooks/myPage/usedeleteProfileImage.tsx';
 
 type ProfileEditScreenRouteProp = RouteProp<
   AppNavigatorParamList,
@@ -44,6 +45,7 @@ type ProfileEditScreenRouteProp = RouteProp<
 >;
 
 function MyProfileEditScreen() {
+  const {deleteProfileImageHandler} = useDeleteProfileImage();
   const {changeProfileImageInfo} = useChangeProfileImageInfo();
   const [profileImage, setProfileImage] = useState<any>(PoppinCirclePng);
   const [nickname, setNickname] = useState('');
@@ -149,10 +151,15 @@ function MyProfileEditScreen() {
         options,
         cancelButtonIndex,
       },
-      buttonIndex => {
+      async buttonIndex => {
         if (buttonIndex === 0) {
           setProfileImage(PoppinCirclePng);
-          dispatch(setProfileImageUrl({userImageUrl: null}));
+          const response = await deleteProfileImageHandler();
+          if (response.success) {
+            dispatch(setProfileImageUrl({userImageUrl: null}));
+          } else {
+            console.error('Failed to delete profile image:', response.error);
+          }
         } else if (buttonIndex === 1) {
           openGallery();
         }

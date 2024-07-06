@@ -35,7 +35,7 @@ import Text16M from '../../styles/texts/body_medium_large/Text16M';
 import SortingSvg from '../../assets/detail/sorting.svg';
 import ReasonItem from '../../components/ReasonItem';
 import CongestionSection from '../../components/organisms/section/CongestionSection';
-import {VisitorDataDetail} from '../../types/DetailPopUpDataNonPublic';
+import {Review, VisitorDataDetail} from '../../types/DetailPopUpDataNonPublic';
 import WebSvg from '../../assets/detail/web.svg';
 import InstagramTestSvg from '../../assets/detail/instagramTest.svg';
 import ToastComponent from '../../components/atoms/toast/ToastComponent';
@@ -66,16 +66,6 @@ export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
   'PopUpDetail'
 >;
-
-interface Review {
-  reviewId: number;
-  nickname: string;
-  reviewCnt: number;
-  text: string;
-  imageUrls: string[];
-  isCertificated: boolean;
-  recommendCnt: number;
-}
 
 const PopUpDetailScreen = ({route}) => {
   const isLoggedIn = useIsLoggedIn();
@@ -186,6 +176,11 @@ const PopUpDetailScreen = ({route}) => {
   };
   const isInterested = interestState[id] || false;
   const handleToggleInterest = async () => {
+    if (!isLoggedIn) {
+      Alert.alert('로그인이 필요한 서비스입니다.');
+      navigation.navigate('Entry');
+      return;
+    }
     if (isInterested) {
       console.log(`toast: ${isShowToast}`);
       await deleteInterest(id);
@@ -414,7 +409,7 @@ const PopUpDetailScreen = ({route}) => {
             </View>
             <View style={styles.visitorDataContainer}>
               <CongestionSection
-                satisfyPercent={detailPopUpData.viewCnt}
+                satisfyPercent={detailPopUpData.satisfaction ?? 0}
                 title="혼잡도"
                 data={{weekdayAm, weekdayPm, weekendAm, weekendPm}}
               />
@@ -459,7 +454,14 @@ const PopUpDetailScreen = ({route}) => {
               <View key={review.reviewId} style={styles.colCloseContainer}>
                 <View style={styles.rowBetweenContainer}>
                   <View style={styles.recentReviewHeader}>
-                    <ReviewProfileSvg />
+                    {review.profileUrl ? (
+                      <Image
+                        source={{uri: review.profileUrl}}
+                        style={{width: 50, height: 50, borderRadius: 40}}
+                      />
+                    ) : (
+                      <ReviewProfileSvg />
+                    )}
                     <View style={styles.colCloseContainer}>
                       <View style={styles.rowCloseContainer}>
                         <Text style={Text20B.text}>{review.nickname}</Text>

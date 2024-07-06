@@ -14,6 +14,7 @@ export type VisitorData = {
 };
 
 export type Review = {
+  profileUrl: string;
   reviewId: number;
   nickname: string;
   reviewCnt: number;
@@ -87,4 +88,5 @@ export type DetailPopUpDataNonPublic = {
   visitorData?: VisitorData;
   realTimeVisit: number;
   category?: string; // 추가된 필드
+  satisfaction?: number; // 추가된 필드
 };

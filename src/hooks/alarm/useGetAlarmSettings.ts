@@ -28,15 +28,7 @@ const useGetAlarmSettings = () => {
         if (!storedToken) {
           throw new Error('No push token');
         }
-        const response = await getAlarmSettings(
-          storedToken,
-          alarmSettings.pushYn,
-          alarmSettings.pushNightYn,
-          alarmSettings.hoogiYn,
-          alarmSettings.openYn,
-          alarmSettings.magamYn,
-          alarmSettings.changeInfoYn,
-        );
+        const response = await getAlarmSettings(storedToken);
         if (response.success) {
           setAlarmSettings(response.data);
         }

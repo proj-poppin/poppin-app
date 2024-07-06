@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   iconTouchable: {
-    marginRight: -10, // Adjust negative margin to reduce space between icons if needed
+    marginRight: 5, // Adjust negative margin to reduce space between icons if needed
   },
   alarmStyle: {
     // Additional styles for AlarmOffSvg if needed

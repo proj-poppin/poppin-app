@@ -1,24 +1,10 @@
 import nonPublicApiInstance from '../../apis/apiInstance/NonPublicApiInstance';
 
-const getAlarmSettings = async (
-  fcm_token: string,
-  pushYn: string,
-  pushNightYn: string,
-  hoogiYn: string,
-  openYn: string,
-  magamYn: string,
-  changeInfoYn: string,
-) => {
+const getAlarmSettings = async (fcm_token: string) => {
   const response = await nonPublicApiInstance.post(
     '/api/v1/alarm/read/setting',
     {
       fcmToken: fcm_token,
-      pushYn,
-      pushNightYn,
-      hoogiYn,
-      openYn,
-      magamYn,
-      changeInfoYn,
     },
   );
 

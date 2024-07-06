@@ -1,8 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import CustomTabBar from '../../components/molecules/tab_bar/CustomTabBar.tsx';
 import NoticeTab from './tab/NoticeTab.tsx';
 import PopupTab from './tab/PopupTab.tsx';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -12,6 +14,10 @@ function AlarmScreen() {
   const handleTabPress = (tab: any) => {
     setSelectedTab(tab);
   };
+
+  useEffect(() => {
+    PushNotificationIOS.setApplicationIconBadgeNumber(0);
+  }, []);
 
   return (
     <Tab.Navigator
@@ -28,4 +34,5 @@ function AlarmScreen() {
     </Tab.Navigator>
   );
 }
+
 export default AlarmScreen;

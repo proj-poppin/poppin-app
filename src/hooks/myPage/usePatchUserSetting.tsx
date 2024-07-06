@@ -1,8 +1,8 @@
-import {useState, } from 'react';
+import {useState} from 'react';
 import patchUserSetting from '../../apis/myPage/patchUserSetting.ts';
 
 interface IUserInfoState {
- loading: boolean;
+  loading: boolean;
   error: Error | null;
   success: boolean | null;
 }
@@ -13,8 +13,7 @@ const usePatchUserSetting = () => {
     error: null,
     success: null,
   });
-
-   const patchUserInfo = async (editValue: any) => {
+  const patchUserInfo = async (editValue: any) => {
     setUserSettingInfo({loading: true, error: null, success: null});
     try {
       const response = await patchUserSetting(editValue);
@@ -37,7 +36,5 @@ const usePatchUserSetting = () => {
 
   return {...userSettingInfo, patchUserInfo: patchUserInfo};
 };
-
-
 
 export default usePatchUserSetting;

@@ -46,7 +46,6 @@ function MyPageScreen({navigation}) {
   console.log('user:', user);
 
   useEffect(() => {
-    console.log('userimage:', user.userImageUrl);
     if (user.nickname) {
       setLoadingUser(false);
     }
@@ -127,11 +126,6 @@ function MyPageScreen({navigation}) {
     navigation.navigate(route);
     bottomSheetModalRef.current?.dismiss();
   };
-
-  if (loadingUser) {
-    return <ActivityIndicator />;
-  }
-
   return (
     <View style={styles.container}>
       <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>

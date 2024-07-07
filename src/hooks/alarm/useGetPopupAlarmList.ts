@@ -1,5 +1,7 @@
 import {useEffect, useState} from 'react';
 import getNoticeAlarmList from '../../apis/alarm/getNoticeAlarmList';
+import getPopupAlarmList from '../../apis/alarm/getPopupAlarmList.ts';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 export interface AlarmCardInfoProps {
   id: number;
@@ -20,7 +22,11 @@ const useGetPopupAlarmList = () => {
   useEffect(() => {
     const fetchPopupAlarmList = async () => {
       try {
-        const response = await getNoticeAlarmList();
+        const storedToken = await EncryptedStorage.getItem('pushToken');
+        if (!storedToken) {
+          throw new Error('No push token');
+        }
+        const response = await getPopupAlarmList(storedToken);
         if (response.success) {
           setPopupAlarmList(response.data);
         } else {

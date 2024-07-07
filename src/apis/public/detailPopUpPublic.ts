@@ -4,9 +4,13 @@ import PublicApiInstance from '../apiInstance/PublicApiInstance.ts';
 
 const getDetailPopUpPublic = async (
   popUpId: number,
+  isAlarm: boolean,
 ): Promise<CommonResponse<DetailPopUpDataNonPublic>> => {
   try {
-    const response = await PublicApiInstance.get('/api/v1/popup/guest/detail', {
+    const url = isAlarm
+      ? '/api/v1/alarm/popup/detail'
+      : '/api/v1/popup/guest/detail';
+    const response = await PublicApiInstance.get(url, {
       params: {popupId: popUpId},
     });
 

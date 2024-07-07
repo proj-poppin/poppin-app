@@ -71,7 +71,7 @@ const PopUpDetailScreen = ({route}) => {
   const isLoggedIn = useIsLoggedIn();
   const navigation = useNavigation<PopUpDetailScreenNavigationProp>();
   const [fetchTrigger, setFetchTrigger] = useState(false);
-  const {id} = route.params;
+  const {id, title, isAlarm} = route.params;
   const [reviews, setReviews] = useState<Review[]>([]); // Correctly set the initial state to an empty array
   const reviewSubmitted = useSelector(state => state.reviewSubmitted);
   const {
@@ -79,7 +79,7 @@ const PopUpDetailScreen = ({route}) => {
     loading,
     error,
     refetch,
-  } = useGetDetailPopUp(id, !isLoggedIn, fetchTrigger);
+  } = useGetDetailPopUp(id, !isLoggedIn, isAlarm, fetchTrigger);
   const {distance, getDistance} = useGetDistanceFromLatLonInKm();
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
   const openCompleteModal = () => {

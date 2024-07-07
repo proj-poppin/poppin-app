@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import AlarmCard from '../../../components/alarm/AlarmCard.tsx';
 import useGetPopupAlarmList from '../../../hooks/alarm/useGetPopupAlarmList.ts';
 import globalColors from '../../../styles/color/globalColors.ts';
@@ -26,17 +26,17 @@ const PopupTab = ({navigation}) => {
     );
   }
 
+  if (!popupAlarmList?.length) {
+    return emptyAlarm(navigation);
+  }
+
   return (
     <ScrollView>
-      {!popupAlarmList || popupAlarmList.length === 0 ? (
-        emptyAlarm(navigation)
-      ) : (
-        <FlatList
-          keyExtractor={item => item.id.toString()}
-          data={popupAlarmList}
-          renderItem={({item}) => <AlarmCard type="popup" props={item} />}
-        />
-      )}
+      <View>
+        {popupAlarmList?.map(item => (
+          <AlarmCard key={item.id} {...item} type="popup" />
+        ))}
+      </View>
     </ScrollView>
   );
 };

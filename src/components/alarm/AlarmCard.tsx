@@ -35,7 +35,7 @@ const AlarmCard: React.FC<AlarmCardProps> = ({
     if (type === 'notice') {
       navigation.navigate('NoticeDetail', {nid: id});
     } else {
-      navigation.navigate('PopUpDetail', {id: id});
+      navigation.navigate('PopUpDetail', {id: id, name: title, isAlarm: true});
     }
   };
 

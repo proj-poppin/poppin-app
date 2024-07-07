@@ -18,6 +18,7 @@ interface DetailPopUpState {
 function useGetDetailPopUp(
   popUpId: number,
   isPublic: boolean,
+  isAlarm: boolean,
   fetchTrigger: boolean,
 ): DetailPopUpState & {refetch: () => void} {
   const [getDetailPopUpState, setGetDetailPopUpState] =
@@ -39,8 +40,8 @@ function useGetDetailPopUp(
 
     try {
       const response = isPublic
-        ? await getDetailPopUpPublic(popUpId)
-        : await getDetailPopUp(popUpId);
+        ? await getDetailPopUpPublic(popUpId, isAlarm)
+        : await getDetailPopUp(popUpId, isAlarm);
 
       if (response.success && response.data) {
         setGetDetailPopUpState({

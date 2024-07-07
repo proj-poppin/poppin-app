@@ -3,9 +3,13 @@ import {DetailPopUpDataNonPublic} from '../../types/DetailPopUpDataNonPublic.ts'
 
 const getDetailPopUp = async (
   popUpId: number,
+  isAlarm: boolean,
 ): Promise<CommonResponse<DetailPopUpDataNonPublic>> => {
   try {
-    const response = await nonPublicApiInstance.get('/api/v1/popup/detail', {
+    const url = isAlarm
+      ? '/api/v1/alarm/popup/guest/detail'
+      : '/api/v1/popup/guest/detail';
+    const response = await nonPublicApiInstance.get(url, {
       params: {popupId: popUpId},
     });
 

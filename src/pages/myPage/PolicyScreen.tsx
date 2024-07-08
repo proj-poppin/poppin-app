@@ -3,9 +3,9 @@ import {StyleSheet, Text, View, TouchableOpacity, Linking} from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 import LeftArrow from '../../assets/icons/leftArrow.svg';
 
-function PolicyScreen({navigation}) {
-  const handlePress = url => {
-    Linking.openURL(url);
+function PolicyScreen() {
+  const handlePress = (url: string) => {
+    Linking.openURL(url).then(r => r);
   };
 
   return (

@@ -24,8 +24,7 @@ import CalendarComponent from './calendar/CalendarComponent.tsx';
 import NoSavedPopupsComponent from './NoSavedPopupComponent.tsx';
 import refreshSlice from '../../redux/slices/refreshSlice';
 const popUpTypes = ['오픈 예정인 팝업', '운영 중인 팝업', '운영 종료 팝업'];
-// const orderTypes = ['오픈일순', '마감일순', '저장순'];
-const orderTypes = ['오픈일순', '마감일순']; // 저장순 구현되면 넣기!
+const orderTypes = ['오픈일순', '마감일순', '저장순'];
 type PopupType = '오픈 예정인 팝업' | '운영 중인 팝업' | '운영 종료 팝업';
 
 function LikesScreen({navigation}) {

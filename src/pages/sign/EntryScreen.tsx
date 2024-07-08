@@ -15,6 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 import ConfirmationModal from '../../components/ConfirmationModal.tsx';
+import Text14B from '../../styles/texts/body_medium/Text14B.ts';
 
 export type EntryScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
@@ -72,15 +73,20 @@ function EntryScreen() {
         isPoppinLogo={true}
       />
       <View style={{paddingBottom: 25}}>
-        <SvgImgButton SvgComponent={BasicLoginButton} onPress={goBasicLogin} />
+        <SvgImgButton
+          SvgComponent={KakaoLoginButton}
+          onPress={signInWithKakao}
+        />
       </View>
-      <SvgImgButton SvgComponent={KakaoLoginButton} onPress={signInWithKakao} />
+      <SvgImgButton SvgComponent={BasicLoginButton} onPress={goBasicLogin} />
       <ToSignUpTextLine
         titleText={'아직 POPPIN회원이 아니신가요?'}
         onPress={() => navigation.navigate('SignUpEmail')}
       />
       <View style={{paddingTop: 80}}>
-        <Text style={styles.snsLoginText}>다른 방법으로 로그인하기</Text>
+        <Text style={[styles.snsLoginText, Text14B.text]}>
+          다른 방법으로 로그인하기
+        </Text>
         <SocialLoginButtonRow
           onPressNaver={signInWithNaver}
           onPressGoogle={signInWithGoogle}

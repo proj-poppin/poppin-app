@@ -26,8 +26,8 @@ interface StepThreeProps {
   handleReservationRequiredSelect: (value: any) => void;
   selectedAge: AgeGroup;
   handleAgePresentModal: () => void;
-  entranceRequired: any;
-  handleEntranceFeeStatusSelect: (value: any) => void;
+  entranceRequired: boolean;
+  handleEntranceFeeStatusSelect: (value: boolean) => void;
   entranceFee: string;
   setEntranceFee: (text: string) => void;
   parkingAvailability: any;
@@ -98,6 +98,10 @@ const StepThree: React.FC<StepThreeProps> = ({
     setIsBottomSheetOpen(index >= 0);
   };
 
+  const handleEntranceFeeStatus = (value: string) => {
+    handleEntranceFeeStatusSelect(value === '있음');
+  };
+
   return (
     <>
       <View style={styles.purpleInfo}>
@@ -158,8 +162,8 @@ const StepThree: React.FC<StepThreeProps> = ({
         <RequiredTextLabel label={'입장료 유무'} isRequired={true} />
         <SelectButtonsGroup
           titles={['없음', '있음']}
-          selected={entranceRequired}
-          onSelect={handleEntranceFeeStatusSelect}
+          selected={entranceRequired ? '있음' : '없음'}
+          onSelect={handleEntranceFeeStatus}
         />
         <RequiredTextLabel label={'입장료'} isRequired={false} />
         <TextInput

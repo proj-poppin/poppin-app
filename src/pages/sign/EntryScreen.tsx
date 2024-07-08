@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Platform} from 'react-native';
+import {View, Text, StyleSheet, Platform, Linking} from 'react-native';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import SocialLoginButtonRow from '../../utils/function/SocialLoginButtonRow.tsx';
 import {useKakaoLogin} from '../../hooks/login/useKakaoLogin.tsx';
@@ -88,9 +88,23 @@ function EntryScreen() {
         />
       </View>
       <TermsAndPrivacyPolicyAgreement
-        onPrivacyPolicyPress={() => navigation.navigate('PrivacyPolicy')}
-        onTermsOfServicePress={() => navigation.navigate('ServicePolicy')}
+        onLocationPrivacyPolicyPress={() =>
+          Linking.openURL(
+            'https://translucent-saver-b25.notion.site/592d1e8dbf5749b4abaa93619aa9880f?pvs=258',
+          )
+        }
+        onPrivacyPolicyPress={() =>
+          Linking.openURL(
+            'https://translucent-saver-b25.notion.site/2-21ver-7f7b0bf6605748c388f2c0484f093808',
+          )
+        }
+        onTermsOfServicePress={() =>
+          Linking.openURL(
+            'https://translucent-saver-b25.notion.site/2-13ver-fffbe3f598b14e2e9723486c33b38128?pvs=74',
+          )
+        }
       />
+
       <ConfirmationModal
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}

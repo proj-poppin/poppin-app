@@ -10,6 +10,7 @@ import {
 import globalColors from '../../../styles/color/globalColors.ts';
 import PasswordWatchSvg from '../../../assets/icons/watch.svg';
 import PasswordWatchFilledSvg from '../../../assets/icons/watchFilled.svg';
+import Text16M from '../../../styles/texts/body_medium_large/Text16M.ts';
 // Props 타입 정의
 interface CommonTextFormFieldProps {
   onChangeText: (text: string) => void;
@@ -39,7 +40,11 @@ const CommonTextFormField: React.FC<CommonTextFormFieldProps> = ({
   return (
     <View style={styles.container}>
       <TextInput
-        style={[styles.textInput, isWatchNeed && {paddingRight: 40}]} // isWatchNeed가 true일 경우, 아이콘에 맞춰 텍스트 필드 오른쪽 패딩 조정
+        style={[
+          Text16M.text,
+          styles.textInput,
+          isWatchNeed && {paddingRight: 40},
+        ]} // isWatchNeed가 true일 경우, 아이콘에 맞춰 텍스트 필드 오른쪽 패딩 조정
         onChangeText={onChangeText}
         onEndEditing={onEndEditing}
         placeholder={placeholder}
@@ -66,7 +71,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: globalColors.warmGray,
     padding: 10,
-    fontSize: 16,
   },
   icon: {
     position: 'absolute',

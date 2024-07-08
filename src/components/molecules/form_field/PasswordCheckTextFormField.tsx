@@ -3,6 +3,7 @@ import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native';
 import globalColors from '../../../styles/color/globalColors.ts';
 import PasswordWatchSvg from '../../../assets/icons/watch.svg';
 import PasswordWatchFilledSvg from '../../../assets/icons/watchFilled.svg';
+import Text16M from '../../../styles/texts/body_medium_large/Text16M.ts';
 
 interface PasswordInputProps {
   onChangeText: (text: string) => void;
@@ -34,9 +35,10 @@ const PasswordCheckTextFormField: React.FC<PasswordInputProps> = ({
   return (
     <View style={[styles.container]}>
       <TextInput
-        style={styles.textInput}
+        style={[Text16M.text, styles.textInput]}
         onChangeText={onChangeText}
         placeholder={placeholder}
+        placeholderTextColor={globalColors.font}
         secureTextEntry={secureTextEntry}
       />
       <Pressable onPress={toggleSecureEntry} style={styles.icon}>
@@ -80,7 +82,6 @@ const styles = StyleSheet.create({
     paddingRight: 40,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: globalColors.warmGray,
-    fontSize: 18,
   },
   icon: {
     position: 'absolute',

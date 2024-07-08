@@ -111,7 +111,10 @@ const FindCard = ({item, status, showToast}: any) => {
           <Text style={[Text12B.text, styles.date]}>
             {item.openDate}~{item.closeDate}
           </Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.tagsContainer}>
             {Object.entries(item.prefered).map(([key, value]) => {
               if (value) {
                 const matchingTag = POP_UP_TYPES.find(tag => tag.name === key);
@@ -128,6 +131,7 @@ const FindCard = ({item, status, showToast}: any) => {
                   );
                 }
               }
+              return null; // Add a return null to avoid warning
             })}
             {Object.entries(item.taste).map(([key, value]) => {
               if (value) {
@@ -145,6 +149,7 @@ const FindCard = ({item, status, showToast}: any) => {
                   );
                 }
               }
+              return null; // Add a return null to avoid warning
             })}
           </ScrollView>
         </View>
@@ -227,10 +232,8 @@ const styles = StyleSheet.create({
   },
   tagWrapper: {
     borderRadius: 100,
-    width: 'auto',
-    height: 28,
     padding: 8,
-    marginLeft: 8,
+    marginRight: 8,
   },
   tag: {
     fontSize: 11,
@@ -248,6 +251,10 @@ const styles = StyleSheet.create({
   },
   closeText: {
     color: 'white',
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 

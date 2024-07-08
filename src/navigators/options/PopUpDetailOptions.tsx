@@ -65,7 +65,7 @@ const PopUpDetailOptions = ({
 
 const styles = StyleSheet.create({
   dropdownContainer: {
-    width: 50,
+    width: 40,
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
   },

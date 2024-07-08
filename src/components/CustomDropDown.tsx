@@ -50,6 +50,7 @@ const CustomSelectDropdown: React.FC<CustomSelectDropdownProps> = ({
 
 const styles = StyleSheet.create({
   dropdownButtonStyle: {
+    width: 30,
     backgroundColor: 'white', // Set button background color to white
     height: 40, // Set a fixed height for the button
     justifyContent: 'center', // Center the content vertically

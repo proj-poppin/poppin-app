@@ -46,7 +46,7 @@ function PreferenceSettingScreen({navigation}: any) {
   };
 
   const checkSelectionInRanges = (tags: any) => {
-    const range1 = tags.slice(1, 14); // id 1-13
+    const range1 = tags.slice(0, 13); // id 1-13
     const range2 = tags.slice(13, 17); // id 14-17
     const range3 = tags.slice(17, 21); // id 18-21
 

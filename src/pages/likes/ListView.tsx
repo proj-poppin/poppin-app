@@ -34,7 +34,6 @@ interface ListViewProps {
   }[];
   onRefresh: () => void;
 }
-
 const ListView: React.FC<ListViewProps> = ({
   popUpTypes,
   orderTypes,

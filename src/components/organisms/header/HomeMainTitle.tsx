@@ -4,14 +4,17 @@ import Text24B from '../../../styles/texts/headline/Text24B.ts';
 
 interface HomeMainTitleProps {
   text1: string;
-  text2: string;
+  text2?: string; // text2를 옵셔널로 변경
 }
 
 const HomeMainTitle: React.FC<HomeMainTitleProps> = ({text1, text2}) => {
   return (
     <Text style={[Text24B.text, styles.textStyle]}>
-      {text1} {'\n'}
-      {text2}
+      {text1}
+      {'\n'}
+      {text2 && ( // text2가 존재할 때만 추가
+        <>{text2}</>
+      )}
     </Text>
   );
 };

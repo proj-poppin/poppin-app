@@ -23,7 +23,6 @@ import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import {RootState} from '../../redux/stores/reducer.ts';
 import {setInterest} from '../../redux/slices/interestSlice.ts';
 import useGetInterestList from '../../hooks/popUpList/useGetInterestList.tsx';
-import {setOnRefresh} from '../../redux/slices/refreshSlice.ts';
 import Text16B from '../../styles/texts/body_medium_large/Text16B.ts';
 
 const FindCard = ({item, status, showToast}: any) => {

@@ -3,12 +3,14 @@ import {View, Text, Image, StyleSheet} from 'react-native';
 
 // Props type definition
 interface RowPopUpCardProps {
+  id: number;
   imageUrl: string;
   name: string;
   introduce: string;
 }
 
 const RowPopUpCard: React.FC<RowPopUpCardProps> = ({
+  id,
   imageUrl,
   name,
   introduce,

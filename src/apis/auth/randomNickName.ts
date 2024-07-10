@@ -8,7 +8,6 @@ const randomNickName = async () => {
       `${Config.API_URL}/api/v1/user/random-nickname`,
     );
     if (response.data.success) {
-      console.log('Sign up successful', response.data);
       return response.data;
     } else {
       return {

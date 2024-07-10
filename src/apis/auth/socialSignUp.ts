@@ -15,7 +15,7 @@ const socialSignUp = async (
 
     // 성공적으로 회원가입 처리된 경우, 응답 데이터 반환
     if (response.data.success) {
-      console.log('Sign up successful', response.data);
+      console.log('Social Sign up successful', response.data);
       return response.data; // 응답 데이터 반환
     } else {
       return {

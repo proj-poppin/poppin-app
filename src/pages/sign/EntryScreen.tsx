@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Platform} from 'react-native';
+import {View, Text, StyleSheet, Platform, Linking, Alert} from 'react-native';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import SocialLoginButtonRow from '../../utils/function/SocialLoginButtonRow.tsx';
 import {useKakaoLogin} from '../../hooks/login/useKakaoLogin.tsx';
@@ -15,6 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 import ConfirmationModal from '../../components/ConfirmationModal.tsx';
+import Text14B from '../../styles/texts/body_medium/Text14B.ts';
 
 export type EntryScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
@@ -24,6 +25,7 @@ export type EntryScreenNavigationProp = NativeStackNavigationProp<
 function EntryScreen() {
   const navigation = useNavigation<EntryScreenNavigationProp>();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const {signInWithKakao, kakaoLoginStatus} = useKakaoLogin();
   const {signInWithGoogle, googleLoginStatus} = useGoogleLogin();
@@ -42,15 +44,21 @@ function EntryScreen() {
       newUserType = 'APPLE';
     }
 
-    if (newUserType) {
+    if (newUserType && !loginError) {
       // @ts-ignore
       navigation.navigate('SignUpNickNameSocial', {type: newUserType});
+    }
+
+    if (loginError) {
+      Alert.alert('안내', loginError);
+      setLoginError(null); // Reset the error after showing the alert
     }
   }, [
     kakaoLoginStatus,
     googleLoginStatus,
     naverLoginStatus,
     appleLoginStatus,
+    loginError,
     navigation,
   ]);
 
@@ -72,15 +80,20 @@ function EntryScreen() {
         isPoppinLogo={true}
       />
       <View style={{paddingBottom: 25}}>
-        <SvgImgButton SvgComponent={BasicLoginButton} onPress={goBasicLogin} />
+        <SvgImgButton
+          SvgComponent={KakaoLoginButton}
+          onPress={signInWithKakao}
+        />
       </View>
-      <SvgImgButton SvgComponent={KakaoLoginButton} onPress={signInWithKakao} />
+      <SvgImgButton SvgComponent={BasicLoginButton} onPress={goBasicLogin} />
       <ToSignUpTextLine
         titleText={'아직 POPPIN회원이 아니신가요?'}
         onPress={() => navigation.navigate('SignUpEmail')}
       />
       <View style={{paddingTop: 80}}>
-        <Text style={styles.snsLoginText}>다른 방법으로 로그인하기</Text>
+        <Text style={[styles.snsLoginText, Text14B.text]}>
+          다른 방법으로 로그인하기
+        </Text>
         <SocialLoginButtonRow
           onPressNaver={signInWithNaver}
           onPressGoogle={signInWithGoogle}
@@ -88,9 +101,23 @@ function EntryScreen() {
         />
       </View>
       <TermsAndPrivacyPolicyAgreement
-        onPrivacyPolicyPress={() => navigation.navigate('PrivacyPolicy')}
-        onTermsOfServicePress={() => navigation.navigate('ServicePolicy')}
+        onLocationPrivacyPolicyPress={() =>
+          Linking.openURL(
+            'https://translucent-saver-b25.notion.site/592d1e8dbf5749b4abaa93619aa9880f?pvs=258',
+          )
+        }
+        onPrivacyPolicyPress={() =>
+          Linking.openURL(
+            'https://translucent-saver-b25.notion.site/2-21ver-7f7b0bf6605748c388f2c0484f093808',
+          )
+        }
+        onTermsOfServicePress={() =>
+          Linking.openURL(
+            'https://translucent-saver-b25.notion.site/2-13ver-fffbe3f598b14e2e9723486c33b38128?pvs=74',
+          )
+        }
       />
+
       <ConfirmationModal
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}

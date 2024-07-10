@@ -411,7 +411,7 @@ const PopUpDetailScreen = ({route}) => {
             </View>
             <View style={styles.visitorDataContainer}>
               <CongestionSection
-                satisfyPercent={detailPopUpData.satisfaction ?? 0}
+                satisfyPercent={detailPopUpData.visitorData?.satisfaction ?? 0}
                 title="혼잡도"
                 data={{weekdayAm, weekdayPm, weekendAm, weekendPm}}
               />

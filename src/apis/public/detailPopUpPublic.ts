@@ -2,6 +2,7 @@ import {DetailPopUpDataNonPublic} from '../../types/DetailPopUpDataNonPublic.ts'
 import PublicApiInstance from '../apiInstance/PublicApiInstance.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
+// 비로그인시 사용
 const getDetailPopUpPublic = async (
   id: number,
   alarmId: number,

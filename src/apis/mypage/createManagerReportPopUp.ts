@@ -19,8 +19,6 @@ const createManagerReportPopUp = async (
   openTime: string,
   closeTime: string,
   operationExcept: string,
-  latitude: number,
-  longitude: number,
   market: boolean,
   display: boolean,
   experience: boolean,
@@ -83,8 +81,6 @@ const createManagerReportPopUp = async (
     formData.append('openTime', openTime);
     formData.append('closeTime', closeTime);
     formData.append('operationExcept', operationExcept);
-    formData.append('latitude', latitude);
-    formData.append('longitude', longitude);
     formData.append('market', market);
     formData.append('display', display);
     formData.append('experience', experience);

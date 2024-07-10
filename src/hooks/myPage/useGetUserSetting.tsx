@@ -1,6 +1,9 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {GetPopUpListResponse} from '../../types/PopUpListData.ts';
 import getUserSetting from '../../apis/myPage/getUserSetting.ts';
+import {useAppDispatch} from '../../redux/stores';
+import userSlice from '../../redux/slices/user.ts';
+import {resetInterests} from '../../redux/slices/interestSlice.ts';
 
 interface IUserInfoState {
   loading: boolean;
@@ -9,46 +12,52 @@ interface IUserInfoState {
 }
 
 const useGetUserSetting = () => {
+  const dispatch = useAppDispatch();
   const [userSettingInfo, setUserSettingInfo] = useState<IUserInfoState>({
     loading: false,
     error: null,
     data: null,
   });
 
-  useEffect(() => {
-    const getUserInfo = async () => {
-      setUserSettingInfo(prevState => ({...prevState, loading: true}));
-      try {
-        const response = await getUserSetting();
-        if (response.success) {
-          setUserSettingInfo({
-            loading: false,
-            error: null,
-            data: response.data,
-          });
-        } else {
-          setUserSettingInfo({
-            loading: false,
-            error: new Error(response.error?.message || 'Unknown error'),
-            data: null,
-          });
-        }
-      } catch (error: any) {
+  const fetchUserSetting = useCallback(async () => {
+    setUserSettingInfo(prevState => ({...prevState, loading: true}));
+    try {
+      const response = await getUserSetting();
+      if (response.success) {
         setUserSettingInfo({
           loading: false,
-          error:
-            error instanceof Error
-              ? error
-              : new Error('An unexpected error occurred'),
+          error: null,
+          data: response.data,
+        });
+        dispatch(userSlice.actions.setUser(response.data));
+      } else {
+        setUserSettingInfo({
+          loading: false,
+          error: new Error(response.error?.message || 'Unknown error'),
           data: null,
         });
+        dispatch(userSlice.actions.resetUser());
+        dispatch(resetInterests());
       }
-    };
+    } catch (error: any) {
+      setUserSettingInfo({
+        loading: false,
+        error:
+          error instanceof Error
+            ? error
+            : new Error('An unexpected error occurred'),
+        data: null,
+      });
+      dispatch(userSlice.actions.resetUser());
+      dispatch(resetInterests());
+    }
+  }, [dispatch]);
 
-    getUserInfo();
-  }, []);
+  useEffect(() => {
+    fetchUserSetting();
+  }, [fetchUserSetting]);
 
-  return userSettingInfo;
+  return {...userSettingInfo, refetch: fetchUserSetting};
 };
 
 export default useGetUserSetting;

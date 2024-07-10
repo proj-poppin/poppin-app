@@ -1,12 +1,59 @@
-import React from 'react';
-import {Text, View} from 'react-native';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
+import {Text, View, Pressable, StyleSheet} from 'react-native';
 import globalColors from '../../styles/color/globalColors';
-
 import FindPopupNoList from '../../assets/images/findPopupNoList.svg';
 import NoListText from '../../assets/images/findPopupText.svg';
 import Text20B from '../../styles/texts/title/Text20B.ts';
+import CompleteButton from '../atoms/button/CompleteButton.tsx';
+import {BottomSheetBackdrop, BottomSheetModal} from '@gorhom/bottom-sheet';
+import {BottomSheetDefaultBackdropProps} from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types';
+import BigRightSvg from '../../assets/icons/bigRight.svg';
+import Text18B from '../../styles/texts/body_large/Text18B.ts';
+import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
+import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
+import {useNavigation} from '@react-navigation/native';
 
-function NotList() {
+const NotList = () => {
+  const isLoggedIn = useIsLoggedIn();
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const snapPoints = useMemo(() => ['40%'], []);
+
+  const navigation = useNavigation();
+
+  const renderBackdrop = useCallback(
+    (
+      props: React.JSX.IntrinsicAttributes & BottomSheetDefaultBackdropProps,
+    ) => (
+      <BottomSheetBackdrop
+        {...props}
+        pressBehavior="close"
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+      />
+    ),
+    [],
+  );
+
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+
+  const handleNavigation = (route: string) => {
+    navigation.navigate(route);
+    bottomSheetModalRef.current?.dismiss();
+  };
+
+  const handlePresentModal = useCallback(
+    (action: () => void) => {
+      if (isLoggedIn) {
+        bottomSheetModalRef.current?.present();
+      } else {
+        action();
+      }
+    },
+    [isLoggedIn],
+  );
+
   return (
     <View
       style={{
@@ -21,22 +68,95 @@ function NotList() {
       </Text>
       <FindPopupNoList width="45%" height={200} />
       <NoListText width={250} height={120} />
-      <View
-        style={{
-          width: '95%',
-          height: 55,
-          backgroundColor: globalColors.blue,
-          borderRadius: 80,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Text style={[Text20B.text, {color: globalColors.white}]}>
-          제보하러 가기
-        </Text>
+      <CompleteButton
+        onPress={() => handlePresentModal(() => {})}
+        title={'제보하러 가기'}
+        buttonWidth={'90%'}
+      />
+
+      <View style={styles.modalContainer}>
+        <BottomSheetModal
+          animateOnMount
+          ref={bottomSheetModalRef}
+          index={0}
+          backdropComponent={renderBackdrop}
+          snapPoints={snapPoints}
+          onChange={handleSheetChanges}>
+          <View style={styles.contentContainer}>
+            <Text style={[Text18B.text, {paddingTop: 15, paddingBottom: 40}]}>
+              제보하는 사람이 누구인가요?
+            </Text>
+            <Pressable
+              style={styles.optionContainer}
+              onPress={() => handleNavigation('UserRegister')}>
+              <View style={styles.optionRow}>
+                <Text style={[Text18B.text, {color: globalColors.blue}]}>
+                  팝업 이용자
+                </Text>
+                <View style={styles.optionRight}>
+                  <Text style={Text18B.text}>제보하기</Text>
+                  <BigRightSvg />
+                </View>
+              </View>
+              <Text style={[Text16M.text, {paddingTop: 10}]}>
+                관심있는 팝업이 POPPIN에 올라와 있지 않다면?
+              </Text>
+            </Pressable>
+            <View style={styles.divider} />
+            <Pressable
+              style={styles.optionContainer}
+              onPress={() => handleNavigation('OperatorRegister')}>
+              <View style={styles.optionRow}>
+                <Text style={[Text18B.text, {color: globalColors.purple}]}>
+                  팝업 운영자
+                </Text>
+                <View style={styles.optionRight}>
+                  <Text style={[Text18B.text]}>제보하기</Text>
+                  <BigRightSvg />
+                </View>
+              </View>
+              <Text style={[Text16M.text, {paddingTop: 10}]}>
+                운영하는 팝업이 POPPIN에 올라와 있지 않다면?
+              </Text>
+            </Pressable>
+          </View>
+        </BottomSheetModal>
       </View>
     </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  optionContainer: {
+    width: '100%',
+    marginBottom: 20,
+  },
+  optionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  optionRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  divider: {
+    height: 2,
+    backgroundColor: globalColors.warmGray,
+    width: '100%',
+    marginBottom: 20,
+  },
+});
 
 export default NotList;

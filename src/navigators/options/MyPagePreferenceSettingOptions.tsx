@@ -8,17 +8,16 @@ type PreferenceSettingScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
   'PreferenceSetting'
 >;
-
 export const MyPagePreferenceSettingScreenOptions = ({
   navigation,
 }: {
   navigation: PreferenceSettingScreenNavigationProp;
 }) => ({
-  headerTitle: '',
+  headerTitle: '취향 설정하기',
   headerLeft: () => (
     <Pressable
       onPress={() => {
-        navigation.goBack();
+        navigation.navigate('ProfileEdit');
       }}
       style={{padding: 10}}>
       <CloseSvg />

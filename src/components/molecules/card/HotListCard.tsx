@@ -1,36 +1,55 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import globalColors from '../../../styles/color/globalColors.ts';
 
 interface HotListCardProps {
-  textList: string[];
+  itemList: {id: string; name: string; image_url: string; introduce: string}[];
   isDropdownOpen: boolean;
+  navigation: any;
 }
 
 const HotListCard: React.FC<HotListCardProps> = ({
-  textList,
+  itemList,
   isDropdownOpen,
+  navigation,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex(prevIndex => (prevIndex + 1) % textList.length);
+      setCurrentIndex(prevIndex => (prevIndex + 1) % itemList.length);
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [textList]);
+  }, [itemList]);
 
   return (
     <View style={styles.longTextBadgeContainer}>
       {isDropdownOpen ? (
-        textList.map((text, index) => (
-          <Text key={index} style={styles.longTextBadgeItem}>
-            🔥{text}
-          </Text>
+        itemList.map((item, index) => (
+          <Pressable
+            key={index}
+            onPress={() => navigation.navigate('PopUpDetail', {id: item.id})}>
+            <Text
+              style={styles.longTextBadgeItem}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              🔥{item.name}
+            </Text>
+          </Pressable>
         ))
       ) : (
-        <Text style={styles.longTextBadgeItem}>🔥{textList[currentIndex]}</Text>
+        <Pressable
+          onPress={() =>
+            navigation.navigate('PopUpDetail', {id: itemList[currentIndex].id})
+          }>
+          <Text
+            style={styles.longTextBadgeItem}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            🔥{itemList[currentIndex].name}
+          </Text>
+        </Pressable>
       )}
     </View>
   );
@@ -46,7 +65,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     marginBottom: 28,
     alignItems: 'flex-start',
-    gap: 12,
+    gap: 12, // Note: React Native does not support `gap` property. Use margin/padding instead.
   },
   longTextBadgeItem: {
     color: 'black',

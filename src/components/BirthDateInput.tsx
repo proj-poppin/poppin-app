@@ -84,5 +84,4 @@ const styles = StyleSheet.create({
     marginHorizontal: 2,
   },
 });
-
 export default BirthDateInput;

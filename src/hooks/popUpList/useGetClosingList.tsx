@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {GetPopUpListResponse} from '../../types/PopUpListData.ts';
 import getClosingList from '../../apis/popup/closingList.ts';
 
@@ -15,35 +15,35 @@ const useGetClosingList = () => {
     data: null,
   });
 
-  useEffect(() => {
-    const fetchHotList = async () => {
-      setGetListState(prevState => ({...prevState, loading: true}));
-      try {
-        const response = await getClosingList();
-        if (response.success) {
-          setGetListState({loading: false, error: null, data: response.data});
-        } else {
-          setGetListState({
-            loading: false,
-            error: new Error(response.error?.message || 'Unknown error'),
-            data: null,
-          });
-        }
-      } catch (error: any) {
+  const fetchClosingList = useCallback(async () => {
+    setGetListState(prevState => ({...prevState, loading: true}));
+    try {
+      const response = await getClosingList();
+      if (response.success) {
+        setGetListState({loading: false, error: null, data: response.data});
+      } else {
         setGetListState({
           loading: false,
-          error:
-            error instanceof Error
-              ? error
-              : new Error('An unexpected error occurred'),
+          error: new Error(response.error?.message || 'Unknown error'),
           data: null,
         });
       }
-    };
-    fetchHotList();
+    } catch (error: any) {
+      setGetListState({
+        loading: false,
+        error:
+          error instanceof Error
+            ? error
+            : new Error('An unexpected error occurred'),
+        data: null,
+      });
+    }
   }, []);
 
-  return getListState;
-};
+  useEffect(() => {
+    fetchClosingList();
+  }, [fetchClosingList]);
 
+  return {...getListState, refetch: fetchClosingList};
+};
 export default useGetClosingList;

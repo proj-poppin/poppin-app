@@ -1,24 +1,24 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import globalColors from '../../styles/color/globalColors';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import SearchBlueSvg from '../../assets/icons/searchBlue.svg';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import CustomSelectDropdown from '../../components/CustomDropDown';
+import globalColors from '../../styles/color/globalColors';
+import SearchBlueSvg from '../../assets/icons/searchBlue.svg';
 import OrderSvg from '../../assets/icons/order.svg';
+import BackSvg from '../../assets/icons/goBack.svg';
 import Text24B from '../../styles/texts/headline/Text24B';
-import FilterSettingButton from '../../components/atoms/button/FilterSettingButton';
 import Text14M from '../../styles/texts/body_medium/Text14M';
+import FilterSettingButton from '../../components/atoms/button/FilterSettingButton';
+import CustomSelectDropdown from '../../components/CustomDropDown';
 import CategorySelectButton from '../../components/findPopup/CategorySelectButton';
 import BackMiddleButton from '../../components/atoms/button/BackMiddleButton';
 import NextMiddleButton from '../../components/atoms/button/NextMiddleButton';
-import {POP_UP_TYPES, TFilter} from '../../components/findPopup/constants';
-import BackSvg from '../../assets/icons/goBack.svg';
-import useBackdrop from '../../hooks/common/useBackDrop.tsx';
-import {useReducedMotion} from 'react-native-reanimated';
 import FindTab from './FindTab.tsx';
 import ToastComponent from '../../components/atoms/toast/ToastComponent.tsx';
+import {POP_UP_TYPES, TFilter} from '../../components/findPopup/constants';
+import useBackdrop from '../../hooks/common/useBackDrop.tsx';
+import {useReducedMotion} from 'react-native-reanimated';
 
 export const FIND_ORDER_TYPES = [
   {label: '최근 오픈 순', value: 'OPEN'},
@@ -79,8 +79,14 @@ function FindScreen({navigation, route}: FindScreenProps) {
 
   useEffect(() => {
     if (route.params) {
-      const {searchText} = route.params;
-      setSearchKeyword(searchText);
+      const {searchText, order} = route.params;
+      if (searchText) {
+        setSearchKeyword(searchText);
+      }
+      if (order) {
+        setSelectedOrder(order);
+        setSearchKeyword('');
+      }
     }
   }, [route]);
 
@@ -92,6 +98,11 @@ function FindScreen({navigation, route}: FindScreenProps) {
   const showToast = (message: string) => {
     setToastMessage(message);
     setIsShowToast(true);
+  };
+
+  const getSelectedOrderLabel = () => {
+    const order = FIND_ORDER_TYPES.find(o => o.value === selectedOrder);
+    return order ? order.label : '최근 오픈 순';
   };
 
   return (
@@ -182,6 +193,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
                   }
                   buttonWidth={120}
                   iconComponent={<OrderSvg style={styles.dropdownIcon} />}
+                  defaultValue={getSelectedOrderLabel()} // Pass the default value
                   buttonTextAfterSelection={(selectedItem: any) =>
                     selectedItem.label
                   }

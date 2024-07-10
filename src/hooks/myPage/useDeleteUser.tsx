@@ -2,6 +2,8 @@ import {useState, useCallback} from 'react';
 import deleteUser, {GetUserInfoResponse} from '../../apis/myPage/deleteUser.ts';
 import {useAppDispatch} from '../../redux/stores';
 import {resetInterests} from '../../redux/slices/interestSlice.ts';
+import userSlice from '../../redux/slices/user.ts';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 interface DeleteUserState {
   loading: boolean;
@@ -21,8 +23,20 @@ const useDeleteUser = () => {
     setDeleteUserState({loading: true, error: null, data: null});
     try {
       const response = await deleteUser();
-      dispatch(resetInterests());
+      if (response.success) {
+        dispatch(
+          userSlice.actions.setAccessTokenAndRefreshToken({
+            accessToken: '',
+            refreshToken: '',
+          }),
+        );
+        EncryptedStorage.removeItem('accessToken');
+        EncryptedStorage.removeItem('refreshToken');
+        dispatch(userSlice.actions.resetUser());
+        dispatch(resetInterests());
+      }
       setDeleteUserState({loading: false, error: null, data: response});
+      return response; // Response 반환
     } catch (error: any) {
       setDeleteUserState({
         loading: false,
@@ -32,8 +46,9 @@ const useDeleteUser = () => {
             : new Error('An unexpected error occurred'),
         data: null,
       });
+      throw error;
     }
-  }, []);
+  }, [dispatch]);
 
   return {...deleteUserState, handleDeleteUser};
 };

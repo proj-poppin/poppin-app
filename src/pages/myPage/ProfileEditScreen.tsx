@@ -54,7 +54,7 @@ function MyProfileEditScreen() {
   const [isNicknameFocused, setIsNicknameFocused] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
-  const [isBlank, setIsBlank] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   const nicknameInputRef = useRef<TextInput>(null);
   const user = useSelector((state: RootState) => state.user);
@@ -142,6 +142,7 @@ function MyProfileEditScreen() {
       console.log('ImagePicker Error: ', error);
     }
   };
+
   const showActionSheet = () => {
     const options = ['기본 프로필 설정', '사진 선택하기', '취소'];
     const cancelButtonIndex = 2;
@@ -170,8 +171,22 @@ function MyProfileEditScreen() {
   const {patchUserInfo} = usePatchUserSetting();
 
   const handleNicknameChange = async () => {
-    if (nickname === user.nickname || nickname.length < 2) {
-      setIsBlank(nickname.length < 2);
+    const nicknameRegex = /^(?=.*[a-zA-Z가-힣])[a-zA-Z가-힣0-9\s]{2,10}$/;
+
+    let validationMessage = '';
+
+    if (nickname === user.nickname) {
+      validationMessage = '닉네임은 기존 닉네임과 달라야 합니다.';
+    } else if (nickname.length < 2) {
+      validationMessage = '닉네임은 2글자 이상이어야 합니다.';
+    } else if (nickname.length > 10) {
+      validationMessage = '닉네임은 10글자 이내여야 합니다.';
+    } else if (!nicknameRegex.test(nickname)) {
+      validationMessage = '올바른 형식으로 입력해주세요.';
+    }
+
+    if (validationMessage) {
+      setModalMessage(validationMessage);
       setIsModalVisible(true);
       return;
     }
@@ -196,6 +211,9 @@ function MyProfileEditScreen() {
       </View>
     );
   }
+
+  const isNicknameChangeButtonDisabled =
+    nickname === user.nickname || nickname.length < 2;
 
   return (
     <DismissKeyboardView style={styles.container}>
@@ -255,14 +273,18 @@ function MyProfileEditScreen() {
               </TouchableOpacity>
             </View>
             <TouchableOpacity
-              style={styles.nicknameChangeButton}
-              onPress={handleNicknameChange}>
+              style={[
+                styles.nicknameChangeButton,
+                isNicknameChangeButtonDisabled && {
+                  backgroundColor: globalColors.font,
+                },
+              ]}
+              onPress={handleNicknameChange}
+              disabled={isNicknameChangeButtonDisabled}>
               <Text style={styles.nicknameChangeButtonText}>닉네임 변경</Text>
             </TouchableOpacity>
           </View>
-
           <View style={{height: 30}} />
-
           <RequiredTextLabel label={'생년월일'} />
           <View style={styles.inputContainer}>
             <TextInput
@@ -284,7 +306,7 @@ function MyProfileEditScreen() {
         </TouchableOpacity>
       )}
       <Text
-        style={{color: globalColors.red, marginLeft: 15}}
+        style={{color: globalColors.red, marginLeft: 15, marginTop: 10}}
         onPress={handleMemberWithdrawalPress}>
         회원 탈퇴
       </Text>
@@ -298,11 +320,7 @@ function MyProfileEditScreen() {
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         isSuccessModal={false}
-        mainTitle={
-          isBlank
-            ? '닉네임은 2글자 이상이어야 합니다!'
-            : '닉네임은 기존 닉네임과 달라야 합니다.'
-        }
+        mainTitle={modalMessage}
       />
     </DismissKeyboardView>
   );

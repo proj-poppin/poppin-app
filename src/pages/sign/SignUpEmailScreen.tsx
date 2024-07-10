@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Alert} from 'react-native';
+import {View, StyleSheet, Alert, Linking} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
@@ -70,7 +70,7 @@ function SignUpEmailScreen({navigation}: SignUpEmailScreenProps) {
       .catch(error => {
         const message =
           error.message || '이메일 인증 중 알 수 없는 오류가 발생했습니다.';
-        Alert.alert('Error', message);
+        Alert.alert('안내', message);
       })
       .finally(() => {
         setLoading(false);
@@ -119,8 +119,21 @@ function SignUpEmailScreen({navigation}: SignUpEmailScreenProps) {
           alwaysActive={false}
         />
         <TermsAndPrivacyPolicyAgreement
-          onPrivacyPolicyPress={() => navigation.navigate('PrivacyPolicy')}
-          onTermsOfServicePress={() => navigation.navigate('ServicePolicy')}
+          onLocationPrivacyPolicyPress={() =>
+            Linking.openURL(
+              'https://translucent-saver-b25.notion.site/592d1e8dbf5749b4abaa93619aa9880f?pvs=258',
+            )
+          }
+          onPrivacyPolicyPress={() =>
+            Linking.openURL(
+              'https://translucent-saver-b25.notion.site/2-21ver-7f7b0bf6605748c388f2c0484f093808',
+            )
+          }
+          onTermsOfServicePress={() =>
+            Linking.openURL(
+              'https://translucent-saver-b25.notion.site/2-13ver-fffbe3f598b14e2e9723486c33b38128?pvs=74',
+            )
+          }
         />
       </View>
     </DismissKeyboardView>

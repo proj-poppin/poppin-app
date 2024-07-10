@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, StyleSheet, ActivityIndicator, Text} from 'react-native';
+import {View, StyleSheet, ActivityIndicator} from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
@@ -58,20 +58,6 @@ function SignUpNickNameScreen({navigation}) {
   const handlePress = async () => {
     dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
     await handleSignUp();
-  };
-
-  const handleBirthDateChange = text => {
-    // Automatically format birthdate
-    let formattedText = text.replace(/[^0-9]/g, '');
-
-    if (formattedText.length > 3) {
-      formattedText = formattedText.slice(0, 4) + '.' + formattedText.slice(4);
-    }
-    if (formattedText.length > 6) {
-      formattedText = formattedText.slice(0, 7) + '.' + formattedText.slice(7);
-    }
-
-    handleChangeBirthDate(formattedText);
   };
 
   return (

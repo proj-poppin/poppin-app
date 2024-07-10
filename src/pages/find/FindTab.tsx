@@ -53,6 +53,10 @@ function FindTab({
     searchKeyword,
     triggerFetch,
   );
+  useEffect(() => {
+    setPage(0); // Reset page to 0
+    setTriggerFetch(true); // Trigger data fetch
+  }, [selectedOrder, availableTags, searchKeyword]);
 
   // 새로고침
   const onRefresh = useCallback(() => {

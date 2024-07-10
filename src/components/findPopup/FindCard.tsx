@@ -23,7 +23,6 @@ import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import {RootState} from '../../redux/stores/reducer.ts';
 import {setInterest} from '../../redux/slices/interestSlice.ts';
 import useGetInterestList from '../../hooks/popUpList/useGetInterestList.tsx';
-import {setOnRefresh} from '../../redux/slices/refreshSlice.ts';
 import Text16B from '../../styles/texts/body_medium_large/Text16B.ts';
 
 const FindCard = ({item, status, showToast}: any) => {
@@ -37,7 +36,7 @@ const FindCard = ({item, status, showToast}: any) => {
   const {deleteInterest, loading: deleteLoading} = useDeleteInterestPopUp();
   const {refetch: refetchInterestList} = useGetInterestList();
   const formattedTitle =
-    item.name.length > 20 ? `${item.name.substring(0, 20)}...` : item.name;
+    item.name.length > 40 ? `${item.name.substring(0, 40)}...` : item.name;
   const onRefresh = useSelector((state: RootState) => state.refresh.onRefresh);
   const calculateRemainingDays = (serverDate: string) => {
     const closeDate = new Date(serverDate);
@@ -79,7 +78,7 @@ const FindCard = ({item, status, showToast}: any) => {
         <View style={styles.svgContainer}>
           <Image
             source={{uri: item.posterUrl}}
-            style={{width: 120, height: 120}}
+            style={{width: 140, height: 140}}
           />
           {status === 'TERMINATED' ? (
             <View style={styles.closeWrapper}>
@@ -95,23 +94,29 @@ const FindCard = ({item, status, showToast}: any) => {
         </View>
         <View style={styles.textContainer}>
           <View style={styles.statusAndStarContainer}>
-            <Text style={[Text18B.text, styles.title]}>{formattedTitle}</Text>
+            <View style={styles.titleContainer}>
+              <Text
+                style={[Text18B.text, styles.title]}
+                numberOfLines={2}
+                ellipsizeMode="tail">
+                {formattedTitle}
+              </Text>
+            </View>
             <Pressable
               onPress={handleToggleInterest}
               style={styles.starIcon}
               disabled={addLoading || deleteLoading}>
-              {isInterested ? (
-                <StarOnSvg style={styles.starIcon} />
-              ) : (
-                <StarOffSvg style={styles.starIcon} />
-              )}
+              {isInterested ? <StarOnSvg /> : <StarOffSvg />}
             </Pressable>
           </View>
-          <Text style={styles.location}>{item.address}</Text>
+          <Text style={[styles.location]}>{item.address}</Text>
           <Text style={[Text12B.text, styles.date]}>
             {item.openDate}~{item.closeDate}
           </Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.tagsContainer}>
             {Object.entries(item.prefered).map(([key, value]) => {
               if (value) {
                 const matchingTag = POP_UP_TYPES.find(tag => tag.name === key);
@@ -128,6 +133,7 @@ const FindCard = ({item, status, showToast}: any) => {
                   );
                 }
               }
+              return null; // Add a return null to avoid warning
             })}
             {Object.entries(item.taste).map(([key, value]) => {
               if (value) {
@@ -145,6 +151,7 @@ const FindCard = ({item, status, showToast}: any) => {
                   );
                 }
               }
+              return null; // Add a return null to avoid warning
             })}
           </ScrollView>
         </View>
@@ -164,12 +171,12 @@ const styles = StyleSheet.create({
     backgroundColor: globalColors.white,
   },
   svgContainer: {
-    width: 120,
-    height: 120,
+    marginTop: 15,
+    width: 140,
+    height: 140,
     borderRadius: 8,
     overflow: 'hidden',
     marginRight: 10,
-    position: 'relative',
   },
   textContainer: {
     flex: 1,
@@ -183,29 +190,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  statusContainer: {
-    backgroundColor: globalColors.purpleLight,
-    borderRadius: 5,
-    paddingVertical: 2,
-    paddingHorizontal: 4,
+  titleContainer: {
+    width: '90%',
   },
-  statusText: {
-    color: globalColors.black,
-    fontSize: 12,
-    fontWeight: 'bold',
+  starIcon: {
+    position: 'absolute',
+    top: 0,
+    marginLeft: 5,
+    right: -20,
+    marginRight: 5,
   },
   title: {
     marginBottom: 5,
+    width: '100%',
   },
   location: {
     color: globalColors.font,
+    height: 30,
   },
   date: {
     color: globalColors.font,
+    height: 15,
     marginBottom: 10,
-  },
-  starIcon: {
-    // 필요한 경우 크기나 마진 조정
   },
   tagsWrapper: {
     width: '100%',
@@ -227,17 +233,15 @@ const styles = StyleSheet.create({
   },
   tagWrapper: {
     borderRadius: 100,
-    width: 'auto',
-    height: 28,
     padding: 8,
-    marginLeft: 8,
+    marginRight: 8,
   },
   tag: {
     fontSize: 11,
   },
   closeWrapper: {
-    width: 120,
-    height: 120,
+    width: 140,
+    height: 140,
     position: 'absolute',
     top: 0,
     left: 0,
@@ -249,6 +253,9 @@ const styles = StyleSheet.create({
   closeText: {
     color: 'white',
   },
+  tagsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });
-
 export default FindCard;

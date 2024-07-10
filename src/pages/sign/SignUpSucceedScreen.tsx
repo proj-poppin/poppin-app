@@ -33,7 +33,7 @@ function SignUpSucceedScreen({route, navigation}) {
     if (isFinishedPreferenceSetting) {
       navigation.navigate('MainTabNavigator');
     }
-  }, [isFinishedPreferenceSetting, navigation]);
+  }, [dispatch, isFinishedPreferenceSetting, navigation]);
 
   return (
     <View style={styles.container}>

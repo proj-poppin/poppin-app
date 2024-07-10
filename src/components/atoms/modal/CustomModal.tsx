@@ -39,10 +39,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
           <TouchableWithoutFeedback>
             <View style={styles.modalView}>
               <SvgIcon style={{marginBottom: 20}} />
-              <Text style={[Text18B.text, styles.mainText]}>
+              <Text style={[Text18B.text, styles.mainText1]}>
                 {contentFirstLine}
               </Text>
-              <Text style={[Text18B.text, styles.mainText]}>
+              <Text style={[Text18B.text, styles.mainText2]}>
                 {contentSecondLine}
               </Text>
               <Pressable
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: '80%',
-    height: '21%',
+    height: '23%',
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
@@ -84,8 +84,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  mainText: {
+  mainText1: {
     textAlign: 'center',
+  },
+  mainText2: {
+    textAlign: 'center',
+    marginBottom: 20,
   },
   button: {
     borderRadius: 20,

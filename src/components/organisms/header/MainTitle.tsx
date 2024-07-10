@@ -34,7 +34,9 @@ const MainTitle: React.FC<MainTitleProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    marginBottom: 64,
+  },
   centerContent: {
     flexDirection: 'row', // 가로로 나열
     justifyContent: 'center', // 가로축에서 중앙 정렬

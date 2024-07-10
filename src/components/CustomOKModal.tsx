@@ -10,10 +10,9 @@ import {
 import globalColors from '../styles/color/globalColors.ts'; // 경로는 실제 환경에 맞게 조정
 import AlertSvg from '../assets/images/alert.svg';
 import CheckSvg from '../assets/images/check3.svg';
-import Text14R from '../styles/texts/body_medium/Text14R.ts';
-import Text18B from '../styles/texts/body_large/Text18B.ts';
 import Text12M from '../styles/texts/label/Text12M.ts';
-import Text14M from '../styles/texts/body_medium/Text14M.ts'; // CheckSvg 경로도 실제 환경에 맞게 조정
+import Text14M from '../styles/texts/body_medium/Text14M.ts';
+import Text16B from '../styles/texts/body_medium_large/Text16B.ts'; // CheckSvg 경로도 실제 환경에 맞게 조정
 
 const CustomOKModal = ({
   isVisible,
@@ -30,7 +29,7 @@ const CustomOKModal = ({
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlayStyle}>
           <View style={styles.modalView}>
-            <Text style={[Text18B.text, styles.mainText, {marginTop: 20}]}>
+            <Text style={[Text16B.text, styles.mainText, {marginTop: 20}]}>
               {mainTitle}
             </Text>
             {isSuccessModal ? <CheckSvg /> : <AlertSvg />}

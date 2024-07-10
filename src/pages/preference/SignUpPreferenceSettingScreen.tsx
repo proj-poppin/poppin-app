@@ -40,10 +40,9 @@ function SignUpPreferenceSettingScreen({route}) {
   const isFinishedPreferenceSetting = useSelector(
     (state: RootState) => state.user.isFinishedPreferenceSetting,
   );
-
   useEffect(() => {
     if (isFinishedPreferenceSetting) {
-      navigation.navigate('MainTabNavigator');
+      navigation.navigate('MainTabNavigator', {screen: 'Home'});
     }
   }, [isFinishedPreferenceSetting, navigation]);
 

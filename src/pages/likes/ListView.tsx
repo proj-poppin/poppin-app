@@ -34,7 +34,6 @@ interface ListViewProps {
   }[];
   onRefresh: () => void;
 }
-
 const ListView: React.FC<ListViewProps> = ({
   popUpTypes,
   orderTypes,
@@ -81,11 +80,10 @@ const ListView: React.FC<ListViewProps> = ({
           buttonTextStyle={{color: globalColors.font}}
           defaultValue="운영 중인 팝업" // Set the default value
         />
-        <View style={{width: 100}} />
         <CustomSelectDropdown
           data={orderTypes.map(type => ({label: type}))}
           onSelect={setSelectedOrderType}
-          buttonWidth={150}
+          buttonWidth={130}
           iconComponent={<OrderSvg />}
           defaultValue="오픈일순" // Set the default value
           buttonTextAfterSelection={selectedItem => selectedItem}

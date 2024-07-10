@@ -1,5 +1,11 @@
-import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+  useLayoutEffect,
+} from 'react';
+import {ScrollView, StyleSheet, Text, View, Pressable} from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import BackMiddleButton from '../../components/atoms/button/BackMiddleButton.tsx';
@@ -14,17 +20,18 @@ import StepOne from '../../components/operatorRequest/StepOne.tsx';
 import StepTwo from '../../components/operatorRequest/StepTwo.tsx';
 import StepThree, {
   AgeGroup,
-  AgeGroupType,
-  AgeGroupValueType,
   mapAgeGroupToApiValue,
 } from '../../components/operatorRequest/StepThree.tsx';
 import PostalCodeModal from '../../components/operatorRequest/PostalCodeModal.tsx';
 import useManagerReportPopUp from '../../hooks/myPage/useManagerReportPopUp.tsx';
 import {useReducedMotion} from 'react-native-reanimated';
 import {TFilter} from '../../components/findPopup/constants.ts';
+import GoBackSvg from '../../assets/icons/goBack.svg';
+import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
 
 const OperatorRegisterScreen = ({navigation}) => {
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
+  const [isExitModalVisible, setIsExitModalVisible] = useState(false);
   const closeCompleteModal = () => {
     setCompleteModalVisible(false);
     navigation.goBack();
@@ -196,6 +203,28 @@ const OperatorRegisterScreen = ({navigation}) => {
     }
   };
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <Pressable
+          onPress={() => setIsExitModalVisible(true)}
+          style={({pressed}) => [{opacity: pressed ? 0.5 : 1}]}
+          hitSlop={{top: 30, bottom: 30, left: 30, right: 30}}>
+          <GoBackSvg />
+        </Pressable>
+      ),
+    });
+  }, [navigation]);
+
+  const closeExitModal = () => {
+    setIsExitModalVisible(false);
+  };
+
+  const handleConfirmExit = () => {
+    setIsExitModalVisible(false);
+    navigation.goBack();
+  };
+
   return (
     <View style={[styles.container]}>
       <ProgressBar step={step} />
@@ -283,6 +312,7 @@ const OperatorRegisterScreen = ({navigation}) => {
         <View style={styles.buttonContainer}>
           {step === 1 && (
             <CompleteButton
+              buttonStyle={{marginTop: 330}}
               onPress={handleNext}
               title={'다음'}
               buttonWidth={'95%'}
@@ -312,6 +342,16 @@ const OperatorRegisterScreen = ({navigation}) => {
           subTitle={
             '제보하신 팝업은\nPOPPIN에서 확인 후 업로드 될 예정입니다.\n더 나은 POPPIN이 되겠습니다.'
           }
+        />
+        <TwoSelectConfirmationModal
+          isVisible={isExitModalVisible}
+          onClose={handleConfirmExit}
+          onConfirm={closeExitModal}
+          onBlankSpacePressed={closeExitModal}
+          mainAlertTitle="정말로 나가실 건가요?"
+          subAlertTitle="작성 사항은 저장되지 않습니다"
+          selectFirstText="나가기"
+          selectSecondText="계속 작성하기"
         />
       </DismissKeyboardView>
     </View>

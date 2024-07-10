@@ -61,7 +61,7 @@ function MemberDeleteScreen({navigation}) {
         await EncryptedStorage.removeItem('accessToken');
         await EncryptedStorage.removeItem('refreshToken');
         closeModal();
-        navigation.replace('DeleteComplete');
+        navigation.navigate('DeleteComplete');
       }
     } catch (error) {
       Alert.alert('탈퇴 실패', '탈퇴 중 오류가 발생했습니다.');

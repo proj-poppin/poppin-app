@@ -78,23 +78,37 @@ function AlarmSettingScreen({navigation}) {
   }, [navigation]);
 
   const onChange = async (name: string, value: boolean) => {
-    const updatedSettings = {...settings, [name]: value ? '1' : '0'};
-    setSettings(updatedSettings);
-    settingsRef.current = updatedSettings;
-    if (name === 'pushYn') {
-      pushYnRef.current = value ? '1' : '0';
+    let updatedSettings = {...settings, [name]: value ? '1' : '0'};
 
+    // 푸시 알림을 켜거나 끌 때 관련 설정을 업데이트
+    if (name === 'pushYn') {
       if (value) {
-        setSettings({
+        // 푸시 알림을 켜면 다른 알림도 모두 켭니다.
+        updatedSettings = {
+          ...updatedSettings,
           pushNightYn: '1',
-          pushYn: '1',
           hoogiYn: '1',
           openYn: '1',
           magamYn: '1',
           changeInfoYn: '1',
-        });
+        };
+      } else {
+        // 푸시 알림을 끄면 다른 알림도 모두 끕니다.
+        updatedSettings = {
+          ...updatedSettings,
+          pushNightYn: '0',
+          hoogiYn: '0',
+          openYn: '0',
+          magamYn: '0',
+          changeInfoYn: '0',
+        };
       }
     }
+
+    // 상태 업데이트
+    setSettings(updatedSettings);
+    settingsRef.current = updatedSettings;
+    pushYnRef.current = updatedSettings.pushYn;
 
     try {
       const storedToken = await EncryptedStorage.getItem('pushToken');
@@ -199,7 +213,6 @@ function AlarmSettingScreen({navigation}) {
     </View>
   );
 }
-
 export default AlarmSettingScreen;
 
 const styles = StyleSheet.create({

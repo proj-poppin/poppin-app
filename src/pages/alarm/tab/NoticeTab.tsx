@@ -1,18 +1,22 @@
-import React, {useCallback} from 'react';
-import {View, Text, ScrollView, StyleSheet} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
+import {View, Text, ScrollView, StyleSheet, RefreshControl} from 'react-native';
 import useGetNoticeAlarmList from '../../../hooks/alarm/useGetNoticeAlarmList';
 import AlarmCard from '../../../components/alarm/AlarmCard';
-import {useFocusEffect} from '@react-navigation/native';
 
 const NoticeTab = () => {
   const {noticeAlarmList, loading, error, refetch} = useGetNoticeAlarmList();
+  const [refreshing, setRefreshing] = React.useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [refetch]),
-  );
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
+  // 새로고침
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    setRefreshing(false);
+  }, [refetch]);
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -32,13 +36,16 @@ const NoticeTab = () => {
   if (!noticeAlarmList?.length) {
     return (
       <View style={styles.emptyContainer}>
-        <Text>No alarms found.</Text>
+        <Text>아직 등록된 공지가 없습니다.</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
       <View>
         {noticeAlarmList.map(item => (
           <AlarmCard alarmId={item.id} {...item} type="notice" />

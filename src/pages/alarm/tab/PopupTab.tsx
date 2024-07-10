@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
 import AlarmCard from '../../../components/alarm/AlarmCard.tsx';
 import useGetPopupAlarmList from '../../../hooks/alarm/useGetPopupAlarmList.ts';
 import globalColors from '../../../styles/color/globalColors.ts';
@@ -7,16 +7,27 @@ import Text20B from '../../../styles/texts/title/Text20B.ts';
 import NoAlarmSvg from '../../../assets/images/noAlarm.svg';
 import BlueDotsThreeSvg from '../../../assets/icons/blueDotsThree.svg';
 import CompleteButton from '../../../components/atoms/button/CompleteButton.tsx';
-import {useFocusEffect} from '@react-navigation/native';
 
 const PopupTab = ({navigation}) => {
   const {popupAlarmList, loading, error, refetch} = useGetPopupAlarmList();
+  const [refreshing, setRefreshing] = React.useState(false);
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [refetch]),
-  );
+  // 새로고침
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    setRefreshing(false);
+  }, [refetch]);
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   if (loading) {
     return (
@@ -36,9 +47,11 @@ const PopupTab = ({navigation}) => {
   if (!popupAlarmList?.length) {
     return emptyAlarm(navigation);
   }
-
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
       <View>
         {popupAlarmList?.map(item => (
           <AlarmCard {...item} type="popup" />

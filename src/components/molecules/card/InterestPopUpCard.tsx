@@ -47,6 +47,8 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
   };
 
   const remainingDays = calculateDaysRemaining(close_date);
+  const formattedTitle =
+    name.length > 40 ? `${name.substring(0, 40)}...` : name;
 
   return (
     <View style={styles.cardContainer}>
@@ -56,7 +58,7 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
         textStyle={{color: '#FFF'}}
       />
       <View style={styles.svgContainer}>
-        <Image source={{uri: image_url}} style={{width: 120, height: 120}} />
+        <Image source={{uri: image_url}} style={{width: 140, height: 140}} />
         {status === 'TERMINATED' ? (
           <View style={styles.closeWrapper}>
             <Text style={styles.closeText}>운영 종료</Text>
@@ -85,7 +87,9 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
             )}
           </Pressable>
         </View>
-        <Text style={[Text18B.text, styles.title]}>{name}</Text>
+        <Text style={[Text18B.text, styles.title]} numberOfLines={2}>
+          {formattedTitle}
+        </Text>
         <Text
           style={[
             Text14M.text,
@@ -107,8 +111,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   svgContainer: {
-    width: 120,
-    height: 120,
+    width: 140,
+    height: 140,
     borderRadius: 8,
     overflow: 'hidden',
     marginRight: 10,
@@ -122,9 +126,11 @@ const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 2,
+    maxHeight: 70, // Adjust the height to better fit the content
   },
   date: {
     color: globalColors.font,
+    height: 20, // Adjust the height to better fit the content
   },
   statusAndStarContainer: {
     flexDirection: 'row',
@@ -143,8 +149,8 @@ const styles = StyleSheet.create({
   },
   starIcon: {},
   closeWrapper: {
-    width: 120,
-    height: 120,
+    width: 100,
+    height: 100,
     position: 'absolute',
     top: 0,
     left: 0,

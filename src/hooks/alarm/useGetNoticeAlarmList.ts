@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import getNoticeAlarmList from '../../apis/alarm/getNoticeAlarmList.ts';
 
 export interface AlarmCardInfoProps {
@@ -11,35 +11,34 @@ export interface AlarmCardInfoProps {
 }
 
 const useGetNoticeAlarmList = () => {
-  const [data, setData] = useState<{
-    data: AlarmCardInfoProps[] | null;
-    error: string | null;
-  }>({
-    data: null,
-    error: null,
-  });
+  const [noticeAlarmList, setNoticeAlarmList] = useState<
+    AlarmCardInfoProps[] | null
+  >(null);
 
-  useEffect(() => {
-    const fetchNoticeAlarmList = async () => {
-      try {
-        const response = await getNoticeAlarmList();
-        if (response.success) {
-          console.log('Notice alarm list:', response.data);
-          setData({data: response.data, error: null});
-        } else {
-          setData({data: null, error: response.error});
-          console.error('Error fetching notice alarm list:', response.error);
-        }
-      } catch (error: any) {
-        setData({data: null, error: error.message});
-        console.error('Error fetching notice alarm list:', error);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchNoticeAlarmList = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await getNoticeAlarmList();
+      if (response.success) {
+        setNoticeAlarmList(response.data);
+      } else {
+        setError(response.error);
       }
-    };
-
-    fetchNoticeAlarmList();
+    } catch (error: any) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+  useEffect(() => {
+    fetchNoticeAlarmList();
+  }, [fetchNoticeAlarmList]);
 
-  return data;
+  return {noticeAlarmList, loading, error, refetch: fetchNoticeAlarmList};
 };
 
 export default useGetNoticeAlarmList;

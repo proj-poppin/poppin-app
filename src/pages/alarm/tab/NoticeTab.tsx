@@ -1,26 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback} from 'react';
 import {View, Text, ScrollView, StyleSheet} from 'react-native';
-import useGetNoticeAlarmList, {
-  AlarmCardInfoProps,
-} from '../../../hooks/alarm/useGetNoticeAlarmList';
+import useGetNoticeAlarmList from '../../../hooks/alarm/useGetNoticeAlarmList';
 import AlarmCard from '../../../components/alarm/AlarmCard';
+import {useFocusEffect} from '@react-navigation/native';
 
 const NoticeTab = () => {
-  const {data, error} = useGetNoticeAlarmList();
-  const [noticeAlarmList, setNoticeAlarmList] = useState<AlarmCardInfoProps[]>(
-    [],
-  );
-  const [loading, setLoading] = useState(true);
+  const {noticeAlarmList, loading, error, refetch} = useGetNoticeAlarmList();
 
-  useEffect(() => {
-    if (data) {
-      setNoticeAlarmList(data);
-      setLoading(false);
-    }
-    if (error) {
-      setLoading(false);
-    }
-  }, [data, error]);
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
 
   if (loading) {
     return (
@@ -38,7 +29,7 @@ const NoticeTab = () => {
     );
   }
 
-  if (!noticeAlarmList.length) {
+  if (!noticeAlarmList?.length) {
     return (
       <View style={styles.emptyContainer}>
         <Text>No alarms found.</Text>
@@ -50,7 +41,7 @@ const NoticeTab = () => {
     <ScrollView>
       <View>
         {noticeAlarmList.map(item => (
-          <AlarmCard key={item.id} {...item} type="notice" />
+          <AlarmCard alarmId={item.id} {...item} type="notice" />
         ))}
       </View>
     </ScrollView>

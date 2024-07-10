@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import AlarmCard from '../../../components/alarm/AlarmCard.tsx';
 import useGetPopupAlarmList from '../../../hooks/alarm/useGetPopupAlarmList.ts';
@@ -7,9 +7,16 @@ import Text20B from '../../../styles/texts/title/Text20B.ts';
 import NoAlarmSvg from '../../../assets/images/noAlarm.svg';
 import BlueDotsThreeSvg from '../../../assets/icons/blueDotsThree.svg';
 import CompleteButton from '../../../components/atoms/button/CompleteButton.tsx';
+import {useFocusEffect} from '@react-navigation/native';
 
 const PopupTab = ({navigation}) => {
-  const {popupAlarmList, loading, error} = useGetPopupAlarmList();
+  const {popupAlarmList, loading, error, refetch} = useGetPopupAlarmList();
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
 
   if (loading) {
     return (
@@ -34,7 +41,7 @@ const PopupTab = ({navigation}) => {
     <ScrollView>
       <View>
         {popupAlarmList?.map(item => (
-          <AlarmCard key={item.id} {...item} type="popup" />
+          <AlarmCard {...item} type="popup" />
         ))}
       </View>
     </ScrollView>

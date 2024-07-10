@@ -60,13 +60,14 @@ const NextMiddleButton: React.FC<NextMiddleButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    width: '55%',
+    width: '50%',
     height: 52,
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
     marginTop: 35,
+    marginHorizontal: 10,
     marginBottom: 10,
   },
   text: {

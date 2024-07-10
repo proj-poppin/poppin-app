@@ -13,8 +13,8 @@ interface BackMiddleButtonProps {
 const BackMiddleButton: React.FC<BackMiddleButtonProps> = ({
   onPress,
   title,
-  textColor, // 텍스트 색상을 props로 받음
-  buttonWidth = '50%', // 기본값 '55%'
+  textColor,
+  buttonWidth = '50%',
 }) => (
   <Pressable
     style={({pressed}) => [
@@ -31,10 +31,11 @@ const BackMiddleButton: React.FC<BackMiddleButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    width: '55%',
+    width: '50%',
     height: 52,
     borderRadius: 25,
     marginTop: 35,
+    marginHorizontal: 10,
     marginBottom: 10,
     justifyContent: 'center',
     alignItems: 'center',

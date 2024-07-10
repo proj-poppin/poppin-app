@@ -19,6 +19,7 @@ interface CompleteButtonProps {
   alwaysActive?: boolean;
   buttonWidth?: number | string; // 너비 조절을 위한 옵셔널 프로퍼티
   style?: ViewStyle; // 추가된 스타일 속성
+  buttonStyle?: ViewStyle; // 버튼 자체의 스타일 속성
 }
 
 const CompleteButton: React.FC<CompleteButtonProps> = ({
@@ -30,6 +31,7 @@ const CompleteButton: React.FC<CompleteButtonProps> = ({
   alwaysActive = false,
   buttonWidth = '100%', // 기본값 '100%'
   style, // 추가된 스타일 속성
+  buttonStyle, // 버튼 자체의 스타일 속성
 }) => {
   const throttledOnPress = useMemo(
     () =>
@@ -56,6 +58,7 @@ const CompleteButton: React.FC<CompleteButtonProps> = ({
           width: buttonWidth, // 너비를 동적으로 조절
         },
         disabled && !alwaysActive && styles.disabledButton,
+        buttonStyle, // 추가된 버튼 스타일 적용
         style, // 추가된 스타일 적용
       ]}
       onPress={throttledOnPress}>

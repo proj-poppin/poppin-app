@@ -83,7 +83,7 @@ const ListView: React.FC<ListViewProps> = ({
         <CustomSelectDropdown
           data={orderTypes.map(type => ({label: type}))}
           onSelect={setSelectedOrderType}
-          buttonWidth={130}
+          buttonWidth={120}
           iconComponent={<OrderSvg />}
           defaultValue="오픈일순" // Set the default value
           buttonTextAfterSelection={selectedItem => selectedItem}

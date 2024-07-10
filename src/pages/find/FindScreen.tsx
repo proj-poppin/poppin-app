@@ -187,6 +187,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
                   isSetting={isSettingApplied}
                 />
                 <CustomSelectDropdown
+                  style={{width: 120}}
                   data={FIND_ORDER_TYPES}
                   onSelect={(selectedItem: any, index: any) =>
                     handleOrderSelect(index)

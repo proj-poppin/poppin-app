@@ -11,6 +11,7 @@ import {
   View,
   TouchableWithoutFeedback, // 추가된 부분
 } from 'react-native';
+import Share from 'react-native-share';
 import useGetDetailPopUp from '../../hooks/detailPopUp/useGetDetailPopUp';
 import ShareSvg from '../../assets/detail/share.svg';
 import StarOffSvg from '../../assets/detail/starOff.svg';
@@ -49,7 +50,6 @@ import useAddVisitor from '../../hooks/detailPopUp/useAddVisitor';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList';
 import PopUpDetailOptions from '../../navigators/options/PopUpDetailOptions';
-import {Share} from 'react-native';
 import useGetDistanceFromLatLonInKm from '../../utils/function/getDistanceFromLatLonInKm.ts';
 import VisitCompleteSvg from '../../assets/icons/visitComplete.svg';
 import VisitReadySvg from '../../assets/icons/visitReady.svg';
@@ -61,27 +61,30 @@ import {useInterest} from '../../hooks/useInterest.tsx';
 import useGetInterestList from '../../hooks/popUpList/useGetInterestList.tsx';
 import {RootState} from '../../redux/stores/reducer.ts';
 import Text24B from '../../styles/texts/headline/Text24B.ts';
+import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
+import ImageModal from 'react-native-image-modal';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import Text12R from '../../styles/texts/label/Text12R.ts';
 
 export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
   'PopUpDetail'
 >;
-
 const PopUpDetailScreen = ({route}) => {
-  const {id, alarmId, name, isAlarm} = route.params;
+  const [loginModalVisible, setLoginModalVisible] = useState(false);
   const isLoggedIn = useIsLoggedIn();
+  console.log('isLoggedIn:', isLoggedIn);
   const navigation = useNavigation<PopUpDetailScreenNavigationProp>();
   const [fetchTrigger, setFetchTrigger] = useState(false);
+  const {id, alarmId, name, isAlarm} = route.params;
   const [reviews, setReviews] = useState<Review[]>([]); // Correctly set the initial state to an empty array
   const reviewSubmitted = useSelector(state => state.reviewSubmitted);
-
   const {
     data: detailPopUpData,
     loading,
     error,
     refetch,
   } = useGetDetailPopUp(id, alarmId, name, !isLoggedIn, isAlarm, fetchTrigger);
-
   const {distance, getDistance} = useGetDistanceFromLatLonInKm();
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
   const openCompleteModal = () => {
@@ -115,9 +118,8 @@ const PopUpDetailScreen = ({route}) => {
     }
   }, [navigation, detailPopUpData]);
 
-  const firstImageUrl =
-    detailPopUpData?.images?.[0] ??
-    'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/4/1.jpg';
+  const firstImageUrl = detailPopUpData?.images?.[0];
+
   const [isShowToast, setIsShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const {addRecommendCount, loading: recommendLoading} =
@@ -129,43 +131,74 @@ const PopUpDetailScreen = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
 
+  const [alertMessage, setAlertMessage] = useState(
+    '방문 인증을 위해서는 로그인이 필요해요.',
+  );
+  const openLoginModal = (
+    message = '방문 인증을 위해서는 로그인이 필요해요.',
+  ) => {
+    setAlertMessage(message);
+    setLoginModalVisible(true);
+  };
+  const closeLoginModal = () => {
+    setLoginModalVisible(false);
+  };
+
   const handleIsOnlyVerifiedReview = () => {
     setIsOnlyVerifiedReview(!isOnlyVerifiedReview);
   };
 
   const handleVisitPress = async () => {
     if (!isLoggedIn) {
-      navigation.navigate('Entry');
+      // navigation.navigate('Entry');
+      openLoginModal('관심 팝업에 추가하려면 로그인이 필요해요.');
       return;
     }
     const hasPermission = await requestLocationPermission();
     if (hasPermission) {
       Geolocation.getCurrentPosition(
-        position => {
+        async position => {
           const {latitude, longitude} = position.coords;
-          getDistance(
+          console.log(`사용자 위도: ${latitude}, 경도: ${longitude}`);
+          console.log(
+            '팝업의 위도: ',
+            detailPopUpData?.latitude,
+            '경도: ',
+            detailPopUpData?.longitude,
+          );
+
+          const distance = getDistance(
             latitude ?? 0,
             longitude ?? 0,
             detailPopUpData?.latitude ?? 0,
             detailPopUpData?.longitude ?? 0,
           );
+
+          const token = await EncryptedStorage.getItem('pushToken');
+
+          if (distance !== null && distance <= 0.05) {
+            const response = await addVisitorPopUp(
+              detailPopUpData!.id!,
+              token!,
+            );
+            if (response.success) {
+              setToastMessage('방문 인증 되었습니다.');
+              setFetchTrigger(!fetchTrigger);
+            } else {
+              setToastMessage(
+                response.error?.message || '방문 인증에 실패했습니다.',
+              );
+            }
+            setIsShowToast(true);
+          } else {
+            setCompleteModalVisible(true); // 토스트 메시지 대신 모달 창을 활성화
+          }
         },
         error => {
           console.log(error.code, error.message);
         },
         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
       );
-    }
-
-    if (hasPermission) {
-      const response = await addVisitorPopUp(detailPopUpData!.id!, 'fcmToken');
-      if (response.success) {
-        setToastMessage('방문 인증 되었습니다.');
-        setFetchTrigger(!fetchTrigger);
-      } else {
-        setToastMessage(response.error?.message || '방문 인증에 실패했습니다.');
-      }
-      setIsShowToast(true);
     }
   };
 
@@ -179,8 +212,7 @@ const PopUpDetailScreen = ({route}) => {
   const isInterested = interestState[id] || false;
   const handleToggleInterest = async () => {
     if (!isLoggedIn) {
-      Alert.alert('로그인이 필요한 서비스입니다.');
-      navigation.navigate('Entry');
+      openLoginModal();
       return;
     }
     if (isInterested) {
@@ -240,18 +272,33 @@ const PopUpDetailScreen = ({route}) => {
   }, [detailPopUpData]);
 
   useEffect(() => {
-    if (initialLoadRef.current) {
-      initialLoadRef.current = false;
-      if (
-        detailPopUpData?.isVisited === false &&
-        distance !== null &&
-        distance <= 0.05
-      ) {
-        setToastMessage('이 팝업이 근처에 있어요!!');
-        setIsShowToast(true);
+    const checkPermissionAndCalculateDistance = async () => {
+      const hasPermission = await requestLocationPermission();
+      if (hasPermission && detailPopUpData) {
+        Geolocation.getCurrentPosition(
+          position => {
+            const {latitude, longitude} = position.coords;
+            const dist = getDistance(
+              latitude ?? 0,
+              longitude ?? 0,
+              detailPopUpData.latitude ?? 0,
+              detailPopUpData.longitude ?? 0,
+            );
+            if (dist !== null && dist <= 0.05) {
+              setToastMessage('이 팝업이 근처에 있어요!!');
+              setIsShowToast(true);
+            }
+          },
+          error => {
+            console.log(error.code, error.message);
+          },
+          {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+        );
       }
-    }
-  }, [distance, detailPopUpData]);
+    };
+
+    checkPermissionAndCalculateDistance().then(r => r);
+  }, [distance, detailPopUpData, getDistance]);
 
   if (loading || !isLoaded) {
     return (
@@ -288,6 +335,22 @@ const PopUpDetailScreen = ({route}) => {
   const filteredReviews = isOnlyVerifiedReview
     ? reviews.filter(review => review.isCertificated)
     : reviews;
+  const handleShare = async () => {
+    if (!isLoggedIn) {
+      openLoginModal('공유하기 위해서는 로그인이 필요합니다.');
+      return;
+    }
+    const shareOptions = {
+      title: 'Share Popup',
+      message: `Check out this amazing popup: ${detailPopUpData!.name}`,
+      url: detailPopUpData!.images[0],
+    };
+    try {
+      await Share.open(shareOptions);
+    } catch (error) {
+      // console.error('Error sharing', error);
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={() => setIsShowToast(false)}>
@@ -304,103 +367,111 @@ const PopUpDetailScreen = ({route}) => {
             ) : null}
           </View>
           <View style={styles.detailContainer}>
-            <Text style={styles.title}>{detailPopUpData.name}</Text>
-            <Text
-              style={styles.introduce}
-              numberOfLines={showFullText ? 0 : 2}
-              ellipsizeMode="tail">
-              {detailPopUpData.introduce}
-            </Text>
-            {detailPopUpData.introduce.length > 100 && (
-              <UnderlinedTextButton
-                label={showFullText ? '접기' : '더보기'}
-                onClicked={() => setShowFullText(!showFullText)}
-              />
-            )}
-            <View style={styles.iconContainer}>
-              <Pressable
-                onPress={() => handleOpenLink(detailPopUpData!.homepageLink)}>
-                {detailPopUpData.isInstagram ? (
-                  <SvgWithNameBoxLabel
-                    Icon={InstagramTestSvg}
-                    label="공식 인스타그램"
-                    isBold={false}
-                  />
-                ) : (
-                  <SvgWithNameBoxLabel
-                    Icon={WebSvg}
-                    label="공식 페이지"
-                    isBold={false}
-                  />
-                )}
-              </Pressable>
-              <View style={styles.socialIcons}>
-                <Pressable onPress={handleToggleInterest}>
-                  {isInterested ? <StarOnSvg /> : <StarOffSvg />}
-                </Pressable>
+            <View style={styles.commonContainer}>
+              <Text style={styles.title}>{detailPopUpData.name}</Text>
+              <Text
+                style={styles.introduce}
+                numberOfLines={showFullText ? 0 : 2}
+                ellipsizeMode="tail">
+                {detailPopUpData.introduce}
+              </Text>
+              {detailPopUpData.introduce.length > 100 && (
+                <UnderlinedTextButton
+                  label={showFullText ? '접기' : '더보기'}
+                  onClicked={() => setShowFullText(!showFullText)}
+                />
+              )}
+              <View style={styles.iconContainer}>
                 <Pressable
-                  onPress={async () => {
-                    await Share.share({message: 'eqwew'});
-                  }}>
-                  <ShareSvg style={{paddingHorizontal: 20}} />
+                  onPress={() => handleOpenLink(detailPopUpData!.homepageLink)}>
+                  {detailPopUpData.isInstagram ? (
+                    <SvgWithNameBoxLabel
+                      Icon={InstagramTestSvg}
+                      label="공식 인스타그램"
+                      isBold={false}
+                    />
+                  ) : (
+                    <SvgWithNameBoxLabel
+                      Icon={WebSvg}
+                      label="공식 페이지"
+                      isBold={false}
+                    />
+                  )}
                 </Pressable>
+                <View style={styles.socialIcons}>
+                  <Pressable onPress={handleToggleInterest}>
+                    {isInterested ? <StarOnSvg /> : <StarOffSvg />}
+                  </Pressable>
+                  <Pressable onPress={handleShare}>
+                    <ShareSvg style={{paddingHorizontal: 20}} />
+                  </Pressable>
+                </View>
               </View>
             </View>
             <DetailDividerLine />
 
-            <View style={styles.iconContainer}>
-              <Text style={[Text20B.text, {color: globalColors.purple}]}>
-                상세 정보
-              </Text>
-              <View style={styles.socialIcons} />
-            </View>
-            <View style={styles.detailSection}>
-              <View style={styles.detailRow}>
-                <Text style={[Text14B.text, {color: globalColors.purple}]}>
-                  기간:
+            <View style={styles.commonContainer}>
+              <View style={[styles.iconContainer]}>
+                <Text style={[Text20B.text, {color: globalColors.purple}]}>
+                  상세 정보
                 </Text>
-                <Text
-                  style={
-                    Text14M.text
-                  }>{`${detailPopUpData.openDate} ~ ${detailPopUpData.closeDate}`}</Text>
+                <View style={styles.socialIcons} />
               </View>
-              <View style={styles.detailRow}>
-                <Text style={[Text14B.text, {color: globalColors.purple}]}>
-                  운영 시간:
-                </Text>
-                <Text
-                  style={
-                    Text14M.text
-                  }>{`${detailPopUpData.openTime} ~ ${detailPopUpData.closeTime}`}</Text>
+              <View style={styles.detailSection}>
+                <View style={styles.detailRow}>
+                  <Text style={[Text14B.text, {color: globalColors.purple}]}>
+                    기간:
+                  </Text>
+                  <Text
+                    style={
+                      Text14M.text
+                    }>{`${detailPopUpData.openDate} ~ ${detailPopUpData.closeDate}`}</Text>
+                </View>
+                <View style={styles.detailRow}>
+                  <Text style={[Text14B.text, {color: globalColors.purple}]}>
+                    운영 시간:
+                  </Text>
+                  <Text
+                    style={
+                      Text14M.text
+                    }>{`${detailPopUpData.openTime} ~ ${detailPopUpData.closeTime}`}</Text>
+                </View>
+                <View style={styles.detailRow}>
+                  <Text style={[Text14B.text, {color: globalColors.purple}]}>
+                    주소:
+                  </Text>
+                  <Text style={Text14M.text}>{detailPopUpData.address}</Text>
+                </View>
               </View>
-              <View style={styles.detailRow}>
-                <Text style={[Text14B.text, {color: globalColors.purple}]}>
-                  주소:
-                </Text>
-                <Text style={Text14M.text}>{detailPopUpData.address}</Text>
-              </View>
-            </View>
-            <View style={styles.detailSection}>
-              <View style={styles.detailRow}>
-                <Text style={Text14M.text}>입장료 : </Text>
-                <Text
-                  style={Text14M.text}>{`${detailPopUpData.entranceFee}`}</Text>
-              </View>
-              <View style={styles.detailRow}>
-                <Text style={Text14M.text}>이용 가능 연령 : </Text>
-                <Text style={Text14M.text}>{detailPopUpData.availableAge}</Text>
-              </View>
-              <View style={styles.detailRow}>
-                <Text style={Text14M.text}>주차 안내 : </Text>
-                <Text style={Text14M.text}>
-                  {detailPopUpData.parkingAvailable ? '주차 가능' : '주차 불가'}
-                </Text>
-              </View>
-              <View style={styles.detailRow}>
-                <Text style={Text14M.text}>예약 안내 : </Text>
-                <Text style={Text14M.text}>
-                  {detailPopUpData.resvRequired ? '예약 필수' : '자유 입장'}
-                </Text>
+
+              <View style={styles.detailSection}>
+                <View style={styles.detailRow}>
+                  <Text style={Text14M.text}>입장료 : </Text>
+                  <Text
+                    style={
+                      Text14M.text
+                    }>{`${detailPopUpData.entranceFee}`}</Text>
+                </View>
+                <View style={styles.detailRow}>
+                  <Text style={Text14M.text}>이용 가능 연령 : </Text>
+                  <Text style={Text14M.text}>
+                    {detailPopUpData.availableAge}
+                  </Text>
+                </View>
+                <View style={styles.detailRow}>
+                  <Text style={Text14M.text}>주차 안내 : </Text>
+                  <Text style={Text14M.text}>
+                    {detailPopUpData.parkingAvailable
+                      ? '주차 가능'
+                      : '주차 불가'}
+                  </Text>
+                </View>
+                <View style={styles.detailRow}>
+                  <Text style={Text14M.text}>예약 안내 : </Text>
+                  <Text style={Text14M.text}>
+                    {detailPopUpData.resvRequired ? '예약 필수' : '자유 입장'}
+                  </Text>
+                </View>
               </View>
             </View>
             <DividerLine height={10} />
@@ -416,8 +487,17 @@ const PopUpDetailScreen = ({route}) => {
                 data={{weekdayAm, weekdayPm, weekendAm, weekendPm}}
               />
             </View>
+            <Text
+              style={[
+                Text12R.text,
+                {color: globalColors.font},
+                {marginHorizontal: 10},
+              ]}>
+              *혼잡도는 팝핀 이용자의 통계 데이터이므로 정확하지 않을 수
+              있습니다.{'\n'}
+            </Text>
             <DividerLine height={10} />
-            <View style={styles.iconContainer}>
+            <View style={[styles.iconContainer, styles.commonContainer]}>
               <Text style={[Text20B.text, {color: globalColors.purple}]}>
                 방문 후기
               </Text>
@@ -439,7 +519,7 @@ const PopUpDetailScreen = ({route}) => {
                 />
               </Pressable>
             </View>
-            <View style={styles.rowBetweenContainer}>
+            <View style={[styles.rowBetweenContainer, styles.commonContainer]}>
               <View style={styles.recentReviewHeader}>
                 <ReasonItem
                   isSelected={isOnlyVerifiedReview}
@@ -449,65 +529,76 @@ const PopUpDetailScreen = ({route}) => {
               </View>
               <View style={styles.recentReviewHeader}>
                 <Text>추천순</Text>
-                <SortingSvg />
+                {/*<SortingSvg />*/}
               </View>
             </View>
-            {filteredReviews.map(review => (
-              <View key={review.reviewId} style={styles.colCloseContainer}>
-                <View style={styles.rowBetweenContainer}>
-                  <View style={styles.recentReviewHeader}>
-                    {review.profileUrl ? (
-                      <Image
-                        source={{uri: review.profileUrl}}
-                        style={{width: 50, height: 50, borderRadius: 40}}
-                      />
-                    ) : (
-                      <ReviewProfileSvg />
-                    )}
-                    <View style={styles.colCloseContainer}>
-                      <View style={styles.rowCloseContainer}>
-                        <Text style={Text20B.text}>{review.nickname}</Text>
-                        {review.isCertificated && (
-                          <VerifiedReviewSvg style={styles.verifiedReviewSvg} />
-                        )}
+            <View style={styles.commonContainer}>
+              {filteredReviews.map(review => (
+                <View key={review.reviewId} style={styles.colCloseContainer}>
+                  <View style={styles.rowBetweenContainer}>
+                    <View style={styles.recentReviewHeader}>
+                      {review.profileUrl ? (
+                        <Image
+                          source={{uri: review.profileUrl}}
+                          style={{width: 50, height: 50, borderRadius: 40}}
+                        />
+                      ) : (
+                        <ReviewProfileSvg />
+                      )}
+                      <View style={styles.colCloseContainer}>
+                        <View style={styles.rowCloseContainer}>
+                          <Text style={Text20B.text}>{review.nickname}</Text>
+                          {review.isCertificated && (
+                            <VerifiedReviewSvg
+                              style={styles.verifiedReviewSvg}
+                            />
+                          )}
+                        </View>
+                        <Text style={styles.reviewText}>
+                          리뷰 {review.reviewCnt}개
+                        </Text>
                       </View>
-                      <Text style={styles.reviewText}>
-                        리뷰 {review.reviewCnt}개
-                      </Text>
                     </View>
+                    <UnderlinedTextButton
+                      label={'신고하기'}
+                      onClicked={() => {
+                        navigation.navigate('Report', {
+                          id: id,
+                          isReview: true,
+                          reviewId: review.reviewId,
+                        });
+                      }}
+                    />
                   </View>
-                  <UnderlinedTextButton
-                    label={'신고하기'}
-                    onClicked={() => {
-                      navigation.navigate('Report', {
-                        id: id,
-                        isReview: true,
-                        reviewId: review.reviewId,
-                      });
-                    }}
-                  />
+                  <ScrollView horizontal style={styles.imageScroll}>
+                    {review.imageUrls.map((url, index) => (
+                      <ImageModal
+                        key={index}
+                        resizeMode="contain"
+                        style={{
+                          width: 120,
+                          height: 120,
+                          overflow: 'hidden',
+                          borderRadius: 10,
+                          marginHorizontal: 5,
+                        }}
+                        source={{uri: url}}
+                      />
+                    ))}
+                  </ScrollView>
+                  <Text style={styles.reviewText}>{review.text}</Text>
+                  <Pressable
+                    onPress={() => handleRecommendPress(review.reviewId)}>
+                    <View style={styles.recommendContainer}>
+                      <SvgWithNameBoxLabel
+                        Icon={LikeReviewSvg}
+                        label={`${review.recommendCnt}`}
+                      />
+                    </View>
+                  </Pressable>
                 </View>
-                <ScrollView horizontal style={styles.imageScroll}>
-                  {review.imageUrls.map((url, index) => (
-                    <Image
-                      key={index}
-                      source={{uri: url}}
-                      style={styles.reviewImage}
-                    />
-                  ))}
-                </ScrollView>
-                <Text style={styles.reviewText}>{review.text}</Text>
-                <Pressable
-                  onPress={() => handleRecommendPress(review.reviewId)}>
-                  <View style={styles.recommendContainer}>
-                    <SvgWithNameBoxLabel
-                      Icon={LikeReviewSvg}
-                      label={`${review.recommendCnt}`}
-                    />
-                  </View>
-                </Pressable>
-              </View>
-            ))}
+              ))}
+            </View>
           </View>
         </ScrollView>
         <View style={styles.bottomBar}>
@@ -542,6 +633,18 @@ const PopUpDetailScreen = ({route}) => {
             message={toastMessage}
           />
         )}
+        <TwoSelectConfirmationModal
+          isVisible={loginModalVisible}
+          onClose={closeLoginModal}
+          onConfirm={() => {
+            navigation.navigate('Entry');
+            closeLoginModal();
+          }}
+          mainAlertTitle="로그인이 필요합니다"
+          subAlertTitle={alertMessage}
+          selectFirstText="나중에 할래요"
+          selectSecondText="로그인하기"
+        />
         <Spinner
           visible={addLoading || deleteLoading || recommendLoading} // Updated line
           textContent={'로딩중...'}
@@ -553,6 +656,9 @@ const PopUpDetailScreen = ({route}) => {
 };
 
 const styles = StyleSheet.create({
+  commonContainer: {
+    marginHorizontal: 12,
+  },
   visitorDataContainer: {
     margin: 10,
     borderColor: globalColors.component,
@@ -720,5 +826,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
 export default PopUpDetailScreen;

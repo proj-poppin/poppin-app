@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, StyleProp, ViewStyle} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import globalColors from '../styles/color/globalColors';
 import Text14M from '../styles/texts/body_medium/Text14M';
@@ -12,6 +12,7 @@ type CustomSelectDropdownProps = {
   buttonTextAfterSelection: (selectedItem: string, index: number) => string;
   buttonTextStyle?: object;
   defaultValue?: string; // Optional defaultValue prop
+  style?: StyleProp<ViewStyle>; // 스타일을 위한 옵셔널 타입 정의
 };
 
 const CustomSelectDropdown: React.FC<CustomSelectDropdownProps> = ({
@@ -22,6 +23,7 @@ const CustomSelectDropdown: React.FC<CustomSelectDropdownProps> = ({
   buttonTextAfterSelection,
   buttonTextStyle,
   defaultValue, // Destructure the defaultValue prop
+  style,
 }) => {
   return (
     <SelectDropdown
@@ -34,7 +36,7 @@ const CustomSelectDropdown: React.FC<CustomSelectDropdownProps> = ({
         styles.dropdownStyle,
         {width: buttonWidth}, // Set dropdown width dynamically
       ]}
-      buttonStyle={[styles.dropdownButtonStyle, {width: buttonWidth}]}
+      buttonStyle={[styles.dropdownButtonStyle, {width: buttonWidth}, style]}
       rowTextStyle={{color: globalColors.font, textAlign: 'center'}}
       renderCustomizedButtonChild={(selectedItem, index) => (
         <View style={styles.buttonInnerContainer}>

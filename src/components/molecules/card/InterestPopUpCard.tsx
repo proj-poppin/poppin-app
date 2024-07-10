@@ -149,8 +149,8 @@ const styles = StyleSheet.create({
   },
   starIcon: {},
   closeWrapper: {
-    width: 100,
-    height: 100,
+    width: 140,
+    height: 140,
     position: 'absolute',
     top: 0,
     left: 0,

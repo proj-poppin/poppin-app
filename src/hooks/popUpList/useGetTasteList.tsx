@@ -1,11 +1,11 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {GetTastePopUpListResponse} from '../../types/PopUpListData.ts';
-import getTasteList from '../../apis/popup/taste-list.ts'; // 업데이트된 타입을 import
+import getTasteList from '../../apis/popup/taste-list.ts';
 
 interface TastListState {
   loading: boolean;
   error: Error | null;
-  data: GetTastePopUpListResponse | null; // 상태 타입도 업데이트
+  data: GetTastePopUpListResponse | null;
 }
 
 const useGetTasteList = () => {
@@ -15,40 +15,39 @@ const useGetTasteList = () => {
     data: null,
   });
 
-  useEffect(() => {
-    const fetchHotList = async () => {
-      setTasteListState(prevState => ({...prevState, loading: true}));
-      try {
-        const response = await getTasteList();
-        if (response.success) {
-          setTasteListState({
-            loading: false,
-            error: null,
-            data: response.data!,
-          });
-        } else {
-          setTasteListState({
-            loading: false,
-            error: new Error(response.error?.message || 'Unknown error'),
-            data: null,
-          });
-        }
-      } catch (error: any) {
+  const fetchTasteList = useCallback(async () => {
+    setTasteListState(prevState => ({...prevState, loading: true}));
+    try {
+      const response = await getTasteList();
+      if (response.success) {
         setTasteListState({
           loading: false,
-          error:
-            error instanceof Error
-              ? error
-              : new Error('An unexpected error occurred'),
+          error: null,
+          data: response.data!,
+        });
+      } else {
+        setTasteListState({
+          loading: false,
+          error: new Error(response.error?.message || 'Unknown error'),
           data: null,
         });
       }
-    };
-
-    fetchHotList();
+    } catch (error: any) {
+      setTasteListState({
+        loading: false,
+        error:
+          error instanceof Error
+            ? error
+            : new Error('An unexpected error occurred'),
+        data: null,
+      });
+    }
   }, []);
 
-  return tasteListState;
-};
+  useEffect(() => {
+    fetchTasteList();
+  }, [fetchTasteList]);
 
+  return {...tasteListState, refetch: fetchTasteList};
+};
 export default useGetTasteList;

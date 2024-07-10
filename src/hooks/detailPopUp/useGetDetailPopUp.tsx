@@ -28,6 +28,8 @@ function useGetDetailPopUp(
       error: null,
     });
 
+  console.log('isPublic:', isPublic);
+
   const dispatch = useDispatch();
 
   const fetchDetailPopUp = useCallback(async () => {

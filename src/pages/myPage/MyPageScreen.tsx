@@ -35,6 +35,7 @@ import {useReducedMotion} from 'react-native-reanimated';
 import Text14M from '../../styles/texts/body_medium/Text14M.ts';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/stores/reducer.ts';
+import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 
 function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
@@ -119,7 +120,7 @@ function MyPageScreen({navigation}) {
   }, []);
 
   const handleFaqPress = useCallback(() => {
-    Linking.openURL('https://open.kakao.com/o/sOj6HP5f');
+    Linking.openURL('http://pf.kakao.com/_CCtFG');
   }, []);
 
   const handleNavigation = (route: string) => {
@@ -165,12 +166,12 @@ function MyPageScreen({navigation}) {
           title={'팝업 제보하기'}
         />
         <Pressable onPress={handleFaqPress} style={styles.middleContainer}>
-          <Text style={Text14M.text}>문의하기/FAQ</Text>
+          <Text style={Text14M.text}>문의하기</Text>
           <RightSvg style={styles.svgStyle} onPress={handleFaqPress} />
         </Pressable>
-        <Pressable style={styles.appVersionContainer}>
+        <Pressable style={styles.middleContainer}>
           <Text style={Text14M.text}>앱 버전</Text>
-          <View style={styles.rowHeaderContainer}>
+          <View style={styles.rowSectionContainer}>
             <Text style={[Text13R.text, {color: globalColors.stroke2}]}>
               1.0.0
             </Text>
@@ -300,6 +301,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 15,
+  },
+  rowSectionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   colMidContainer: {
     flexDirection: 'column',

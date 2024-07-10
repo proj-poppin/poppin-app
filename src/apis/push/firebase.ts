@@ -24,9 +24,14 @@ export const initFirebaseNotification = (
   messaging().onNotificationOpenedApp(remoteMessage => {
     try {
       console.log('Message handled in the background!', remoteMessage);
-      const popupId = remoteMessage?.data?.popupId;
-      // @ts-ignore
-      navigation.navigate('PopUpDetail', {id: popupId});
+      const id = remoteMessage?.data?.id;
+      const type = remoteMessage?.data?.type;
+      console.log('id:', id, 'type:', type);
+      if (type === 'popup') {
+        navigation.navigate('PopUpDetail', {id: Number.parseInt(id, 10)});
+      } else {
+        navigation.navigate('NoticeDetail', {nid: Number.parseInt(id, 10)});
+      }
     } catch (error) {
       console.log('Background Notification Error', error);
     }
@@ -38,8 +43,14 @@ export const initFirebaseNotification = (
     (notification: PushNotification) => {
       try {
         const pushData = notification.getData();
-        // @ts-ignore
-        navigation.navigate('PopUpDetail', {id: pushData.popupId});
+        const id = pushData?.id;
+        const type = pushData?.type;
+        console.log('id:', id, 'type:', type);
+        if (type === 'popup') {
+          navigation.navigate('PopUpDetail', {id: Number.parseInt(id, 10)});
+        } else {
+          navigation.navigate('NoticeDetail', {nid: Number.parseInt(id, 10)});
+        }
       } catch (error) {
         console.log('Foreground Notification Error', error);
       }

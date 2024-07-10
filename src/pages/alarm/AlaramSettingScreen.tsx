@@ -83,6 +83,17 @@ function AlarmSettingScreen({navigation}) {
     settingsRef.current = updatedSettings;
     if (name === 'pushYn') {
       pushYnRef.current = value ? '1' : '0';
+
+      if (value) {
+        setSettings({
+          pushNightYn: '1',
+          pushYn: '1',
+          hoogiYn: '1',
+          openYn: '1',
+          magamYn: '1',
+          changeInfoYn: '1',
+        });
+      }
     }
 
     try {

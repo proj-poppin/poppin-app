@@ -1,22 +1,26 @@
 import React, {useState} from 'react';
 import {
+  Alert,
   Pressable,
   StyleSheet,
   Text,
+  TextInput,
   View,
-  ActivityIndicator,
 } from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
-import ShallowDividerLine from '../../components/ShallowDividerLine.tsx';
-import BackMiddleButton from '../../components/atoms/button/BackMiddleButton.tsx';
-import NextMiddleButton from '../../components/atoms/button/NextMiddleButton.tsx';
-import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
-import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
 import useDeleteUser from '../../hooks/myPage/useDeleteUser.tsx';
-import {useAppDispatch} from '../../redux/stores';
+import ReportCheckSvg from '../../assets/images/reportCheck.svg';
+import BackMiddleButton from '../../components/atoms/button/BackMiddleButton.tsx';
+import NextMiddleButton from '../../components/atoms/button/NextMiddleButton.tsx';
+import ShallowDividerLine from '../../components/ShallowDividerLine.tsx';
+import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
+import {useDispatch} from 'react-redux';
+import userSlice from '../../redux/slices/user.ts';
+import {resetInterests} from '../../redux/slices/interestSlice.ts';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 const reasons = [
   '앱 사용이 불편해요',
@@ -27,54 +31,51 @@ const reasons = [
   '기타',
 ];
 
-function MemberDeleteScreen({navigation}: any) {
-  const [selectedReason, setSelectedReason] = useState(null);
-  const [isDeleted, setIsDeleted] = useState(false);
+function MemberDeleteScreen({navigation}) {
+  const dispatch = useDispatch();
+  const [selectedReason, setSelectedReason] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const {loading, error, data, handleDeleteUser} = useDeleteUser();
+  const [otherReason, setOtherReason] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+  const {loading, error, handleDeleteUser} = useDeleteUser();
 
-  const openModal = () => {
-    setModalVisible(true);
-  };
+  const openModal = () => setModalVisible(true);
+  const closeModal = () => setModalVisible(false);
 
-  const closeModal = () => {
-    setModalVisible(false);
+  const handleContinueUsing = () => {
+    navigation.goBack();
   };
 
   const confirmDelete = async () => {
-    const resp = await handleDeleteUser();
-
-    setIsDeleted(true);
-    closeModal();
+    try {
+      const resp = await handleDeleteUser();
+      if (resp && resp.success) {
+        dispatch(
+          userSlice.actions.setAccessTokenAndRefreshToken({
+            accessToken: '',
+            refreshToken: '',
+          }),
+        );
+        dispatch(userSlice.actions.resetUser());
+        dispatch(resetInterests());
+        await EncryptedStorage.removeItem('accessToken');
+        await EncryptedStorage.removeItem('refreshToken');
+        closeModal();
+        navigation.replace('DeleteComplete');
+      }
+    } catch (error) {
+      Alert.alert('탈퇴 실패', '탈퇴 중 오류가 발생했습니다.');
+    }
   };
 
-  if (isDeleted) {
-    return (
-      <DismissKeyboardView style={styles.container}>
-        <View style={styles.completeContainer}>
-          <Text style={Text20B.text}>회원 탈퇴 완료</Text>
-          <Text style={[Text12R.text, styles.completeText]}>
-            그동안 Poppin을{'\n'}이용해주셔서 감사합니다.
-          </Text>
-        </View>
-        <View style={{paddingTop: 150}}>
-          <CompleteButton
-            onPress={() => navigation.navigate('Home')}
-            title={'완료'}
-          />
-        </View>
-      </DismissKeyboardView>
-    );
-  }
-
   return (
-    <>
-      <DismissKeyboardView style={styles.container}>
+    <DismissKeyboardView>
+      <View style={styles.container}>
         <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>
-          {'탈퇴하는 이유를 알려주세요'}
+          탈퇴하는 이유를 알려주세요
         </Text>
         <Text style={[Text12R.text, {color: globalColors.font}]}>
-          {'계정을 삭제하면 후기, 저장 등의 활동 정보가 모두 사라져요.'}
+          계정을 삭제하면 후기, 저장 등의 활동 정보가 모두 사라져요.
         </Text>
         <View style={styles.reasonContainer}>
           {reasons.map((reason, index) => (
@@ -82,41 +83,48 @@ function MemberDeleteScreen({navigation}: any) {
               <Pressable
                 style={styles.reasonRow}
                 onPress={() => setSelectedReason(index)}>
-                <View
-                  style={[
-                    styles.circle,
-                    selectedReason === index && {
-                      backgroundColor: globalColors.purple,
-                    },
-                  ]}
-                />
+                {selectedReason === index ? (
+                  <ReportCheckSvg
+                    width={24}
+                    height={24}
+                    style={styles.svgIcon}
+                  />
+                ) : (
+                  <View style={styles.circle} />
+                )}
                 <Text style={styles.reasonText}>{reason}</Text>
               </Pressable>
               {index < reasons.length - 1 && <ShallowDividerLine />}
             </View>
           ))}
         </View>
+        {selectedReason === reasons.length - 1 && (
+          <TextInput
+            style={[
+              styles.input,
+              {
+                borderColor: isFocused
+                  ? globalColors.blue
+                  : globalColors.warmGray,
+              },
+            ]}
+            multiline
+            placeholder="신고 사유를 알려주세요."
+            placeholderTextColor={globalColors.font}
+            value={otherReason}
+            onChangeText={setOtherReason}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+          />
+        )}
         <View style={styles.buttonRow}>
           <BackMiddleButton
-            onPress={() => navigation.goBack()}
-            title={'계속 사용하기'}
-            textColor={globalColors.font}
+            onPress={handleContinueUsing}
+            title="계속 사용하기"
           />
-          <View style={{width: 100}} />
-          <NextMiddleButton onPress={openModal} title={'탈퇴하기'} />
+          <NextMiddleButton onPress={openModal} title="탈퇴하기" />
         </View>
-        {loading && (
-          <ActivityIndicator size="large" color={globalColors.blue} />
-        )}
-        {error && (
-          <Text style={{color: 'red', textAlign: 'center'}}>
-            {error.message}
-          </Text>
-        )}
-        {data && !data.success && (
-          <Text style={{color: 'red', textAlign: 'center'}}>{data.data}</Text>
-        )}
-      </DismissKeyboardView>
+      </View>
       <TwoSelectConfirmationModal
         mainAlertTitle={'정말 탈퇴 하시겠습니까?'}
         subAlertTitle={'탈퇴하신 아이디로는\n30일간 재가입 하실 수 없어요'}
@@ -127,23 +135,31 @@ function MemberDeleteScreen({navigation}: any) {
         selectFirstText={'계속 사용하기'}
         selectSecondText={'탈퇴하기'}
       />
-    </>
+    </DismissKeyboardView>
   );
 }
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: globalColors.white,
-    paddingHorizontal: 15,
-  },
   reasonContainer: {
     marginTop: 30,
-    marginBottom: 30,
+  },
+  buttonRow: {
+    position: 'absolute',
+    top: 600,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    padding: 20,
+    paddingBottom: 80,
   },
   reasonRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 10, // 각 행에 위아래로 패딩 추가
     marginBottom: 10,
   },
   circle: {
@@ -152,39 +168,23 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 2,
     borderColor: globalColors.purple,
-    backgroundColor: globalColors.white,
+    backgroundColor: 'white',
     marginRight: 12,
-    marginTop: 10,
+  },
+  svgIcon: {
+    marginRight: 12,
   },
   reasonText: {
     fontSize: 16,
   },
-  completeContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 230,
-    paddingHorizontal: 20,
-  },
-  completeTitle: {
-    marginBottom: 10,
-  },
-  completeText: {
-    textAlign: 'center',
-    paddingTop: 5,
-  },
-  completeButton: {
-    position: 'absolute',
-    bottom: 30,
-    left: 0,
-    right: 0,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingHorizontal: 20,
-    marginTop: 20,
+  input: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 20,
+    textAlignVertical: 'top',
+    height: 100,
   },
 });
 

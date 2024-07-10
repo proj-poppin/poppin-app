@@ -56,6 +56,7 @@ import MyReviewsList from '../pages/myPage/MyReviewsList.tsx';
 import {MyPagePreferenceSettingScreenOptions} from './options/MyPagePreferenceSettingOptions.tsx';
 import {PasswordChangeOptions} from './options/PasswordChangeOptions.tsx';
 import ProfileEditOptions from './options/ProfileEditOptions.tsx';
+import DeleteCompleteScreen from '../pages/DeleteCompleteScreen.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -272,6 +273,13 @@ function AppNavigator() {
           title: '회원 탈퇴', // 헤더 타이틀 설정
           headerLeft: AppBarLeftPressableIconButton,
         })}
+      />
+      <Stack.Screen
+        name={'DeleteComplete'}
+        options={({navigation}) => ({
+          headerShown: false,
+        })}
+        component={DeleteCompleteScreen}
       />
     </Stack.Navigator>
   );

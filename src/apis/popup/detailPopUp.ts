@@ -1,14 +1,13 @@
 import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 import {DetailPopUpDataNonPublic} from '../../types/DetailPopUpDataNonPublic.ts';
 
+// 로그인시 사용
 const getDetailPopUp = async (
   popUpId: number,
   isAlarm: boolean,
 ): Promise<CommonResponse<DetailPopUpDataNonPublic>> => {
   try {
-    const url = isAlarm
-      ? '/api/v1/alarm/popup/guest/detail'
-      : '/api/v1/popup/guest/detail';
+    const url = isAlarm ? '/api/v1/alarm/popup/detail' : '/api/v1/popup/detail';
     const response = await nonPublicApiInstance.get(url, {
       params: {popupId: popUpId},
     });

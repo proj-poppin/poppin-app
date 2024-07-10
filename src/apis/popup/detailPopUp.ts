@@ -1,16 +1,23 @@
 import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 import {DetailPopUpDataNonPublic} from '../../types/DetailPopUpDataNonPublic.ts';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
-// 로그인시 사용
 const getDetailPopUp = async (
-  popUpId: number,
+  id: number,
+  alarmId: number,
   isAlarm: boolean,
 ): Promise<CommonResponse<DetailPopUpDataNonPublic>> => {
   try {
-    const url = isAlarm ? '/api/v1/alarm/popup/detail' : '/api/v1/popup/detail';
-    const response = await nonPublicApiInstance.get(url, {
-      params: {popupId: popUpId},
-    });
+    const fcmToken = (await EncryptedStorage.getItem('pushToken')) ?? '';
+    const url = isAlarm ? '/api/v1/alarm/detail/popup' : '/api/v1/popup/detail';
+
+    const response = isAlarm
+      ? await nonPublicApiInstance.post(url, {
+          popupId: id,
+          alarmId: alarmId,
+          fcmToken: fcmToken,
+        })
+      : await nonPublicApiInstance.get(url, {params: {popupId: id}});
 
     if (response.data.success) {
       console.log('DetailPopUpDataNonPublic:', response.data);

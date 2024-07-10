@@ -1,10 +1,10 @@
 import {useEffect, useState} from 'react';
-import getNoticeAlarmList from '../../apis/alarm/getNoticeAlarmList';
 import getPopupAlarmList from '../../apis/alarm/getPopupAlarmList.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 export interface AlarmCardInfoProps {
   id: number;
+  alarmId: number;
   title: string;
   body: string;
   createdAt: number[];

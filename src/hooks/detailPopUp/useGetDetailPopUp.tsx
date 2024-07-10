@@ -17,6 +17,8 @@ interface DetailPopUpState {
 
 function useGetDetailPopUp(
   popUpId: number,
+  alarmId: number,
+  title: string,
   isPublic: boolean,
   isAlarm: boolean,
   fetchTrigger: boolean,
@@ -41,9 +43,11 @@ function useGetDetailPopUp(
     dispatch(setPopupDetailLoading(true));
 
     try {
+      console.log('아니 무야이거');
+      console.log(isPublic);
       const response = isPublic
-        ? await getDetailPopUpPublic(popUpId, isAlarm)
-        : await getDetailPopUp(popUpId, isAlarm);
+        ? await getDetailPopUpPublic(popUpId, alarmId, isAlarm)
+        : await getDetailPopUp(popUpId, alarmId, isAlarm);
 
       if (response.success && response.data) {
         setGetDetailPopUpState({
@@ -74,7 +78,7 @@ function useGetDetailPopUp(
     } finally {
       dispatch(setPopupDetailLoading(false));
     }
-  }, [popUpId, isPublic, dispatch]);
+  }, [dispatch, isPublic, popUpId, title, isAlarm]);
 
   useEffect(() => {
     fetchDetailPopUp();

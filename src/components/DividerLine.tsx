@@ -1,16 +1,21 @@
 // DividerLine.js
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, ViewStyle} from 'react-native';
 import globalColors from '../styles/color/globalColors.ts';
+import {StyleProp} from 'react-native';
 
-const DividerLine = ({height = 1, style}: any) => {
+interface DividerLineProps {
+  height?: number;
+  style?: StyleProp<ViewStyle>; // 스타일을 위한 옵셔널 타입 정의
+}
+
+const DividerLine: React.FC<DividerLineProps> = ({height = 1, style}) => {
   return <View style={[styles.divider, {height}, style]} />;
 };
 
 const styles = StyleSheet.create({
   divider: {
-    // 기본 높이 값은 여기서 설정하지 않습니다.
-    backgroundColor: globalColors.component, // globalColors.font 색상 사용
+    backgroundColor: globalColors.component, // 색상은 globalColors에서 관리
   },
 });
 

@@ -109,7 +109,7 @@ const FindCard = ({item, status, showToast}: any) => {
               {isInterested ? <StarOnSvg /> : <StarOffSvg />}
             </Pressable>
           </View>
-          <Text style={styles.location}>{item.address}</Text>
+          <Text style={[styles.location]}>{item.address}</Text>
           <Text style={[Text12B.text, styles.date]}>
             {item.openDate}~{item.closeDate}
           </Text>
@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: globalColors.white,
   },
   svgContainer: {
+    marginTop: 15,
     width: 140,
     height: 140,
     borderRadius: 8,
@@ -191,7 +192,6 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     width: '90%',
-    // flex: 4,
   },
   starIcon: {
     position: 'absolute',
@@ -206,9 +206,11 @@ const styles = StyleSheet.create({
   },
   location: {
     color: globalColors.font,
+    height: 30,
   },
   date: {
     color: globalColors.font,
+    height: 15,
     marginBottom: 10,
   },
   tagsWrapper: {
@@ -238,8 +240,8 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
   closeWrapper: {
-    width: 120,
-    height: 120,
+    width: 140,
+    height: 140,
     position: 'absolute',
     top: 0,
     left: 0,

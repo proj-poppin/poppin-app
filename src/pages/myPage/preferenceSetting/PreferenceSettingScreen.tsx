@@ -11,24 +11,20 @@ import CategorySelectButton from '../../../components/findPopup/CategorySelectBu
 import {useSelector} from 'react-redux';
 import useGetPreferenceSetting from '../../../hooks/myPage/useGetPreferenceSetting.tsx';
 import usePutPreferenceSetting from '../../../hooks/myPage/usePutSetting.tsx';
-import getHotList from '../../../apis/popup/hotList.ts';
-import hotList from '../../../apis/popup/hotList.ts';
-import newList from '../../../apis/popup/newList.ts';
 
 function PreferenceSettingScreen({navigation}: any) {
   const {data} = useGetPreferenceSetting();
   const {putPreference, success, loading} = usePutPreferenceSetting();
 
-  const user = useSelector(state => state.user);
+  const user = useSelector((state: any) => state.user);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTags, setSelectedTags] = useState<any>(POP_UP_TYPES);
   const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
     useState(false);
 
-  // 모달을 닫는 함수
   const handleCloseModal = () => {
     setModalVisible(false);
-    navigation.goBack();
+    navigation.navigate('MainTabNavigator', {screen: 'MyPage'});
   };
 
   const handleClick = (selectedTag: TFilter) => {
@@ -56,14 +52,10 @@ function PreferenceSettingScreen({navigation}: any) {
 
     return isRange1Selected && isRange2Selected && isRange3Selected;
   };
+
   const handleSubmit = async () => {
     setModalVisible(true);
-    const response = await putPreference(selectedTags);
-    if (response.success) {
-      await getHotList();
-      await hotList();
-      await newList();
-    }
+    await putPreference(selectedTags);
   };
 
   useEffect(() => {
@@ -78,7 +70,11 @@ function PreferenceSettingScreen({navigation}: any) {
   }, [data]);
 
   if (loading) {
-    return <ActivityIndicator size="large" color={globalColors.purple} />;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={globalColors.purple} />
+      </View>
+    );
   }
 
   return (
@@ -104,7 +100,6 @@ function PreferenceSettingScreen({navigation}: any) {
             key={item.id}
             item={item}
             onClick={handleClick}
-            // selected={item.selected}
             tagDeleteClick={tagDeleteClick}
           />
         ))}
@@ -116,34 +111,21 @@ function PreferenceSettingScreen({navigation}: any) {
             key={item.id}
             item={item}
             onClick={handleClick}
-            // selected={item.selected}
             tagDeleteClick={tagDeleteClick}
           />
         ))}
       </View>
-      <Text style={styles.popCat}>MATE</Text>
+      <Text style={styles.popCat}>팝업 MATE</Text>
       <View style={styles.popWrapper}>
         {selectedTags.slice(17, POP_UP_TYPES.length).map(item => (
           <CategorySelectButton
             key={item.id}
             item={item}
             onClick={handleClick}
-            // selected={item.selected}
             tagDeleteClick={tagDeleteClick}
           />
         ))}
       </View>
-      {/* {[1, 2, 3].map(step => (
-        <View key={step}>
-          <Text style={[Text20B.text, {marginTop: 20, marginBottom: 10}]}>
-            {renderTitleForStep(step)}
-          </Text>
-          <PreferenceOptionButtons
-            step={step}
-            onSelectOption={(option, index) => handleSelectOption(option, step)}
-          />
-        </View>
-      ))} */}
       <CompleteButton
         onPress={handleSubmit}
         title={'설정 저장하기'}
@@ -164,6 +146,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: globalColors.white,
     paddingHorizontal: 20,
+    marginBottom: 30,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   selectionRow: {
     flexDirection: 'row',

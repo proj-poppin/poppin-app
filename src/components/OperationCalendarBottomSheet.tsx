@@ -32,10 +32,10 @@ const OperationCalendarBottomSheet: React.FC<
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
 
-    // setDates({
-    //   start: today.toISOString().split('T')[0],
-    //   end: tomorrow.toISOString().split('T')[0],
-    // });
+    setDates({
+      start: today.toISOString().split('T')[0],
+      end: tomorrow.toISOString().split('T')[0],
+    });
   }, []);
 
   const handleOpenCalendar = (mode: 'start' | 'end') => {
@@ -46,15 +46,22 @@ const OperationCalendarBottomSheet: React.FC<
   const handleDateSelected = (day: {dateString: string}) => {
     const selectedDate = day.dateString;
     if (selectionMode === 'start') {
-      setDates(prev => ({...prev, start: selectedDate}));
+      setDates(prev => ({
+        ...prev,
+        start: selectedDate,
+        end:
+          new Date(selectedDate) > new Date(prev.end) ? selectedDate : prev.end,
+      }));
       setSelectionMode('end');
     } else if (selectionMode === 'end') {
-      setDates(prev => ({...prev, end: selectedDate}));
+      if (new Date(selectedDate) >= new Date(dates.start)) {
+        setDates(prev => ({...prev, end: selectedDate}));
+      }
     }
   };
 
   const getDateInputTextStyle = (value: string, defaultText: string) => ({
-    color: value === defaultText ? globalColors.font : globalColors.black,
+    color: value === defaultText ? globalColors.font : globalColors.calendar,
   });
 
   const handleComplete = () => {

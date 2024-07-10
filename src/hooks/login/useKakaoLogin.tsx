@@ -6,6 +6,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../../redux/slices/user.ts';
 import useSetAccessTokenAndRefreshToken from '../auth/useSetAccessTokenAndRefreshToken.ts';
 import {useNavigation} from '@react-navigation/native';
+import {Alert} from 'react-native';
 
 // useKakaoLogin 커스텀 훅 수정
 export const useKakaoLogin = () => {
@@ -30,16 +31,20 @@ export const useKakaoLogin = () => {
         dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
         navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
       } else {
-        if (loginResult.error?.code === '40024') {
-          console.log('User not found');
-          navigation.navigate('Entry', {loginError: loginResult.error});
+        if (
+          loginResult.error?.code === '40024' ||
+          loginResult.error?.code === '40026'
+        ) {
+          console.log('Error:', loginResult.error.message);
+          Alert.alert('안내', loginResult.error.message);
+        } else {
+          // 신규 유저라면 닉네입 입력 화면으로 이동
+          setKakaoLoginStatus({newUser: true});
+          const accessToken = loginResult.data!.accessToken;
+          await EncryptedStorage.setItem('accessToken', accessToken);
+          dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
+          dispatch(userSlice.actions.setAccessToken(accessToken));
         }
-        // 신규 유저라면 닉네입 입력 화면으로 이동
-        setKakaoLoginStatus({newUser: true});
-        const accessToken = loginResult.data!.accessToken;
-        await EncryptedStorage.setItem('accessToken', accessToken);
-        dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
-        dispatch(userSlice.actions.setAccessToken(accessToken));
       }
     } catch (err) {
       console.log('Failed to login with Kakao:', err);

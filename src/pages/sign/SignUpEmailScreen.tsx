@@ -70,7 +70,7 @@ function SignUpEmailScreen({navigation}: SignUpEmailScreenProps) {
       .catch(error => {
         const message =
           error.message || '이메일 인증 중 알 수 없는 오류가 발생했습니다.';
-        Alert.alert('Error', message);
+        Alert.alert('안내', message);
       })
       .finally(() => {
         setLoading(false);

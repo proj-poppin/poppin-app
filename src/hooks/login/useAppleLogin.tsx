@@ -47,16 +47,20 @@ export const useAppleLogin = () => {
             dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
             navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
           } else {
-            if (loginResult.error?.code === '40024') {
-              console.log('User not found');
-              navigation.navigate('Entry', {loginError: loginResult.error});
+            if (
+              loginResult.error?.code === '40026' ||
+              loginResult.error?.code === '40024'
+            ) {
+              console.log('Error:', loginResult.error.message);
+              Alert.alert('안내', loginResult.error.message);
+            } else {
+              // 신규 유저라면 닉네임 입력 화면으로 이동
+              setAppleLoginStatus({newUser: true});
+              const accessToken = loginResult.data!.accessToken;
+              await EncryptedStorage.setItem('accessToken', accessToken);
+              dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
+              dispatch(userSlice.actions.setAccessToken(accessToken));
             }
-            // 신규 유저라면 닉네입 입력 화면으로 이동
-            setAppleLoginStatus({newUser: true});
-            const accessToken = loginResult.data!.accessToken;
-            await EncryptedStorage.setItem('accessToken', accessToken);
-            dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
-            dispatch(userSlice.actions.setAccessToken(accessToken));
           }
         } else {
           throw new Error("Apple login didn't provide an identityToken.");

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Platform, Linking} from 'react-native';
+import {View, Text, StyleSheet, Platform, Linking, Alert} from 'react-native';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import SocialLoginButtonRow from '../../utils/function/SocialLoginButtonRow.tsx';
 import {useKakaoLogin} from '../../hooks/login/useKakaoLogin.tsx';
@@ -25,6 +25,7 @@ export type EntryScreenNavigationProp = NativeStackNavigationProp<
 function EntryScreen() {
   const navigation = useNavigation<EntryScreenNavigationProp>();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const {signInWithKakao, kakaoLoginStatus} = useKakaoLogin();
   const {signInWithGoogle, googleLoginStatus} = useGoogleLogin();
@@ -43,15 +44,21 @@ function EntryScreen() {
       newUserType = 'APPLE';
     }
 
-    if (newUserType) {
+    if (newUserType && !loginError) {
       // @ts-ignore
       navigation.navigate('SignUpNickNameSocial', {type: newUserType});
+    }
+
+    if (loginError) {
+      Alert.alert('안내', loginError);
+      setLoginError(null); // Reset the error after showing the alert
     }
   }, [
     kakaoLoginStatus,
     googleLoginStatus,
     naverLoginStatus,
     appleLoginStatus,
+    loginError,
     navigation,
   ]);
 

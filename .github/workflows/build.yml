@@ -1,155 +1,155 @@
-#  name: iOS Build and Deploy
-#
-#  on:
-#    push:
-#      branches:
-#        - dev
-#
-#  jobs:
-#    build:
-#      runs-on: macos-latest
-#
-#      steps:
-#        - name: Checkout repository
-#          uses: actions/checkout@v3
-#
-#        - name: Set up Node.js
-#          uses: actions/setup-node@v3
-#          with:
-#            node-version: '20.9.0'
-#            check-latest: true
-#
-#        - name: Install dependencies
-#          run: npm install
-#
-#        - name: Delete .xcode.env.local file
-#          run: |
-#            if [ -f ios/.xcode.env.local ]; then rm ios/.xcode.env.local; fi
-#
-#        - name: Create .env file
-#          run: |
-#            echo "KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}" >> .env
-#            echo "KAKAO_API_KEY_WITH_KAKAO=${{ secrets.KAKAO_API_KEY_WITH_KAKAO }}" >> .env
-#            echo "NAVER_CONSUMER_KEY=${{ secrets.NAVER_CONSUMER_KEY }}" >> .env
-#            echo "NAVER_SECRECT_KEY=${{ secrets.NAVER_SECRECT_KEY }}" >> .env
-#            echo "NAVER_URL=${{ secrets.NAVER_URL }}" >> .env
-#            echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
-#            echo "API_URL=${{ secrets.API_URL }}" >> .env
-#            echo "GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}" >> .env
-#            echo "GOOGLE_WEB_CLIENT_SECRET=${{ secrets.GOOGLE_WEB_CLIENT_SECRET }}" >> .env
-#            echo "REDIRECT_URI=${{ secrets.REDIRECT_URI }}" >> .env
-#            echo "NAVER_MAP_CLIENT_ID=${{ secrets.NAVER_MAP_CLIENT_ID }}" >> .env
-#
-#        - name: Decode and create GoogleService-Info.plist
-#          run: |
-#            echo "${{ secrets.GOOGLE_SERVICE_INFO_BASE64 }}" | base64 --decode > ios/GoogleService-Info.plist
-#
-#        - name: Update bundle version
-#          run: |
-#            # Set the version number
-#            VERSION_NUMBER="1.0.0"
-#
-#            # Get the current build number from Info.plist
-#            CURRENT_BUILD_NUMBER=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "ios/PoppinProject/Info.plist")
-#
-#            # Increment the build number
-#            NEW_BUILD_NUMBER=$((CURRENT_BUILD_NUMBER + 1))
-#
-#            # Update the Info.plist with the new version number and build number
-#            /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION_NUMBER" "ios/PoppinProject/Info.plist"
-#            /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD_NUMBER" "ios/PoppinProject/Info.plist"
-#
-#            echo "Updated version number to $VERSION_NUMBER and build number to $NEW_BUILD_NUMBER"
-#
-#        - name: Decode iOS secrets
-#          env:
-#            P12_DISTRIBUTION_CERTIFICATE_BASE64: ${{ secrets.IOS_P12_DISTRIBUTION_CERTIFICATE_BASE64 }}
-#            P12_DISTRIBUTION_CERTIFICATE_PASSWORD: ${{ secrets.IOS_P12_DISTRIBUTION_CERTIFICATE_PASSWORD }}
-#            DISTRIBUTION_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_DISTRIBUTION_PROVISIONING_PROFILE_BASE64 }}
-#            APNS_KEY_BASE64: ${{ secrets.APNS_KEY_BASE64 }}
-#            APNS_KEY_PASSWORD: ${{ secrets.APNS_KEY_PASSWORD }}
-#            KEYCHAIN_PASSWORD: ${{ secrets.IOS_RUNNER_LOCAL_KEYCHAIN_PASSWORD }}
-#            EXPORT_OPTIONS_BASE64: ${{ secrets.IOS_EXPORT_OPTIONS_BASE64 }}
-#            PRIVATE_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
-#            API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-#            API_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-#          run: |
-#            CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
-#            PROVISIONING_PROFILE_PATH=$RUNNER_TEMP/ios_dist_pp.mobileprovision
-#            APNS_KEY_PATH=$RUNNER_TEMP/apns_key.p12
-#            KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-#            EXPORT_OPTIONS_PATH="${{ github.workspace }}/ios/PoppinProject/ExportOptions.plist"
-#            AUTH_KEY_PATH=~/private_keys/AuthKey_${API_KEY}.p8
-#
-#            mkdir -p $(dirname "$EXPORT_OPTIONS_PATH")
-#
-#            echo -n "$P12_DISTRIBUTION_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
-#            echo -n "$DISTRIBUTION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $PROVISIONING_PROFILE_PATH
-#            echo -n "$APNS_KEY_BASE64" | base64 --decode -o $APNS_KEY_PATH
-#            echo -n "$EXPORT_OPTIONS_BASE64" | base64 --decode -o $EXPORT_OPTIONS_PATH
-#            mkdir -p ~/private_keys
-#            echo "$PRIVATE_API_KEY" > $AUTH_KEY_PATH
-#
-#            security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-#            security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-#            security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-#            security import $CERTIFICATE_PATH -P "$P12_DISTRIBUTION_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-#            security import $APNS_KEY_PATH -P "$APNS_KEY_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-#            security list-keychain -d user -s $KEYCHAIN_PATH
-#
-#            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-#            cp $PROVISIONING_PROFILE_PATH ~/Library/MobileDevice/Provisioning\ Profiles
-#
-#        - name: Generate jsbundle file
-#          run: |
-#            npx react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/main.jsbundle --assets-dest ios
-#
-#        - name: Build and Archive app 📁
-#          env:
-#            XC_WORKSPACE: "ios/PoppinProject.xcworkspace"
-#            XC_SCHEME: "PoppinProject"
-#            XC_ARCHIVE: "$PWD/ios/build/PoppinProject.xcarchive"
-#          run: |
-#            cd ios && pod install --repo-update --clean-install && cd ..
-#            xcodebuild clean archive -workspace $XC_WORKSPACE -scheme $XC_SCHEME -configuration Release -archivePath $XC_ARCHIVE | xcpretty
-#
-#        - name: List contents of build directory
-#          run: ls -R $PWD/ios/build
-#
-#        - name: Export app
-#          env:
-#            XC_ARCHIVE: "$PWD/ios/build/PoppinProject.xcarchive"
-#          run: |
-#            xcodebuild -exportArchive -archivePath $XC_ARCHIVE -exportOptionsPlist ios/PoppinProject/ExportOptions.plist -exportPath ios/build/PoppinProject -allowProvisioningUpdates | xcpretty
-#
-#        - name: List contents of export directory
-#          run: ls -R $PWD/ios/build/PoppinProject
-#
-#        - name: Verify IPA File Exists
-#          run: |
-#            if [ ! -f ios/build/PoppinProject/*.ipa ]; then
-#              echo "IPA file not found!"
-#              exit 1
-#            else
-#              echo "IPA file exists."
-#            fi
-#
-#        - name: Upload IPA to TestFlight 🆙
-#          env:
-#            API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-#            API_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-#            PRIVATE_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
-#          run: |
-#            mkdir -p ~/private_keys
-#            echo "$PRIVATE_API_KEY" > ~/private_keys/AuthKey_$API_KEY.p8
-#            IPA_FILE=$(find ios/build/PoppinProject -name "*.ipa")
-#            xcrun altool --upload-app -f "$IPA_FILE" --type ios --apiKey "$API_KEY" --apiIssuer "$API_ISSUER" --apiKeyPath ~/private_keys/AuthKey_$API_KEY.p8
-#
-#        - name: Upload Build Logs
-#          if: failure()
-#          uses: actions/upload-artifact@v2
-#          with:
-#            name: build-logs
-#            path: |
-#              /Users/runner/Library/Logs
-#              ${{ runner.temp }}/build_logs
+  name: iOS Build and Deploy
+
+  on:
+    push:
+      branches:
+        - dev
+
+  jobs:
+    build:
+      runs-on: macos-latest
+
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
+
+        - name: Set up Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: '20.9.0'
+            check-latest: true
+
+        - name: Install dependencies
+          run: npm install
+
+        - name: Delete .xcode.env.local file
+          run: |
+            if [ -f ios/.xcode.env.local ]; then rm ios/.xcode.env.local; fi
+
+        - name: Create .env file
+          run: |
+            echo "KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}" >> .env
+            echo "KAKAO_API_KEY_WITH_KAKAO=${{ secrets.KAKAO_API_KEY_WITH_KAKAO }}" >> .env
+            echo "NAVER_CONSUMER_KEY=${{ secrets.NAVER_CONSUMER_KEY }}" >> .env
+            echo "NAVER_SECRECT_KEY=${{ secrets.NAVER_SECRECT_KEY }}" >> .env
+            echo "NAVER_URL=${{ secrets.NAVER_URL }}" >> .env
+            echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
+            echo "API_URL=${{ secrets.API_URL }}" >> .env
+            echo "GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}" >> .env
+            echo "GOOGLE_WEB_CLIENT_SECRET=${{ secrets.GOOGLE_WEB_CLIENT_SECRET }}" >> .env
+            echo "REDIRECT_URI=${{ secrets.REDIRECT_URI }}" >> .env
+            echo "NAVER_MAP_CLIENT_ID=${{ secrets.NAVER_MAP_CLIENT_ID }}" >> .env
+
+        - name: Decode and create GoogleService-Info.plist
+          run: |
+            echo "${{ secrets.GOOGLE_SERVICE_INFO_BASE64 }}" | base64 --decode > ios/GoogleService-Info.plist
+
+        - name: Update bundle version
+          run: |
+            # Set the version number
+            VERSION_NUMBER="1.0.0"
+
+            # Get the current build number from Info.plist
+            CURRENT_BUILD_NUMBER=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "ios/PoppinProject/Info.plist")
+
+            # Increment the build number
+            NEW_BUILD_NUMBER=$((CURRENT_BUILD_NUMBER + 1))
+
+            # Update the Info.plist with the new version number and build number
+            /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION_NUMBER" "ios/PoppinProject/Info.plist"
+            /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD_NUMBER" "ios/PoppinProject/Info.plist"
+
+            echo "Updated version number to $VERSION_NUMBER and build number to $NEW_BUILD_NUMBER"
+
+        - name: Decode iOS secrets
+          env:
+            P12_DISTRIBUTION_CERTIFICATE_BASE64: ${{ secrets.IOS_P12_DISTRIBUTION_CERTIFICATE_BASE64 }}
+            P12_DISTRIBUTION_CERTIFICATE_PASSWORD: ${{ secrets.IOS_P12_DISTRIBUTION_CERTIFICATE_PASSWORD }}
+            DISTRIBUTION_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_DISTRIBUTION_PROVISIONING_PROFILE_BASE64 }}
+            APNS_KEY_BASE64: ${{ secrets.APNS_KEY_BASE64 }}
+            APNS_KEY_PASSWORD: ${{ secrets.APNS_KEY_PASSWORD }}
+            KEYCHAIN_PASSWORD: ${{ secrets.IOS_RUNNER_LOCAL_KEYCHAIN_PASSWORD }}
+            EXPORT_OPTIONS_BASE64: ${{ secrets.IOS_EXPORT_OPTIONS_BASE64 }}
+            PRIVATE_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
+            API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+            API_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          run: |
+            CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+            PROVISIONING_PROFILE_PATH=$RUNNER_TEMP/ios_dist_pp.mobileprovision
+            APNS_KEY_PATH=$RUNNER_TEMP/apns_key.p12
+            KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+            EXPORT_OPTIONS_PATH="${{ github.workspace }}/ios/PoppinProject/ExportOptions.plist"
+            AUTH_KEY_PATH=~/private_keys/AuthKey_${API_KEY}.p8
+
+            mkdir -p $(dirname "$EXPORT_OPTIONS_PATH")
+
+            echo -n "$P12_DISTRIBUTION_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+            echo -n "$DISTRIBUTION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $PROVISIONING_PROFILE_PATH
+            echo -n "$APNS_KEY_BASE64" | base64 --decode -o $APNS_KEY_PATH
+            echo -n "$EXPORT_OPTIONS_BASE64" | base64 --decode -o $EXPORT_OPTIONS_PATH
+            mkdir -p ~/private_keys
+            echo "$PRIVATE_API_KEY" > $AUTH_KEY_PATH
+
+            security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+            security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+            security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+            security import $CERTIFICATE_PATH -P "$P12_DISTRIBUTION_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+            security import $APNS_KEY_PATH -P "$APNS_KEY_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+            security list-keychain -d user -s $KEYCHAIN_PATH
+
+            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+            cp $PROVISIONING_PROFILE_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+
+        - name: Generate jsbundle file
+          run: |
+            npx react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/main.jsbundle --assets-dest ios
+
+        - name: Build and Archive app 📁
+          env:
+            XC_WORKSPACE: "ios/PoppinProject.xcworkspace"
+            XC_SCHEME: "PoppinProject"
+            XC_ARCHIVE: "$PWD/ios/build/PoppinProject.xcarchive"
+          run: |
+            cd ios && pod install --repo-update --clean-install && cd ..
+            xcodebuild clean archive -workspace $XC_WORKSPACE -scheme $XC_SCHEME -configuration Release -archivePath $XC_ARCHIVE | xcpretty
+
+        - name: List contents of build directory
+          run: ls -R $PWD/ios/build
+
+        - name: Export app
+          env:
+            XC_ARCHIVE: "$PWD/ios/build/PoppinProject.xcarchive"
+          run: |
+            xcodebuild -exportArchive -archivePath $XC_ARCHIVE -exportOptionsPlist ios/PoppinProject/ExportOptions.plist -exportPath ios/build/PoppinProject -allowProvisioningUpdates | xcpretty
+
+        - name: List contents of export directory
+          run: ls -R $PWD/ios/build/PoppinProject
+
+        - name: Verify IPA File Exists
+          run: |
+            if [ ! -f ios/build/PoppinProject/*.ipa ]; then
+              echo "IPA file not found!"
+              exit 1
+            else
+              echo "IPA file exists."
+            fi
+
+        - name: Upload IPA to TestFlight 🆙
+          env:
+            API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+            API_ISSUER: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+            PRIVATE_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
+          run: |
+            mkdir -p ~/private_keys
+            echo "$PRIVATE_API_KEY" > ~/private_keys/AuthKey_$API_KEY.p8
+            IPA_FILE=$(find ios/build/PoppinProject -name "*.ipa")
+            xcrun altool --upload-app -f "$IPA_FILE" --type ios --apiKey "$API_KEY" --apiIssuer "$API_ISSUER" --apiKeyPath ~/private_keys/AuthKey_$API_KEY.p8
+
+        - name: Upload Build Logs
+          if: failure()
+          uses: actions/upload-artifact@v2
+          with:
+            name: build-logs
+            path: |
+              /Users/runner/Library/Logs
+              ${{ runner.temp }}/build_logs

@@ -23,6 +23,7 @@ import ForLoginBox from '../../components/ForLoginBox.tsx';
 import CalendarComponent from './calendar/CalendarComponent.tsx';
 import NoSavedPopupsComponent from './NoSavedPopupComponent.tsx';
 import refreshSlice from '../../redux/slices/refreshSlice';
+
 const popUpTypes = ['오픈 예정인 팝업', '운영 중인 팝업', '운영 종료 팝업'];
 const orderTypes = ['오픈일순', '마감일순', '저장순'];
 type PopupType = '오픈 예정인 팝업' | '운영 중인 팝업' | '운영 종료 팝업';
@@ -30,7 +31,8 @@ type PopupType = '오픈 예정인 팝업' | '운영 중인 팝업' | '운영 �
 function LikesScreen({navigation}) {
   const [selectedPopUpType, setSelectedPopUpType] =
     useState<PopupType>('운영 중인 팝업');
-  const [selectedOrderType, setSelectedOrderType] = useState<string>('');
+  const [selectedOrderType, setSelectedOrderType] =
+    useState<string>('오픈일순');
   const [isCalendarView, setIsCalendarView] = useState(false);
 
   const {data: interestList = [], refetch, loading} = useGetInterestList();
@@ -49,16 +51,14 @@ function LikesScreen({navigation}) {
 
   const isLoggedIn = useIsLoggedIn();
 
+  const handleRefresh = useCallback(() => {
+    setSelectedPopUpType('운영 중인 팝업');
+    refetch();
+  }, [refetch]);
+
   useEffect(() => {
     dispatch(refreshSlice.actions.setOnRefresh(handleRefresh));
   }, [handleRefresh, dispatch]);
-
-  useEffect(() => {
-    dispatch(loadingSlice.actions.setLoading({isLoading: true}));
-    setTimeout(() => {
-      dispatch(loadingSlice.actions.setLoading({isLoading: false}));
-    }, 2000);
-  }, [dispatch]);
 
   const filteredInterestList = useMemo(() => {
     if (!interestList) {
@@ -99,10 +99,6 @@ function LikesScreen({navigation}) {
     navigation.replace('Entry');
   };
 
-  const handleRefresh = useCallback(() => {
-    refetch();
-  }, [refetch]);
-
   if (!isLoggedIn) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -131,7 +127,7 @@ function LikesScreen({navigation}) {
       <ScrollView
         contentContainerStyle={{flex: 1}}
         refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={refetch} />
+          <RefreshControl refreshing={loading} onRefresh={handleRefresh} />
         }>
         <NoSavedPopupsComponent />
       </ScrollView>
@@ -170,7 +166,7 @@ function LikesScreen({navigation}) {
                 ...item,
                 isInterested: true, // Ensure all items from the interest list are marked as interested
               }))}
-              onRefresh={refetch}
+              onRefresh={handleRefresh}
             />
           </ScrollView>
         )}

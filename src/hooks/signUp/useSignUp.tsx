@@ -3,6 +3,7 @@ import {useSelector} from 'react-redux';
 import basicSignUp from '../../apis/auth/basicSignUp.ts';
 import {RootState} from '../../redux/stores/reducer.ts';
 import useSetAccessTokenAndRefreshToken from '../auth/useSetAccessTokenAndRefreshToken.ts';
+import {Alert} from 'react-native'; // Import Alert
 
 const useSignUp = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -10,9 +11,9 @@ const useSignUp = () => {
     success: false,
     error: null,
     newUser: false,
-    loading: false, // Add loading state
+    loading: false,
   });
-  const setTokens = useSetAccessTokenAndRefreshToken(); // 커스텀 훅 호출
+  const setTokens = useSetAccessTokenAndRefreshToken();
 
   const handleSignUp = useCallback(async () => {
     const {
@@ -27,7 +28,7 @@ const useSignUp = () => {
 
     setSignUpStatus(prevState => ({
       ...prevState,
-      loading: true, // Set loading to true when sign up starts
+      loading: true,
     }));
 
     try {
@@ -45,27 +46,32 @@ const useSignUp = () => {
         const {accessToken, refreshToken} = signUpResult.data;
         await setTokens({accessToken, refreshToken});
 
-        setSignUpStatus(prevState => ({
-          ...prevState,
+        setSignUpStatus({
           success: true,
           error: null,
-          loading: false, // Set loading to false when sign up is successful
-        }));
+          newUser: true,
+          loading: false,
+        });
       } else {
-        console.log('SignUp failed:', signUpResult.error);
-        setSignUpStatus(prevState => ({
-          ...prevState,
+        setSignUpStatus({
           success: false,
-          loading: false, // Set loading to false when sign up fails
-        }));
+          error: signUpResult.error,
+          newUser: false,
+          loading: false,
+        });
+
+        if (signUpResult.error?.errorFields?.birthDate) {
+          Alert.alert('안내', signUpResult.error.errorFields.birthDate);
+        }
       }
     } catch (error) {
-      console.log('SignUp error:', error);
-      setSignUpStatus(prevState => ({
-        ...prevState,
+      console.error('SignUp error:', error);
+      setSignUpStatus({
         success: false,
-        loading: false, // Set loading to false when there is an error
-      }));
+        error: error.toString(),
+        newUser: false,
+        loading: false,
+      });
     }
   }, [user, setTokens]);
 

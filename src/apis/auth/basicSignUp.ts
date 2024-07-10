@@ -1,6 +1,26 @@
 import axios from 'axios';
 import Config from 'react-native-config';
-import {LoginResponseData} from './basicLogin.ts';
+
+interface SignUpErrorFields {
+  [key: string]: string;
+}
+
+interface SignUpError {
+  code: string;
+  message: string;
+  errorFields?: SignUpErrorFields;
+}
+
+interface SignUpResponseData {
+  accessToken: string;
+  refreshToken: string;
+}
+
+interface SignUpResponse {
+  success: boolean;
+  data?: SignUpResponseData;
+  error?: SignUpError;
+}
 
 const basicSignUp = async (
   email: string,
@@ -10,33 +30,29 @@ const basicSignUp = async (
   birthDate: string,
   agreedToPrivacyPolicy: boolean,
   agreedToServiceTerms: boolean,
-): Promise<CommonResponse<LoginResponseData>> => {
+): Promise<SignUpResponse> => {
   try {
-    const response = await axios.post<CommonResponse<LoginResponseData>>(
-      `${Config.API_URL}/api/v1/auth/sign-up`,
-      {
-        email,
-        password,
-        passwordConfirm,
-        nickname,
-        birthDate,
-        agreedToPrivacyPolicy,
-        agreedToServiceTerms,
-      },
-    );
+    const response = await axios.post<
+      CommonResponse<{accessToken: string; refreshToken: string}>
+    >(`${Config.API_URL}/api/v1/auth/sign-up`, {
+      email,
+      password,
+      passwordConfirm,
+      nickname,
+      birthDate,
+      agreedToPrivacyPolicy,
+      agreedToServiceTerms,
+    });
 
-    if (response.data.success) {
-      return response.data;
-    } else {
-      return {
-        success: false,
-        error: response.data.error,
-      };
-    }
+    return response.data;
   } catch (error) {
+    console.log('Network error:', error);
     return {
       success: false,
-      error: {code: 'Network', message: 'Network error'},
+      error: {
+        code: 'Network',
+        message: 'Network error',
+      },
     };
   }
 };

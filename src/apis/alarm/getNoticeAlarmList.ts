@@ -1,8 +1,13 @@
 import PublicApiInstance from '../apiInstance/PublicApiInstance';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 const getNoticeAlarmList = async () => {
   try {
-    const response = await PublicApiInstance.get('/api/v1/alarm/info');
+    const fcmToken = (await EncryptedStorage.getItem('pushToken')) ?? '';
+    const response = await PublicApiInstance.post('/api/v1/alarm/info', {
+      fcmToken: fcmToken,
+    });
+
     console.log('getNoticeAlarmList response:', response.data);
     if (response.data.success) {
       console.log('Notice alarm list@@@@@@:', response.data.data);

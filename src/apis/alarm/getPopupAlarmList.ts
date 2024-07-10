@@ -1,7 +1,7 @@
-import nonPublicApiInstance from '../../apis/apiInstance/NonPublicApiInstance';
+import PublicApiInstance from '../apiInstance/PublicApiInstance.ts';
 
 const getPopupAlarmList = async (fcm_token: string) => {
-  const response = await nonPublicApiInstance.post('/api/v1/alarm/popup', {
+  const response = await PublicApiInstance.post('/api/v1/alarm/popup', {
     fcmToken: fcm_token,
   });
 

@@ -23,7 +23,7 @@ export type AppNavigatorParamList = {
   OperatorRegister: undefined;
   MemberDelete: undefined;
   PreferenceSetting: undefined;
-  PopUpDetail: {id: number; name: string; isAlarm: boolean};
+  PopUpDetail: {id: number; name: string; isAlarm: boolean; alarmId?: number};
   Alarm: undefined;
   AlarmSetting: undefined;
   NoticeDetail: {nid: number};

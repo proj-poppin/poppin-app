@@ -12,6 +12,7 @@ type NoticeDetailScreenNavigationProp = NativeStackNavigationProp<
 
 interface AlarmCardProps {
   id: number;
+  alarmId: number;
   title: string;
   body: string;
   createdAt: number[];
@@ -22,6 +23,7 @@ interface AlarmCardProps {
 
 const AlarmCard: React.FC<AlarmCardProps> = ({
   id,
+  alarmId,
   title,
   body,
   createdAt,
@@ -35,7 +37,12 @@ const AlarmCard: React.FC<AlarmCardProps> = ({
     if (type === 'notice') {
       navigation.navigate('NoticeDetail', {nid: id});
     } else {
-      navigation.navigate('PopUpDetail', {id: id, name: title, isAlarm: true});
+      navigation.navigate('PopUpDetail', {
+        id: id,
+        alarmId: alarmId,
+        name: title,
+        isAlarm: true,
+      });
     }
   };
 

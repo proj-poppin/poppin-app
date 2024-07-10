@@ -11,6 +11,7 @@ import {
   View,
   TouchableWithoutFeedback, // 추가된 부분
 } from 'react-native';
+import Share from 'react-native-share';
 import useGetDetailPopUp from '../../hooks/detailPopUp/useGetDetailPopUp';
 import ShareSvg from '../../assets/detail/share.svg';
 import StarOffSvg from '../../assets/detail/starOff.svg';
@@ -49,7 +50,6 @@ import useAddVisitor from '../../hooks/detailPopUp/useAddVisitor';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList';
 import PopUpDetailOptions from '../../navigators/options/PopUpDetailOptions';
-import {Share} from 'react-native';
 import useGetDistanceFromLatLonInKm from '../../utils/function/getDistanceFromLatLonInKm.ts';
 import VisitCompleteSvg from '../../assets/icons/visitComplete.svg';
 import VisitReadySvg from '../../assets/icons/visitReady.svg';
@@ -61,14 +61,17 @@ import {useInterest} from '../../hooks/useInterest.tsx';
 import useGetInterestList from '../../hooks/popUpList/useGetInterestList.tsx';
 import {RootState} from '../../redux/stores/reducer.ts';
 import Text24B from '../../styles/texts/headline/Text24B.ts';
+import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
+import ImageModal from 'react-native-image-modal';
 
 export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
   'PopUpDetail'
 >;
-
 const PopUpDetailScreen = ({route}) => {
+  const [loginModalVisible, setLoginModalVisible] = useState(false);
   const isLoggedIn = useIsLoggedIn();
+  console.log('isLoggedIn:', isLoggedIn);
   const navigation = useNavigation<PopUpDetailScreenNavigationProp>();
   const [fetchTrigger, setFetchTrigger] = useState(false);
   const {id, title, isAlarm} = route.params;
@@ -113,9 +116,8 @@ const PopUpDetailScreen = ({route}) => {
     }
   }, [navigation, detailPopUpData]);
 
-  const firstImageUrl =
-    detailPopUpData?.images?.[0] ??
-    'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/4/1.jpg';
+  const firstImageUrl = detailPopUpData?.images?.[0];
+
   const [isShowToast, setIsShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const {addRecommendCount, loading: recommendLoading} =
@@ -127,43 +129,72 @@ const PopUpDetailScreen = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
 
+  const [alertMessage, setAlertMessage] = useState(
+    '방문 인증을 위해서는 로그인이 필요해요.',
+  );
+  const openLoginModal = (
+    message = '방문 인증을 위해서는 로그인이 필요해요.',
+  ) => {
+    setAlertMessage(message);
+    setLoginModalVisible(true);
+  };
+  const closeLoginModal = () => {
+    setLoginModalVisible(false);
+  };
+
   const handleIsOnlyVerifiedReview = () => {
     setIsOnlyVerifiedReview(!isOnlyVerifiedReview);
   };
 
   const handleVisitPress = async () => {
     if (!isLoggedIn) {
-      navigation.navigate('Entry');
+      // navigation.navigate('Entry');
+      openLoginModal('관심 팝업에 추가하려면 로그인이 필요해요.');
       return;
     }
     const hasPermission = await requestLocationPermission();
     if (hasPermission) {
       Geolocation.getCurrentPosition(
-        position => {
+        async position => {
           const {latitude, longitude} = position.coords;
-          getDistance(
+          console.log(`사용자 위도: ${latitude}, 경도: ${longitude}`);
+          console.log(
+            '팝업의 위도: ',
+            detailPopUpData?.latitude,
+            '경도: ',
+            detailPopUpData?.longitude,
+          );
+
+          const distance = getDistance(
             latitude ?? 0,
             longitude ?? 0,
             detailPopUpData?.latitude ?? 0,
             detailPopUpData?.longitude ?? 0,
           );
+
+          if (distance !== null && distance <= 0.05) {
+            const response = await addVisitorPopUp(
+              detailPopUpData!.id!,
+              'fcmToken',
+            );
+            if (response.success) {
+              setToastMessage('방문 인증 되었습니다.');
+              setFetchTrigger(!fetchTrigger);
+            } else {
+              setToastMessage(
+                response.error?.message || '방문 인증에 실패했습니다.',
+              );
+            }
+            setIsShowToast(true);
+          } else {
+            setCompleteModalVisible(true); // 토스트 메시지 대신 모달 창을 활성화
+          }
         },
         error => {
           console.log(error.code, error.message);
         },
         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
       );
-    }
-
-    if (hasPermission) {
-      const response = await addVisitorPopUp(detailPopUpData!.id!, 'fcmToken');
-      if (response.success) {
-        setToastMessage('방문 인증 되었습니다.');
-        setFetchTrigger(!fetchTrigger);
-      } else {
-        setToastMessage(response.error?.message || '방문 인증에 실패했습니다.');
-      }
-      setIsShowToast(true);
     }
   };
 
@@ -177,8 +208,7 @@ const PopUpDetailScreen = ({route}) => {
   const isInterested = interestState[id] || false;
   const handleToggleInterest = async () => {
     if (!isLoggedIn) {
-      Alert.alert('로그인이 필요한 서비스입니다.');
-      navigation.navigate('Entry');
+      openLoginModal();
       return;
     }
     if (isInterested) {
@@ -238,18 +268,33 @@ const PopUpDetailScreen = ({route}) => {
   }, [detailPopUpData]);
 
   useEffect(() => {
-    if (initialLoadRef.current) {
-      initialLoadRef.current = false;
-      if (
-        detailPopUpData?.isVisited === false &&
-        distance !== null &&
-        distance <= 0.05
-      ) {
-        setToastMessage('이 팝업이 근처에 있어요!!');
-        setIsShowToast(true);
+    const checkPermissionAndCalculateDistance = async () => {
+      const hasPermission = await requestLocationPermission();
+      if (hasPermission && detailPopUpData) {
+        Geolocation.getCurrentPosition(
+          position => {
+            const {latitude, longitude} = position.coords;
+            const dist = getDistance(
+              latitude ?? 0,
+              longitude ?? 0,
+              detailPopUpData.latitude ?? 0,
+              detailPopUpData.longitude ?? 0,
+            );
+            if (dist !== null && dist <= 0.05) {
+              setToastMessage('이 팝업이 근처에 있어요!!');
+              setIsShowToast(true);
+            }
+          },
+          error => {
+            console.log(error.code, error.message);
+          },
+          {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+        );
       }
-    }
-  }, [distance, detailPopUpData]);
+    };
+
+    checkPermissionAndCalculateDistance().then(r => r);
+  }, [distance, detailPopUpData, getDistance]);
 
   if (loading || !isLoaded) {
     return (
@@ -286,6 +331,22 @@ const PopUpDetailScreen = ({route}) => {
   const filteredReviews = isOnlyVerifiedReview
     ? reviews.filter(review => review.isCertificated)
     : reviews;
+  const handleShare = async () => {
+    if (!isLoggedIn) {
+      openLoginModal('공유하기 위해서는 로그인이 필요합니다.');
+      return;
+    }
+    const shareOptions = {
+      title: 'Share Popup',
+      message: `Check out this amazing popup: ${detailPopUpData!.name}`,
+      url: detailPopUpData!.images[0],
+    };
+    try {
+      await Share.open(shareOptions);
+    } catch (error) {
+      // console.error('Error sharing', error);
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={() => setIsShowToast(false)}>
@@ -336,10 +397,7 @@ const PopUpDetailScreen = ({route}) => {
                 <Pressable onPress={handleToggleInterest}>
                   {isInterested ? <StarOnSvg /> : <StarOffSvg />}
                 </Pressable>
-                <Pressable
-                  onPress={async () => {
-                    await Share.share({message: 'eqwew'});
-                  }}>
+                <Pressable onPress={handleShare}>
                   <ShareSvg style={{paddingHorizontal: 20}} />
                 </Pressable>
               </View>
@@ -487,10 +545,16 @@ const PopUpDetailScreen = ({route}) => {
                 </View>
                 <ScrollView horizontal style={styles.imageScroll}>
                   {review.imageUrls.map((url, index) => (
-                    <Image
+                    <ImageModal
                       key={index}
+                      resizeMode="contain"
+                      style={{
+                        width: 120,
+                        height: 120,
+                        overflow: 'hidden',
+                        borderRadius: 10,
+                      }}
                       source={{uri: url}}
-                      style={styles.reviewImage}
                     />
                   ))}
                 </ScrollView>
@@ -540,6 +604,18 @@ const PopUpDetailScreen = ({route}) => {
             message={toastMessage}
           />
         )}
+        <TwoSelectConfirmationModal
+          isVisible={loginModalVisible}
+          onClose={closeLoginModal}
+          onConfirm={() => {
+            navigation.navigate('Entry');
+            closeLoginModal();
+          }}
+          mainAlertTitle="로그인이 필요합니다"
+          subAlertTitle={alertMessage}
+          selectFirstText="나중에 할래요"
+          selectSecondText="로그인하기"
+        />
         <Spinner
           visible={addLoading || deleteLoading || recommendLoading} // Updated line
           textContent={'로딩중...'}
@@ -718,5 +794,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
 export default PopUpDetailScreen;

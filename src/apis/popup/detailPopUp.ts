@@ -1,23 +1,17 @@
 import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 import {DetailPopUpDataNonPublic} from '../../types/DetailPopUpDataNonPublic.ts';
-import EncryptedStorage from 'react-native-encrypted-storage';
 
 const getDetailPopUp = async (
-  id: number,
-  alarmId: number,
+  popUpId: number,
   isAlarm: boolean,
 ): Promise<CommonResponse<DetailPopUpDataNonPublic>> => {
   try {
-    const fcmToken = (await EncryptedStorage.getItem('pushToken')) ?? '';
-    const url = isAlarm ? '/api/v1/alarm/detail/popup' : '/api/v1/popup/detail';
-
-    const response = isAlarm
-      ? await nonPublicApiInstance.post(url, {
-          popupId: id,
-          alarmId: alarmId,
-          fcmToken: fcmToken,
-        })
-      : await nonPublicApiInstance.get(url, {params: {popupId: id}});
+    const url = isAlarm
+      ? '/api/v1/alarm/popup/guest/detail'
+      : '/api/v1/popup/guest/detail';
+    const response = await nonPublicApiInstance.get(url, {
+      params: {popupId: popUpId},
+    });
 
     if (response.data.success) {
       console.log('DetailPopUpDataNonPublic:', response.data);

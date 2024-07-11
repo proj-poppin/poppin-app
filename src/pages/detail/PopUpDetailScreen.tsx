@@ -9,7 +9,7 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableWithoutFeedback, // 추가된 부분
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Share from 'react-native-share';
 import useGetDetailPopUp from '../../hooks/detailPopUp/useGetDetailPopUp';
@@ -30,10 +30,8 @@ import ReviewProfileSvg from '../../assets/detail/reviewProfile.svg';
 import VerifiedReviewSvg from '../../assets/detail/verifiedReview.svg';
 import WriteReviewSvg from '../../assets/detail/writeReview.svg';
 import SvgWithNameBoxLabel from '../../components/SvgWithNameBoxLabel';
-import UnderlinedTextButton from '../../components/UnderlineTextButton';
 import LikeReviewSvg from '../../assets/detail/likesReview.svg';
 import Text16M from '../../styles/texts/body_medium_large/Text16M';
-import SortingSvg from '../../assets/detail/sorting.svg';
 import ReasonItem from '../../components/ReasonItem';
 import CongestionSection from '../../components/organisms/section/CongestionSection';
 import {Review, VisitorDataDetail} from '../../types/DetailPopUpDataNonPublic';
@@ -65,6 +63,10 @@ import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationMo
 import ImageModal from 'react-native-image-modal';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Text12R from '../../styles/texts/label/Text12R.ts';
+import MenuSvg from '../../assets/detail/menu.svg'; // MenuSvg 가져오기
+import SelectDropdown from 'react-native-select-dropdown';
+import useBlockUser from '../../hooks/useBlockUser.tsx';
+import UnderlinedTextButton from '../../components/UnderlineTextButton.tsx'; // 추가된 부분
 
 export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
@@ -74,11 +76,10 @@ export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
 const PopUpDetailScreen = ({route}) => {
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const isLoggedIn = useIsLoggedIn();
-  console.log('isLoggedIn:', isLoggedIn);
   const navigation = useNavigation<PopUpDetailScreenNavigationProp>();
   const [fetchTrigger, setFetchTrigger] = useState(false);
   const {id, alarmId, name, isAlarm} = route.params;
-  const [reviews, setReviews] = useState<Review[]>([]); // Correctly set the initial state to an empty array
+  const [reviews, setReviews] = useState<Review[]>([]);
   const reviewSubmitted = useSelector(state => state.reviewSubmitted);
   const {
     data: detailPopUpData,
@@ -91,14 +92,15 @@ const PopUpDetailScreen = ({route}) => {
   const openCompleteModal = () => {
     setCompleteModalVisible(true);
   };
-
   const {refetch: refetchInterestList} = useGetInterestList();
   const onRefresh = useSelector((state: RootState) => state.refresh.onRefresh);
 
   const {interestState, updateInterest} = useInterest();
-
   const dispatch = useDispatch();
   const initialLoadRef = useRef(true);
+
+  const {blockUserDetails, loading: blockLoading} = useBlockUser(); // 추가된 부분
+
   useEffect(() => {
     if (reviewSubmitted) {
       refetch();
@@ -115,7 +117,7 @@ const PopUpDetailScreen = ({route}) => {
           name: detailPopUpData.name,
         }),
       );
-      setReviews(detailPopUpData.review); // Set the reviews state
+      setReviews(detailPopUpData.review);
     }
   }, [navigation, detailPopUpData]);
 
@@ -151,7 +153,6 @@ const PopUpDetailScreen = ({route}) => {
 
   const handleVisitPress = async () => {
     if (!isLoggedIn) {
-      // navigation.navigate('Entry');
       openLoginModal('관심 팝업에 추가하려면 로그인이 필요해요.');
       return;
     }
@@ -160,14 +161,6 @@ const PopUpDetailScreen = ({route}) => {
       Geolocation.getCurrentPosition(
         async position => {
           const {latitude, longitude} = position.coords;
-          console.log(`사용자 위도: ${latitude}, 경도: ${longitude}`);
-          console.log(
-            '팝업의 위도: ',
-            detailPopUpData?.latitude,
-            '경도: ',
-            detailPopUpData?.longitude,
-          );
-
           const distance = getDistance(
             latitude ?? 0,
             longitude ?? 0,
@@ -192,7 +185,7 @@ const PopUpDetailScreen = ({route}) => {
             }
             setIsShowToast(true);
           } else {
-            setCompleteModalVisible(true); // 토스트 메시지 대신 모달 창을 활성화
+            setCompleteModalVisible(true);
           }
         },
         error => {
@@ -202,6 +195,7 @@ const PopUpDetailScreen = ({route}) => {
       );
     }
   };
+
   const handleCompletePress = () => {
     if (!isLoggedIn) {
       navigation.navigate('Entry');
@@ -209,19 +203,19 @@ const PopUpDetailScreen = ({route}) => {
     }
     setModalVisible(true);
   };
+
   const isInterested = interestState[id] || false;
+
   const handleToggleInterest = async () => {
     if (!isLoggedIn) {
       openLoginModal();
       return;
     }
     if (isInterested) {
-      console.log(`toast: ${isShowToast}`);
       await deleteInterest(id);
       setToastMessage('관심팝업에서 삭제되었어요!');
       updateInterest(id, false);
     } else {
-      console.log(`toast: ${isShowToast}`);
       await addInterest(id);
       setToastMessage('관심팝업에 저장되었어요!');
       updateInterest(id, true);
@@ -237,9 +231,7 @@ const PopUpDetailScreen = ({route}) => {
   };
 
   const handleOpenLink = (link: string) => {
-    Linking.openURL(link)
-      .then(r => console.log(r))
-      .catch(e => console.log(e));
+    Linking.openURL(link).catch(e => console.log(e));
   };
 
   const handleRecommendPress = async (reviewId: number) => {
@@ -263,41 +255,14 @@ const PopUpDetailScreen = ({route}) => {
       console.error('Recommend error:', error);
     }
   };
+
   const [isLoaded, setIsLoaded] = useState(false);
+
   useEffect(() => {
     if (detailPopUpData) {
       setIsLoaded(true);
     }
   }, [detailPopUpData]);
-  // useEffect(() => {
-  //   const checkPermissionAndCalculateDistance = async () => {
-  //     console.log('2번 2번');
-  //     const hasPermission = await requestLocationPermission();
-  //     if (hasPermission && detailPopUpData) {
-  //       Geolocation.getCurrentPosition(
-  //         position => {
-  //           const {latitude, longitude} = position.coords;
-  //           const dist = getDistance(
-  //             latitude ?? 0,
-  //             longitude ?? 0,
-  //             detailPopUpData.latitude ?? 0,
-  //             detailPopUpData.longitude ?? 0,
-  //           );
-  //           if (dist !== null && dist <= 0.05) {
-  //             setToastMessage('이 팝업이 근처에 있어요!!');
-  //             setIsShowToast(true);
-  //           }
-  //         },
-  //         error => {
-  //           console.log(error.code, error.message);
-  //         },
-  //         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-  //       );
-  //     }
-  //   };
-  //
-  //   checkPermissionAndCalculateDistance().then(r => r);
-  // }, [distance, detailPopUpData, getDistance]);
 
   if (loading || !isLoaded) {
     return (
@@ -334,6 +299,7 @@ const PopUpDetailScreen = ({route}) => {
   const filteredReviews = isOnlyVerifiedReview
     ? reviews.filter(review => review.isCertificated)
     : reviews;
+
   const handleShare = async () => {
     if (!isLoggedIn) {
       openLoginModal('공유하기 위해서는 로그인이 필요합니다.');
@@ -346,8 +312,40 @@ const PopUpDetailScreen = ({route}) => {
     };
     try {
       await Share.open(shareOptions);
-    } catch (error) {
-      // console.error('Error sharing', error);
+    } catch (error) {}
+  };
+
+  const handleBlock = async userId => {
+    console.log('userId', userId);
+    const response = await blockUserDetails(userId);
+    if (response.success) {
+      Alert.alert('차단', '해당 사용자가 차단되었습니다.');
+      refetch();
+    } else {
+      if (response.error.code === '40028') {
+        Alert.alert('안내', '이미 차단한 사용자입니다.');
+      } else if (response.error.code === '40027') {
+        Alert.alert('안내', '자신을 차단할 수 없습니다.');
+      } else {
+        Alert.alert('오류', response.error.message);
+      }
+    }
+  };
+
+  const menuOptions = [
+    {label: '신고하기', action: 'Report'},
+    {label: '차단하기', action: 'Block'},
+  ];
+
+  const handleMenuSelect = (selectedItem, review) => {
+    if (selectedItem.action === 'Report') {
+      navigation.navigate('Report', {
+        id: id,
+        isReview: true,
+        reviewId: review.reviewId,
+      });
+    } else if (selectedItem.action === 'Block') {
+      handleBlock(review.userId);
     }
   };
 
@@ -537,7 +535,6 @@ const PopUpDetailScreen = ({route}) => {
               </View>
               <View style={styles.recentReviewHeader}>
                 <Text>추천순</Text>
-                {/*<SortingSvg />*/}
               </View>
             </View>
             <View style={styles.commonContainer}>
@@ -567,15 +564,20 @@ const PopUpDetailScreen = ({route}) => {
                         </Text>
                       </View>
                     </View>
-                    <UnderlinedTextButton
-                      label={'신고하기'}
-                      onClicked={() => {
-                        navigation.navigate('Report', {
-                          id: id,
-                          isReview: true,
-                          reviewId: review.reviewId,
-                        });
-                      }}
+                    <SelectDropdown
+                      data={menuOptions}
+                      onSelect={selectedItem =>
+                        handleMenuSelect(selectedItem, review)
+                      }
+                      buttonTextAfterSelection={selectedItem =>
+                        selectedItem.label
+                      }
+                      rowTextForSelection={item => item.label}
+                      renderCustomizedButtonChild={() => <MenuSvg />}
+                      buttonStyle={styles.dropdownButtonStyle}
+                      dropdownStyle={styles.dropdownStyle}
+                      rowTextStyle={styles.rowTextStyle}
+                      defaultButtonText=""
                     />
                   </View>
                   <ScrollView horizontal style={styles.imageScroll}>
@@ -654,7 +656,9 @@ const PopUpDetailScreen = ({route}) => {
           selectSecondText="로그인하기"
         />
         <Spinner
-          visible={addLoading || deleteLoading || recommendLoading} // Updated line
+          visible={
+            addLoading || deleteLoading || recommendLoading || blockLoading
+          }
           textContent={'로딩중...'}
           textStyle={{color: '#FFF'}}
         />
@@ -710,12 +714,12 @@ const styles = StyleSheet.create({
   },
   posterImage: {
     width: '100%',
-    height: 400, // Adjust height as needed
+    height: 400,
   },
   detailContainer: {},
   title: {
     ...Text20B.text,
-    marginBottom: 8,
+    marginTop: 20,
   },
   introduce: {
     marginTop: 15,
@@ -833,5 +837,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  dropdownButtonStyle: {
+    backgroundColor: 'transparent',
+    width: 30,
+    height: 30,
+    padding: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dropdownStyle: {
+    position: 'absolute',
+    borderRadius: 8,
+    top: -20,
+    backgroundColor: globalColors.white,
+    marginTop: 30,
+    marginLeft: -100,
+    minWidth: 135,
+  },
+  rowTextStyle: {
+    color: globalColors.font,
+    textAlign: 'center',
+  },
 });
+
 export default PopUpDetailScreen;

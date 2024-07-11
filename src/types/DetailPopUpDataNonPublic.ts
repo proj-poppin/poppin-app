@@ -18,6 +18,7 @@ export type Review = {
   reviewId: number;
   nickname: string;
   reviewCnt: number;
+  userId: number; // ✨ 추가된 필드(차단당하는거 때문에 필요) ✨
   text: string;
   imageUrls: string[];
   isCertificated: boolean;

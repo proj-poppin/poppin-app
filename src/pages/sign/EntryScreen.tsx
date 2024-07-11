@@ -6,7 +6,7 @@ import {useKakaoLogin} from '../../hooks/login/useKakaoLogin.tsx';
 import {useGoogleLogin} from '../../hooks/login/useGoogleLogin.tsx';
 import {useNaverLogin} from '../../hooks/login/useNaverLogin.tsx';
 import {useAppleLogin} from '../../hooks/login/useAppleLogin.tsx';
-import KakaoLoginButton from '../../assets/icons/social_login/kakaoLoginButton.svg';
+import KakaoLoginButton from '../../assets/icons/social_login/appleLoginButton.svg';
 import SvgImgButton from '../../components/atoms/button/SvgPressableImageButton.tsx';
 import BasicLoginButton from '../../assets/icons/social_login/basicLoginButton.svg';
 import ToSignUpTextLine from '../../components/molecules/pressable_text/ToSignUpTextLine.tsx';
@@ -82,7 +82,7 @@ function EntryScreen() {
       <View style={{paddingBottom: 25}}>
         <SvgImgButton
           SvgComponent={KakaoLoginButton}
-          onPress={signInWithKakao}
+          onPress={signInWithApple}
         />
       </View>
       <SvgImgButton SvgComponent={BasicLoginButton} onPress={goBasicLogin} />
@@ -97,7 +97,7 @@ function EntryScreen() {
         <SocialLoginButtonRow
           onPressNaver={signInWithNaver}
           onPressGoogle={signInWithGoogle}
-          onPressApple={Platform.OS === 'ios' ? signInWithApple : undefined}
+          onPressApple={signInWithKakao}
         />
       </View>
       <TermsAndPrivacyPolicyAgreement

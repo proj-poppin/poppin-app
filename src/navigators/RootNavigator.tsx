@@ -21,8 +21,8 @@ const RootNavigator = () => {
   const isFinishedPreferenceSetting = useSelector(
     (state: RootState) => state.user.isFinishedPreferenceSetting,
   );
-  // 앱 최초 시작시 권한 요청 원할때 사용
-  usePermissions();
+  // // 앱 최초 시작시 권한 요청 원할때 사용
+  // usePermissions();
 
   useEffect(() => {
     async function getToken() {

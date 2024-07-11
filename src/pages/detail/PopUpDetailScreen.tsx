@@ -70,6 +70,7 @@ export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
   'PopUpDetail'
 >;
+
 const PopUpDetailScreen = ({route}) => {
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const isLoggedIn = useIsLoggedIn();
@@ -201,7 +202,6 @@ const PopUpDetailScreen = ({route}) => {
       );
     }
   };
-
   const handleCompletePress = () => {
     if (!isLoggedIn) {
       navigation.navigate('Entry');
@@ -263,42 +263,41 @@ const PopUpDetailScreen = ({route}) => {
       console.error('Recommend error:', error);
     }
   };
-
   const [isLoaded, setIsLoaded] = useState(false);
   useEffect(() => {
     if (detailPopUpData) {
       setIsLoaded(true);
     }
   }, [detailPopUpData]);
-
-  useEffect(() => {
-    const checkPermissionAndCalculateDistance = async () => {
-      const hasPermission = await requestLocationPermission();
-      if (hasPermission && detailPopUpData) {
-        Geolocation.getCurrentPosition(
-          position => {
-            const {latitude, longitude} = position.coords;
-            const dist = getDistance(
-              latitude ?? 0,
-              longitude ?? 0,
-              detailPopUpData.latitude ?? 0,
-              detailPopUpData.longitude ?? 0,
-            );
-            if (dist !== null && dist <= 0.05) {
-              setToastMessage('이 팝업이 근처에 있어요!!');
-              setIsShowToast(true);
-            }
-          },
-          error => {
-            console.log(error.code, error.message);
-          },
-          {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-        );
-      }
-    };
-
-    checkPermissionAndCalculateDistance().then(r => r);
-  }, [distance, detailPopUpData, getDistance]);
+  // useEffect(() => {
+  //   const checkPermissionAndCalculateDistance = async () => {
+  //     console.log('2번 2번');
+  //     const hasPermission = await requestLocationPermission();
+  //     if (hasPermission && detailPopUpData) {
+  //       Geolocation.getCurrentPosition(
+  //         position => {
+  //           const {latitude, longitude} = position.coords;
+  //           const dist = getDistance(
+  //             latitude ?? 0,
+  //             longitude ?? 0,
+  //             detailPopUpData.latitude ?? 0,
+  //             detailPopUpData.longitude ?? 0,
+  //           );
+  //           if (dist !== null && dist <= 0.05) {
+  //             setToastMessage('이 팝업이 근처에 있어요!!');
+  //             setIsShowToast(true);
+  //           }
+  //         },
+  //         error => {
+  //           console.log(error.code, error.message);
+  //         },
+  //         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+  //       );
+  //     }
+  //   };
+  //
+  //   checkPermissionAndCalculateDistance().then(r => r);
+  // }, [distance, detailPopUpData, getDistance]);
 
   if (loading || !isLoaded) {
     return (
@@ -519,6 +518,15 @@ const PopUpDetailScreen = ({route}) => {
                 />
               </Pressable>
             </View>
+            <Text
+              style={[
+                Text12R.text,
+                {color: globalColors.font},
+                {marginHorizontal: 10},
+              ]}>
+              *부적절한 리뷰가 작성되어 있다면 신고하기 버튼을 눌러주시기
+              바랍니다.{'\n'}*3회 이상 누적시 제제를 받을 수 있습니다 {'\n'}
+            </Text>
             <View style={[styles.rowBetweenContainer, styles.commonContainer]}>
               <View style={styles.recentReviewHeader}>
                 <ReasonItem

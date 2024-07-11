@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, StyleSheet, ActivityIndicator} from 'react-native';
+import {View, StyleSheet, ActivityIndicator, Text} from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
@@ -11,6 +11,7 @@ import userSlice from '../../redux/slices/user.ts';
 import useSignUp from '../../hooks/signUp/useSignUp.tsx';
 import useRandomNickname from '../../hooks/signUp/useRandomNickname.tsx';
 import BirthDateInput from '../../components/BirthDateInput.tsx';
+import Text12R from '../../styles/texts/label/Text12R.ts';
 
 function SignUpNickNameScreen({navigation}) {
   const dispatch = useDispatch();
@@ -64,6 +65,14 @@ function SignUpNickNameScreen({navigation}) {
     <View style={styles.container}>
       <SignUpOrderHeader currentStep="SignUpNickName" />
       <MainTitle text1="POPPIN에서" text2="사용 할 정보를 알려주세요" />
+      <Text
+        style={[
+          Text12R.text,
+          {color: globalColors.red},
+          {position: 'absolute', top: 140, left: 20},
+        ]}>
+        *부적절한 닉네임은 제재를 받을 수 있습니다. {'\n'}
+      </Text>
       {nicknameLoading ? (
         <ActivityIndicator size="large" color={globalColors.purple} />
       ) : (
@@ -76,6 +85,7 @@ function SignUpNickNameScreen({navigation}) {
           errorText={nicknameError}
         />
       )}
+
       <BirthDateInput
         onChange={handleChangeBirthDate}
         value={birthDate}

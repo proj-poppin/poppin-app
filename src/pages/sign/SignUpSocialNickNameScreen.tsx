@@ -1,4 +1,4 @@
-import {Alert, StyleSheet, View, ActivityIndicator} from 'react-native';
+import {Alert, StyleSheet, View, ActivityIndicator, Text} from 'react-native';
 import React, {useEffect} from 'react';
 import globalColors from '../../styles/color/globalColors.ts';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
@@ -9,6 +9,7 @@ import SignUpOrderHeader from '../../components/organisms/header/SignUpOrderHead
 import useSocialSignUp from '../../hooks/login/useSocialSignUp.tsx';
 import BirthDateInput from '../../components/BirthDateInput.tsx';
 import useRandomNickname from '../../hooks/signUp/useRandomNickname.tsx';
+import Text12R from '../../styles/texts/label/Text12R.ts';
 
 type SignUpSocialNickNameScreenRouteParams = {
   type: 'KAKAO' | 'GOOGLE' | 'NAVER' | 'APPLE';
@@ -56,6 +57,14 @@ function SignUpSocialNickNameScreen({navigation, route}) {
     <View style={styles.container}>
       <SignUpOrderHeader currentStep="SignUpNickName" />
       <MainTitle text1="POPPIN에서" text2="사용 할 정보를 알려주세요" />
+      <Text
+        style={[
+          Text12R.text,
+          {color: globalColors.red},
+          {position: 'absolute', top: 140, left: 20},
+        ]}>
+        *부적절한 닉네임은 제재를 받을 수 있습니다. {'\n'}
+      </Text>
       {nicknameLoading ? (
         <ActivityIndicator size="large" color={globalColors.purple} />
       ) : (

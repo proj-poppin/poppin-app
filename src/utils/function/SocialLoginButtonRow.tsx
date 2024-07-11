@@ -3,7 +3,7 @@ import {View, Image, StyleSheet, Pressable, Platform} from 'react-native';
 import PngPressableImageButton from '../../components/atoms/button/PngPressableImageButton.tsx';
 import NaverLoginButtonImg from '../../assets/icons/social_login/naverLoginButton.png';
 import GoogleLoginButtonImg from '../../assets/icons/social_login/googleLoginButton.png';
-import AppleLoginButtonImg from '../../assets/icons/social_login/appleLoginButton.png';
+import AppleLoginButtonImg from '../../assets/png/kakaoCircle.png';
 
 const SocialLoginButtonRow = ({onPressNaver, onPressGoogle, onPressApple}) => {
   return (

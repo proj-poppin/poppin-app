@@ -175,7 +175,7 @@ function ReviewWriteScreen() {
           {borderColor: isFocused ? globalColors.blue : globalColors.warmGray},
         ]}
         multiline
-        placeholder="팝업에 대한 후기를 입력해 주세요."
+        placeholder="팝업에 대한 후기를 입력해 주세요. 부적절하거나 불쾌감을 줄 수 있는 컨텐츠를 게시할 경우 제재를 받을 수 있습니다."
         placeholderTextColor={globalColors.font}
         maxLength={1000}
         value={review}

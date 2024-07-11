@@ -18,10 +18,10 @@ export async function requestGalleryPermissions() {
       return false;
     } else if (result === RESULTS.BLOCKED) {
       Alert.alert(
-        '갤러리 권한 거부됨',
-        '갤러리 접근 권한이 필요합니다. 앱 설정에서 갤러리 접근 권한을 허용해주세요.',
+        '갤러리 접근 권한 요청',
+        '팝핀에서 프로필 사진 설정과 리뷰 작성, 제보하기 기능 사용시 필요한 사진 첨부 기능 사용을 위해 사진 라이브러리 접근 권한 동의가 필요합니다. 설정에서 이를 변경할 수 있습니다.',
         [
-          {text: '취소', style: 'cancel'},
+          {text: '다음에 하기', style: 'cancel'},
           {text: '설정 열기', onPress: () => Linking.openSettings()},
         ],
       );

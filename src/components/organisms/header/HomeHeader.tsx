@@ -8,10 +8,14 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {EntryScreenNavigationProp} from '../../HomeLoginHeader';
 import useIsLoggedIn from '../../../hooks/auth/useIsLoggedIn.tsx';
 import useGetAlarmStatus from '../../../hooks/alarm/useGetAlarmStatus.ts';
+import TwoSelectConfirmationModal from '../../TwoSelectConfirmationModal.tsx';
 
 const HomeHeader = () => {
   const [showInfo, setShowInfo] = useState(false);
   const isLoggedIn = useIsLoggedIn();
+  const [loginModalVisible, setLoginModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
   // 알람 빨간점 불러오기
   const {alarmStatus, fetchAlarmStatus} = useGetAlarmStatus();
 
@@ -42,8 +46,13 @@ const HomeHeader = () => {
     if (isLoggedIn) {
       navigation.navigate('Alarm');
     } else {
-      navigation.navigate('Entry');
+      setAlertMessage('알람을 보려면 로그인이 필요합니다.');
+      setLoginModalVisible(true);
     }
+  };
+
+  const closeLoginModal = () => {
+    setLoginModalVisible(false);
   };
 
   return (
@@ -73,6 +82,18 @@ const HomeHeader = () => {
         </Pressable>
         {showInfo && <HeaderInfoSvg style={styles.headerInfoSvg} />}
       </View>
+      <TwoSelectConfirmationModal
+        isVisible={loginModalVisible}
+        onClose={closeLoginModal}
+        onConfirm={() => {
+          navigation.navigate('Entry');
+          closeLoginModal();
+        }}
+        mainAlertTitle="로그인이 필요합니다"
+        subAlertTitle={alertMessage}
+        selectFirstText="나중에 할래요"
+        selectSecondText="로그인하기"
+      />
     </View>
   );
 };
@@ -109,5 +130,4 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 });
-
 export default HomeHeader;

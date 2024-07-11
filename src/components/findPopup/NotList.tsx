@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {Text, View, Pressable, StyleSheet} from 'react-native';
+import {Text, View, Pressable, StyleSheet, Alert} from 'react-native';
 import globalColors from '../../styles/color/globalColors';
 import FindPopupNoList from '../../assets/images/findPopupNoList.svg';
 import NoListText from '../../assets/images/findPopupText.svg';
@@ -12,13 +12,14 @@ import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import {useNavigation} from '@react-navigation/native';
-
+import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
 const NotList = () => {
   const isLoggedIn = useIsLoggedIn();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['40%'], []);
-
   const navigation = useNavigation();
+  const [loginModalVisible, setLoginModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
   const renderBackdrop = useCallback(
     (
@@ -48,11 +49,16 @@ const NotList = () => {
       if (isLoggedIn) {
         bottomSheetModalRef.current?.present();
       } else {
-        action();
+        setAlertMessage('로그인이 필요한 서비스입니다.');
+        setLoginModalVisible(true);
       }
     },
     [isLoggedIn],
   );
+
+  const closeLoginModal = () => {
+    setLoginModalVisible(false);
+  };
 
   return (
     <View
@@ -73,7 +79,6 @@ const NotList = () => {
         title={'제보하러 가기'}
         buttonWidth={'90%'}
       />
-
       <View style={styles.modalContainer}>
         <BottomSheetModal
           animateOnMount
@@ -122,6 +127,18 @@ const NotList = () => {
           </View>
         </BottomSheetModal>
       </View>
+      <TwoSelectConfirmationModal
+        isVisible={loginModalVisible}
+        onClose={closeLoginModal}
+        onConfirm={() => {
+          navigation.navigate('Entry');
+          closeLoginModal();
+        }}
+        mainAlertTitle="로그인이 필요합니다"
+        subAlertTitle={alertMessage}
+        selectFirstText="나중에 할래요"
+        selectSecondText="로그인하기"
+      />
     </View>
   );
 };

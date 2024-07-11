@@ -285,14 +285,14 @@ function MyProfileEditScreen() {
             </TouchableOpacity>
           </View>
           <View style={{height: 30}} />
-          <RequiredTextLabel label={'생년월일'} />
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              value={birthdate}
-              editable={false}
-            />
-          </View>
+          {/*<RequiredTextLabel label={'생년월일'} />*/}
+          {/*<View style={styles.inputContainer}>*/}
+          {/*  <TextInput*/}
+          {/*    style={styles.input}*/}
+          {/*    value={birthdate}*/}
+          {/*    editable={false}*/}
+          {/*  />*/}
+          {/*</View>*/}
         </View>
       </View>
       {!['KAKAO', 'NAVER', 'GOOGLE', 'APPLE'].includes(user.provider) && (

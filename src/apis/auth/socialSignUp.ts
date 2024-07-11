@@ -4,7 +4,7 @@ import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 const socialSignUp = async (
   provider: string,
   nickname: string,
-  birthDate: string,
+  birthDate = '2000.03.19',
 ) => {
   try {
     const response = await nonPublicApiInstance.post('/api/v1/auth/register', {

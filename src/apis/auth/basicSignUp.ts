@@ -27,7 +27,7 @@ const basicSignUp = async (
   password: string,
   passwordConfirm: string,
   nickname: string,
-  birthDate: string,
+  birthDate = '2000.03.19',
   agreedToPrivacyPolicy: boolean,
   agreedToServiceTerms: boolean,
 ): Promise<SignUpResponse> => {

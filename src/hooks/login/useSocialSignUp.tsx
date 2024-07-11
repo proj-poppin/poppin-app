@@ -13,7 +13,7 @@ function useSocialSignUp() {
   const signUpWithSocial = async (
     provider: string,
     nickname: string,
-    birthDate: string,
+    birthDate = '2000.03.19',
   ) => {
     setSignUpStatus(prevStatus => ({...prevStatus, loading: true}));
     try {

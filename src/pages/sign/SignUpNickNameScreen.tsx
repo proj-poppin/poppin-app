@@ -10,7 +10,6 @@ import {useDispatch} from 'react-redux';
 import userSlice from '../../redux/slices/user.ts';
 import useSignUp from '../../hooks/signUp/useSignUp.tsx';
 import useRandomNickname from '../../hooks/signUp/useRandomNickname.tsx';
-import BirthDateInput from '../../components/BirthDateInput.tsx';
 import Text12R from '../../styles/texts/label/Text12R.ts';
 
 function SignUpNickNameScreen({navigation}) {
@@ -19,11 +18,8 @@ function SignUpNickNameScreen({navigation}) {
   const {
     nickname,
     nicknameError,
-    birthDate,
     isNicknameValid,
-    isBirthDateValid,
     handleChangeNickname,
-    handleChangeBirthDate,
     setNickname,
   } = useSignUpNickName();
 
@@ -43,18 +39,9 @@ function SignUpNickNameScreen({navigation}) {
     dispatch(
       userSlice.actions.setSignUpNickNameScreen({
         nickname: nickname,
-        birthDate: birthDate,
       }),
     );
-  }, [
-    signUpStatus.success,
-    navigation,
-    nickname,
-    dispatch,
-    birthDate,
-    isNicknameValid,
-    isBirthDateValid,
-  ]);
+  }, [signUpStatus.success, navigation, nickname, dispatch, isNicknameValid]);
 
   const handlePress = async () => {
     dispatch(userSlice.actions.setIsFinishedPreferenceProcess(false));
@@ -68,10 +55,11 @@ function SignUpNickNameScreen({navigation}) {
       <Text
         style={[
           Text12R.text,
-          {color: globalColors.red},
+          {color: globalColors.font},
           {position: 'absolute', top: 140, left: 20},
         ]}>
-        *부적절한 닉네임은 제재를 받을 수 있습니다. {'\n'}
+        *부적절한 닉네임은 제재를 받을 수 있으며 {'\n'} 초기 닉네임은 랜덤으로
+        설정됩니다
       </Text>
       {nicknameLoading ? (
         <ActivityIndicator size="large" color={globalColors.purple} />
@@ -86,16 +74,11 @@ function SignUpNickNameScreen({navigation}) {
         />
       )}
 
-      <BirthDateInput
-        onChange={handleChangeBirthDate}
-        value={birthDate}
-        labelText="생년월일"
-      />
       <CompleteButton
         title="완료"
         onPress={handlePress}
         loading={signUpStatus.loading}
-        disabled={!isNicknameValid || !isBirthDateValid || nicknameLoading}
+        disabled={!isNicknameValid || nicknameLoading}
         alwaysActive={false}
       />
     </View>

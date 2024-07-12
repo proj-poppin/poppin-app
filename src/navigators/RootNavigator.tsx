@@ -31,7 +31,7 @@ const RootNavigator = () => {
         await PushNotificationIOS.requestPermissions();
         const token = await messaging().getToken();
         const response = await registerPushToken({
-          token: token,
+          fcmToken: token,
           device: Platform.OS,
         });
         console.log('consol response', response);
@@ -47,6 +47,7 @@ const RootNavigator = () => {
         console.log(error);
       }
     }
+
     getToken();
   }, [dispatch]);
   useEffect(() => {

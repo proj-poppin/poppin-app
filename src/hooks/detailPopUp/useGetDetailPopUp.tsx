@@ -1,7 +1,7 @@
 import {useState, useEffect, useCallback} from 'react';
 import {DetailPopUpDataNonPublic} from '../../types/DetailPopUpDataNonPublic';
-import getDetailPopUp from '../../apis/popup/detailPopUp';
-import getDetailPopUpPublic from '../../apis/public/detailPopUpPublic';
+import getDetailPopUpForLoginUser from '../../apis/popup/detailPopUp';
+import getDetailPopUpForNotLoginUser from '../../apis/public/detailPopUpPublic';
 import {useDispatch} from 'react-redux';
 import {
   setPopupDetailData,
@@ -19,7 +19,7 @@ function useGetDetailPopUp(
   popUpId: number,
   alarmId: number,
   title: string,
-  isPublic: boolean,
+  isLoginUser: boolean,
   isAlarm: boolean,
   fetchTrigger: boolean,
 ): DetailPopUpState & {refetch: () => void} {
@@ -29,8 +29,6 @@ function useGetDetailPopUp(
       data: null,
       error: null,
     });
-
-  console.log('isPublic:', isPublic);
 
   const dispatch = useDispatch();
 
@@ -43,11 +41,9 @@ function useGetDetailPopUp(
     dispatch(setPopupDetailLoading(true));
 
     try {
-      console.log('아니 무야이거');
-      console.log(isPublic);
-      const response = isPublic
-        ? await getDetailPopUpPublic(popUpId, alarmId, isAlarm)
-        : await getDetailPopUp(popUpId, alarmId, isAlarm);
+      const response = isLoginUser
+        ? await getDetailPopUpForLoginUser(popUpId, alarmId, isAlarm)
+        : await getDetailPopUpForNotLoginUser(popUpId, alarmId, isAlarm);
 
       if (response.success && response.data) {
         setGetDetailPopUpState({
@@ -78,7 +74,7 @@ function useGetDetailPopUp(
     } finally {
       dispatch(setPopupDetailLoading(false));
     }
-  }, [dispatch, isPublic, popUpId, title, isAlarm]);
+  }, [dispatch, isLoginUser, popUpId, title, isAlarm]);
 
   useEffect(() => {
     fetchDetailPopUp();

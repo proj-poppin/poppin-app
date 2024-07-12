@@ -86,7 +86,7 @@ const PopUpDetailScreen = ({route}) => {
     loading,
     error,
     refetch,
-  } = useGetDetailPopUp(id, alarmId, name, !isLoggedIn, isAlarm, fetchTrigger);
+  } = useGetDetailPopUp(id, alarmId, name, isLoggedIn, isAlarm, fetchTrigger);
   const {distance, getDistance} = useGetDistanceFromLatLonInKm();
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
   const openCompleteModal = () => {
@@ -94,7 +94,6 @@ const PopUpDetailScreen = ({route}) => {
   };
   const {refetch: refetchInterestList} = useGetInterestList();
   const onRefresh = useSelector((state: RootState) => state.refresh.onRefresh);
-
   const {interestState, updateInterest} = useInterest();
   const dispatch = useDispatch();
   const initialLoadRef = useRef(true);
@@ -138,7 +137,7 @@ const PopUpDetailScreen = ({route}) => {
     '방문 인증을 위해서는 로그인이 필요해요.',
   );
   const openLoginModal = (
-    message = '방문 인증을 위해서는 로그인이 필요해요.',
+    message = '관심 팝업에 추가하려면 로그인이 필요해요.',
   ) => {
     setAlertMessage(message);
     setLoginModalVisible(true);
@@ -153,7 +152,7 @@ const PopUpDetailScreen = ({route}) => {
 
   const handleVisitPress = async () => {
     if (!isLoggedIn) {
-      openLoginModal('관심 팝업에 추가하려면 로그인이 필요해요.');
+      openLoginModal('방문 인증을 위해서는 로그인이 필요해요.');
       return;
     }
     const hasPermission = await requestLocationPermission();

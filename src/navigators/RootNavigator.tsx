@@ -31,7 +31,7 @@ const RootNavigator = () => {
         await PushNotificationIOS.requestPermissions();
         const token = await messaging().getToken();
         const response = await registerPushToken({
-          token: token,
+          fcmToken: token,
           device: Platform.OS,
         });
         console.log('consol response', response);
@@ -40,13 +40,15 @@ const RootNavigator = () => {
           console.log('푸시 토큰 등록에 성공했습니다.');
         } else {
           console.error(`푸시 토큰 등록에 실패했습니다. ${response?.error}`);
-          console.error(`푸시 토큰 등록에 실패했습니다. ${response?.error}`);
         }
       } catch (error) {
         console.log('푸시 토큰 등록에 실패했습니다 ㅠㅠ');
         console.log(error);
+        // APNS 에서 푸시 토큰을 받아오는데 Exception 발생한 경우 다시 요청한다
+        await getToken();
       }
     }
+
     getToken();
   }, [dispatch]);
   useEffect(() => {

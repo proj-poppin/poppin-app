@@ -1,5 +1,6 @@
 import {ImageType} from '../../types/ImageType';
 import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 const createPopUpReview = async (
   popupId: number,
@@ -12,6 +13,7 @@ const createPopUpReview = async (
   isVisited: boolean,
 ): Promise<CommonResponse<any>> => {
   try {
+    const fcmToken = (await EncryptedStorage.getItem('pushToken')) ?? '';
     if (!Array.isArray(images)) {
       throw new TypeError('images should be an array');
     }
@@ -42,6 +44,7 @@ const createPopUpReview = async (
     formData.append('satisfaction', satisfaction);
     formData.append('congestion', congestion);
     formData.append('nickname', nickname);
+    formData.append('fcmToken', fcmToken);
 
     const url = isVisited
       ? '/api/v1/review/w/certi'

@@ -84,7 +84,6 @@ const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({data}) => {
 
   // useEffect
   useEffect(() => {
-    console.log(`지금 선택된 날짜는: ${selDate.dateString}`);
     bottomModalDateRef.current = selDate;
     bottomSheetModalRef.current?.present(snapIndex);
     setMarkedDates(createMarkedDates());
@@ -160,7 +159,6 @@ const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({data}) => {
               newDate.getMonth(),
               newDate.getDate() + 1,
             );
-            console.log(`선택됨: ${bottomModalDateRef.current.dateString}`);
           }}
           customCancelButtonIOS={props => {
             return <View />;

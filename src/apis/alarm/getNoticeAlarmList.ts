@@ -8,9 +8,9 @@ const getNoticeAlarmList = async () => {
       fcmToken: fcmToken,
     });
 
-    console.log('getNoticeAlarmList response:', response.data);
+    // console.log('getNoticeAlarmList response:', response.data);
     if (response.data.success) {
-      console.log('Notice alarm list@@@@@@:', response.data.data);
+      // console.log('Notice alarm list@@@@@@:', response.data.data);
       return {success: true, data: response.data.data};
     } else {
       return {success: false, error: response.data.error};

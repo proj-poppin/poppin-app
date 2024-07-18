@@ -74,7 +74,7 @@ const HomeHeader = () => {
                   width: 6,
                   height: 6,
                   borderRadius: 5,
-                  backgroundColor: 'red',
+                  // backgroundColor: 'red',
                 }}
               />
             ) : null}
@@ -89,7 +89,7 @@ const HomeHeader = () => {
           navigation.navigate('Entry');
           closeLoginModal();
         }}
-        mainAlertTitle="로그인이 필요합니다"
+        mainAlertTitle="로그인이 필요합니다."
         subAlertTitle={alertMessage}
         selectFirstText="나중에 할래요"
         selectSecondText="로그인하기"

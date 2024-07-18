@@ -4,6 +4,7 @@ import React, {
   useRef,
   useState,
   useLayoutEffect,
+  useEffect,
 } from 'react';
 import {ScrollView, StyleSheet, Text, View, Pressable} from 'react-native';
 import globalColors from '../../styles/color/globalColors.ts';
@@ -29,6 +30,25 @@ import {TFilter} from '../../components/findPopup/constants.ts';
 import GoBackSvg from '../../assets/icons/goBack.svg';
 import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
 
+const getFormattedDate = date => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const getTodayDate = () => {
+  const today = new Date();
+  return getFormattedDate(today);
+};
+
+const getTomorrowDate = () => {
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  return getFormattedDate(tomorrow);
+};
+
 const OperatorRegisterScreen = ({navigation}) => {
   const [completeModalVisible, setCompleteModalVisible] = useState(false);
   const [isExitModalVisible, setIsExitModalVisible] = useState(false);
@@ -44,7 +64,12 @@ const OperatorRegisterScreen = ({navigation}) => {
   const [selectedDates, setSelectedDates] = useState<{
     start: string;
     end: string;
-  }>({start: '', end: ''});
+  }>({
+    start: getTodayDate(),
+    end: getTomorrowDate(),
+  });
+
+  useEffect(() => {}, [selectedPopupType, operationTimes, selectedDates]);
   const [operationTimes, setOperationTimes] = useState<{
     start: string;
     end: string;
@@ -55,7 +80,10 @@ const OperatorRegisterScreen = ({navigation}) => {
     useState<string>('');
   const [selectedAge, setSelectedAge] = useState<AgeGroup>('전체'); // Initialize with a valid AgeGroup value
   const [selectedAgeValue, setSelectedAgeValue] = useState<String>(''); // Internal value
-  const [selectedPopupType, setSelectedPopupType] = useState<string>('');
+  const [selectedPopupType, setSelectedPopupType] = useState<string[]>([]);
+  const [selectedPopupTypeTags, setSelectedPopupTypeTags] = useState<TFilter[]>(
+    [],
+  );
   const [operationExcept, setOperationExcept] = useState<string>('');
   const [introduce, setIntroduce] = useState<string>('');
   const [homepageLink, setHomepageLink] = useState<string>('');
@@ -67,13 +95,13 @@ const OperatorRegisterScreen = ({navigation}) => {
   const reducedMotion = useReducedMotion();
   const {selectedImages, handleSelectImages, handleRemoveImage} =
     useImageSelector();
-  const [resvRequired, setResvRequired] = useState<string | null>(null);
-  const [entranceRequired, setEntranceRequired] = useState<string | null>(null);
-  const [parkingAvailability, setParkingAvailability] = useState<string | null>(
-    null,
-  );
+  const [resvRequired, setResvRequired] = useState<boolean>(false);
+  const [entranceRequired, setEntranceRequired] = useState<boolean>(false);
+  const [parkingAvailability, setParkingAvailability] =
+    useState<boolean>(false);
   const [entranceFee, setEntranceFee] = useState<string>('');
   const [addressDetail, setAddressDetail] = useState<string>('');
+  const [isStepThreeValid, setStepThreeValid] = useState(false);
   const openCompleteModal = () => {
     setCompleteModalVisible(true);
   };
@@ -81,21 +109,23 @@ const OperatorRegisterScreen = ({navigation}) => {
     bottomSheetAgeModalRef.current?.present();
   };
 
-  const handleReservationRequiredSelect = (value: string) => {
+  const handleReservationRequiredSelect = (value: boolean) => {
     setResvRequired(value);
   };
 
-  const handleEntranceFeeStatusSelect = (value: string) => {
+  const handleEntranceFeeStatusSelect = (value: boolean) => {
     setEntranceRequired(value);
   };
 
-  const handleParkingAvailabilitySelect = (value: string) => {
+  const handleParkingAvailabilitySelect = (value: boolean) => {
     setParkingAvailability(value);
   };
 
   const handlePostalCodeSearch = () => {
     setIsPostalSearchModalVisible(true);
   };
+
+  useEffect(() => {}, [selectedPopupType, selectedPopupTypeTags]);
 
   const snapPoints = useMemo(() => ['65%'], []);
   const snapPoints2 = useMemo(() => ['45%'], []);
@@ -165,19 +195,16 @@ const OperatorRegisterScreen = ({navigation}) => {
         entranceRequired,
         entranceFee,
         mapAgeGroupToApiValue(selectedAgeValue), // Use internal value here
-        parkingAvailability === 'parking',
-        resvRequired === 'required',
-        selectedDates.start ?? '2000-01-01',
-        selectedDates.end ?? '2024-12-31',
-        operationTimes.start ?? '00:00',
-        operationTimes.end ?? '23:59',
+        parkingAvailability,
+        resvRequired,
+        selectedDates.start,
+        selectedDates.end,
+        operationTimes.start,
+        operationTimes.end,
         operationExcept ?? 'test',
-        0,
-        0,
-        selectedPopupType === 'market',
-        selectedPopupType === 'display',
-        selectedPopupType === 'experience',
-        selectedPopupType === 'wantFree',
+        selectedPopupType.includes('market'),
+        selectedPopupType.includes('display'),
+        selectedPopupType.includes('experience'),
         selectedCategoryValue.includes('fashionBeauty'),
         selectedCategoryValue.includes('characters'),
         selectedCategoryValue.includes('foodBeverage'),
@@ -224,6 +251,33 @@ const OperatorRegisterScreen = ({navigation}) => {
     setIsExitModalVisible(false);
     navigation.goBack();
   };
+  const isStepTwoValid = useMemo(() => {
+    return (
+      name !== '' &&
+      selectedCategory !== '' &&
+      selectedPopupType.length > 0 &&
+      selectedDates.start !== '' &&
+      selectedDates.end !== '' &&
+      operationTimes.start !== '' &&
+      operationTimes.end !== '' &&
+      operationTimes.start !== '시작 시간' &&
+      operationTimes.end !== '종료 시간' &&
+      address !== '' &&
+      addressDetail !== '' &&
+      homepageLink !== '' &&
+      selectedImages.length > 0
+    );
+  }, [
+    name,
+    selectedCategory,
+    selectedPopupType,
+    selectedDates,
+    operationTimes,
+    address,
+    addressDetail,
+    homepageLink,
+    selectedImages,
+  ]);
 
   return (
     <View style={[styles.container]}>
@@ -253,7 +307,9 @@ const OperatorRegisterScreen = ({navigation}) => {
               handlePresentModal={handlePresentModal}
               onSelectSingleOption={onSelectSingleOption}
               selectedPopupType={selectedPopupType}
-              onSelectPopupType={onSelectPopupType}
+              setSelectedPopupType={setSelectedPopupType}
+              selectedPopupTypeTags={selectedPopupTypeTags}
+              setSelectedPopupTypeTags={setSelectedPopupTypeTags}
               selectedDates={selectedDates}
               setSelectedDates={setSelectedDates}
               operationTimes={operationTimes}
@@ -295,9 +351,10 @@ const OperatorRegisterScreen = ({navigation}) => {
               bottomSheetAgeModalRef={bottomSheetAgeModalRef}
               snapPoints2={snapPoints2}
               renderBackdrop={renderBackdrop}
-              onSelectSingleOption={onSelectAgeOption} // Ensure this function is properly defined and passed
+              onSelectSingleOption={onSelectAgeOption}
               handleConfirmAgeSelection={handleConfirmAgeSelection}
-              selectedCategory={selectedAge} // Ensure selectedCategory is correctly typed and used
+              selectedCategory={selectedAge}
+              setStepThreeValid={setStepThreeValid}
             />
           )}
         </ScrollView>
@@ -324,14 +381,22 @@ const OperatorRegisterScreen = ({navigation}) => {
             <View style={styles.buttonRow}>
               <BackMiddleButton onPress={handleBack} title={'이전'} />
               <View style={{width: 30}} />
-              <NextMiddleButton onPress={handleNext} title={'다음'} />
+              <NextMiddleButton
+                onPress={handleNext}
+                title={'다음'}
+                disabled={!isStepTwoValid}
+              />
             </View>
           )}
           {step === 3 && (
             <View style={styles.buttonRow}>
               <BackMiddleButton onPress={handleBack} title={'이전'} />
               <View style={{width: 30}} />
-              <NextMiddleButton onPress={handleSubmit} title={'완료'} />
+              <NextMiddleButton
+                onPress={handleSubmit}
+                title={'완료'}
+                disabled={!isStepThreeValid}
+              />
             </View>
           )}
         </View>
@@ -377,5 +442,4 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
 });
-
 export default OperatorRegisterScreen;

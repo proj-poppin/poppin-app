@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useMemo} from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {useReducedMotion} from 'react-native-reanimated';
 import {BottomSheetModal, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
@@ -16,27 +16,28 @@ interface Dates {
 }
 
 interface OperationCalendarBottomSheetProps {
+  selectedDates: Dates;
   setSelectedDates: (dates: Dates) => void;
 }
 
 const OperationCalendarBottomSheet: React.FC<
   OperationCalendarBottomSheetProps
-> = ({setSelectedDates}) => {
-  const [dates, setDates] = useState<Dates>({start: '오픈일', end: '종료일'});
+> = ({selectedDates, setSelectedDates}) => {
+  const initialDates = useMemo(() => {
+    return {
+      start: selectedDates.start,
+      end: selectedDates.end,
+    };
+  }, [selectedDates]);
+
+  const [dates, setDates] = useState<Dates>(initialDates);
   const [selectionMode, setSelectionMode] = useState('start');
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-
-    setDates({
-      start: today.toISOString().split('T')[0],
-      end: tomorrow.toISOString().split('T')[0],
-    });
-  }, []);
+    setDates(initialDates);
+  }, [initialDates]);
 
   const handleOpenCalendar = (mode: 'start' | 'end') => {
     setSelectionMode(mode);
@@ -61,14 +62,13 @@ const OperationCalendarBottomSheet: React.FC<
   };
 
   const getDateInputTextStyle = (value: string, defaultText: string) => ({
-    color: value === defaultText ? globalColors.font : globalColors.calendar,
+    color: value === defaultText ? globalColors.font : globalColors.black,
   });
 
   const handleComplete = () => {
     setSelectedDates(dates); // 부모 컴포넌트에 선택된 날짜 전달
     bottomSheetModalRef.current?.dismiss();
   };
-
   const renderBackdrop = (
     props: React.JSX.IntrinsicAttributes & BottomSheetDefaultBackdropProps,
   ) => (

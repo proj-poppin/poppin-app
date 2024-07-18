@@ -33,8 +33,10 @@ interface StepTwoProps {
   selectedCategoryValue: string; // Add this prop to store internal value
   handlePresentModal: () => void;
   onSelectSingleOption: (option: TFilter) => void; // Update type to TFilter
-  selectedPopupType: string;
-  onSelectPopupType: (value: string) => void;
+  selectedPopupType: string[];
+  setSelectedPopupType: (value: string[]) => void;
+  selectedPopupTypeTags: TFilter[];
+  setSelectedPopupTypeTags: (value: TFilter[]) => void;
   selectedDates: {start: string; end: string};
   setSelectedDates: (dates: {start: string; end: string}) => void;
   operationTimes: {start: string; end: string};
@@ -65,7 +67,10 @@ const StepTwo: React.FC<StepTwoProps> = ({
   handlePresentModal,
   onSelectSingleOption,
   selectedPopupType,
-  onSelectPopupType,
+  setSelectedPopupType,
+  selectedPopupTypeTags,
+  setSelectedPopupTypeTags,
+  selectedDates,
   setSelectedDates,
   operationTimes,
   setOperationTimes,
@@ -88,9 +93,6 @@ const StepTwo: React.FC<StepTwoProps> = ({
 }) => {
   const [availableTags, setAvailableTags] = useState<TFilter[]>(POP_UP_TYPES);
   const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
-  const [selectedPopupTypeTags, setSelectedPopupTypeTags] = useState<TFilter[]>(
-    [],
-  );
 
   const handleSelectImagesWithPermission = async () => {
     const hasPermission = await requestGalleryPermissions();
@@ -115,6 +117,15 @@ const StepTwo: React.FC<StepTwoProps> = ({
         return prev.filter(item => item.id !== selectedTag.id);
       } else {
         return [...prev, selectedTag];
+      }
+    });
+
+    setSelectedPopupType(prev => {
+      const exists = prev.includes(selectedTag.name);
+      if (exists) {
+        return prev.filter(item => item !== selectedTag.name);
+      } else {
+        return [...prev, selectedTag.name];
       }
     });
   };
@@ -181,7 +192,10 @@ const StepTwo: React.FC<StepTwoProps> = ({
           ))}
         </View>
         <RequiredTextLabel label={'운영 기간'} isRequired={true} />
-        <OperationCalendarBottomSheet setSelectedDates={setSelectedDates} />
+        <OperationCalendarBottomSheet
+          setSelectedDates={setSelectedDates}
+          selectedDates={selectedDates}
+        />
         <RequiredTextLabel label={'운영 시간'} isRequired={true} />
         <OperationHoursBottomSheet
           setOperationTimes={setOperationTimes}
@@ -219,7 +233,7 @@ const StepTwo: React.FC<StepTwoProps> = ({
             style={styles.input}
             value={addressDetail}
             onChangeText={setAddressDetail}
-            placeholder="상세주소 입력"
+            placeholder="상세주소 입력(필수)"
           />
         </View>
         <View style={styles.modalContainer}>
@@ -356,5 +370,4 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
 });
-
 export default StepTwo;

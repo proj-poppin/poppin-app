@@ -4,7 +4,6 @@ export interface GetUserData {
   userImageUrl: string;
   email: string;
   nickname: string;
-  birthDate: string;
   provider: string;
 }
 const getUser = async (): Promise<CommonResponse<GetUserData>> => {

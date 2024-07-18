@@ -1,16 +1,11 @@
 import nonPublicApiInstance from '../apiInstance/NonPublicApiInstance.ts';
 
 // 회원가입을 시도하는 함수
-const socialSignUp = async (
-  provider: string,
-  nickname: string,
-  birthDate = '2000.03.19',
-) => {
+const socialSignUp = async (provider: string, nickname: string) => {
   try {
     const response = await nonPublicApiInstance.post('/api/v1/auth/register', {
       provider,
       nickname,
-      birthDate,
     });
 
     // 성공적으로 회원가입 처리된 경우, 응답 데이터 반환

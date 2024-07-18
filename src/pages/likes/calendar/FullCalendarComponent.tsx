@@ -49,8 +49,6 @@ const FullCalendarComponent: React.FC<FullCalendarProps> = ({
     };
   }
 
-  console.log(`지금 선택된 날짜는: ${selDate.dateString}`);
-
   return (
     <View style={styles.container}>
       <ScrollView>

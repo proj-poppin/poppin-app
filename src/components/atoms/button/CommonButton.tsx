@@ -23,6 +23,7 @@ interface CommonButtonProps {
   buttonTextColor?: string;
   cnt?: number;
   isRealTimeInfo?: boolean;
+  backgroundColor?: string; // New optional prop for background color
 }
 
 const CommonButton: React.FC<CommonButtonProps> = ({
@@ -37,6 +38,7 @@ const CommonButton: React.FC<CommonButtonProps> = ({
   buttonWidth = '50%', // Default button width
   borderColor = globalColors.blue, // Default border color
   buttonTextColor = globalColors.blue, // Default button text color
+  backgroundColor = globalColors.white, // Default background color
 }) => (
   <Pressable
     style={({pressed}) => [
@@ -45,6 +47,7 @@ const CommonButton: React.FC<CommonButtonProps> = ({
         borderColor: borderColor,
         borderWidth: disabled && !alwaysActive ? 0 : 1,
         width: buttonWidth,
+        backgroundColor: backgroundColor,
       },
       disabled && !alwaysActive && styles.disabledButton,
     ]}
@@ -71,7 +74,7 @@ const CommonButton: React.FC<CommonButtonProps> = ({
         style={[
           Text18B.text,
           {
-            color: disabled ? globalColors.component : borderColor,
+            color: buttonTextColor,
           },
         ]}>
         {title}
@@ -87,11 +90,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    // marginTop: 35,
-    // marginBottom: 10,
   },
   disabledButton: {
-    backgroundColor: globalColors.component,
+    backgroundColor: globalColors.blue,
     borderColor: 'transparent', // Hide border for disabled state
   },
   realTimeInfoContainer: {

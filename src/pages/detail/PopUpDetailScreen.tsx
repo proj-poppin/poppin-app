@@ -67,6 +67,7 @@ import MenuSvg from '../../assets/detail/menu.svg'; // MenuSvg 가져오기
 import SelectDropdown from 'react-native-select-dropdown';
 import useBlockUser from '../../hooks/useBlockUser.tsx';
 import UnderlinedTextButton from '../../components/UnderlineTextButton.tsx'; // 추가된 부분
+import KakaoShareLink from 'react-native-kakao-share-link';
 
 export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
@@ -75,10 +76,10 @@ export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
 
 const PopUpDetailScreen = ({route}) => {
   const [loginModalVisible, setLoginModalVisible] = useState(false);
-  const isLoggedIn = useIsLoggedIn();
   const navigation = useNavigation<PopUpDetailScreenNavigationProp>();
   const [fetchTrigger, setFetchTrigger] = useState(false);
-  const {id, alarmId, name, isAlarm} = route.params;
+  const {id, alarmId, name, isAlarm, isLoggedIn} = route.params;
+
   const [reviews, setReviews] = useState<Review[]>([]);
   const reviewSubmitted = useSelector(state => state.reviewSubmitted);
   const {
@@ -134,10 +135,10 @@ const PopUpDetailScreen = ({route}) => {
   const [showFullText, setShowFullText] = useState(false);
 
   const [alertMessage, setAlertMessage] = useState(
-    '방문 인증을 위해서는 로그인이 필요해요.',
+    '방문 인증을 위해서는 로그인이 필요합니다.',
   );
   const openLoginModal = (
-    message = '관심 팝업에 추가하려면 로그인이 필요해요.',
+    message = '관심 팝업에 추가하려면 로그인이 필요합니다.',
   ) => {
     setAlertMessage(message);
     setLoginModalVisible(true);
@@ -152,7 +153,7 @@ const PopUpDetailScreen = ({route}) => {
 
   const handleVisitPress = async () => {
     if (!isLoggedIn) {
-      openLoginModal('방문 인증을 위해서는 로그인이 필요해요.');
+      openLoginModal('방문 인증을 위해서는 로그인이 필요합니다.');
       return;
     }
     const hasPermission = await requestLocationPermission();
@@ -304,14 +305,31 @@ const PopUpDetailScreen = ({route}) => {
       openLoginModal('공유하기 위해서는 로그인이 필요합니다.');
       return;
     }
-    const shareOptions = {
-      title: 'Share Popup',
-      message: `Check out this amazing popup: ${detailPopUpData!.name}`,
-      url: detailPopUpData!.images[0],
-    };
     try {
-      await Share.open(shareOptions);
-    } catch (error) {}
+      const response = await KakaoShareLink.sendFeed({
+        content: {
+          title: name,
+          imageUrl: firstImageUrl!,
+          link: {
+            // 앱 URL 제공시 변경 필요
+            // webUrl: 'https://developers.kakao.com',
+            // mobileWebUrl: 'https://developers.kakao.com',
+          },
+          description: detailPopUpData.introduce,
+        },
+        buttons: [
+          {
+            title: '앱에서 보기',
+            link: {
+              // webUrl: 'https://developers.kakao.com',
+              // mobileWebUrl: 'https://developers.kakao.com',
+            },
+          },
+        ],
+      });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleBlock = async userId => {
@@ -500,7 +518,7 @@ const PopUpDetailScreen = ({route}) => {
               <Pressable
                 onPress={() => {
                   if (!isLoggedIn) {
-                    navigation.navigate('Entry');
+                    openLoginModal('후기를 작성하려면 로그인이 필요합니다.');
                     return;
                   }
                   navigation.navigate('ReviewWrite', {
@@ -511,7 +529,11 @@ const PopUpDetailScreen = ({route}) => {
                 }}>
                 <SvgWithNameBoxLabel
                   Icon={WriteReviewSvg}
-                  label="방문후기 작성하기"
+                  label={
+                    !isLoggedIn || !isVisitComplete
+                      ? '일반후기 작성하기'
+                      : '인증후기 작성하기'
+                  }
                 />
               </Pressable>
             </View>

@@ -6,14 +6,18 @@ interface HotListCardProps {
   itemList: {id: string; name: string; image_url: string; introduce: string}[];
   isDropdownOpen: boolean;
   navigation: any;
+  isLoggedIn: boolean;
 }
 
 const HotListCard: React.FC<HotListCardProps> = ({
   itemList,
   isDropdownOpen,
   navigation,
+  isLoggedIn,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  console.log('hello is logged in', isLoggedIn);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -29,7 +33,12 @@ const HotListCard: React.FC<HotListCardProps> = ({
         itemList.map((item, index) => (
           <Pressable
             key={index}
-            onPress={() => navigation.navigate('PopUpDetail', {id: item.id})}>
+            onPress={() =>
+              navigation.navigate('PopUpDetail', {
+                id: item.id,
+                isLoggedIn: isLoggedIn,
+              })
+            }>
             <Text
               style={styles.longTextBadgeItem}
               numberOfLines={1}

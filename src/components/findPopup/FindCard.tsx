@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -24,10 +24,13 @@ import {RootState} from '../../redux/stores/reducer.ts';
 import {setInterest} from '../../redux/slices/interestSlice.ts';
 import useGetInterestList from '../../hooks/popUpList/useGetInterestList.tsx';
 import Text16B from '../../styles/texts/body_medium_large/Text16B.ts';
+import TwoSelectConfirmationModal from '../TwoSelectConfirmationModal.tsx';
 
 const FindCard = ({item, status, showToast}: any) => {
   const navigation = useNavigation();
   const isLoggedIn = useIsLoggedIn();
+  const [loginModalVisible, setLoginModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
   const dispatch = useDispatch();
   const isInterested = useSelector(
     (state: RootState) => state.interest[item.id],
@@ -49,7 +52,8 @@ const FindCard = ({item, status, showToast}: any) => {
 
   const handleToggleInterest = async () => {
     if (!isLoggedIn) {
-      navigation.navigate('Entry');
+      setAlertMessage('관심 팝업에 추가하려면 로그인이 필요합니다.');
+      setLoginModalVisible(true);
       return;
     }
     if (isInterested) {
@@ -66,98 +70,125 @@ const FindCard = ({item, status, showToast}: any) => {
     } // 리스트 다시 불러오기
   };
 
+  const closeLoginModal = () => {
+    setLoginModalVisible(false);
+  };
+
   return (
-    <Pressable
-      onPress={() => navigation.navigate('PopUpDetail', {id: item.id})}>
-      <View style={styles.cardContainer}>
-        <Spinner
-          textContent={'로딩중...'}
-          visible={addLoading || deleteLoading}
-          textStyle={{color: '#FFF'}}
-        />
-        <View style={styles.svgContainer}>
-          <Image
-            source={{uri: item.posterUrl}}
-            style={{width: 140, height: 140}}
+    <>
+      <Pressable
+        onPress={() =>
+          navigation.navigate('PopUpDetail', {
+            id: item.id,
+            isLoggedIn: isLoggedIn,
+          })
+        }>
+        <View style={styles.cardContainer}>
+          <Spinner
+            textContent={'로딩중...'}
+            visible={addLoading || deleteLoading}
+            textStyle={{color: '#FFF'}}
           />
-          {status === 'TERMINATED' ? (
-            <View style={styles.closeWrapper}>
-              <Text style={[Text16B.text, {color: globalColors.white}]}>
-                {status === 'TERMINATED' ? '팝업 종료' : `D-${remainingDays}`}
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.deadlineWrapper}>
-              <Text style={styles.deadlineText}>종료 D-{remainingDays}</Text>
-            </View>
-          )}
-        </View>
-        <View style={styles.textContainer}>
-          <View style={styles.statusAndStarContainer}>
-            <View style={styles.titleContainer}>
-              <Text
-                style={[Text18B.text, styles.title]}
-                numberOfLines={2}
-                ellipsizeMode="tail">
-                {formattedTitle}
-              </Text>
-            </View>
-            <Pressable
-              onPress={handleToggleInterest}
-              style={styles.starIcon}
-              disabled={addLoading || deleteLoading}>
-              {isInterested ? <StarOnSvg /> : <StarOffSvg />}
-            </Pressable>
+          <View style={styles.svgContainer}>
+            <Image
+              source={{uri: item.posterUrl}}
+              style={{width: 140, height: 140}}
+            />
+            {status === 'TERMINATED' ? (
+              <View style={styles.closeWrapper}>
+                <Text style={[Text16B.text, {color: globalColors.white}]}>
+                  {status === 'TERMINATED' ? '팝업 종료' : `D-${remainingDays}`}
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.deadlineWrapper}>
+                <Text style={styles.deadlineText}>종료 D-{remainingDays}</Text>
+              </View>
+            )}
           </View>
-          <Text style={[styles.location]}>{item.address}</Text>
-          <Text style={[Text12B.text, styles.date]}>
-            {item.openDate}~{item.closeDate}
-          </Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.tagsContainer}>
-            {Object.entries(item.prefered).map(([key, value]) => {
-              if (value) {
-                const matchingTag = POP_UP_TYPES.find(tag => tag.name === key);
-                if (matchingTag) {
-                  return (
-                    <View
-                      key={key}
-                      style={[
-                        styles.tagWrapper,
-                        {backgroundColor: globalColors.redLight},
-                      ]}>
-                      <Text style={styles.tag}>{matchingTag.label}</Text>
-                    </View>
+          <View style={styles.textContainer}>
+            <View style={styles.statusAndStarContainer}>
+              <View style={styles.titleContainer}>
+                <Text
+                  style={[Text18B.text, styles.title]}
+                  numberOfLines={2}
+                  ellipsizeMode="tail">
+                  {formattedTitle}
+                </Text>
+              </View>
+              <Pressable
+                onPress={handleToggleInterest}
+                style={styles.starIcon}
+                disabled={addLoading || deleteLoading}>
+                {isInterested ? <StarOnSvg /> : <StarOffSvg />}
+              </Pressable>
+            </View>
+            <Text style={[styles.location]}>{item.address}</Text>
+            <Text style={[Text12B.text, styles.date]}>
+              {item.openDate}~{item.closeDate}
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.tagsContainer}>
+              {Object.entries(item.prefered).map(([key, value]) => {
+                if (value) {
+                  const matchingTag = POP_UP_TYPES.find(
+                    tag => tag.name === key,
                   );
+                  if (matchingTag) {
+                    return (
+                      <View
+                        key={key}
+                        style={[
+                          styles.tagWrapper,
+                          {backgroundColor: globalColors.redLight},
+                        ]}>
+                        <Text style={styles.tag}>{matchingTag.label}</Text>
+                      </View>
+                    );
+                  }
                 }
-              }
-              return null; // Add a return null to avoid warning
-            })}
-            {Object.entries(item.taste).map(([key, value]) => {
-              if (value) {
-                const matchingTag = POP_UP_TYPES.find(tag => tag.name === key);
-                if (matchingTag) {
-                  return (
-                    <View
-                      key={key}
-                      style={[
-                        styles.tagWrapper,
-                        {backgroundColor: globalColors.blueLight},
-                      ]}>
-                      <Text style={styles.tag}>{matchingTag.label}</Text>
-                    </View>
+                return null; // Add a return null to avoid warning
+              })}
+              {Object.entries(item.taste).map(([key, value]) => {
+                if (value) {
+                  const matchingTag = POP_UP_TYPES.find(
+                    tag => tag.name === key,
                   );
+                  if (matchingTag) {
+                    return (
+                      <View
+                        key={key}
+                        style={[
+                          styles.tagWrapper,
+                          {backgroundColor: globalColors.blueLight},
+                        ]}>
+                        <Text style={styles.tag}>{matchingTag.label}</Text>
+                      </View>
+                    );
+                  }
                 }
-              }
-              return null; // Add a return null to avoid warning
-            })}
-          </ScrollView>
+                return null; // Add a return null to avoid warning
+              })}
+            </ScrollView>
+          </View>
         </View>
-      </View>
-      <DividerLine height={1} />
-    </Pressable>
+        <DividerLine height={1} />
+      </Pressable>
+      <TwoSelectConfirmationModal
+        isVisible={loginModalVisible}
+        onClose={closeLoginModal}
+        onConfirm={() => {
+          navigation.navigate('Entry');
+          closeLoginModal();
+        }}
+        mainAlertTitle="로그인이 필요합니다"
+        subAlertTitle={alertMessage}
+        selectFirstText="나중에 할래요"
+        selectSecondText="로그인하기"
+      />
+    </>
   );
 };
 

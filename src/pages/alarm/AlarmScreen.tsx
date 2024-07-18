@@ -4,14 +4,13 @@ import CustomTabBar from '../../components/molecules/tab_bar/CustomTabBar.tsx';
 import NoticeTab from './tab/NoticeTab.tsx';
 import PopupTab from './tab/PopupTab.tsx';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import {useFocusEffect} from '@react-navigation/native';
 
 const Tab = createMaterialTopTabNavigator();
 
 function AlarmScreen() {
   const [selectedTab, setSelectedTab] = useState('팝업');
 
-  const handleTabPress = (tab: any) => {
+  const handleTabPress = tab => {
     setSelectedTab(tab);
   };
 

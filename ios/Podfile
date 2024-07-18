@@ -63,7 +63,18 @@ target 'PoppinProject' do
   # Add the Firebase pod for Google Analytics
      pod 'FirebaseAnalytics'
      pod 'Firebase/Messaging'
+     pod 'CodePush', :path => '../node_modules/react-native-code-push'
 
+       use_react_native!(
+         :path => config[:reactNativePath],
+         # Enables Flipper.
+         #
+         # Note that if you have use_frameworks! enabled, Flipper will not work and
+         # you should disable the next line.
+         # :flipper_configuration => flipper_config,
+         # An absolute path to your application root.
+         :app_path => "#{Pod::Config.instance.installation_root}/.."
+       )
      # For Analytics without IDFA collection capability, use this pod instead
      # pod ‘Firebase/AnalyticsWithoutAdIdSupport’
 

@@ -7,6 +7,7 @@
 #import <RNCPushNotificationIOS.h> // Firebase 추가🚨
 #import <Firebase.h> // Firebase 추가🚨
 #import <FirebaseMessaging.h> // Firebase Messaging 추가🚨
+#import <CodePush/CodePush.h> // CodePush 추가🚨
 
 @implementation AppDelegate
 
@@ -38,22 +39,22 @@
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
-  
+
   [super application:application didFinishLaunchingWithOptions:launchOptions];
   [RNSplashScreen show];  // RN RNSplashScreen 할때 추가
-  
+
   // Define UNUserNotificationCenter // Firebase 추가🚨
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
-  
+
   // 푸시 알림 권한 요청 추가🚨
   UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
   [center requestAuthorizationWithOptions:authOptions completionHandler:^(BOOL granted, NSError * _Nullable error) {
     // Handle error if needed
   }];
-  
+
   [application registerForRemoteNotifications];
-  
+
   // Firebase 초기화 완료 후 토큰 가져오기 추가🚨💡
   [[FIRMessaging messaging] tokenWithCompletion:^(NSString *token, NSError *error) {
     if (error != nil) {
@@ -63,7 +64,7 @@
       // 필요한 경우 서버에 토큰을 저장하거나 추가 작업을 수행합니다.
     }
   }];
-  
+
   return YES; // 수정
 }
 
@@ -78,8 +79,13 @@
   completionHandler(UNNotificationPresentationOptionSound | UNNotificationPresentationOptionAlert | UNNotificationPresentationOptionBadge);
 }
 
-- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge {
-  return [self getBundleURL];
+- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
+{
+  #if DEBUG
+    return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
+  #else
+    return [CodePush bundleURL];
+  #endif
 }
 
 - (NSURL *)getBundleURL {
@@ -95,12 +101,12 @@
   if ([url.scheme isEqualToString:@"navertest"]) {
     return [[NaverThirdPartyLoginConnection getSharedInstance] application:app openURL:url options:options];
   }
-  
+
   // Kakao 로그인 처리
   if ([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
     return [RNKakaoLogins handleOpenUrl:url];
   }
-  
+
   return NO;
 }
 

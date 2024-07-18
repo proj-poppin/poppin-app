@@ -12,7 +12,6 @@ import {registerPushToken} from '../apis/push/registerPushToken.ts';
 import {Platform} from 'react-native';
 import getUserSetting from '../apis/myPage/getUserSetting.ts';
 import {resetInterests} from '../redux/slices/interestSlice.ts';
-import usePermissions from '../hooks/usePermissions.ts';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 const RootNavigator = () => {

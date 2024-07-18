@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
+	<string>1.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -52,7 +52,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>28</string>
+	<string>29</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
@@ -69,6 +69,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>CodePushDeploymentKey</key>
+	<string>I8Q-CpZ4mr3WCD8xaNV-UC5_K39ytUl-I0iGv</string>
 	<key>NMFClientId</key>
 	<string>${NAVER_MAP_CLIENT_ID}</string>
 	<key>NSAppTransportSecurity</key>

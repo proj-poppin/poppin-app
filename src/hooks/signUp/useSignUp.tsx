@@ -3,7 +3,6 @@ import {useSelector} from 'react-redux';
 import basicSignUp from '../../apis/auth/basicSignUp.ts';
 import {RootState} from '../../redux/stores/reducer.ts';
 import useSetAccessTokenAndRefreshToken from '../auth/useSetAccessTokenAndRefreshToken.ts';
-import {Alert} from 'react-native'; // Import Alert
 
 const useSignUp = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -21,7 +20,6 @@ const useSignUp = () => {
       password,
       passwordConfirm,
       nickname,
-      birthDate,
       agreedToPrivacyPolicy,
       agreedToServiceTerms,
     } = user;
@@ -37,7 +35,6 @@ const useSignUp = () => {
         password,
         passwordConfirm,
         nickname,
-        birthDate,
         agreedToPrivacyPolicy,
         agreedToServiceTerms,
       );
@@ -59,10 +56,6 @@ const useSignUp = () => {
           newUser: false,
           loading: false,
         });
-
-        if (signUpResult.error?.errorFields?.birthDate) {
-          Alert.alert('안내', signUpResult.error.errorFields.birthDate);
-        }
       }
     } catch (error) {
       console.error('SignUp error:', error);

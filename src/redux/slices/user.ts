@@ -1,7 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
-  birthDate: '',
   email: '',
   nickname: '',
   provider: '',
@@ -25,7 +24,6 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action) {
-      state.birthDate = action.payload.birthDate;
       state.email = action.payload.email;
       state.nickname = action.payload.nickname;
       state.provider = action.payload.provider;
@@ -52,7 +50,6 @@ const userSlice = createSlice({
     },
     setSignUpNickNameScreen(state, action) {
       state.nickname = action.payload.nickname;
-      state.birthDate = action.payload.birthDate;
     },
     setAgreedToPrivacyPolicy(state, action) {
       state.agreedToPrivacyPolicy = action.payload;
@@ -75,7 +72,6 @@ const userSlice = createSlice({
       state.phoneToken = action.payload;
     },
     resetUser(state) {
-      state.birthDate = '';
       state.email = '';
       state.nickname = '';
       state.accessToken = '';

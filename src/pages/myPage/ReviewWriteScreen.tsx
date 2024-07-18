@@ -97,11 +97,10 @@ function ReviewWriteScreen() {
   };
 
   const isSubmitEnabled =
-    (selectedVisitTime !== null ||
-      selectedSatisfaction !== null ||
-      selectedCongestion !== null) &&
-    review.trim().length >= 0;
-
+    selectedVisitTime !== null &&
+    selectedSatisfaction !== null &&
+    selectedCongestion !== null &&
+    review.trim().length >= 1;
   return (
     <DismissKeyboardView style={styles.container}>
       <View style={styles.titleRow}>

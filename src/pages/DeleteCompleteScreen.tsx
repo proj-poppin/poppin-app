@@ -8,7 +8,6 @@ import CompleteButton from '../components/atoms/button/CompleteButton.tsx';
 
 function DeleteCompleteScreen() {
   const navigation = useNavigation();
-
   return (
     <DismissKeyboardView style={styles.container}>
       <View style={styles.completeContainer}>

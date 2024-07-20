@@ -134,14 +134,14 @@ function PopUpEditRequestScreen() {
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
       />
-      <Text style={styles.labelText}>{'관련사진'}</Text>
+      <Text style={styles.labelText}>{}</Text>
       <View style={styles.modalContainer} />
       <ImageContainerRow
         selectedImages={selectedImages}
         handleSelectImages={handleSelectImagesWithPermission}
         handleRemoveImage={handleRemoveImage}
       />
-      <Text style={[Text12R.text, {color: globalColors.font}]}>
+      <Text style={[{marginTop: 10}, Text12R.text, {color: globalColors.font}]}>
         *문의사항은 접수 후 수정이 불가합니다.{'\n'}
         *첨부파일은 20MB 이하의 파일만 첨부가능하며, 최대 5개까지
         등록가능합니다.{'\n'}

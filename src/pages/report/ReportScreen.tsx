@@ -82,14 +82,14 @@ function ReportScreen({navigation, route}) {
         <View
           style={[{flexDirection: 'row'}, {marginTop: 40, marginBottom: 10}]}>
           <Text style={[Text20B.text]}>{'신고 사유를 알려주세요'}</Text>
-          <Text
-            style={[
-              Text12M.text,
-              {color: globalColors.font},
-              {marginLeft: 15, marginTop: 5},
-            ]}>
-            {'*복수 선택 가능'}
-          </Text>
+          {/*<Text*/}
+          {/*  style={[*/}
+          {/*    Text12M.text,*/}
+          {/*    {color: globalColors.font},*/}
+          {/*    {marginLeft: 15, marginTop: 5},*/}
+          {/*  ]}>*/}
+          {/*  {'*복수 선택 가능'}*/}
+          {/*</Text>*/}
         </View>
         <View style={styles.reasonContainer}>
           {reasons.map((reason, index) => (

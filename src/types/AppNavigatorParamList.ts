@@ -25,9 +25,9 @@ export type AppNavigatorParamList = {
   MemberDelete: undefined;
   PreferenceSetting: undefined;
   PopUpDetail: {
-    id: string;
-    name: string;
-    isAlarm: boolean;
+    id: number;
+    name?: string;
+    isAlarm?: boolean;
     alarmId?: number;
     isLoggedIn: boolean;
   };

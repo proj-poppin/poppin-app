@@ -19,7 +19,6 @@ const createPopUpReview = async (
     }
     const formData = new FormData();
     if (images.length > 0) {
-      // Add images to FormData
       images.forEach((image, index) => {
         const file = {
           uri: image.uri.startsWith('file://')

@@ -41,7 +41,12 @@ export default function HomeLoginHeader() {
         {tasteList?.popupSummaryDtos.map(item => (
           <TouchableOpacity
             key={item.id} // `key` should be here
-            onPress={() => navigation.navigate('PopUpDetail', {id: item.id})}>
+            onPress={() =>
+              navigation.navigate('PopUpDetail', {
+                id: item.id,
+                isLoggedIn: isLoggedIn,
+              })
+            }>
             <RowPopUpCard
               key={item.id}
               id={item.id}

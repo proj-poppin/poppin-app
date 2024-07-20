@@ -48,7 +48,11 @@ function PreferenceSettingScreen({navigation, route}: any) {
 
   const handleCloseModal = () => {
     setModalVisible(false);
-    navigation.navigate('Home', {shouldRefresh: true});
+    if (route.params?.fromHome) {
+      navigation.navigate('Home', {shouldRefresh: true});
+    } else {
+      navigation.navigate('MyPage');
+    }
   };
 
   const handleClick = (selectedTag: TFilter) => {

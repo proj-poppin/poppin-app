@@ -15,7 +15,8 @@ interface PopUpDetailOptionsProps {
   id: number;
   name: string;
   isLoggedIn: boolean;
-  openLoginModal: (message: string) => void;
+  openLoginModal: (message: string, isBlocked?: boolean) => void;
+  openBlockModal: () => void;
 }
 
 const PopUpDetailOptions = ({
@@ -24,6 +25,7 @@ const PopUpDetailOptions = ({
   name,
   isLoggedIn,
   openLoginModal,
+  openBlockModal,
 }: PopUpDetailOptionsProps): Partial<NativeStackNavigationOptions> => {
   const menuOptions = [
     {label: '신고하기', route: 'Report'},
@@ -48,7 +50,7 @@ const PopUpDetailOptions = ({
     } else if (selectedItem.route === 'PopUpEditRequest') {
       navigation.navigate(selectedItem.route, {id, name});
     } else if (selectedItem.route === 'Block') {
-      navigation.navigate('Block', {id});
+      openBlockModal();
     }
   };
 

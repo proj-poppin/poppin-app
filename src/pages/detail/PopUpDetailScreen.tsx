@@ -66,12 +66,19 @@ import SelectDropdown from 'react-native-select-dropdown';
 import useBlockUser from '../../hooks/useBlockUser.tsx';
 import UnderlinedTextButton from '../../components/UnderlineTextButton.tsx'; // 추가된 부분
 import KakaoShareLink from 'react-native-kakao-share-link';
+import SkipModal from '../../components/SkipModal.tsx';
+import BlockModal from '../../components/BlockModal.tsx';
+import userSlice from '../../redux/slices/user.ts';
+import useBlockPopup from '../../hooks/useBlockPopup.tsx';
 export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
   'PopUpDetail'
 >;
 
 const PopUpDetailScreen = ({route}) => {
+  // useBlockPopup();
+  const {blockPopupDetails, loading: blockPopupLoading} = useBlockPopup();
+  const [blockModalVisible, setBlockModalVisible] = useState(false);
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const navigation = useNavigation<PopUpDetailScreenNavigationProp>();
   const [fetchTrigger, setFetchTrigger] = useState(false);
@@ -104,6 +111,11 @@ const PopUpDetailScreen = ({route}) => {
     }
   }, [reviewSubmitted, refetch, dispatch]);
 
+  const openBlockModal = (message = '차단한 게시글은 다시 볼 수 없습니다.') => {
+    setAlertMessage(message);
+    setBlockModalVisible(true);
+  };
+
   useEffect(() => {
     if (detailPopUpData) {
       navigation.setOptions(
@@ -113,6 +125,7 @@ const PopUpDetailScreen = ({route}) => {
           name: detailPopUpData.name,
           isLoggedIn,
           openLoginModal,
+          openBlockModal,
         }),
       );
       setReviews(detailPopUpData.review);
@@ -137,10 +150,19 @@ const PopUpDetailScreen = ({route}) => {
   );
   const openLoginModal = (
     message = '관심 팝업에 추가하려면 로그인이 필요합니다.',
+    isBlocked = false,
   ) => {
     setAlertMessage(message);
+    if (isBlocked) {
+      setBlockModalVisible(true);
+    }
     setLoginModalVisible(true);
   };
+
+  const closeBlockModal = () => {
+    setBlockModalVisible(false);
+  };
+
   const closeLoginModal = () => {
     setLoginModalVisible(false);
   };
@@ -229,6 +251,37 @@ const PopUpDetailScreen = ({route}) => {
     Linking.openURL(link).catch(e => console.log(e));
   };
 
+  const handleSkipBlockComplete = () => {
+    setModalVisible(false);
+    dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
+    navigation.goBack();
+  };
+
+  const handleBlockPopup = async () => {
+    const response = await blockPopupDetails(id);
+    if (response.success) {
+      Alert.alert(
+        '차단 완료',
+        '팝업이 성공적으로 차단되었습니다.',
+        [
+          {
+            text: '확인',
+            onPress: () => {
+              setTimeout(() => {
+                navigation.goBack();
+              }, 300);
+            },
+          },
+        ],
+        {cancelable: false},
+      );
+    } else {
+      // Optionally handle the error case, e.g., show a different alert or message
+      Alert.alert('차단 실패', '팝업 차단에 실패했습니다.');
+    }
+    closeBlockModal();
+  };
+
   const handleRecommendPress = async (reviewId: number) => {
     try {
       const response = await addRecommendCount(detailPopUpData?.id!, reviewId);
@@ -268,6 +321,27 @@ const PopUpDetailScreen = ({route}) => {
   }
 
   if (error || !detailPopUpData) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={globalColors.purple} />
+      </View>
+    );
+  }
+
+  if (detailPopUpData.isBlocked) {
+    Alert.alert(
+      '안내',
+      '차단된 팝업입니다.',
+      [
+        {
+          text: '확인',
+          onPress: () => {
+            navigation.goBack();
+          },
+        },
+      ],
+      {cancelable: false},
+    );
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={globalColors.purple} />
@@ -340,7 +414,7 @@ const PopUpDetailScreen = ({route}) => {
     }
   };
 
-  const handleBlock = async userId => {
+  const handleBlockUser = async userId => {
     if (!isLoggedIn) {
       openLoginModal('차단하려면 로그인이 필요합니다.');
       return;
@@ -383,7 +457,7 @@ const PopUpDetailScreen = ({route}) => {
         reviewId: review.reviewId,
       });
     } else if (selectedItem.action === 'Block') {
-      handleBlock(review.userId);
+      handleBlockUser(review.userId);
     }
   };
 
@@ -696,6 +770,15 @@ const PopUpDetailScreen = ({route}) => {
           subAlertTitle={alertMessage}
           selectFirstText="나중에 할래요"
           selectSecondText="로그인하기"
+        />
+        <TwoSelectConfirmationModal
+          isVisible={blockModalVisible}
+          onClose={closeBlockModal}
+          onConfirm={handleBlockPopup}
+          mainAlertTitle="차단하시겠습니까?"
+          subAlertTitle={alertMessage}
+          selectFirstText="취소할래요"
+          selectSecondText="차단할래요"
         />
         <Spinner
           visible={

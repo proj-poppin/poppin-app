@@ -58,6 +58,7 @@ export type DetailPopUpDataPublic = {
 };
 
 export type DetailPopUpDataNonPublic = {
+  isBlocked: boolean;
   latitude: number;
   longitude: number;
   isVisited: boolean;

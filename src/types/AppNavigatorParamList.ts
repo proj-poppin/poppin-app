@@ -1,4 +1,5 @@
 export type AppNavigatorParamList = {
+  Block: {id: number};
   Report: {id: number; isReview?: boolean; reviewId?: number};
   PopUpEditRequest: {name: string; id: number};
   Entry: undefined;
@@ -24,7 +25,7 @@ export type AppNavigatorParamList = {
   MemberDelete: undefined;
   PreferenceSetting: undefined;
   PopUpDetail: {
-    id: number;
+    id: string;
     name: string;
     isAlarm: boolean;
     alarmId?: number;

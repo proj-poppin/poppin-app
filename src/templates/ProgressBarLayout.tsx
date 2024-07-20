@@ -13,34 +13,42 @@ const ProgressBarLayout = ({
   handleNext,
   onComplete,
   children,
+  isNextDisabled,
+  isCompleteDisabled,
 }) => {
   return (
     <View style={[{flex: 1}]}>
       <ProgressBarComponent step={step} />
       <ScrollView style={styles.contentContainer}>{children}</ScrollView>
-
-      {/* Navigation Buttons */}
       <View style={styles.buttonContainer}>
-        {/* 버튼 로직은 동일하게 유지 */}
         {step === 1 && (
           <CompleteButton
             onPress={handleNext}
             title={'다음'}
             buttonWidth={'95%'}
+            disabled={isNextDisabled}
           />
         )}
         {step > 1 && step < maxStep && (
           <View style={styles.buttonRow}>
             <BackMiddleButton onPress={handleBack} title={'이전'} />
             <View style={{width: 30}} />
-            <NextMiddleButton onPress={handleNext} title={'다음'} />
+            <NextMiddleButton
+              onPress={handleNext}
+              title={'다음'}
+              disabled={isNextDisabled}
+            />
           </View>
         )}
         {step === maxStep && (
           <View style={styles.buttonRow}>
             <BackMiddleButton onPress={handleBack} title={'이전'} />
             <View style={{width: 30}} />
-            <NextMiddleButton onPress={onComplete} title={'완료'} />
+            <NextMiddleButton
+              onPress={onComplete}
+              title={'완료'}
+              disabled={isCompleteDisabled}
+            />
           </View>
         )}
       </View>

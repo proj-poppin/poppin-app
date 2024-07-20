@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
+  Pressable,
 } from 'react-native';
 import {useNavigation, useIsFocused} from '@react-navigation/native';
 import DownBlackSvg from '../../assets/icons/downBlack.svg';
@@ -116,7 +117,7 @@ const ListView: React.FC<ListViewProps> = ({
                 key={item.id}
                 entering={FadeInDown.delay(index * 100)} // Add delay to each item
               >
-                <TouchableOpacity
+                <Pressable
                   onPress={() =>
                     navigation.navigate('PopUpDetail', {
                       id: item.id,
@@ -134,7 +135,7 @@ const ListView: React.FC<ListViewProps> = ({
                     isInterested={true}
                     showToast={showToast} // Pass showToast prop
                   />
-                </TouchableOpacity>
+                </Pressable>
               </Animated.View>
             ))
           ) : (

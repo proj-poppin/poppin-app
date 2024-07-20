@@ -8,6 +8,7 @@
 #import <Firebase.h> // Firebase 추가🚨
 #import <FirebaseMessaging.h> // Firebase Messaging 추가🚨
 #import <CodePush/CodePush.h> // CodePush 추가🚨
+#import <React/RCTLinkingManager.h>
 
 @implementation AppDelegate
 
@@ -43,7 +44,6 @@
   [super application:application didFinishLaunchingWithOptions:launchOptions];
   [RNSplashScreen show];  // RN RNSplashScreen 할때 추가
 
-  // Define UNUserNotificationCenter // Firebase 추가🚨
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
 
@@ -68,13 +68,10 @@
   return YES; // 수정
 }
 
-// Firebase Messaging 델리게이트 메소드 추가🚨
 - (void)messaging:(FIRMessaging *)messaging didReceiveRegistrationToken:(NSString *)fcmToken {
   NSLog(@"FCM 토큰: %@", fcmToken);
-  // 토큰을 서버에 전달하거나 필요한 처리를 합니다.
 }
 
-// Called when a notification is delivered to a foreground app.
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
   completionHandler(UNNotificationPresentationOptionSound | UNNotificationPresentationOptionAlert | UNNotificationPresentationOptionBadge);
 }
@@ -107,7 +104,11 @@
     return [RNKakaoLogins handleOpenUrl:url];
   }
 
-  return NO;
+  return [RCTLinkingManager application:app openURL:url options:options];
+}
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler {
+  return [RCTLinkingManager application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
 }
 
 @end

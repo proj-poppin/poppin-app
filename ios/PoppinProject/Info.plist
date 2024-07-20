@@ -52,7 +52,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>29</string>
+	<string>33</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
@@ -61,6 +61,7 @@
 	<string>${KAKAO_API_KEY}</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+        <string>kakaolink</string>
 		<string>naversearchapp</string>
 		<string>naversearchthirdlogin</string>
 		<string>kakaolink</string>

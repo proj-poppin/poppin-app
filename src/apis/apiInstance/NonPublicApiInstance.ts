@@ -14,7 +14,7 @@ nonPublicApiInstance.interceptors.request.use(
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
-    // printRequestLog(config);
+    printRequestLog(config);
     return config;
   },
   error => {

@@ -11,7 +11,6 @@ import {
   View,
   TouchableWithoutFeedback,
 } from 'react-native';
-import Share from 'react-native-share';
 import useGetDetailPopUp from '../../hooks/detailPopUp/useGetDetailPopUp';
 import ShareSvg from '../../assets/detail/share.svg';
 import StarOffSvg from '../../assets/detail/starOff.svg';
@@ -43,7 +42,6 @@ import CustomModal from '../../components/atoms/modal/CustomModal';
 import Geolocation from 'react-native-geolocation-service';
 import useAddRecommendReview from '../../hooks/detailPopUp/useAddRecommendReview';
 import {useNavigation} from '@react-navigation/native';
-import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn';
 import useAddVisitor from '../../hooks/detailPopUp/useAddVisitor';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList';
@@ -68,7 +66,6 @@ import SelectDropdown from 'react-native-select-dropdown';
 import useBlockUser from '../../hooks/useBlockUser.tsx';
 import UnderlinedTextButton from '../../components/UnderlineTextButton.tsx'; // 추가된 부분
 import KakaoShareLink from 'react-native-kakao-share-link';
-
 export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
   'PopUpDetail'
@@ -78,8 +75,7 @@ const PopUpDetailScreen = ({route}) => {
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const navigation = useNavigation<PopUpDetailScreenNavigationProp>();
   const [fetchTrigger, setFetchTrigger] = useState(false);
-  const {id, alarmId, name, isAlarm, isLoggedIn} = route.params;
-
+  let {id, alarmId, name, isAlarm, isLoggedIn} = route.params;
   const [reviews, setReviews] = useState<Review[]>([]);
   const reviewSubmitted = useSelector(state => state.reviewSubmitted);
   const {
@@ -115,11 +111,13 @@ const PopUpDetailScreen = ({route}) => {
           navigation,
           id: detailPopUpData.id,
           name: detailPopUpData.name,
+          isLoggedIn,
+          openLoginModal,
         }),
       );
       setReviews(detailPopUpData.review);
     }
-  }, [navigation, detailPopUpData]);
+  }, [navigation, detailPopUpData, isLoggedIn]);
 
   const firstImageUrl = detailPopUpData?.images?.[0];
 
@@ -146,7 +144,6 @@ const PopUpDetailScreen = ({route}) => {
   const closeLoginModal = () => {
     setLoginModalVisible(false);
   };
-
   const handleIsOnlyVerifiedReview = () => {
     setIsOnlyVerifiedReview(!isOnlyVerifiedReview);
   };
@@ -167,9 +164,7 @@ const PopUpDetailScreen = ({route}) => {
             detailPopUpData?.latitude ?? 0,
             detailPopUpData?.longitude ?? 0,
           );
-
           const token = await EncryptedStorage.getItem('pushToken');
-
           if (distance !== null && distance <= 0.05) {
             const response = await addVisitorPopUp(
               detailPopUpData!.id!,
@@ -308,12 +303,17 @@ const PopUpDetailScreen = ({route}) => {
     try {
       const response = await KakaoShareLink.sendFeed({
         content: {
-          title: name,
+          title: detailPopUpData.name,
           imageUrl: firstImageUrl!,
           link: {
-            // 앱 URL 제공시 변경 필요
-            // webUrl: 'https://developers.kakao.com',
-            // mobileWebUrl: 'https://developers.kakao.com',
+            webUrl: `https://poppin.com/popup/${detailPopUpData.id}`,
+            mobileWebUrl: `https://poppin.com/popup/${detailPopUpData.id}`,
+            androidExecutionParams: [
+              {key: 'id', value: detailPopUpData.id.toString()},
+            ],
+            iosExecutionParams: [
+              {key: 'id', value: detailPopUpData.id.toString()},
+            ],
           },
           description: detailPopUpData.introduce,
         },
@@ -321,18 +321,30 @@ const PopUpDetailScreen = ({route}) => {
           {
             title: '앱에서 보기',
             link: {
-              // webUrl: 'https://developers.kakao.com',
-              // mobileWebUrl: 'https://developers.kakao.com',
+              webUrl: `https://poppin.com/popup/${detailPopUpData.id}`,
+              mobileWebUrl: `https://poppin.com/popup/${detailPopUpData.id}`,
+              androidExecutionParams: [
+                {key: 'id', value: detailPopUpData.id.toString()},
+              ],
+              iosExecutionParams: [
+                {key: 'id', value: detailPopUpData.id.toString()},
+              ],
             },
           },
         ],
       });
+      console.log('Share response:', response);
+      console.log('share id: ', detailPopUpData.id);
     } catch (e) {
-      console.log(e);
+      console.error('Share error:', e);
     }
   };
 
   const handleBlock = async userId => {
+    if (!isLoggedIn) {
+      openLoginModal('차단하려면 로그인이 필요합니다.');
+      return;
+    }
     console.log('userId', userId);
     const response = await blockUserDetails(userId);
     if (response.success) {
@@ -355,6 +367,15 @@ const PopUpDetailScreen = ({route}) => {
   ];
 
   const handleMenuSelect = (selectedItem, review) => {
+    if (!isLoggedIn) {
+      if (selectedItem.action === 'Report') {
+        openLoginModal('신고하려면 로그인이 필요합니다.');
+      } else if (selectedItem.action === 'Block') {
+        openLoginModal('차단하려면 로그인이 필요합니다.');
+      }
+      return;
+    }
+
     if (selectedItem.action === 'Report') {
       navigation.navigate('Report', {
         id: id,
@@ -871,7 +892,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     top: -20,
     backgroundColor: globalColors.white,
-    marginTop: 30,
+    marginTop: 5,
     marginLeft: -100,
     minWidth: 135,
   },

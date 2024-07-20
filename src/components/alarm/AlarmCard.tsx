@@ -4,6 +4,7 @@ import globalColors from '../../styles/color/globalColors';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';
+import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 
 type NoticeDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
@@ -33,6 +34,8 @@ const AlarmCard: React.FC<AlarmCardProps> = ({
 }) => {
   const navigation = useNavigation<NoticeDetailScreenNavigationProp>();
 
+  const loggedIn = useIsLoggedIn();
+
   const handlePress = () => {
     if (type === 'notice') {
       navigation.navigate('NoticeDetail', {nid: id});
@@ -42,6 +45,7 @@ const AlarmCard: React.FC<AlarmCardProps> = ({
         alarmId: alarmId,
         name: title,
         isAlarm: true,
+        isLoggedIn: loggedIn,
       });
     }
   };

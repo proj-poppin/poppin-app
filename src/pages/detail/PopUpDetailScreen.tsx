@@ -11,7 +11,6 @@ import {
   View,
   TouchableWithoutFeedback,
 } from 'react-native';
-import Share from 'react-native-share';
 import useGetDetailPopUp from '../../hooks/detailPopUp/useGetDetailPopUp';
 import ShareSvg from '../../assets/detail/share.svg';
 import StarOffSvg from '../../assets/detail/starOff.svg';
@@ -43,7 +42,6 @@ import CustomModal from '../../components/atoms/modal/CustomModal';
 import Geolocation from 'react-native-geolocation-service';
 import useAddRecommendReview from '../../hooks/detailPopUp/useAddRecommendReview';
 import {useNavigation} from '@react-navigation/native';
-import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn';
 import useAddVisitor from '../../hooks/detailPopUp/useAddVisitor';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList';
@@ -67,18 +65,24 @@ import MenuSvg from '../../assets/detail/menu.svg'; // MenuSvg 가져오기
 import SelectDropdown from 'react-native-select-dropdown';
 import useBlockUser from '../../hooks/useBlockUser.tsx';
 import UnderlinedTextButton from '../../components/UnderlineTextButton.tsx'; // 추가된 부분
-
+import KakaoShareLink from 'react-native-kakao-share-link';
+import SkipModal from '../../components/SkipModal.tsx';
+import BlockModal from '../../components/BlockModal.tsx';
+import userSlice from '../../redux/slices/user.ts';
+import useBlockPopup from '../../hooks/useBlockPopup.tsx';
 export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
   'PopUpDetail'
 >;
 
 const PopUpDetailScreen = ({route}) => {
+  // useBlockPopup();
+  const {blockPopupDetails, loading: blockPopupLoading} = useBlockPopup();
+  const [blockModalVisible, setBlockModalVisible] = useState(false);
   const [loginModalVisible, setLoginModalVisible] = useState(false);
-  const isLoggedIn = useIsLoggedIn();
   const navigation = useNavigation<PopUpDetailScreenNavigationProp>();
   const [fetchTrigger, setFetchTrigger] = useState(false);
-  const {id, alarmId, name, isAlarm} = route.params;
+  let {id, alarmId, name, isAlarm, isLoggedIn} = route.params;
   const [reviews, setReviews] = useState<Review[]>([]);
   const reviewSubmitted = useSelector(state => state.reviewSubmitted);
   const {
@@ -107,6 +111,11 @@ const PopUpDetailScreen = ({route}) => {
     }
   }, [reviewSubmitted, refetch, dispatch]);
 
+  const openBlockModal = (message = '차단한 게시글은 다시 볼 수 없습니다.') => {
+    setAlertMessage(message);
+    setBlockModalVisible(true);
+  };
+
   useEffect(() => {
     if (detailPopUpData) {
       navigation.setOptions(
@@ -114,11 +123,14 @@ const PopUpDetailScreen = ({route}) => {
           navigation,
           id: detailPopUpData.id,
           name: detailPopUpData.name,
+          isLoggedIn,
+          openLoginModal,
+          openBlockModal,
         }),
       );
       setReviews(detailPopUpData.review);
     }
-  }, [navigation, detailPopUpData]);
+  }, [navigation, detailPopUpData, isLoggedIn]);
 
   const firstImageUrl = detailPopUpData?.images?.[0];
 
@@ -134,25 +146,33 @@ const PopUpDetailScreen = ({route}) => {
   const [showFullText, setShowFullText] = useState(false);
 
   const [alertMessage, setAlertMessage] = useState(
-    '방문 인증을 위해서는 로그인이 필요해요.',
+    '방문 인증을 위해서는 로그인이 필요합니다.',
   );
   const openLoginModal = (
-    message = '관심 팝업에 추가하려면 로그인이 필요해요.',
+    message = '관심 팝업에 추가하려면 로그인이 필요합니다.',
+    isBlocked = false,
   ) => {
     setAlertMessage(message);
+    if (isBlocked) {
+      setBlockModalVisible(true);
+    }
     setLoginModalVisible(true);
   };
+
+  const closeBlockModal = () => {
+    setBlockModalVisible(false);
+  };
+
   const closeLoginModal = () => {
     setLoginModalVisible(false);
   };
-
   const handleIsOnlyVerifiedReview = () => {
     setIsOnlyVerifiedReview(!isOnlyVerifiedReview);
   };
 
   const handleVisitPress = async () => {
     if (!isLoggedIn) {
-      openLoginModal('방문 인증을 위해서는 로그인이 필요해요.');
+      openLoginModal('방문 인증을 위해서는 로그인이 필요합니다.');
       return;
     }
     const hasPermission = await requestLocationPermission();
@@ -166,9 +186,7 @@ const PopUpDetailScreen = ({route}) => {
             detailPopUpData?.latitude ?? 0,
             detailPopUpData?.longitude ?? 0,
           );
-
           const token = await EncryptedStorage.getItem('pushToken');
-
           if (distance !== null && distance <= 0.05) {
             const response = await addVisitorPopUp(
               detailPopUpData!.id!,
@@ -233,6 +251,37 @@ const PopUpDetailScreen = ({route}) => {
     Linking.openURL(link).catch(e => console.log(e));
   };
 
+  const handleSkipBlockComplete = () => {
+    setModalVisible(false);
+    dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
+    navigation.goBack();
+  };
+
+  const handleBlockPopup = async () => {
+    const response = await blockPopupDetails(id);
+    if (response.success) {
+      Alert.alert(
+        '차단 완료',
+        '팝업이 성공적으로 차단되었습니다.',
+        [
+          {
+            text: '확인',
+            onPress: () => {
+              setTimeout(() => {
+                navigation.goBack();
+              }, 300);
+            },
+          },
+        ],
+        {cancelable: false},
+      );
+    } else {
+      // Optionally handle the error case, e.g., show a different alert or message
+      Alert.alert('차단 실패', '팝업 차단에 실패했습니다.');
+    }
+    closeBlockModal();
+  };
+
   const handleRecommendPress = async (reviewId: number) => {
     try {
       const response = await addRecommendCount(detailPopUpData?.id!, reviewId);
@@ -279,6 +328,27 @@ const PopUpDetailScreen = ({route}) => {
     );
   }
 
+  if (detailPopUpData.isBlocked) {
+    Alert.alert(
+      '안내',
+      '차단된 팝업입니다.',
+      [
+        {
+          text: '확인',
+          onPress: () => {
+            navigation.goBack();
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={globalColors.purple} />
+      </View>
+    );
+  }
+
   const isVisitComplete = detailPopUpData.isVisited;
 
   const visitorDataDefault: VisitorDataDetail = {
@@ -304,17 +374,51 @@ const PopUpDetailScreen = ({route}) => {
       openLoginModal('공유하기 위해서는 로그인이 필요합니다.');
       return;
     }
-    const shareOptions = {
-      title: 'Share Popup',
-      message: `Check out this amazing popup: ${detailPopUpData!.name}`,
-      url: detailPopUpData!.images[0],
-    };
     try {
-      await Share.open(shareOptions);
-    } catch (error) {}
+      const response = await KakaoShareLink.sendFeed({
+        content: {
+          title: detailPopUpData.name,
+          imageUrl: firstImageUrl!,
+          link: {
+            webUrl: `https://poppin.com/popup/${detailPopUpData.id}`,
+            mobileWebUrl: `https://poppin.com/popup/${detailPopUpData.id}`,
+            androidExecutionParams: [
+              {key: 'id', value: detailPopUpData.id.toString()},
+            ],
+            iosExecutionParams: [
+              {key: 'id', value: detailPopUpData.id.toString()},
+            ],
+          },
+          description: detailPopUpData.introduce,
+        },
+        buttons: [
+          {
+            title: '앱에서 보기',
+            link: {
+              webUrl: `https://poppin.com/popup/${detailPopUpData.id}`,
+              mobileWebUrl: `https://poppin.com/popup/${detailPopUpData.id}`,
+              androidExecutionParams: [
+                {key: 'id', value: detailPopUpData.id.toString()},
+              ],
+              iosExecutionParams: [
+                {key: 'id', value: detailPopUpData.id.toString()},
+              ],
+            },
+          },
+        ],
+      });
+      console.log('Share response:', response);
+      console.log('share id: ', detailPopUpData.id);
+    } catch (e) {
+      console.error('Share error:', e);
+    }
   };
 
-  const handleBlock = async userId => {
+  const handleBlockUser = async userId => {
+    if (!isLoggedIn) {
+      openLoginModal('차단하려면 로그인이 필요합니다.');
+      return;
+    }
     console.log('userId', userId);
     const response = await blockUserDetails(userId);
     if (response.success) {
@@ -337,6 +441,15 @@ const PopUpDetailScreen = ({route}) => {
   ];
 
   const handleMenuSelect = (selectedItem, review) => {
+    if (!isLoggedIn) {
+      if (selectedItem.action === 'Report') {
+        openLoginModal('신고하려면 로그인이 필요합니다.');
+      } else if (selectedItem.action === 'Block') {
+        openLoginModal('차단하려면 로그인이 필요합니다.');
+      }
+      return;
+    }
+
     if (selectedItem.action === 'Report') {
       navigation.navigate('Report', {
         id: id,
@@ -344,7 +457,7 @@ const PopUpDetailScreen = ({route}) => {
         reviewId: review.reviewId,
       });
     } else if (selectedItem.action === 'Block') {
-      handleBlock(review.userId);
+      handleBlockUser(review.userId);
     }
   };
 
@@ -500,7 +613,7 @@ const PopUpDetailScreen = ({route}) => {
               <Pressable
                 onPress={() => {
                   if (!isLoggedIn) {
-                    navigation.navigate('Entry');
+                    openLoginModal('후기를 작성하려면 로그인이 필요합니다.');
                     return;
                   }
                   navigation.navigate('ReviewWrite', {
@@ -511,7 +624,11 @@ const PopUpDetailScreen = ({route}) => {
                 }}>
                 <SvgWithNameBoxLabel
                   Icon={WriteReviewSvg}
-                  label="방문후기 작성하기"
+                  label={
+                    !isLoggedIn || !isVisitComplete
+                      ? '일반후기 작성하기'
+                      : '인증후기 작성하기'
+                  }
                 />
               </Pressable>
             </View>
@@ -653,6 +770,15 @@ const PopUpDetailScreen = ({route}) => {
           subAlertTitle={alertMessage}
           selectFirstText="나중에 할래요"
           selectSecondText="로그인하기"
+        />
+        <TwoSelectConfirmationModal
+          isVisible={blockModalVisible}
+          onClose={closeBlockModal}
+          onConfirm={handleBlockPopup}
+          mainAlertTitle="차단하시겠습니까?"
+          subAlertTitle={alertMessage}
+          selectFirstText="취소할래요"
+          selectSecondText="차단할래요"
         />
         <Spinner
           visible={
@@ -849,7 +975,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     top: -20,
     backgroundColor: globalColors.white,
-    marginTop: 30,
+    marginTop: 5,
     marginLeft: -100,
     minWidth: 135,
   },

@@ -16,7 +16,8 @@ import {
   Order,
   OperationStatus,
   TFilter,
-} from '../../types/FindPopupType.ts'; // Correct import for throttle
+} from '../../types/FindPopupType.ts';
+import Animated, {FadeInDown} from 'react-native-reanimated'; // Correct import for throttle
 
 interface FindTabProps {
   selectedOrder: Order;
@@ -126,14 +127,16 @@ function FindTab({
       onScroll={({nativeEvent}) => handleScroll(nativeEvent)}
       style={{marginBottom: 100}}>
       <DividerLine height={1} />
-      {findPopupListData?.map((item: PopupItem, index: number) => (
-        <FindCard
-          status={status}
-          key={`${item.id}-${index}`}
-          item={item}
-          showToast={showToast}
-        />
-      ))}
+      <Animated.View entering={FadeInDown.delay(100)}>
+        {findPopupListData?.map((item: PopupItem, index: number) => (
+          <FindCard
+            status={status}
+            key={`${item.id}-${index}`}
+            item={item}
+            showToast={showToast}
+          />
+        ))}
+      </Animated.View>
       {findPopupListLoading && (
         <View
           style={{

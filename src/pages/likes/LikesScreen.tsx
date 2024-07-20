@@ -23,6 +23,7 @@ import ForLoginBox from '../../components/ForLoginBox.tsx';
 import CalendarComponent from './calendar/CalendarComponent.tsx';
 import NoSavedPopupsComponent from './NoSavedPopupComponent.tsx';
 import refreshSlice from '../../redux/slices/refreshSlice';
+import ToastComponent from '../../components/atoms/toast/ToastComponent.tsx';
 
 const popUpTypes = ['오픈 예정인 팝업', '운영 중인 팝업', '운영 종료 팝업'];
 const orderTypes = ['오픈일순', '마감일순', '저장순'];
@@ -34,6 +35,8 @@ function LikesScreen({navigation}) {
   const [selectedOrderType, setSelectedOrderType] =
     useState<string>('오픈일순');
   const [isCalendarView, setIsCalendarView] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [isShowToast, setIsShowToast] = useState(false);
 
   const {data: interestList = [], refetch, loading} = useGetInterestList();
   const dispatch = useAppDispatch();
@@ -59,6 +62,11 @@ function LikesScreen({navigation}) {
   useEffect(() => {
     dispatch(refreshSlice.actions.setOnRefresh(handleRefresh));
   }, [handleRefresh, dispatch]);
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setIsShowToast(true);
+  };
 
   const filteredInterestList = useMemo(() => {
     if (!interestList) {
@@ -99,6 +107,14 @@ function LikesScreen({navigation}) {
     navigation.replace('Entry');
   };
 
+  if (loading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color={globalColors.purple} />
+      </View>
+    );
+  }
+
   if (!isLoggedIn) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -110,14 +126,6 @@ function LikesScreen({navigation}) {
           isNeedBox={false}
           isNeedSvg={true}
         />
-      </View>
-    );
-  }
-
-  if (loading) {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" color={globalColors.purple} />
       </View>
     );
   }
@@ -152,23 +160,38 @@ function LikesScreen({navigation}) {
             <CalendarComponent data={interestList} />
           </View>
         ) : (
-          <ScrollView
-            refreshControl={
-              <RefreshControl refreshing={loading} onRefresh={handleRefresh} />
-            }>
-            <ListView
-              selectedPopUpType={selectedPopUpType}
-              popUpTypes={popUpTypes}
-              orderTypes={orderTypes}
-              setSelectedPopUpType={setSelectedPopUpType}
-              setSelectedOrderType={setSelectedOrderType}
-              sortedInterestList={sortedInterestList.map(item => ({
-                ...item,
-                isInterested: true, // Ensure all items from the interest list are marked as interested
-              }))}
-              onRefresh={handleRefresh}
-            />
-          </ScrollView>
+          <>
+            {isShowToast && (
+              <View style={styles.toastContainer}>
+                <ToastComponent
+                  height={45}
+                  onClose={() => setIsShowToast(false)}
+                  message={toastMessage}
+                />
+              </View>
+            )}
+            <ScrollView
+              refreshControl={
+                <RefreshControl
+                  refreshing={loading}
+                  onRefresh={handleRefresh}
+                />
+              }>
+              <ListView
+                selectedPopUpType={selectedPopUpType}
+                popUpTypes={popUpTypes}
+                orderTypes={orderTypes}
+                setSelectedPopUpType={setSelectedPopUpType}
+                setSelectedOrderType={setSelectedOrderType}
+                sortedInterestList={sortedInterestList.map(item => ({
+                  ...item,
+                  isInterested: true, // Ensure all items from the interest list are marked as interested
+                }))}
+                onRefresh={handleRefresh}
+                showToast={showToast} // Pass showToast prop
+              />
+            </ScrollView>
+          </>
         )}
       </BottomSheetModalProvider>
     </SafeAreaView>
@@ -202,6 +225,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 20,
   },
+  toastContainer: {
+    position: 'absolute',
+    top: 60, // Adjust the position as needed
+    width: '100%',
+    alignItems: 'center',
+    zIndex: 999, // Ensure the toast is on top of other elements
+  },
 });
-
 export default LikesScreen;

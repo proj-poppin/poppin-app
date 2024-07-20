@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
+  Pressable,
 } from 'react-native';
 import {useNavigation, useIsFocused} from '@react-navigation/native';
 import DownBlackSvg from '../../assets/icons/downBlack.svg';
@@ -17,6 +18,8 @@ import CustomSelectDropdown from '../../components/CustomDropDown';
 import Text18B from '../../styles/texts/body_large/Text18B';
 import useGetInterestList from '../../hooks/popUpList/useGetInterestList.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
+import Animated, {FadeInDown} from 'react-native-reanimated';
+import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx'; // Import Animated and FadeInDown
 
 interface ListViewProps {
   popUpTypes: string[];
@@ -33,7 +36,9 @@ interface ListViewProps {
     status: 'TERMINATED' | 'OPERATING' | 'NOTYET';
   }[];
   onRefresh: () => void;
+  showToast: (message: string) => void; // Add showToast prop
 }
+
 const ListView: React.FC<ListViewProps> = ({
   popUpTypes,
   orderTypes,
@@ -42,12 +47,14 @@ const ListView: React.FC<ListViewProps> = ({
   setSelectedOrderType,
   sortedInterestList,
   onRefresh,
+  showToast, // Destructure showToast prop
 }) => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const {data, refetch} = useGetInterestList();
   const [currentDate, setCurrentDate] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const isLoggedIn = useIsLoggedIn();
 
   const handleRefresh = useCallback(() => {
     setRefreshing(true);
@@ -105,23 +112,31 @@ const ListView: React.FC<ListViewProps> = ({
         }>
         <DismissKeyboardView>
           {sortedInterestList?.length > 0 ? (
-            sortedInterestList.map(item => (
-              <TouchableOpacity
+            sortedInterestList.map((item, index) => (
+              <Animated.View
                 key={item.id}
-                onPress={() =>
-                  navigation.navigate('PopUpDetail', {id: item.id})
-                }>
-                <InterestPopUpCard
-                  key={item.id}
-                  image_url={item.image_url}
-                  name={item.name}
-                  close_date={item.close_date}
-                  open_date={item.open_date}
-                  status={item.status}
-                  id={item.id}
-                  isInterested={true}
-                />
-              </TouchableOpacity>
+                entering={FadeInDown.delay(index * 100)} // Add delay to each item
+              >
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate('PopUpDetail', {
+                      id: item.id,
+                      isLoggedIn: isLoggedIn,
+                    })
+                  }>
+                  <InterestPopUpCard
+                    key={item.id}
+                    image_url={item.image_url}
+                    name={item.name}
+                    close_date={item.close_date}
+                    open_date={item.open_date}
+                    status={item.status}
+                    id={item.id}
+                    isInterested={true}
+                    showToast={showToast} // Pass showToast prop
+                  />
+                </Pressable>
+              </Animated.View>
             ))
           ) : (
             <Text style={styles.noItemsText}>조건에 맞는 팝업이 없습니다.</Text>

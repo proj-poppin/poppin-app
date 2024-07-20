@@ -36,6 +36,7 @@ import Text14M from '../../styles/texts/body_medium/Text14M.ts';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/stores/reducer.ts';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
+import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
 
 function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
@@ -43,6 +44,8 @@ function MyPageScreen({navigation}) {
   const [loadingUser, setLoadingUser] = useState(true);
   const user = useSelector((state: RootState) => state.user);
   const isLoggedIn = useIsLoggedIn();
+  const [loginModalVisible, setLoginModalVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
   console.log('user:', user);
 
@@ -78,15 +81,21 @@ function MyPageScreen({navigation}) {
   };
 
   const onLogoutClick = () => {
-    isLoggedIn ? showLogoutConfirmation() : navigation.navigate('Entry');
+    isLoggedIn
+      ? showLogoutConfirmation()
+      : handleLoginModal('로그인이 필요합니다');
   };
 
   const navigateToProfileEdit = () => {
     isLoggedIn
       ? navigation.navigate('ProfileEdit')
-      : navigation.navigate('Entry');
+      : handleLoginModal('내 정보 관리는 로그인 필요 서비스입니다.');
   };
 
+  const handleLoginModal = (message: string) => {
+    setAlertMessage(message);
+    setLoginModalVisible(true);
+  };
   const renderBackdrop = useCallback(
     (
       props: React.JSX.IntrinsicAttributes & BottomSheetDefaultBackdropProps,
@@ -104,16 +113,13 @@ function MyPageScreen({navigation}) {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['40%'], []);
 
-  const handlePresentModal = useCallback(
-    (action: () => void) => {
-      if (isLoggedIn) {
-        bottomSheetModalRef.current?.present();
-      } else {
-        action();
-      }
-    },
-    [isLoggedIn],
-  );
+  const handlePresentModal = useCallback(() => {
+    if (isLoggedIn) {
+      bottomSheetModalRef.current?.present();
+    } else {
+      handleLoginModal('제보하기는 로그인 필요 서비스입니다.');
+    }
+  }, [isLoggedIn]);
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
@@ -127,6 +133,11 @@ function MyPageScreen({navigation}) {
     navigation.navigate(route);
     bottomSheetModalRef.current?.dismiss();
   };
+
+  const closeLoginModal = () => {
+    setLoginModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
@@ -161,10 +172,7 @@ function MyPageScreen({navigation}) {
             </Pressable>
           </View>
         </View>
-        <CompleteButton
-          onPress={() => handlePresentModal(() => {})}
-          title={'팝업 제보하기'}
-        />
+        <CompleteButton onPress={handlePresentModal} title={'팝업 제보하기'} />
         <Pressable onPress={handleFaqPress} style={styles.middleContainer}>
           <Text style={Text14M.text}>문의하기</Text>
           <RightSvg style={styles.svgStyle} onPress={handleFaqPress} />
@@ -245,6 +253,18 @@ function MyPageScreen({navigation}) {
           </BottomSheetModal>
         </View>
       </SafeAreaView>
+      <TwoSelectConfirmationModal
+        isVisible={loginModalVisible}
+        onClose={closeLoginModal}
+        onConfirm={() => {
+          navigation.navigate('Entry');
+          closeLoginModal();
+        }}
+        mainAlertTitle="로그인이 필요합니다"
+        subAlertTitle={alertMessage}
+        selectFirstText="나중에 할래요"
+        selectSecondText="로그인하기"
+      />
     </View>
   );
 }
@@ -409,5 +429,4 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
-
 export default MyPageScreen;

@@ -8,8 +8,7 @@ import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationMo
 import Text20B from '../../styles/texts/title/Text20B.ts';
 import Text12R from '../../styles/texts/label/Text12R.ts';
 import Text12M from '../../styles/texts/label/Text12M.ts';
-import useReportPopup from '../../hooks/report/useReportPopUp.tsx';
-import useReportReview from '../../hooks/report/useReportReview.tsx';
+import useBlockPopup from '../../hooks/useBlockPopup.tsx';
 import ReportCheckSvg from '../../assets/images/reportCheck.svg';
 import Text16M from '../../styles/texts/body_medium_large/Text16M.ts';
 
@@ -21,17 +20,16 @@ const reasons = [
   '기타',
 ];
 
-function ReportScreen({navigation, route}) {
-  const {id, isReview, reviewId} = route.params;
+function BlockScreen({navigation, route}) {
+  const {id} = route.params;
   const [selectedReason, setSelectedReason] = useState(null);
-  const [isDeleted, setIsDeleted] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const {reportPopupDetails} = useReportPopup();
-  const {reportReviewDetails} = useReportReview();
+  const {blockPopupDetails} = useBlockPopup();
   const [content, setContent] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
-  console.log(id, isReview, reviewId);
+  console.log(id);
 
   const openModal = () => {
     setModalVisible(true);
@@ -41,29 +39,21 @@ function ReportScreen({navigation, route}) {
     setModalVisible(false);
   };
 
-  const confirmDelete = async () => {
-    setIsDeleted(true);
+  const confirmBlock = async () => {
+    setIsBlocked(true);
     closeModal();
-    const reportContent =
+    const blockContent =
       selectedReason === reasons.length - 1 ? content : reasons[selectedReason];
-    if (isReview) {
-      const resp = await reportReviewDetails(
-        reviewId.toString(),
-        reportContent,
-      );
-      console.log(resp);
-    } else {
-      await reportPopupDetails(id, reportContent);
-    }
+    await blockPopupDetails(id, blockContent);
   };
 
-  if (isDeleted) {
+  if (isBlocked) {
     return (
       <DismissKeyboardView style={styles.container}>
         <View style={styles.completeContainer}>
-          <Text style={Text20B.text}>신고 완료</Text>
+          <Text style={Text20B.text}>차단 완료</Text>
           <Text style={[Text12R.text, styles.completeText]}>
-            신고가 완료되었습니다.
+            차단이 완료되었습니다.
           </Text>
         </View>
         <View style={{paddingTop: 150}}>
@@ -81,7 +71,7 @@ function ReportScreen({navigation, route}) {
       <DismissKeyboardView style={styles.container}>
         <View
           style={[{flexDirection: 'row'}, {marginTop: 40, marginBottom: 10}]}>
-          <Text style={[Text20B.text]}>{'신고 사유를 알려주세요'}</Text>
+          <Text style={[Text20B.text]}>{'차단 사유를 알려주세요'}</Text>
           {/*<Text*/}
           {/*  style={[*/}
           {/*    Text12M.text,*/}
@@ -123,7 +113,7 @@ function ReportScreen({navigation, route}) {
               },
             ]}
             multiline
-            placeholder="신고 사유를 알려주세요."
+            placeholder="차단 사유를 알려주세요."
             placeholderTextColor={globalColors.font}
             maxLength={1000}
             value={content}
@@ -138,7 +128,7 @@ function ReportScreen({navigation, route}) {
         </Text>
         <CompleteButton
           onPress={openModal}
-          title={'신고하기'}
+          title={'차단하기'}
           disabled={
             selectedReason === null ||
             (selectedReason === reasons.length - 1 && !content)
@@ -147,14 +137,14 @@ function ReportScreen({navigation, route}) {
         />
       </DismissKeyboardView>
       <TwoSelectConfirmationModal
-        mainAlertTitle={'정말 신고하시겠습니까?'}
-        subAlertTitle={'신고 사유를 확인해주세요.'}
-        onConfirm={confirmDelete}
+        mainAlertTitle={'정말 차단하시겠습니까?'}
+        subAlertTitle={'차단 사유를 확인해주세요.'}
+        onConfirm={confirmBlock}
         onClose={closeModal}
         onBlankSpacePressed={closeModal}
         isVisible={modalVisible}
         selectFirstText={'취소'}
-        selectSecondText={'신고하기'}
+        selectSecondText={'차단하기'}
       />
     </>
   );
@@ -217,4 +207,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ReportScreen;
+export default BlockScreen;

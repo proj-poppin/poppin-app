@@ -24,7 +24,7 @@ nonPublicApiInstance.interceptors.request.use(
 
 nonPublicApiInstance.interceptors.response.use(
   response => {
-    printResponseLog(response);
+    // printResponseLog(response);
     return response;
   },
   async error => {

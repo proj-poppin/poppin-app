@@ -1,26 +1,32 @@
-import React, {useCallback, useEffect} from 'react';
-import {View, Text, ScrollView, StyleSheet, RefreshControl} from 'react-native';
+import React from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  RefreshControl,
+  ActivityIndicator,
+} from 'react-native';
 import useGetNoticeAlarmList from '../../../hooks/alarm/useGetNoticeAlarmList';
 import AlarmCard from '../../../components/alarm/AlarmCard';
+import globalColors from '../../../styles/color/globalColors.ts';
 
 const NoticeTab = () => {
   const {noticeAlarmList, loading, error, refetch} = useGetNoticeAlarmList();
   const [refreshing, setRefreshing] = React.useState(false);
 
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
-
-  // 새로고침
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    refetch();
+    await refetch();
     setRefreshing(false);
-  }, [refetch]);
+  };
+
+  console.log(noticeAlarmList);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <Text>Loading...</Text>
+        <ActivityIndicator size="large" color={globalColors.purple} />
       </View>
     );
   }
@@ -47,9 +53,19 @@ const NoticeTab = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
       <View>
-        {noticeAlarmList.map(item => (
-          <AlarmCard alarmId={item.id} {...item} type="notice" />
-        ))}
+        {noticeAlarmList.map(
+          (item, index) => (
+            console.log(`중복 키 방지 ${item.id} - ${index}`),
+            (
+              <AlarmCard
+                key={`${item.id}-${index}`}
+                alarmId={item.id}
+                {...item}
+                type="notice"
+              />
+            )
+          ),
+        )}
       </View>
     </ScrollView>
   );

@@ -3,10 +3,8 @@ import {useState, useCallback} from 'react';
 const useSignUpNickName = () => {
   const [nickname, setNickname] = useState('');
   const [nicknameError, setNicknameError] = useState('');
-  const [birthDate, setBirthDate] = useState('');
   // 초기 닉네임 랜덤으로 받아오므로 초기 닉네임은 항상 유효함
   const [isNicknameValid, setIsNicknameValid] = useState(true);
-  const [isBirthDateValid, setIsBirthDateValid] = useState(false);
 
   const handleChangeNickname = useCallback(text => {
     setNickname(text);
@@ -21,22 +19,12 @@ const useSignUpNickName = () => {
     }
   }, []);
 
-  const handleChangeBirthDate = useCallback(text => {
-    setBirthDate(text);
-    const isValidBirthDate = /^\d{4}\.\d{2}\.\d{2}$/.test(text);
-    setIsBirthDateValid(isValidBirthDate);
-  }, []);
-
   return {
     nickname,
     nicknameError,
-    birthDate,
     isNicknameValid,
-    isBirthDateValid,
     handleChangeNickname,
-    handleChangeBirthDate,
     setNickname,
   };
 };
-
 export default useSignUpNickName;

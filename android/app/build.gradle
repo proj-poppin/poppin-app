@@ -146,3 +146,5 @@ dependencies {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+apply from: "../../node_modules/react-native/react.gradle" // Cannot add task ‘bundleDebugJsAndAssets’ as a task with that name already exists. 에러가 발생하면 이 줄 코드 주석처리
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"

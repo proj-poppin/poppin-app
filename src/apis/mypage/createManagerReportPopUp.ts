@@ -22,7 +22,6 @@ const createManagerReportPopUp = async (
   market: boolean,
   display: boolean,
   experience: boolean,
-  wantFree: boolean,
   fashionBeauty: boolean,
   characters: boolean,
   foodBeverage: boolean,
@@ -84,7 +83,6 @@ const createManagerReportPopUp = async (
     formData.append('market', market);
     formData.append('display', display);
     formData.append('experience', experience);
-    formData.append('wantFree', wantFree);
     formData.append('fashionBeauty', fashionBeauty);
     formData.append('characters', characters);
     formData.append('foodBeverage', foodBeverage);

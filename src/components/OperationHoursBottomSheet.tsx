@@ -1,5 +1,5 @@
 import ClockSvg from '../assets/icons/clock.svg';
-import React, {useRef, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import globalColors from '../styles/color/globalColors.ts';
 import DatePicker from 'react-native-date-picker';
@@ -13,19 +13,23 @@ interface Times {
   start: string;
   end: string;
 }
-
 interface OperationHoursBottomSheetProps {
   setOperationTimes: (times: {start: string; end: string}) => void;
   operationTimes: Times; // 추가: 초기값을 받도록 수정
 }
 const OperationHoursBottomSheet: React.FC<OperationHoursBottomSheetProps> = ({
-  setOperationTimes,
   operationTimes,
+  setOperationTimes,
 }) => {
-  const [times, setTimes] = useState<Times>({
-    start: '오픈 시간',
-    end: '종료 시간',
-  });
+  const initialTimes = useMemo(
+    () => ({
+      start: operationTimes.start || '오픈 시간',
+      end: operationTimes.end || '종료 시간',
+    }),
+    [operationTimes],
+  );
+
+  const [times, setTimes] = useState<Times>(initialTimes);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [tempTime, setTempTime] = useState(new Date());
   const [selectionMode, setSelectionMode] = useState('start');
@@ -163,6 +167,7 @@ const OperationHoursBottomSheet: React.FC<OperationHoursBottomSheetProps> = ({
           onPress={handleComplete}
           title={'확인'}
           buttonWidth={'90%'}
+          style={{marginBottom: 30}}
         />
       </BottomSheetModal>
     </View>

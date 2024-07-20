@@ -57,6 +57,8 @@ import {MyPagePreferenceSettingScreenOptions} from './options/MyPagePreferenceSe
 import {PasswordChangeOptions} from './options/PasswordChangeOptions.tsx';
 import ProfileEditOptions from './options/ProfileEditOptions.tsx';
 import DeleteCompleteScreen from '../pages/DeleteCompleteScreen.tsx';
+import BlockScreen from '../pages/report/BlockScreen.tsx';
+import BlockOptions from './options/BlockOptions.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -165,6 +167,11 @@ function AppNavigator() {
         name={'Report'}
         component={ReportScreen}
         options={ReportOptions}
+      />
+      <Stack.Screen
+        name={'Block'}
+        component={BlockScreen}
+        options={BlockOptions}
       />
       <Stack.Screen
         name={'PopUpEditRequest'}

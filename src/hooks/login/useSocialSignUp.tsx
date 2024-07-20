@@ -10,14 +10,10 @@ function useSocialSignUp() {
   });
   const setTokens = useSetAccessTokenAndRefreshToken();
 
-  const signUpWithSocial = async (
-    provider: string,
-    nickname: string,
-    birthDate = '2000.03.19',
-  ) => {
+  const signUpWithSocial = async (provider: string, nickname: string) => {
     setSignUpStatus(prevStatus => ({...prevStatus, loading: true}));
     try {
-      const response = await socialSignUp(provider, nickname, birthDate);
+      const response = await socialSignUp(provider, nickname);
       if (response.success) {
         const {accessToken, refreshToken} = response.data;
         // await EncryptedStorage.setItem('accessToken', accessToken);

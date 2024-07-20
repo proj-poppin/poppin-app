@@ -30,8 +30,9 @@ import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
 import HomeHeader from '../../components/organisms/header/HomeHeader.tsx';
 import useGetPreferenceSettingOnce from '../../hooks/usePreferenceSettingOnce.tsx';
 import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
+import Animated, {FadeInDown} from 'react-native-reanimated';
 
-function HomeScreen({navigation}) {
+function HomeScreen({navigation, route}) {
   const [showNotice, setShowNotice] = useState(false);
   const [showHotList, setShowHotList] = useState(true);
   const {
@@ -87,8 +88,14 @@ function HomeScreen({navigation}) {
   };
 
   useEffect(() => {
+    if (route.params?.shouldRefresh) {
+      onRefresh();
+      navigation.setParams({shouldRefresh: false});
+    }
+  }, [navigation, onRefresh, route.params?.shouldRefresh]);
+
+  useEffect(() => {
     if (preferenceSetting?.data?.isPreferenceSettingCreated === false) {
-      console.log('🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛🐛');
     }
   }, [preferenceSetting]);
 
@@ -138,7 +145,9 @@ function HomeScreen({navigation}) {
                   text1={'팝업 취향을 설정하고 '}
                   text2={'팝업 추천을 받아보세요!'}
                   buttonText={'취향 설정하러 가기'}
-                  onPress={() => navigation.replace('PreferenceSetting')}
+                  onPress={() =>
+                    navigation.navigate('PreferenceSetting', {fromHome: true})
+                  }
                 />
               </View>
             ) : (
@@ -151,19 +160,26 @@ function HomeScreen({navigation}) {
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}
                   style={styles.popUpScrollView}>
-                  {tasteList?.popupSummaryDtos.map(item => (
-                    <Pressable
+                  {tasteList?.popupSummaryDtos.map((item, index) => (
+                    <Animated.View
                       key={item.id}
-                      onPress={() =>
-                        navigation.navigate('PopUpDetail', {id: item.id})
-                      }>
-                      <RowPopUpCard
-                        id={item.id}
-                        imageUrl={item.image_url}
-                        name={item.name}
-                        introduce={item.introduce}
-                      />
-                    </Pressable>
+                      entering={FadeInDown.delay(index * 100)} // Add delay to each item
+                    >
+                      <Pressable
+                        onPress={() =>
+                          navigation.navigate('PopUpDetail', {
+                            id: item.id,
+                            isLoggedIn: isLoggedIn,
+                          })
+                        }>
+                        <RowPopUpCard
+                          id={item.id}
+                          imageUrl={item.image_url}
+                          name={item.name}
+                          introduce={item.introduce}
+                        />
+                      </Pressable>
+                    </Animated.View>
                   ))}
                 </ScrollView>
               </View>
@@ -205,28 +221,37 @@ function HomeScreen({navigation}) {
             </View>
             {showHotList && (
               <HotListCard
+                isLoggedin={isLoggedIn}
                 navigation={navigation}
                 isDropdownOpen={isDropdownOpen}
                 itemList={hotList?.slice(0, 5) || []}
+                isLoggedIn={isLoggedIn}
               />
             )}
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               style={styles.popUpScrollView}>
-              {hotList?.slice(0, 5).map(item => (
-                <Pressable
+              {hotList?.slice(0, 5).map((item, index) => (
+                <Animated.View
                   key={item.id}
-                  onPress={() =>
-                    navigation.navigate('PopUpDetail', {id: item.id})
-                  }>
-                  <RowPopUpCard
-                    id={item.id}
-                    imageUrl={item.image_url}
-                    name={item.name}
-                    introduce={item.introduce}
-                  />
-                </Pressable>
+                  entering={FadeInDown.delay(index * 100)} // Add delay to each item
+                >
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate('PopUpDetail', {
+                        id: item.id,
+                        isLoggedIn: isLoggedIn,
+                      })
+                    }>
+                    <RowPopUpCard
+                      id={item.id}
+                      imageUrl={item.image_url}
+                      name={item.name}
+                      introduce={item.introduce}
+                    />
+                  </Pressable>
+                </Animated.View>
               ))}
             </ScrollView>
 
@@ -245,21 +270,29 @@ function HomeScreen({navigation}) {
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               style={styles.popUpScrollView}>
-              {newList?.map(item => (
-                <Pressable
+              {newList?.map((item, index) => (
+                <Animated.View
                   key={item.id}
-                  onPress={() =>
-                    navigation.navigate('PopUpDetail', {id: item.id})
-                  }>
-                  <RowPopUpCard
-                    id={item.id}
-                    imageUrl={item.image_url}
-                    name={item.name}
-                    introduce={item.introduce}
-                  />
-                </Pressable>
+                  entering={FadeInDown.delay(index * 100)} // Add delay to each item
+                >
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate('PopUpDetail', {
+                        id: item.id,
+                        isLoggedIn: isLoggedIn,
+                      })
+                    }>
+                    <RowPopUpCard
+                      id={item.id}
+                      imageUrl={item.image_url}
+                      name={item.name}
+                      introduce={item.introduce}
+                    />
+                  </Pressable>
+                </Animated.View>
               ))}
             </ScrollView>
+
             <View style={styles.middleContainer}>
               <Text style={Text18B.text}>종료 임박</Text>
               <View style={styles.textAndQuestionContainer}>
@@ -275,19 +308,26 @@ function HomeScreen({navigation}) {
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               style={styles.popUpScrollView}>
-              {closingList?.map(item => (
-                <Pressable
+              {closingList?.map((item, index) => (
+                <Animated.View
                   key={item.id}
-                  onPress={() =>
-                    navigation.navigate('PopUpDetail', {id: item.id})
-                  }>
-                  <RowPopUpCard
-                    id={item.id}
-                    imageUrl={item.image_url}
-                    name={item.name}
-                    introduce={item.introduce}
-                  />
-                </Pressable>
+                  entering={FadeInDown.delay(index * 100)} // Add delay to each item
+                >
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate('PopUpDetail', {
+                        id: item.id,
+                        isLoggedIn: isLoggedIn,
+                      })
+                    }>
+                    <RowPopUpCard
+                      id={item.id}
+                      imageUrl={item.image_url}
+                      name={item.name}
+                      introduce={item.introduce}
+                    />
+                  </Pressable>
+                </Animated.View>
               ))}
             </ScrollView>
           </View>

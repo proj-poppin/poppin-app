@@ -12,8 +12,6 @@ const getDetailPopUpPublic = async (
     const url = isAlarm
       ? '/api/v1/alarm/popup/guest/detail'
       : '/api/v1/popup/guest/detail';
-    console.log('타이틀');
-    console.log(alarmId);
     const fcmToken = (await EncryptedStorage.getItem('pushToken')) ?? '';
 
     const response = isAlarm

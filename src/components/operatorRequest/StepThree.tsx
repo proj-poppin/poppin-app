@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, TextInput, StyleSheet} from 'react-native';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import DownSvg from '../../assets/icons/down.svg';
@@ -10,6 +10,7 @@ import TextInputWithSvgIconInRight from '../TextInputWithSvgIconInRight.tsx';
 import CompleteButton from '../atoms/button/CompleteButton.tsx';
 import CategorySelectButton from '../findPopup/CategorySelectButton.tsx';
 import {POP_UP_TYPES, TFilter} from '../findPopup/constants.ts';
+import DismissKeyboardView from '../DismissKeyboardView.tsx';
 
 export type AgeGroup = '전체' | '7세 이상' | '12세 이상' | '15세 이상' | '성인';
 export type AgeGroupValueType =
@@ -19,19 +20,20 @@ export type AgeGroupValueType =
   | 'PG_15'
   | 'PG_18'
   | 'G_RATED';
+
 interface StepThreeProps {
   introduce: string;
   setIntroduce: (text: string) => void;
-  resvRequired: any;
-  handleReservationRequiredSelect: (value: any) => void;
+  resvRequired: boolean | null;
+  handleReservationRequiredSelect: (value: boolean) => void;
   selectedAge: AgeGroup;
   handleAgePresentModal: () => void;
-  entranceRequired: boolean;
+  entranceRequired: boolean | null;
   handleEntranceFeeStatusSelect: (value: boolean) => void;
   entranceFee: string;
   setEntranceFee: (text: string) => void;
-  parkingAvailability: any;
-  handleParkingAvailabilitySelect: (value: any) => void;
+  parkingAvailability: boolean | null;
+  handleParkingAvailabilitySelect: (value: boolean) => void;
   bottomSheetAgeModalRef: React.RefObject<BottomSheetModal>;
   snapPoints2: string[];
   renderBackdrop: any;
@@ -39,9 +41,10 @@ interface StepThreeProps {
   onSelectSingleOption: (option: TFilter) => void;
   handleConfirmAgeSelection: () => void;
   selectedCategory: string;
+  setStepThreeValid: (isValid: boolean) => void;
 }
 
-export const mapAgeGroupToApiValue = (ageGroup: AgeGroup): string => {
+export const mapAgeGroupToApiValue = (ageGroup: String): string => {
   switch (ageGroup) {
     case '전체':
       return 'G_RATED';
@@ -78,6 +81,7 @@ const StepThree: React.FC<StepThreeProps> = ({
   onSelectSingleOption,
   handleConfirmAgeSelection,
   selectedCategory,
+  setStepThreeValid,
 }) => {
   const [availableTags, setAvailableTags] = useState<TFilter[]>(POP_UP_TYPES);
   const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
@@ -99,11 +103,35 @@ const StepThree: React.FC<StepThreeProps> = ({
   };
 
   const handleEntranceFeeStatus = (value: string) => {
+    console.log('handleEntranceFeeStatus called with value:', value);
     handleEntranceFeeStatusSelect(value === '있음');
   };
 
+  // Step validation
+  useEffect(() => {
+    const isValid =
+      introduce !== '' &&
+      resvRequired !== null &&
+      entranceRequired !== null &&
+      parkingAvailability !== null;
+    console.log('intro', introduce);
+    console.log('resv', resvRequired);
+    console.log('age', selectedAge);
+    console.log('entrance', entranceRequired);
+    console.log('parking', parkingAvailability);
+    console.log('isValid', isValid);
+    setStepThreeValid(isValid);
+  }, [
+    introduce,
+    resvRequired,
+    selectedAge,
+    entranceRequired,
+    parkingAvailability,
+    setStepThreeValid,
+  ]);
+
   return (
-    <>
+    <DismissKeyboardView>
       <View style={styles.purpleInfo}>
         <Text style={[Text18B.text, {color: globalColors.purple}]}>
           📝팝업의 상세 정보를 알려주세요
@@ -121,8 +149,16 @@ const StepThree: React.FC<StepThreeProps> = ({
         <RequiredTextLabel label={'예약 필수 여부'} isRequired={true} />
         <SelectButtonsGroup
           titles={['필수 아님', '예약 필수']}
-          selected={resvRequired}
-          onSelect={handleReservationRequiredSelect}
+          selected={
+            resvRequired !== null
+              ? resvRequired
+                ? '예약 필수'
+                : '필수 아님'
+              : ''
+          }
+          onSelect={value =>
+            handleReservationRequiredSelect(value === '예약 필수')
+          }
         />
         <TextInputWithSvgIconInRight
           label={'이용 가능 연령'}
@@ -162,7 +198,13 @@ const StepThree: React.FC<StepThreeProps> = ({
         <RequiredTextLabel label={'입장료 유무'} isRequired={true} />
         <SelectButtonsGroup
           titles={['없음', '있음']}
-          selected={entranceRequired ? '있음' : '없음'}
+          selected={
+            entranceRequired !== null
+              ? entranceRequired
+                ? '있음'
+                : '없음'
+              : ''
+          }
           onSelect={handleEntranceFeeStatus}
         />
         <RequiredTextLabel label={'입장료'} isRequired={false} />
@@ -178,11 +220,19 @@ const StepThree: React.FC<StepThreeProps> = ({
         <RequiredTextLabel label={'주차 가능 여부'} isRequired={true} />
         <SelectButtonsGroup
           titles={['주차 불가', '주차 가능']}
-          selected={parkingAvailability}
-          onSelect={handleParkingAvailabilitySelect}
+          selected={
+            parkingAvailability !== null
+              ? parkingAvailability
+                ? '주차 가능'
+                : '주차 불가'
+              : ''
+          }
+          onSelect={value =>
+            handleParkingAvailabilitySelect(value === '주차 가능')
+          }
         />
       </View>
-    </>
+    </DismissKeyboardView>
   );
 };
 
@@ -191,18 +241,17 @@ const styles = StyleSheet.create({
     backgroundColor: globalColors.purpleLight,
     padding: 10,
     borderRadius: 10,
-    // 기타 필요한 스타일
   },
   introduceInput: {
-    height: 100, // 입력 필드의 높이
+    height: 100,
     borderWidth: 1,
-    borderColor: globalColors.warmGray, // 테두리 색상
-    borderRadius: 15, // 모서리 둥글기
-    padding: 10, // 내부 패딩
-    marginTop: 10, // 레이블과의 간격
-    marginBottom: 10, // 힌트 텍스트와의 간격
-    backgroundColor: 'white', // 배경색
-    textAlignVertical: 'top', // 여러 줄 입력 시 텍스트 상단 정렬
+    borderColor: globalColors.warmGray,
+    borderRadius: 15,
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: 'white',
+    textAlignVertical: 'top',
   },
   contentContainer: {
     alignItems: 'center',

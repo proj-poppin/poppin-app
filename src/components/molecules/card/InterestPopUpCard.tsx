@@ -20,6 +20,7 @@ interface InterestPopUpCardProps {
   open_date: string;
   status: 'TERMINATED' | 'OPERATING' | 'NOTYET';
   id: number;
+  showToast: (message: string) => void; // Add showToast prop
 }
 
 const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
@@ -29,6 +30,7 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
   open_date,
   status,
   id,
+  showToast, // Destructure showToast prop
 }) => {
   const {deleteInterest, loading: deleteLoading} = useDeleteInterestPopUp();
   const {addInterest, loading: addLoading} = useAddInterestPopUp();
@@ -39,9 +41,11 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
   const handleToggleInterest = async () => {
     if (isInterested) {
       await deleteInterest(id);
+      showToast('관심팝업에서 삭제되었어요!'); // Show toast message
       dispatch(setInterest({id, isInterested: false}));
     } else {
       await addInterest(id);
+      showToast('관심팝업에 저장되었어요!'); // Show toast message
       dispatch(setInterest({id, isInterested: true}));
     }
   };

@@ -16,12 +16,14 @@ function NoticeDetailScreen() {
   const {nid} = route.params;
   const noticeDetail = useGetNoticeDetail(nid);
 
+  console.log('NoticeDetailScreen@@@@@@@@@@ render');
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{noticeDetail?.title}</Text>
       <DividerLine />
       <Text style={styles.body}>{noticeDetail?.body}</Text>
-      <Text style={styles.time}>02.01</Text>
+      <Text style={styles.time}>{noticeDetail?.createdAt}</Text>
       <View>
         <Image
           source={{uri: noticeDetail?.posterUrl}}

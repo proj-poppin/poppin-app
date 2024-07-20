@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+} from 'react-native';
 import globalColors from '../../../styles/color/globalColors.ts';
 import DismissKeyboardView from '../../../components/DismissKeyboardView.tsx';
 import CompleteButton from '../../../components/atoms/button/CompleteButton.tsx';
@@ -11,20 +17,42 @@ import CategorySelectButton from '../../../components/findPopup/CategorySelectBu
 import {useSelector} from 'react-redux';
 import useGetPreferenceSetting from '../../../hooks/myPage/useGetPreferenceSetting.tsx';
 import usePutPreferenceSetting from '../../../hooks/myPage/usePutSetting.tsx';
+import CloseSvg from '../../../assets/icons/close.svg';
 
-function PreferenceSettingScreen({navigation}: any) {
+function PreferenceSettingScreen({navigation, route}: any) {
   const {data} = useGetPreferenceSetting();
   const {putPreference, success, loading} = usePutPreferenceSetting();
-
   const user = useSelector((state: any) => state.user);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTags, setSelectedTags] = useState<any>(POP_UP_TYPES);
+  const [initialTags, setInitialTags] = useState<any>(POP_UP_TYPES);
   const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
     useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  useEffect(() => {
+    if (route.params?.fromHome) {
+      navigation.setOptions({
+        headerLeft: () => (
+          <Pressable
+            onPress={() => {
+              navigation.navigate('Home', {shouldRefresh: true});
+            }}
+            style={{padding: 10}}>
+            <CloseSvg />
+          </Pressable>
+        ),
+      });
+    }
+  }, [navigation, route.params?.fromHome]);
 
   const handleCloseModal = () => {
     setModalVisible(false);
-    navigation.navigate('MainTabNavigator', {screen: 'MyPage'});
+    if (route.params?.fromHome) {
+      navigation.navigate('Home', {shouldRefresh: true});
+    } else {
+      navigation.navigate('MyPage');
+    }
   };
 
   const handleClick = (selectedTag: TFilter) => {
@@ -58,14 +86,29 @@ function PreferenceSettingScreen({navigation}: any) {
     await putPreference(selectedTags);
   };
 
+  const checkIfTagsChanged = (initialTags: any, currentTags: any) => {
+    for (let i = 0; i < initialTags.length; i++) {
+      if (initialTags[i].selected !== currentTags[i].selected) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   useEffect(() => {
     const isSelected = checkSelectionInRanges(selectedTags);
     setIsOneMoreCategorySelected(isSelected);
-  }, [selectedTags]);
+
+    if (data) {
+      const hasChanged = checkIfTagsChanged(initialTags, selectedTags);
+      setIsButtonDisabled(!isSelected || !hasChanged);
+    }
+  }, [selectedTags, data]);
 
   useEffect(() => {
     if (data) {
       setSelectedTags(data);
+      setInitialTags(data);
     }
   }, [data]);
 
@@ -129,7 +172,7 @@ function PreferenceSettingScreen({navigation}: any) {
       <CompleteButton
         onPress={handleSubmit}
         title={'설정 저장하기'}
-        disabled={!isOneMoreCategorySelected}
+        disabled={isButtonDisabled}
       />
       <CustomOKModal
         isVisible={modalVisible}
@@ -177,5 +220,4 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 });
-
 export default PreferenceSettingScreen;

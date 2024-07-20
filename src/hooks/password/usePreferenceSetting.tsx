@@ -1,5 +1,4 @@
 import {useCallback} from 'react';
-import preferenceSetting from '../../apis/auth/preferenceSetting copy.ts';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../redux/stores/reducer.ts';
 import {
@@ -7,6 +6,7 @@ import {
   setPreference,
 } from '../../redux/slices/preferenceSlice.ts';
 import userSlice from '../../redux/slices/user.ts';
+import preferenceSetting from '../../apis/auth/preferenceSetting copy.ts';
 
 const usePreferenceSetting = () => {
   const dispatch = useDispatch();
@@ -20,6 +20,12 @@ const usePreferenceSetting = () => {
     dispatch(resetPreferences());
   };
 
+  const isAnyPreferenceSelected = useCallback(
+    category => {
+      return Object.values(preferences[category]).some(value => value);
+    },
+    [preferences],
+  );
   const submitPreferences = useCallback(async (): Promise<any> => {
     try {
       const response = await preferenceSetting(preferences);
@@ -39,6 +45,7 @@ const usePreferenceSetting = () => {
     preferences,
     updatePreference,
     resetPreference,
+    isAnyPreferenceSelected,
     submitPreferences,
   };
 };

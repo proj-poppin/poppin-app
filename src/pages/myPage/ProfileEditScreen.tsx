@@ -49,7 +49,6 @@ function MyProfileEditScreen() {
   const {changeProfileImageInfo} = useChangeProfileImageInfo();
   const [profileImage, setProfileImage] = useState<any>(PoppinCirclePng);
   const [nickname, setNickname] = useState('');
-  const [birthdate, setBirthdate] = useState('');
   const [emailIcon, setEmailIcon] = useState<any>(null);
   const [isNicknameFocused, setIsNicknameFocused] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -66,7 +65,6 @@ function MyProfileEditScreen() {
   useEffect(() => {
     if (user) {
       setNickname(user.nickname);
-      setBirthdate(user.birthDate);
       switch (user.provider) {
         case 'KAKAO':
           setEmailIcon(KakaoCirclePng);
@@ -285,14 +283,6 @@ function MyProfileEditScreen() {
             </TouchableOpacity>
           </View>
           <View style={{height: 30}} />
-          {/*<RequiredTextLabel label={'생년월일'} />*/}
-          {/*<View style={styles.inputContainer}>*/}
-          {/*  <TextInput*/}
-          {/*    style={styles.input}*/}
-          {/*    value={birthdate}*/}
-          {/*    editable={false}*/}
-          {/*  />*/}
-          {/*</View>*/}
         </View>
       </View>
       {!['KAKAO', 'NAVER', 'GOOGLE', 'APPLE'].includes(user.provider) && (

@@ -50,21 +50,18 @@ function MemberDeleteScreen({navigation}) {
     try {
       const resp = await handleDeleteUser();
       if (resp && resp.success) {
-        dispatch(
-          userSlice.actions.setAccessTokenAndRefreshToken({
-            accessToken: '',
-            refreshToken: '',
-          }),
-        );
-        dispatch(userSlice.actions.resetUser());
-        dispatch(resetInterests());
         await EncryptedStorage.removeItem('accessToken');
         await EncryptedStorage.removeItem('refreshToken');
-        closeModal();
-        navigation.navigate('DeleteComplete');
+        dispatch(userSlice.actions.resetUser());
+        dispatch(resetInterests());
+      } else {
       }
     } catch (error) {
-      Alert.alert('탈퇴 실패', '탈퇴 중 오류가 발생했습니다.');
+    } finally {
+      closeModal();
+      setTimeout(() => {
+        navigation.navigate('DeleteComplete');
+      }, 500); // Add a slight delay to ensure the modal closes before navigation
     }
   };
 
@@ -138,6 +135,7 @@ function MemberDeleteScreen({navigation}) {
     </DismissKeyboardView>
   );
 }
+
 const styles = StyleSheet.create({
   reasonContainer: {
     marginTop: 30,

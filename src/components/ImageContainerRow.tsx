@@ -97,8 +97,8 @@ const styles = StyleSheet.create({
   },
   deleteIcon: {
     position: 'absolute',
-    top: 0,
-    right: 0,
+    top: 1,
+    right: 8,
     padding: 10,
   },
   imageContainer: {

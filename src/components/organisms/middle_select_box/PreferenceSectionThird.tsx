@@ -11,7 +11,6 @@ import {
 const PreferenceSectionThird = ({updatePreference, preferences, nickname}) => {
   const handlePress = (key: string, isSelected: boolean) => {
     updatePreference(PreferenceCategories.WHO_WITH, key, isSelected);
-    console.log('key:', key);
     console.log('preferences:', preferences);
   };
 

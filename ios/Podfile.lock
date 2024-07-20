@@ -2397,6 +2397,11 @@ PODS:
   - RNNaverLogin (3.0.0):
     - naveridlogin-sdk-ios (~> 4.1.5)
     - React
+  - RNNotifee (7.8.2):
+    - React-Core
+    - RNNotifee/NotifeeCore (= 7.8.2)
+  - RNNotifee/NotifeeCore (7.8.2):
+    - React-Core
   - RNOpenAppSettings (1.0.0):
     - React
   - RNPermissions (4.1.5):
@@ -2520,6 +2525,7 @@ DEPENDENCIES:
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - "RNNaverLogin (from `../node_modules/@react-native-seoul/naver-login`)"
+  - "RNNotifee (from `../node_modules/@notifee/react-native`)"
   - RNOpenAppSettings (from `../node_modules/react-native-app-settings`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -2739,6 +2745,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-crop-picker"
   RNNaverLogin:
     :path: "../node_modules/@react-native-seoul/naver-login"
+  RNNotifee:
+    :path: "../node_modules/@notifee/react-native"
   RNOpenAppSettings:
     :path: "../node_modules/react-native-app-settings"
   RNPermissions:
@@ -2879,6 +2887,7 @@ SPEC CHECKSUMS:
   RNGoogleSignin: fc408799f1990a12497a32f64280c0fe353ffcc1
   RNImageCropPicker: e7ab6fb43d2fc3e84651e786ef4a080d63b0ed3d
   RNNaverLogin: dc2758a157dafaa1ffca63079cad4d4c75208a30
+  RNNotifee: 8e2d3df3f0e9ce8f5d1fe4c967431138190b6175
   RNOpenAppSettings: 1169b90a275e9e18c5973e1608949f97d426e7f3
   RNPermissions: cfffc8a8c01299b0d8114b82a0890b19dd28a969
   RNReanimated: 18de397a04799ecb22af0dcc0728df6a06b0a4cf

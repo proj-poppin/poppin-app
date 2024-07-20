@@ -598,9 +598,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PoppinProject/PoppinProject.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = KSL7J6B67H;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = KSL7J6B67H;
 				INFOPLIST_FILE = PoppinProject/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "팝핀";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
@@ -617,6 +619,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.bubble.poppinproject;
 				PRODUCT_NAME = PoppinProject;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = deploy_provisioning_profile_poppin;
 				SWIFT_OBJC_BRIDGING_HEADER = "PoppinProject-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

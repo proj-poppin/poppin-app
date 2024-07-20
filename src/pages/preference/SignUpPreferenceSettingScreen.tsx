@@ -25,21 +25,29 @@ function SignUpPreferenceSettingScreen({route}) {
   const {nickname} = route.params;
   const [step, setStep] = useState<number>(1);
   const [modalVisible, setModalVisible] = useState(false);
+  const [isNextDisabled, setIsNextDisabled] = useState(true);
+  const [isCompleteDisabled, setIsCompleteDisabled] = useState(true);
+
   const navigation = useNavigation<PreferenceScreenNavigationProp>();
 
   const {preferences, updatePreference, submitPreferences} =
-    usePreferenceSetting(); // <- Using the custom hook
+    usePreferenceSetting();
 
   const dispatch = useAppDispatch();
 
   const handleSkipComplete = () => {
     setModalVisible(false);
     dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
+    navigation.navigate('MainTabNavigator', {
+      screen: 'Home',
+      params: {shouldRefresh: true},
+    });
   };
 
   const isFinishedPreferenceSetting = useSelector(
     (state: RootState) => state.user.isFinishedPreferenceSetting,
   );
+
   useEffect(() => {
     if (isFinishedPreferenceSetting) {
       navigation.navigate('MainTabNavigator', {screen: 'Home'});
@@ -48,10 +56,12 @@ function SignUpPreferenceSettingScreen({route}) {
 
   const handleComplete = async () => {
     setModalVisible(false);
-    const response = await submitPreferences(); // <- Call submitPreferences
+    const response = await submitPreferences();
     if (response.success) {
       dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
-      navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
+      navigation.reset({
+        routes: [{name: 'MainTabNavigator', params: {shouldRefresh: true}}],
+      });
     } else {
       console.error('Failed to submit preferences:', response.error);
     }
@@ -70,14 +80,53 @@ function SignUpPreferenceSettingScreen({route}) {
     });
   }, [navigation, setModalVisible]);
 
+  const checkStepDisabled = (step, currentPreferences) => {
+    let categoriesToCheck = [];
+    if (step === 1) {
+      categoriesToCheck = ['preference'];
+    } else if (step === 2) {
+      categoriesToCheck = ['taste'];
+    } else if (step === 3) {
+      categoriesToCheck = ['whoWith'];
+    }
+
+    const hasSelection = categoriesToCheck.every(category =>
+      Object.values(currentPreferences[category]).some(value => value),
+    );
+
+    console.log(`Checking step ${step} disabled:`, currentPreferences);
+    console.log('Has selection:', hasSelection);
+
+    if (step < 3) {
+      setIsNextDisabled(!hasSelection);
+    } else {
+      setIsCompleteDisabled(!hasSelection);
+    }
+  };
+  const updatePreferenceAndCheck = (category, key, value) => {
+    const updatedPreferences = {
+      ...preferences,
+      [category]: {
+        ...preferences[category],
+        [key]: value,
+      },
+    };
+    dispatch(setPreference({category, key, value}));
+    checkStepDisabled(step, updatedPreferences);
+  };
+
+  useEffect(() => {
+    checkStepDisabled(step, preferences);
+  }, [step]);
+
   const renderSection = () => {
     switch (step) {
       case 1:
         return (
           <PreferenceSectionFirst
             updatePreference={(category, key, value) => {
-              console.log('Updating preference:', {category, key, value}); // <- Log the update
-              dispatch(setPreference({category, key, value}));
+              console.log('Updating preference:', {category, key, value});
+              updatePreferenceAndCheck(category, key, value);
             }}
             preferences={preferences}
             nickname={nickname}
@@ -87,8 +136,8 @@ function SignUpPreferenceSettingScreen({route}) {
         return (
           <PreferenceSectionSecond
             updatePreference={(category, key, value) => {
-              console.log('Updating preference:', {category, key, value}); // <- Log the update
-              dispatch(setPreference({category, key, value}));
+              console.log('Updating preference:', {category, key, value});
+              updatePreferenceAndCheck(category, key, value);
             }}
             preferences={preferences}
             nickname={nickname}
@@ -97,9 +146,10 @@ function SignUpPreferenceSettingScreen({route}) {
       case 3:
         return (
           <PreferenceSectionThird
-            updatePreference={(category, key, value) =>
-              dispatch(setPreference({category, key, value}))
-            }
+            updatePreference={(category, key, value) => {
+              console.log('Updating preference:', {category, key, value});
+              updatePreferenceAndCheck(category, key, value);
+            }}
             preferences={preferences}
             nickname={nickname}
           />
@@ -115,7 +165,9 @@ function SignUpPreferenceSettingScreen({route}) {
       maxStep={3}
       handleBack={() => setStep(step - 1)}
       handleNext={() => setStep(step + 1)}
-      onComplete={handleComplete}>
+      onComplete={handleComplete}
+      isNextDisabled={isNextDisabled}
+      isCompleteDisabled={isCompleteDisabled}>
       <ScrollView>{renderSection()}</ScrollView>
       <SkipModal
         isVisible={modalVisible}

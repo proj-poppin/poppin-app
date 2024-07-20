@@ -1,5 +1,5 @@
 import {Alert, StyleSheet, View, ActivityIndicator, Text} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useLayoutEffect} from 'react';
 import globalColors from '../../styles/color/globalColors.ts';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import LabelAndInput from '../../components/LabelAndInput.tsx';
@@ -26,6 +26,12 @@ function SignUpSocialNickNameScreen({navigation, route}) {
   const {signUpWithSocial, signUpStatus} = useSocialSignUp();
   const {nickname: randomNickname, loading: nicknameLoading} =
     useRandomNickname();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      gestureEnabled: false,
+    });
+  }, [navigation]);
 
   useEffect(() => {
     if (randomNickname) {

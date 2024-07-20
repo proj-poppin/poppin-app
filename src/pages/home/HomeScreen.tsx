@@ -32,7 +32,7 @@ import useGetPreferenceSettingOnce from '../../hooks/usePreferenceSettingOnce.ts
 import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
 import Animated, {FadeInDown} from 'react-native-reanimated';
 
-function HomeScreen({navigation}) {
+function HomeScreen({navigation, route}) {
   const [showNotice, setShowNotice] = useState(false);
   const [showHotList, setShowHotList] = useState(true);
   const {
@@ -88,6 +88,13 @@ function HomeScreen({navigation}) {
   };
 
   useEffect(() => {
+    if (route.params?.shouldRefresh) {
+      onRefresh();
+      navigation.setParams({shouldRefresh: false});
+    }
+  }, [navigation, onRefresh, route.params?.shouldRefresh]);
+
+  useEffect(() => {
     if (preferenceSetting?.data?.isPreferenceSettingCreated === false) {
     }
   }, [preferenceSetting]);
@@ -138,7 +145,9 @@ function HomeScreen({navigation}) {
                   text1={'팝업 취향을 설정하고 '}
                   text2={'팝업 추천을 받아보세요!'}
                   buttonText={'취향 설정하러 가기'}
-                  onPress={() => navigation.replace('PreferenceSetting')}
+                  onPress={() =>
+                    navigation.navigate('PreferenceSetting', {fromHome: true})
+                  }
                 />
               </View>
             ) : (

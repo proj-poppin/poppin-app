@@ -1,18 +1,24 @@
 import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../redux/stores/reducer';
-import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
+import {
+  DefaultTheme,
+  LinkingOptions,
+  NavigationContainer,
+} from '@react-navigation/native';
 import AppNavigator from './AppNavigator';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import SplashScreen from 'react-native-splash-screen';
-import LoadingScreen from '../pages/splash/LoadingScreen.tsx';
-import userSlice from '../redux/slices/user.ts';
+import LoadingScreen from '../pages/splash/LoadingScreen';
+import userSlice from '../redux/slices/user';
 import messaging from '@react-native-firebase/messaging';
-import {registerPushToken} from '../apis/push/registerPushToken.ts';
+import {registerPushToken} from '../apis/push/registerPushToken';
 import {Platform} from 'react-native';
-import getUserSetting from '../apis/myPage/getUserSetting.ts';
-import {resetInterests} from '../redux/slices/interestSlice.ts';
+import getUserSetting from '../apis/myPage/getUserSetting';
+import {resetInterests} from '../redux/slices/interestSlice';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import {AppNavigatorParamList} from '../types/AppNavigatorParamList';
+import Config from 'react-native-config';
 
 const RootNavigator = () => {
   const dispatch = useDispatch();
@@ -20,8 +26,6 @@ const RootNavigator = () => {
   const isFinishedPreferenceSetting = useSelector(
     (state: RootState) => state.user.isFinishedPreferenceSetting,
   );
-  // // 앱 최초 시작시 권한 요청 원할때 사용
-  // usePermissions();
 
   useEffect(() => {
     async function getToken() {
@@ -43,16 +47,15 @@ const RootNavigator = () => {
       } catch (error) {
         console.log('푸시 토큰 등록에 실패했습니다 ㅠㅠ');
         console.log(error);
-        // APNS 에서 푸시 토큰을 받아오는데 Exception 발생한 경우 다시 요청한다
         await getToken();
       }
     }
 
     getToken();
   }, [dispatch]);
+
   useEffect(() => {
     const initializeApp = async () => {
-      // Reset interests and user state on app start
       dispatch(resetInterests());
       const accessToken = await EncryptedStorage.getItem('accessToken');
       const refreshToken = await EncryptedStorage.getItem('refreshToken');
@@ -97,8 +100,30 @@ const RootNavigator = () => {
     },
   };
 
+  const linking: LinkingOptions<AppNavigatorParamList> = {
+    prefixes: [`${Config.KAKAO_API_KEY_WITH_KAKAO}://`],
+    config: {
+      screens: {
+        PopUpDetail: {
+          path: 'popup/:id',
+          parse: {
+            id: id => `${id}`,
+          },
+        },
+      },
+    },
+  };
+
+  console.log('App loaded with linking config:', linking);
+  console.log('LinkingOptions:', JSON.stringify(linking, null, 2));
+  console.log(
+    'PopUpDetail:',
+    JSON.stringify(linking.config?.screens?.PopUpDetail, null, 2),
+  );
+  console.log('Prefixes:', linking.prefixes);
+
   return (
-    <NavigationContainer theme={MyTheme}>
+    <NavigationContainer theme={MyTheme} linking={linking}>
       <AppNavigator />
     </NavigationContainer>
   );

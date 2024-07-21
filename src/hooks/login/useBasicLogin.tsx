@@ -10,6 +10,7 @@ const useBasicLogin = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [isLoginButtonEnabled, setIsLoginButtonEnabled] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -48,6 +49,7 @@ const useBasicLogin = () => {
       return;
     }
 
+    setLoading(true);
     try {
       const result = await basicLogin(email, password);
       if (result.success) {
@@ -76,6 +78,8 @@ const useBasicLogin = () => {
     } catch (error) {
       // 네트워크 에러 등 기타 에러 처리
       console.log('Login error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,6 +92,7 @@ const useBasicLogin = () => {
     handleChangeEmail,
     handleChangePassword,
     handleLogin,
+    loading,
   };
 };
 

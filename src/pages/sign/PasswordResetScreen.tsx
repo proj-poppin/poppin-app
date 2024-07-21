@@ -38,18 +38,20 @@ function PasswordResetScreen({navigation}: PasswordResetScreenProps) {
   const {code, setCode, countdown, resetCountdown} = useAuthCode();
   const {authCode, verifyEmail} = usePasswordEmailVerification(email);
   const {
-    resetUserPasswordNonPublic: resetUserPasswordNonPublic,
+    resetUserPasswordNonPublic,
     resetPasswordStatus: resetPasswordStatusNonPublic,
   } = useResetPasswordNonPublic();
   const {
-    resetUserPasswordPublic: resetUserPasswordPublic,
+    resetUserPasswordPublic,
     resetPasswordStatus: resetPasswordStatusPublic,
   } = useResetPasswordPublic();
-  const {data: user, loading, error} = useGetUser();
+  const {data: user, loading: userLoading, error} = useGetUser();
   const [pageIndex, setPageIndex] = useState(1);
   const isLoggedIn = useIsLoggedIn();
+  const [loading, setLoading] = useState(false);
 
   const handlePress = async () => {
+    setLoading(true);
     try {
       await verifyEmail();
       setPageIndex(2);
@@ -58,6 +60,8 @@ function PasswordResetScreen({navigation}: PasswordResetScreenProps) {
         'Error',
         error.message || '이메일 인증 중 알 수 없는 오류가 발생했습니다.',
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -133,8 +137,9 @@ function PasswordResetScreen({navigation}: PasswordResetScreenProps) {
             />
             <CompleteButton
               onPress={handlePress}
-              title="다음"
-              disabled={!email}
+              title={loading ? '인증번호 발송중...' : '다음'}
+              loading={loading}
+              disabled={!email || loading}
             />
           </>
         );

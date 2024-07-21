@@ -19,6 +19,7 @@ import {resetInterests} from '../redux/slices/interestSlice';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {AppNavigatorParamList} from '../types/AppNavigatorParamList';
 import Config from 'react-native-config';
+import DeviceInfo from 'react-native-device-info';
 
 const RootNavigator = () => {
   const dispatch = useDispatch();
@@ -33,9 +34,11 @@ const RootNavigator = () => {
         console.log('푸시 토큰을 등록합니다!');
         await PushNotificationIOS.requestPermissions();
         const token = await messaging().getToken();
+        const deviceId = await DeviceInfo.getUniqueId();
         const response = await registerPushToken({
           fcmToken: token,
           device: Platform.OS,
+          deviceId: deviceId,
         });
         console.log('consol response', response);
         if (response?.success) {

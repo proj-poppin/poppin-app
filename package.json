@@ -58,6 +58,7 @@
     "react-native-code-push": "^8.3.0",
     "react-native-config": "^1.5.1",
     "react-native-date-picker": "^4.3.7",
+    "react-native-device-info": "^11.1.0",
     "react-native-dotenv": "^3.4.9",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-encrypted-storage": "^4.0.3",

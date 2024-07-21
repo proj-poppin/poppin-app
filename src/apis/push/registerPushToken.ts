@@ -3,6 +3,7 @@ import PublicApiInstance from '../apiInstance/PublicApiInstance.ts';
 interface PushTokenParams {
   fcmToken: string;
   device: string;
+  deviceId: string;
 }
 
 export const registerPushToken = async (params: PushTokenParams) => {

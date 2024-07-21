@@ -1,3 +1,4 @@
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -7,7 +8,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import globalColors from '../../styles/color/globalColors.ts';
 import DividerLine from '../../components/DividerLine.tsx';
 import QuestionSvg from '../../assets/icons/question.svg';
@@ -31,8 +32,14 @@ import HomeHeader from '../../components/organisms/header/HomeHeader.tsx';
 import useGetPreferenceSettingOnce from '../../hooks/usePreferenceSettingOnce.tsx';
 import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
 import Animated, {FadeInDown} from 'react-native-reanimated';
+import {resetPreferenceRefresh} from '../../redux/slices/preferenceRefreshSlice';
 
 function HomeScreen({navigation, route}) {
+  const dispatch = useDispatch();
+  const shouldRefreshHome = useSelector(
+    state => state.preferenceRefresh.shouldRefreshHome,
+  );
+
   const [showNotice, setShowNotice] = useState(false);
   const [showHotList, setShowHotList] = useState(true);
   const {
@@ -95,6 +102,13 @@ function HomeScreen({navigation, route}) {
   }, [navigation, onRefresh, route.params?.shouldRefresh]);
 
   useEffect(() => {
+    if (shouldRefreshHome) {
+      onRefresh();
+      dispatch(resetPreferenceRefresh());
+    }
+  }, [shouldRefreshHome, dispatch, onRefresh]);
+
+  useEffect(() => {
     if (preferenceSetting?.data?.isPreferenceSettingCreated === false) {
     }
   }, [preferenceSetting]);
@@ -108,10 +122,6 @@ function HomeScreen({navigation, route}) {
     navigation.navigate('Find', {order});
   };
 
-  const goToAlarmScreen = () => {
-    navigation.navigate('Alarm');
-  };
-
   useEffect(() => {
     setShowHotList(!!hotList && hotList.length > 0);
   }, [hotList]);
@@ -123,6 +133,7 @@ function HomeScreen({navigation, route}) {
       </View>
     );
   }
+
   return (
     <View>
       <HomeHeader />
@@ -163,8 +174,7 @@ function HomeScreen({navigation, route}) {
                   {tasteList?.popupSummaryDtos.map((item, index) => (
                     <Animated.View
                       key={item.id}
-                      entering={FadeInDown.delay(index * 100)} // Add delay to each item
-                    >
+                      entering={FadeInDown.delay(index * 100)}>
                       <Pressable
                         onPress={() =>
                           navigation.navigate('PopUpDetail', {
@@ -235,8 +245,7 @@ function HomeScreen({navigation, route}) {
               {hotList?.slice(0, 5).map((item, index) => (
                 <Animated.View
                   key={item.id}
-                  entering={FadeInDown.delay(index * 100)} // Add delay to each item
-                >
+                  entering={FadeInDown.delay(index * 100)}>
                   <Pressable
                     onPress={() =>
                       navigation.navigate('PopUpDetail', {
@@ -273,8 +282,7 @@ function HomeScreen({navigation, route}) {
               {newList?.map((item, index) => (
                 <Animated.View
                   key={item.id}
-                  entering={FadeInDown.delay(index * 100)} // Add delay to each item
-                >
+                  entering={FadeInDown.delay(index * 100)}>
                   <Pressable
                     onPress={() =>
                       navigation.navigate('PopUpDetail', {
@@ -311,8 +319,7 @@ function HomeScreen({navigation, route}) {
               {closingList?.map((item, index) => (
                 <Animated.View
                   key={item.id}
-                  entering={FadeInDown.delay(index * 100)} // Add delay to each item
-                >
+                  entering={FadeInDown.delay(index * 100)}>
                   <Pressable
                     onPress={() =>
                       navigation.navigate('PopUpDetail', {

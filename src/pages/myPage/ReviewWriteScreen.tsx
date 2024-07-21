@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   Pressable,
+  Dimensions,
 } from 'react-native';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
 import globalColors from '../../styles/color/globalColors';
@@ -29,6 +30,10 @@ import ReviewWriteBadgeAuthSvg from '../../assets/icons/reviewWriteBadgeAuth.svg
 import Text14M from '../../styles/texts/body_medium/Text14M.ts';
 import {useDispatch} from 'react-redux';
 import {setReviewSubmitted} from '../../redux/slices/reviewSubmittedSlice.ts';
+import ReviewWriteTipSvg from '../../assets/icons/reviewWriteTipSvg.svg';
+import Text16B from '../../styles/texts/body_medium_large/Text16B.ts';
+import Text14B from '../../styles/texts/body_medium/Text14B.ts';
+const {width: screenWidth} = Dimensions.get('window');
 
 type ReviewWriteScreenRouteProp = RouteProp<
   AppNavigatorParamList,
@@ -100,11 +105,26 @@ function ReviewWriteScreen() {
     selectedVisitTime !== null &&
     selectedSatisfaction !== null &&
     selectedCongestion !== null &&
-    review.trim().length >= 1;
+    review.trim().length >= 10;
+
+  const characterCount = review.length;
+  const isOverLimit = characterCount > 200;
+  const isReviewValid = characterCount >= 10;
+
+  const renderNameWithLineBreaks = text => {
+    return text.split(' ').map((word, index) => (
+      <Text key={index} style={Text20B.text}>
+        {word} {index < text.split(' ').length - 1 ? ' ' : ''}
+      </Text>
+    ));
+  };
+
   return (
     <DismissKeyboardView style={styles.container}>
       <View style={styles.titleRow}>
-        <Text style={[Text20B.text]}>{name}</Text>
+        <View style={styles.titleContainer}>
+          <Text style={Text20B.text}>{renderNameWithLineBreaks(name)}</Text>
+        </View>
         {isVisited ? (
           <ReviewWriteBadgeAuthSvg style={{height: '80%'}} />
         ) : (
@@ -114,7 +134,7 @@ function ReviewWriteScreen() {
         )}
       </View>
       <View style={styles.sectionContainer}>
-        <Text style={[Text14R.text, {color: globalColors.purple}, {width: 65}]}>
+        <Text style={[Text14B.text, {color: globalColors.purple}, {width: 65}]}>
           방문 일시
         </Text>
         <ScrollView
@@ -136,7 +156,7 @@ function ReviewWriteScreen() {
       </View>
 
       <View style={styles.sectionContainer}>
-        <Text style={[Text13R.text, {color: globalColors.purple}, {width: 65}]}>
+        <Text style={[Text14B.text, {color: globalColors.purple}, {width: 65}]}>
           팝업 만족도
         </Text>
         <View style={styles.buttonsContainer}>
@@ -151,9 +171,8 @@ function ReviewWriteScreen() {
           ))}
         </View>
       </View>
-
       <View style={styles.sectionContainer}>
-        <Text style={[Text12R.text, {color: globalColors.purple}, {width: 65}]}>
+        <Text style={[Text14B.text, {color: globalColors.purple}, {width: 65}]}>
           혼잡도
         </Text>
         <View style={styles.buttonsContainer}>
@@ -168,20 +187,52 @@ function ReviewWriteScreen() {
           ))}
         </View>
       </View>
+      <Text
+        style={[
+          styles.hintText,
+          {color: isReviewValid ? globalColors.blue : globalColors.font},
+        ]}>
+        ✓ 10자 이상
+      </Text>
       <TextInput
         style={[
           styles.reviewInput,
-          {borderColor: isFocused ? globalColors.blue : globalColors.warmGray},
+          {
+            borderColor: isReviewValid
+              ? globalColors.blue
+              : globalColors.warmGray,
+          },
         ]}
         multiline
         placeholder="팝업에 대한 후기를 입력해 주세요. 부적절하거나 불쾌감을 줄 수 있는 컨텐츠를 게시할 경우 제재를 받을 수 있습니다."
         placeholderTextColor={globalColors.font}
-        maxLength={1000}
+        maxLength={200}
         value={review}
         onChangeText={setReview}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
       />
+      <Text style={[styles.characterCount, isOverLimit && styles.overLimit]}>
+        {characterCount}/200
+      </Text>
+      <View style={styles.tipContainer}>
+        <ReviewWriteTipSvg />
+        <Text style={[Text16B.text, styles.tipTitle]}>
+          팝핀이 알려주는 후기작성 TIP!
+        </Text>
+      </View>
+      <View style={styles.tipContentContainer}>
+        <Text style={[Text14M.text, styles.tipText]}>
+          •<Text style={{color: globalColors.blue}}>어떤 프로그램</Text>이
+          있었나요
+        </Text>
+        <Text style={[Text14M.text, styles.tipText]}>
+          •<Text style={{color: globalColors.blue}}>혼잡도</Text>는 어땠나요
+        </Text>
+        <Text style={[Text14M.text, styles.tipText]}>
+          •<Text style={{color: globalColors.blue}}>나만의 꿀팁</Text>이 있나요
+        </Text>
+      </View>
       <View style={styles.imagesContainer}>
         <ScrollView
           horizontal
@@ -236,6 +287,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 20,
+  },
+  titleContainer: {
+    width: screenWidth * 0.6, // 화면 너비의 60%
   },
   container: {
     flex: 1,
@@ -295,6 +349,35 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 5,
     right: 5,
+  },
+  characterCount: {
+    textAlign: 'right',
+    marginTop: 5,
+    fontSize: 14,
+    color: globalColors.font,
+  },
+  overLimit: {
+    color: 'red',
+  },
+  tipContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  tipTitle: {
+    color: globalColors.blue,
+    marginLeft: 10,
+  },
+  tipContentContainer: {
+    marginBottom: 20,
+  },
+  tipText: {
+    color: globalColors.font,
+    marginBottom: 5,
+  },
+  hintText: {
+    marginBottom: 5,
+    fontSize: 14,
   },
 });
 

@@ -110,7 +110,8 @@ const StepThree: React.FC<StepThreeProps> = ({
   // Step validation
   useEffect(() => {
     const isValid =
-      introduce !== '' &&
+      introduce.length >= 20 &&
+      introduce.length <= 300 &&
       resvRequired !== null &&
       entranceRequired !== null &&
       parkingAvailability !== null;
@@ -145,7 +146,9 @@ const StepThree: React.FC<StepThreeProps> = ({
           onChangeText={setIntroduce}
           placeholder={'팝업에 대한 내용을 소개해 주세요.'}
           multiline={true}
+          maxLength={300}
         />
+        <Text style={styles.characterCount}>{introduce.length}/300</Text>
         <RequiredTextLabel label={'예약 필수 여부'} isRequired={true} />
         <SelectButtonsGroup
           titles={['필수 아님', '예약 필수']}
@@ -166,6 +169,7 @@ const StepThree: React.FC<StepThreeProps> = ({
           onIconPress={handleAgePresentModal}
           IconComponent={<DownSvg />}
           isRequired={true}
+          isClickableTextInput={true}
         />
         <BottomSheetModal
           ref={bottomSheetAgeModalRef}
@@ -216,7 +220,9 @@ const StepThree: React.FC<StepThreeProps> = ({
             '입장료가 있다면 작성해 주세요.\nex)성인 16000원, 어린이 7000원'
           }
           multiline={true}
+          maxLength={50}
         />
+        <Text style={styles.characterCount}>{entranceFee.length}/50</Text>
         <RequiredTextLabel label={'주차 가능 여부'} isRequired={true} />
         <SelectButtonsGroup
           titles={['주차 불가', '주차 가능']}
@@ -252,6 +258,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: 'white',
     textAlignVertical: 'top',
+  },
+  characterCount: {
+    textAlign: 'right',
+    marginBottom: 10,
+    fontSize: 14,
+    color: globalColors.font,
   },
   contentContainer: {
     alignItems: 'center',

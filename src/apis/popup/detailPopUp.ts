@@ -4,8 +4,8 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 
 const getDetailPopUp = async (
   id: number,
-  alarmId: number,
-  isAlarm: boolean,
+  alarmId?: number,
+  isAlarm?: boolean,
 ): Promise<CommonResponse<DetailPopUpDataNonPublic>> => {
   try {
     const fcmToken = (await EncryptedStorage.getItem('pushToken')) ?? '';

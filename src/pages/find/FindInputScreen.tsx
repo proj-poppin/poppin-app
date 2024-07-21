@@ -154,8 +154,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   backbutton: {
-    padding: 10,
-    width: '8%',
+    padding: 17, // 클릭할 수 있는 범위를 확장합니다.
+    width: 'auto', // 버튼의 너비를 자동으로 설정하여 패딩이 적용됩니다.
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

@@ -1,10 +1,10 @@
 import React from 'react';
 import {Pressable} from 'react-native';
-import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import GoBackSvg from '../../assets/icons/goBack.svg';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 type PasswordChangeScreenNavigationProp = NativeStackNavigationProp<
-  AuthNavigatorParamList,
+  AppNavigatorParamList,
   'PasswordChange'
 >;
 export const PasswordChangeOptions = ({

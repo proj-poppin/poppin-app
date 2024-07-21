@@ -65,6 +65,9 @@ function MemberDeleteScreen({navigation}) {
     }
   };
 
+  const characterCount = otherReason.length;
+  const isOverLimit = characterCount > 100;
+
   return (
     <DismissKeyboardView>
       <View style={styles.container}>
@@ -96,23 +99,31 @@ function MemberDeleteScreen({navigation}) {
           ))}
         </View>
         {selectedReason === reasons.length - 1 && (
-          <TextInput
-            style={[
-              styles.input,
-              {
-                borderColor: isFocused
-                  ? globalColors.blue
-                  : globalColors.warmGray,
-              },
-            ]}
-            multiline
-            placeholder="신고 사유를 알려주세요."
-            placeholderTextColor={globalColors.font}
-            value={otherReason}
-            onChangeText={setOtherReason}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-          />
+          <>
+            <TextInput
+              style={[
+                styles.input,
+                {
+                  borderColor: isFocused
+                    ? globalColors.blue
+                    : globalColors.warmGray,
+                  ...(isOverLimit && {borderColor: 'red'}),
+                },
+              ]}
+              multiline
+              placeholder="탈퇴 사유를 알려주세요."
+              placeholderTextColor={globalColors.font}
+              maxLength={100}
+              value={otherReason}
+              onChangeText={setOtherReason}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+            />
+            <Text
+              style={[styles.characterCount, isOverLimit && styles.overLimit]}>
+              {characterCount}/100
+            </Text>
+          </>
         )}
         <View style={styles.buttonRow}>
           <BackMiddleButton
@@ -152,7 +163,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     padding: 20,
-    paddingBottom: 80,
+    paddingBottom: 100,
   },
   reasonRow: {
     flexDirection: 'row',
@@ -183,6 +194,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlignVertical: 'top',
     height: 100,
+  },
+  characterCount: {
+    textAlign: 'right',
+    marginTop: 5,
+    fontSize: 14,
+    color: globalColors.font,
+  },
+  overLimit: {
+    color: 'red',
   },
 });
 

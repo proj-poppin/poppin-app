@@ -35,6 +35,8 @@ function UserRegisterScreen() {
   const {loading, userReportPopUp} = useUserReportPopUp(); // Use the custom hook
   const navigation = useNavigation();
 
+  const [storeNameLength, setStoreNameLength] = useState(0);
+  const [infoLinkLength, setInfoLinkLength] = useState(0);
   const handleSelectImagesWithPermission = async () => {
     const hasPermission = await requestGalleryPermissions();
     if (!hasPermission) {
@@ -167,18 +169,37 @@ function UserRegisterScreen() {
         {'팝업을 알려주세요'}
       </Text>
       <View style={{height: 20}} />
-      <LabelAndInputWithCloseSvg
-        label={'팝업 이름'}
-        value={storeName}
-        onChangeText={setStoreName}
-        isRequired={true}
-      />
-      <View style={{height: 20}} />
-      <LabelAndInputWithCloseSvg
-        label={'정보를 접한 사이트 주소'}
-        value={infoLink}
-        onChangeText={setInfoLink}
-      />
+      <View style={{marginTop: 10}}>
+        <LabelAndInputWithCloseSvg
+          label={'팝업 이름'}
+          value={storeName}
+          onChangeText={text => {
+            setStoreName(text);
+            setStoreNameLength(text.length);
+          }}
+          isRequired={true}
+          maxLength={30}
+        />
+        <Text style={{alignSelf: 'flex-end', color: globalColors.font}}>
+          {storeNameLength}/30
+        </Text>
+      </View>
+
+      <View style={{marginTop: 10}}>
+        <LabelAndInputWithCloseSvg
+          label={'정보를 접한 사이트 주소'}
+          value={infoLink}
+          onChangeText={text => {
+            setInfoLink(text);
+            setInfoLinkLength(text.length);
+          }}
+          maxLength={300}
+        />
+        <Text style={{alignSelf: 'flex-end', color: globalColors.font}}>
+          {infoLinkLength}/300
+        </Text>
+      </View>
+
       <View style={{paddingTop: 10}} />
       <TextInputWithSvgIconInRight
         label={'카테고리'}
@@ -226,7 +247,7 @@ function UserRegisterScreen() {
         handleSelectImages={handleSelectImagesWithPermission}
         handleRemoveImage={handleRemoveImage}
       />
-      <Text style={[Text12R.text, {color: globalColors.font}]}>
+      <Text style={[Text12R.text, {color: globalColors.font}, {marginTop: 20}]}>
         *첨부파일은 20MB 이하의 파일만 첨부 가능하며, 최대 5개까지 등록
         가능합니다.{'\n'}
         *올려주신 사진은 정보 업데이트시 사용될 수 있습니다.{'\n'}

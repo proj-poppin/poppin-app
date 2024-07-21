@@ -1,8 +1,8 @@
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 
 type PreferenceSettingScreenNavigationProp = NativeStackNavigationProp<
-  AuthNavigatorParamList,
+  AppNavigatorParamList,
   'SignUpPreferenceSetting'
 >;
 

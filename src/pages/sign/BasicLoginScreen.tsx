@@ -1,18 +1,18 @@
+import React from 'react';
+import {StyleSheet, View} from 'react-native';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import MainTitle from '../../components/organisms/header/MainTitle.tsx';
 import LabelText20B from '../../components/atoms/label/LabelText20B.tsx';
 import CommonTextFormField from '../../components/molecules/form_field/CommonTextFormField.tsx';
-import React from 'react';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
-import useBasicLogin from '../../hooks/login/useBasicLogin.tsx';
-import {StyleSheet, View} from 'react-native';
 import PressableGreyTextWord from '../../components/molecules/pressable_text/PressableGreyTextWord.tsx';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
 import {useNavigation} from '@react-navigation/native';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
+import useBasicLogin from '../../hooks/login/useBasicLogin.tsx';
 
 type BasicLoginScreenNavigationProp = NativeStackNavigationProp<
-  AuthNavigatorParamList,
+  AppNavigatorParamList,
   'BasicLogin'
 >;
 
@@ -26,6 +26,7 @@ function BasicLoginScreen() {
     handleChangeEmail,
     handleChangePassword,
     handleLogin,
+    loading,
   } = useBasicLogin();
 
   const navigation = useNavigation<BasicLoginScreenNavigationProp>();
@@ -64,8 +65,9 @@ function BasicLoginScreen() {
         />
         <CompleteButton
           onPress={handleLogin}
-          title={'로그인'}
-          disabled={!isLoginButtonEnabled}
+          title={loading ? '로그인 중...' : '로그인'}
+          disabled={!isLoginButtonEnabled || loading}
+          loading={loading}
         />
         <View style={styles.rowContainer}>
           <PressableGreyTextWord

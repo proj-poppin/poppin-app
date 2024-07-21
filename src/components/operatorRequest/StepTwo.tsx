@@ -93,6 +93,10 @@ const StepTwo: React.FC<StepTwoProps> = ({
 }) => {
   const [availableTags, setAvailableTags] = useState<TFilter[]>(POP_UP_TYPES);
   const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
+  const [nameLength, setNameLength] = useState(0);
+  const [operationExceptLength, setOperationExceptLength] = useState(0);
+  const [addressDetailLength, setAddressDetailLength] = useState(0);
+  const [homepageLinkLength, setHomepageLinkLength] = useState(0);
 
   const handleSelectImagesWithPermission = async () => {
     const hasPermission = await requestGalleryPermissions();
@@ -158,9 +162,16 @@ const StepTwo: React.FC<StepTwoProps> = ({
         <LabelAndInputWithCloseSvg
           label={'팝업이름'}
           value={name}
-          onChangeText={setName}
+          onChangeText={text => {
+            setName(text);
+            setNameLength(text.length);
+          }}
           isRequired={true}
+          maxLength={30}
         />
+        <Text style={{alignSelf: 'flex-end', color: globalColors.font}}>
+          {nameLength}/30
+        </Text>
         <TextInputWithSvgIconInRight
           label={'카테고리'}
           value={selectedCategory}
@@ -205,12 +216,18 @@ const StepTwo: React.FC<StepTwoProps> = ({
         <TextInput
           style={styles.exceptionalInput}
           value={operationExcept}
-          onChangeText={setOperationExcept}
-          placeholder={
-            '운영 시간 외 예외사항이 있다면 작성해 주세요.\nex) 마지막 날에는 5시에 조기 마감'
-          }
+          onChangeText={text => {
+            setOperationExcept(text);
+            setOperationExceptLength(text.length);
+          }}
+          placeholder="운영 시간 외 예외사항이 있다면 작성해 주세요.\nex) 마지막 날에는 5시에 조기 마감"
           multiline={true}
+          maxLength={100}
         />
+
+        <Text style={{alignSelf: 'flex-end', color: globalColors.font}}>
+          {operationExceptLength}/100
+        </Text>
         <RequiredTextLabel label={'주소'} isRequired={true} />
         <View style={styles.addressContainer}>
           <View
@@ -232,9 +249,16 @@ const StepTwo: React.FC<StepTwoProps> = ({
           <TextInput
             style={styles.input}
             value={addressDetail}
-            onChangeText={setAddressDetail}
+            onChangeText={text => {
+              setAddressDetail(text);
+              setAddressDetailLength(text.length);
+            }}
             placeholder="상세주소 입력(필수)"
+            maxLength={30}
           />
+          <Text style={{alignSelf: 'flex-end', color: globalColors.font}}>
+            {addressDetailLength}/30
+          </Text>
         </View>
         <View style={styles.modalContainer}>
           <BottomSheetModal
@@ -269,9 +293,16 @@ const StepTwo: React.FC<StepTwoProps> = ({
         <LabelAndInputWithCloseSvg
           label={'공식 사이트 주소'}
           value={homepageLink}
-          onChangeText={setHomepageLink}
+          onChangeText={text => {
+            setHomepageLink(text);
+            setHomepageLinkLength(text.length);
+          }}
           isRequired={true}
+          maxLength={300}
         />
+        <Text style={{alignSelf: 'flex-end', color: globalColors.font}}>
+          {homepageLinkLength}/300
+        </Text>
         <RequiredTextLabel label={'관련사진'} isRequired={true} />
         <ImageContainerRow
           selectedImages={selectedImages}

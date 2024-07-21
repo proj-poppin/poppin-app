@@ -18,9 +18,11 @@ import {useSelector} from 'react-redux';
 import useGetPreferenceSetting from '../../../hooks/myPage/useGetPreferenceSetting.tsx';
 import usePutPreferenceSetting from '../../../hooks/myPage/usePutSetting.tsx';
 import CloseSvg from '../../../assets/icons/close.svg';
-
+import {useAppDispatch} from '../../../redux/stores';
+import {triggerPreferenceRefresh} from '../../../redux/slices/preferenceRefreshSlice.ts';
 function PreferenceSettingScreen({navigation, route}: any) {
   const {data} = useGetPreferenceSetting();
+
   const {putPreference, success, loading} = usePutPreferenceSetting();
   const user = useSelector((state: any) => state.user);
   const [modalVisible, setModalVisible] = useState(false);
@@ -29,6 +31,7 @@ function PreferenceSettingScreen({navigation, route}: any) {
   const [isOneMoreCategorySelected, setIsOneMoreCategorySelected] =
     useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (route.params?.fromHome) {
@@ -51,6 +54,7 @@ function PreferenceSettingScreen({navigation, route}: any) {
     if (route.params?.fromHome) {
       navigation.navigate('Home', {shouldRefresh: true});
     } else {
+      dispatch(triggerPreferenceRefresh());
       navigation.navigate('MyPage');
     }
   };

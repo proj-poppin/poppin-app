@@ -2,10 +2,10 @@ import React from 'react';
 import {Pressable} from 'react-native';
 import BackSvg from '../../assets/icons/goBack.svg';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 
 type SignUpEmailScreenNavigationProp = NativeStackNavigationProp<
-  AuthNavigatorParamList,
+  AppNavigatorParamList,
   'SignUpAuthCode'
 >;
 
@@ -17,7 +17,9 @@ const SignUpEmailOptions = ({
   navigation: SignUpEmailScreenNavigationProp;
 }) => ({
   headerLeft: () => (
-    <Pressable onPress={() => navigation.goBack()} style={{padding: 10}}>
+    <Pressable
+      onPress={() => navigation.replace('Entry')}
+      style={{padding: 10}}>
       <BackSvg />
     </Pressable>
   ),

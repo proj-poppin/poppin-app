@@ -1,5 +1,5 @@
 import React, {useState, ReactElement} from 'react';
-import {StyleSheet, View, TextInput, Pressable} from 'react-native';
+import {StyleSheet, View, TextInput, Pressable, Text} from 'react-native';
 import globalColors from '../styles/color/globalColors';
 import RequiredTextLabel from './RequiredTextLabel';
 
@@ -9,7 +9,7 @@ interface TextInputWithSvgIconInRightProps {
   onIconPress?: () => void;
   IconComponent: ReactElement;
   isRequired?: boolean;
-  isClickableTextInput?: boolean; // New prop
+  isClickableTextInput?: boolean; // Allows the entire TextInput area to be clickable
 }
 
 const TextInputWithSvgIconInRight: React.FC<
@@ -20,7 +20,7 @@ const TextInputWithSvgIconInRight: React.FC<
   onIconPress = () => {},
   IconComponent,
   isRequired = false,
-  isClickableTextInput = false, // Default value
+  isClickableTextInput = false,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -34,26 +34,23 @@ const TextInputWithSvgIconInRight: React.FC<
             ? {borderColor: globalColors.blue}
             : {borderColor: globalColors.warmGray},
         ]}
-        onPress={onIconPress} // Trigger the icon press when the whole container is pressed
-      >
+        onPress={onIconPress} // Applies the onIconPress action to the whole container
+        disabled={!isClickableTextInput}>
         <TextInput
           style={styles.input}
           value={value}
-          editable={false} // 텍스트 입력 비활성화 (필요에 따라 조정)
+          editable={false} // Disables keyboard input
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          pointerEvents={isClickableTextInput ? 'none' : 'auto'} // Prevent focus if clickable
+          pointerEvents="none" // Disables text input focus
         />
-        <View style={styles.iconButton}>{IconComponent}</View>
+        <View style={styles.iconContainer}>{IconComponent}</View>
       </Pressable>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  labelText: {
-    paddingVertical: 5,
-  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -64,9 +61,11 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
+    padding: 8, // Ensures padding inside the input for better text display
   },
-  iconButton: {
-    paddingRight: 10,
+  iconContainer: {
+    padding: 10, // Ensures padding around the icon for better touch response
   },
 });
+
 export default TextInputWithSvgIconInRight;

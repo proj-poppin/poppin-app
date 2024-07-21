@@ -18,7 +18,7 @@ const rootReducer = combineReducers({
   reviewSubmitted: reviewSubmittedSlice.reducer,
   interest: interestSlice.reducer,
   refresh: refreshSlice.reducer,
-  blockRefresh: blockRefreshSlice,
+  blockRefresh: blockRefreshSlice.reducer,
 });
 
 export default rootReducer;

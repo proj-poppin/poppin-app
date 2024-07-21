@@ -2,10 +2,10 @@ import React from 'react';
 import {Pressable} from 'react-native';
 import BackSvg from '../../assets/icons/goBack.svg';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 
 export type SignUpNickNameSocialScreenNavigationProp =
-  NativeStackNavigationProp<AuthNavigatorParamList, 'SignUpNickNameSocial'>;
+  NativeStackNavigationProp<AppNavigatorParamList, 'SignUpNickNameSocial'>;
 
 // Props 타입 정의
 // HeaderOptions 컴포넌트

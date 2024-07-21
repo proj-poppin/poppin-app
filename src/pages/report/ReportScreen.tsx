@@ -68,6 +68,7 @@ function ReportScreen({navigation, route}) {
         </View>
         <View style={{paddingTop: 150}}>
           <CompleteButton
+            style={styles.buttonRow}
             onPress={() => navigation.navigate('Home')}
             title={'완료'}
           />
@@ -76,20 +77,15 @@ function ReportScreen({navigation, route}) {
     );
   }
 
+  const characterCount = content.length;
+  const isOverLimit = characterCount > 100;
+
   return (
     <>
       <DismissKeyboardView style={styles.container}>
         <View
           style={[{flexDirection: 'row'}, {marginTop: 40, marginBottom: 10}]}>
           <Text style={[Text20B.text]}>{'신고 사유를 알려주세요'}</Text>
-          {/*<Text*/}
-          {/*  style={[*/}
-          {/*    Text12M.text,*/}
-          {/*    {color: globalColors.font},*/}
-          {/*    {marginLeft: 15, marginTop: 5},*/}
-          {/*  ]}>*/}
-          {/*  {'*복수 선택 가능'}*/}
-          {/*</Text>*/}
         </View>
         <View style={styles.reasonContainer}>
           {reasons.map((reason, index) => (
@@ -113,24 +109,31 @@ function ReportScreen({navigation, route}) {
           ))}
         </View>
         {selectedReason === reasons.length - 1 && (
-          <TextInput
-            style={[
-              styles.reportInput,
-              {
-                borderColor: isFocused
-                  ? globalColors.blue
-                  : globalColors.warmGray,
-              },
-            ]}
-            multiline
-            placeholder="신고 사유를 알려주세요."
-            placeholderTextColor={globalColors.font}
-            maxLength={1000}
-            value={content}
-            onChangeText={setContent}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-          />
+          <>
+            <TextInput
+              style={[
+                styles.reportInput,
+                {
+                  borderColor: isFocused
+                    ? globalColors.blue
+                    : globalColors.warmGray,
+                  ...(isOverLimit && {borderColor: 'red'}),
+                },
+              ]}
+              multiline
+              placeholder="신고 사유를 알려주세요."
+              placeholderTextColor={globalColors.font}
+              maxLength={100}
+              value={content}
+              onChangeText={setContent}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+            />
+            <Text
+              style={[styles.characterCount, isOverLimit && styles.overLimit]}>
+              {characterCount}/100
+            </Text>
+          </>
         )}
         <Text style={[Text12R.text, {color: globalColors.font}]}>
           *문의사항은 접수 후 수정이 불가능합니다.{'\n'}
@@ -214,6 +217,19 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     height: 120,
     fontSize: 14,
+  },
+  characterCount: {
+    textAlign: 'right',
+    marginTop: 5,
+    fontSize: 14,
+    color: globalColors.font,
+  },
+  overLimit: {
+    color: 'red',
+  },
+  buttonRow: {
+    position: 'absolute',
+    top: 350,
   },
 });
 

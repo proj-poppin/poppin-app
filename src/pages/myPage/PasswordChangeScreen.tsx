@@ -7,7 +7,6 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useSelector} from 'react-redux';
 import globalColors from '../../styles/color/globalColors.ts';
@@ -21,9 +20,10 @@ import useConfirmPassword from '../../hooks/myPage/useConfirmPassword.tsx';
 import useResetPasswordNonPublic from '../../hooks/password/useResetPasswordNonPublic.tsx';
 import GoBackSvg from '../../assets/icons/goBack.svg';
 import ToSignUpTextLine from '../../components/molecules/pressable_text/ToSignUpTextLine.tsx';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 
 type PasswordChangeScreenNavigationProp = NativeStackNavigationProp<
-  AuthNavigatorParamList,
+  AppNavigatorParamList,
   'PasswordChange'
 >;
 

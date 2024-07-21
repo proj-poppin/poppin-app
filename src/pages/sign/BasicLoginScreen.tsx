@@ -8,11 +8,11 @@ import useBasicLogin from '../../hooks/login/useBasicLogin.tsx';
 import {StyleSheet, View} from 'react-native';
 import PressableGreyTextWord from '../../components/molecules/pressable_text/PressableGreyTextWord.tsx';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AuthNavigatorParamList} from '../../types/AuthNavigatorParamList.ts';
 import {useNavigation} from '@react-navigation/native';
+import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 
 type BasicLoginScreenNavigationProp = NativeStackNavigationProp<
-  AuthNavigatorParamList,
+  AppNavigatorParamList,
   'BasicLogin'
 >;
 

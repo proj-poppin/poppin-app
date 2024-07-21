@@ -9,6 +9,7 @@ interface LabelAndInputWithCloseSvgProps {
   value: string;
   onChangeText: (text: string) => void;
   isRequired?: boolean;
+  maxLength?: number; // 최대 글자 수를 설정할 수 있는 옵셔널 속성 추가
 }
 
 const LabelAndInputWithCloseSvg: FC<LabelAndInputWithCloseSvgProps> = ({
@@ -16,6 +17,7 @@ const LabelAndInputWithCloseSvg: FC<LabelAndInputWithCloseSvgProps> = ({
   value = '',
   onChangeText,
   isRequired = false,
+  maxLength,
 }) => {
   const [isFocused, setIsFocused] = useState(false); // 입력 필드 포커스 상태 관리
 
@@ -35,6 +37,7 @@ const LabelAndInputWithCloseSvg: FC<LabelAndInputWithCloseSvgProps> = ({
           onChangeText={onChangeText}
           onFocus={() => setIsFocused(true)} // 포커스 시
           onBlur={() => setIsFocused(false)} // 포커스 해제 시
+          maxLength={maxLength} // TextInput에 maxLength 속성 추가
         />
         <TouchableOpacity
           style={styles.closeButton}

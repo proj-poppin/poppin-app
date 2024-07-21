@@ -21,7 +21,7 @@ import Text12R from '../../styles/texts/label/Text12R.ts';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 import useModifyPopUpInfo from '../../hooks/modify/useModifyPopUpInfo.tsx';
 import {useImageSelector} from '../../hooks/useImageSelector';
-import {requestGalleryPermissions} from '../../utils/function/requestGalleryPermission.ts'; // Import the custom hook
+import {requestGalleryPermissions} from '../../utils/function/requestGalleryPermission.ts';
 
 type PopUpEditRequestScreenRouteProp = RouteProp<
   AppNavigatorParamList,
@@ -111,30 +111,32 @@ function PopUpEditRequestScreen() {
     openCompleteModal();
   };
 
+  const characterCount = content.length;
+  const isOverLimit = characterCount > 300;
   return (
     <DismissKeyboardView style={styles.container}>
       <Text style={[Text20B.text, {marginTop: 40, marginBottom: 10}]}>
-        {'POPPIN이 모르는 새로운\n'}
-        {'팝업을 알려주세요'}
+        {name}
       </Text>
-      <View style={{height: 20}} />
-      <Text style={styles.labelText}>{name}</Text>
       <View style={{height: 20}} />
       <TextInput
         style={[
           styles.reviewInput,
           {borderColor: isFocused ? globalColors.blue : globalColors.warmGray},
+          isOverLimit && {borderColor: 'red'},
         ]}
         multiline
-        placeholder="팝업 정보 수정 요청"
+        placeholder="수정이 필요한 정보를 작성해 주세요."
         placeholderTextColor={globalColors.font}
-        maxLength={1000}
+        maxLength={300}
         value={content}
         onChangeText={setContent}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
       />
-      <Text style={styles.labelText}>{}</Text>
+      <Text style={[styles.characterCount, isOverLimit && styles.overLimit]}>
+        {characterCount}/300
+      </Text>
       <View style={styles.modalContainer} />
       <ImageContainerRow
         selectedImages={selectedImages}
@@ -155,8 +157,8 @@ function PopUpEditRequestScreen() {
           (content.length > 10 && selectedImages.length === 0) ||
           !isSubmitEnabled
         }
+        style={styles.buttonRow}
         title={'요청하기'}
-        // disabled={isSubmitEnabled}
       />
       <TwoSelectConfirmationModal
         isVisible={isModalVisible}
@@ -214,7 +216,7 @@ const styles = StyleSheet.create({
   imagesContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10, // 스크롤 뷰와 주변 요소 간 간격 조정
+    paddingVertical: 10,
   },
   addImageButton: {
     borderColor: globalColors.component,
@@ -235,13 +237,13 @@ const styles = StyleSheet.create({
   addImageText: {
     color: globalColors.font,
     paddingTop: 8,
-    textAlign: 'center', // 텍스트 중앙 정렬
+    textAlign: 'center',
   },
   deleteIcon: {
     position: 'absolute',
     top: 0,
     right: 0,
-    padding: 10, // 쉽게 탭할 수 있도록 패딩 추가
+    padding: 10,
     color: 'black',
   },
   reviewInput: {
@@ -254,9 +256,22 @@ const styles = StyleSheet.create({
     height: 150,
     fontSize: 14,
   },
+  characterCount: {
+    textAlign: 'right',
+    marginTop: 5,
+    fontSize: 14,
+    color: globalColors.font,
+  },
+  overLimit: {
+    color: 'red',
+  },
   imageContainer: {
     position: 'relative',
     marginRight: 10,
+  },
+  buttonRow: {
+    position: 'absolute',
+    top: 600,
   },
 });
 

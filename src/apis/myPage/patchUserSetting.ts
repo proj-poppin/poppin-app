@@ -8,12 +8,13 @@ export interface PatchUserSettingResponse {
   };
 }
 
-const patchUserSetting = async (editValue: { nickname: string, birthDate: string }): Promise<PatchUserSettingResponse> => {
- 
+const patchUserSetting = async (editValue: {
+  nickname: string;
+}): Promise<PatchUserSettingResponse> => {
   try {
-    const response = await nonPublicApiInstance.patch(
-      `/api/v1/user/settings`,
-      editValue
+    const response = await nonPublicApiInstance.put(
+      '/api/v1/user/settings',
+      editValue,
     );
     console.log('pachUserSetting response:', response.data);
 

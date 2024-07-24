@@ -58,7 +58,7 @@ const useSignUp = () => {
         });
       }
     } catch (error) {
-      console.error('SignUp error:', error);
+      // console.error('SignUp error:', error);
       setSignUpStatus({
         success: false,
         error: error.toString(),

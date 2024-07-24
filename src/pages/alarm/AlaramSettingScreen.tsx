@@ -70,7 +70,7 @@ function AlarmSettingScreen({navigation}) {
           );
         }
       } catch (error: any) {
-        console.error('Error setting alarm settings:', error);
+        console.log('Error setting alarm settings:', error);
       }
     });
 
@@ -125,7 +125,7 @@ function AlarmSettingScreen({navigation}) {
         updatedSettings.changeInfoYn,
       );
     } catch (error: any) {
-      console.error('Error updating alarm settings:', error);
+      console.log('Error updating alarm settings:', error);
     }
   };
 

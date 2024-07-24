@@ -30,7 +30,7 @@ function FindInputScreen({navigation}: any) {
       setKeywordRecord(updatedKeywords);
       await AsyncStorage.setItem('@keywords', JSON.stringify(updatedKeywords));
       setText('');
-      navigation.navigate('Find', {searchText: text});
+      navigation.navigate('FindResult', {searchText: text});
     } else {
       Alert.alert('검색어를 입력해주세요.');
     }
@@ -58,7 +58,8 @@ function FindInputScreen({navigation}: any) {
           setKeywordRecord([]);
         }
       } catch (e) {
-        console.error('Failed to fetch the data from storage', e);
+        console.log('Failed to fetch the data from storage', e);
+        // console.error('Failed to fetch the data from storage', e);
       }
     };
 
@@ -67,14 +68,14 @@ function FindInputScreen({navigation}: any) {
 
   const handlekeywordClickSubmit = (text: string) => {
     setText(text);
-    navigation.navigate('Find', {searchText: text});
+    navigation.navigate('FindResult', {searchText: text});
   };
 
   return (
     <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
       <View style={styles.inputWrapper}>
         <Pressable
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate('Find')}
           style={styles.backbutton}>
           <BackSvg />
         </Pressable>

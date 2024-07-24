@@ -97,8 +97,12 @@ const FindCard = ({item, status, showToast}: any) => {
             {status === 'TERMINATED' ? (
               <View style={styles.closeWrapper}>
                 <Text style={[Text16B.text, {color: globalColors.white}]}>
-                  {status === 'TERMINATED' ? '팝업 종료' : `D-${remainingDays}`}
+                  팝업 종료
                 </Text>
+              </View>
+            ) : status === 'NOTYET' ? (
+              <View style={styles.deadlineWrapper}>
+                <Text style={styles.deadlineText}>오픈 D-{remainingDays}</Text>
               </View>
             ) : (
               <View style={styles.deadlineWrapper}>
@@ -289,4 +293,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
 export default FindCard;

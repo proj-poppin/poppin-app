@@ -7,7 +7,6 @@ import globalColors from '../../styles/color/globalColors';
 import SearchBlueSvg from '../../assets/icons/searchBlue.svg';
 import OrderSvg from '../../assets/icons/order.svg';
 import BackSvg from '../../assets/icons/goBack.svg';
-import Text24B from '../../styles/texts/headline/Text24B';
 import Text14M from '../../styles/texts/body_medium/Text14M';
 import FilterSettingButton from '../../components/atoms/button/FilterSettingButton';
 import CustomSelectDropdown from '../../components/CustomDropDown';
@@ -29,12 +28,12 @@ export const FIND_ORDER_TYPES = [
 
 const Tab = createMaterialTopTabNavigator();
 
-type FindScreenProps = {
+type FindResultScreenProps = {
   navigation: any;
   route: any;
 };
 
-function FindScreen({navigation, route}: FindScreenProps) {
+function FindResultScreen({navigation, route}: FindResultScreenProps) {
   const [availableTags, setAvailableTags] = useState<TFilter[]>(POP_UP_TYPES);
   const [selectedTags, setSelectedTags] = useState<TFilter[]>(availableTags);
   const [selectedTab, setSelectedTab] = useState('운영 중');
@@ -62,7 +61,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
     setSelectedOrder(orderValue);
   };
 
-  const snapPoints = useMemo(() => ['81%'], []);
+  const snapPoints = useMemo(() => ['80%'], []);
 
   const handlePresentModal = useCallback(() => {
     setSelectedTags(availableTags);
@@ -78,15 +77,8 @@ function FindScreen({navigation, route}: FindScreenProps) {
   };
 
   useEffect(() => {
-    if (route.params) {
-      const {searchText, order} = route.params;
-      if (searchText) {
-        setSearchKeyword(searchText);
-      }
-      if (order) {
-        setSelectedOrder(order);
-        setSearchKeyword('');
-      }
+    if (route.params && route.params.searchText) {
+      setSearchKeyword(route.params.searchText);
     }
   }, [route]);
 
@@ -105,36 +97,27 @@ function FindScreen({navigation, route}: FindScreenProps) {
     return order ? order.label : '최근 오픈 순';
   };
 
+  const handleBackPress = () => {
+    navigation.navigate('FindInput');
+  };
+
   return (
     <SafeAreaView style={[{flex: 1}, {backgroundColor: globalColors.white}]}>
-      {searchKeyword !== '' ? (
-        <View style={styles.searchKeywordContainer}>
-          <Pressable
-            onPress={() => navigation.navigate('Find', {searchText: ''})}
-            style={{padding: 10}}>
-            <BackSvg />
-          </Pressable>
-          <Pressable
-            onPress={() => navigation.navigate('FindInput')}
-            style={styles.searchInputWrapper}>
-            <Text>{searchKeyword}</Text>
-            <Pressable
-              onPress={() => navigation.navigate('FindInput')}
-              style={styles.calendarViewContainer}>
-              <SearchBlueSvg />
-            </Pressable>
-          </Pressable>
-        </View>
-      ) : (
-        <View style={styles.headerContainer}>
-          <Text style={Text24B.text}>팝업 목록</Text>
+      <View style={styles.searchKeywordContainer}>
+        <Pressable onPress={handleBackPress} style={{padding: 10}}>
+          <BackSvg />
+        </Pressable>
+        <Pressable
+          onPress={() => navigation.navigate('FindInput')}
+          style={styles.searchInputWrapper}>
+          <Text>{searchKeyword}</Text>
           <Pressable
             onPress={() => navigation.navigate('FindInput')}
             style={styles.calendarViewContainer}>
             <SearchBlueSvg />
           </Pressable>
-        </View>
-      )}
+        </Pressable>
+      </View>
       {isShowToast && (
         <View style={styles.toastContainer}>
           <ToastComponent
@@ -361,18 +344,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   calendarIcon: {
-    marginLeft: 5, //small gap between the text and the icon
+    marginLeft: 5,
   },
   dropdownButtonStyle: {
-    backgroundColor: 'white', // 버튼 배경색을 흰색으로 설정
+    backgroundColor: 'white',
   },
   rowTextStyle: {
     backgroundColor: globalColors.white,
   },
   buttonInnerContainer: {
-    flexDirection: 'row', // 텍스트와 아이콘을 가로로 배열
-    alignItems: 'center', // 세로 중앙 정렬
-    justifyContent: 'flex-start', // 내용물 사이의 공간 동일하게 배분
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   dropdownIcon: {
     marginLeft: 5,
@@ -397,7 +380,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   activeTabItem: {
-    borderBottomWidth: 5, // 선택된 탭 아래에 선 추가
+    borderBottomWidth: 5,
     flex: 1,
     alignItems: 'center',
     padding: 16,
@@ -503,10 +486,10 @@ const styles = StyleSheet.create({
   },
   toastContainer: {
     position: 'absolute',
-    top: 60, // 원하는 위치로 조정
+    top: 60,
     width: '100%',
     alignItems: 'center',
   },
 });
 
-export default FindScreen;
+export default FindResultScreen;

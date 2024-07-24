@@ -1,13 +1,11 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Text, FlatList, TouchableOpacity} from 'react-native';
 import {BottomSheetModal, BottomSheetView} from '@gorhom/bottom-sheet';
 import globalColors from '../../../styles/color/globalColors.ts';
-import DateData from 'react-native-calendars';
 import {GetInterestPopUpListResponse} from '../../../types/PopUpListData.ts';
 import {useNavigation} from '@react-navigation/native';
 import {MarkedDates} from 'react-native-calendars/src/types';
-import FullCalendarComponent from './FullCalendarComponent.tsx';
-import NormalCalendarComponent from './NormalCalendarComponent.tsx';
+import FullCalendarComponent from './FullCalendarComponent';
 import {
   addDots,
   checkIsClosed,
@@ -17,14 +15,20 @@ import {
   formatDate,
   setCircle,
 } from './calendarUtils.ts';
-import BottomSheetItem from './BottomSheetItem.tsx';
-import NoItemComponent from './NoItemComponent.tsx';
+import BottomSheetItem from './BottomSheetItem';
+import NoItemComponent from './NoItemComponent';
 import UpButton from '../../../assets/likes/upButtonBlue.svg';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {useReducedMotion} from 'react-native-reanimated';
+import {NormalCalendarComponent} from './NormalCalendarComponent.tsx';
+import useIsLoggedIn from '../../../hooks/auth/useIsLoggedIn.tsx';
+
+console.log('Imports loaded');
 
 interface LikeCalendarComponentProps {
   data: GetInterestPopUpListResponse[] | null;
+  showToast: (message: string) => void;
+  onRefresh: () => void;
 }
 
 type DateData = {
@@ -40,36 +44,36 @@ enum CalendarType {
   NORMAL,
 }
 
-const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({data}) => {
-  // navigation
+const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({
+  data,
+  showToast,
+  onRefresh,
+}) => {
+  const isLoggedIn = useIsLoggedIn();
+  console.log('CalendarComponent rendered');
   const navigation = useNavigation();
-
-  // useState
   const [snapIndex, setSnapIndex] = useState(0);
-  const [selDate, setSelDate] = useState<DateData>(createTodayDateData()); // 캘린더 내부사용 포맷
+  const [selDate, setSelDate] = useState<DateData>(createTodayDateData());
   const [markedDates, setMarkedDates] = useState<MarkedDates>({});
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
   const [calendarType, setCalendarType] = useState<CalendarType>(
     CalendarType.NORMAL,
   );
   const reducedMotion = useReducedMotion();
-
-  // useRef
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const dateTimePickerYearMonthRef = useRef<string>(null);
   const bottomModalDateRef = useRef<DateData>(selDate);
+  const snapPoints = useMemo(() => ['40%', '85%'], []);
 
-  // useMemo
-  const snapPoints = useMemo(() => ['43%', '80%'], []);
-
-  // useCallbacks
   const handlePresentModalPress = useCallback(() => {
+    console.log('Present Modal Press');
     bottomSheetModalRef.current?.present();
     bottomSheetModalRef.current?.snapToIndex(0);
     setCalendarType(CalendarType.NORMAL);
   }, []);
 
   const handleSheetChanges = useCallback((index: number) => {
+    console.log('Sheet Changes:', index);
     if (index == -1) {
       setCalendarType(CalendarType.FULL);
     } else {
@@ -77,34 +81,32 @@ const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({data}) => {
     }
   }, []);
 
-  // variable
-  const filteredData = data?.filter(
-    item => !checkIsClosed(item.open_date, item.close_date, selDate),
-  );
+  const createMarkedDates = useCallback(() => {
+    const markedDates: MarkedDates = {};
+    setCircle(markedDates, selDate.dateString);
+    data?.forEach(e => {
+      addDots(markedDates, e);
+    });
+    console.log('Created Marked Dates:', markedDates);
+    return markedDates;
+  }, [data, selDate]);
 
-  // useEffect
+  const filteredData = useMemo(() => {
+    return data?.filter(
+      item => !checkIsClosed(item.open_date, item.close_date, selDate),
+    );
+  }, [data, selDate]);
+
   useEffect(() => {
     bottomModalDateRef.current = selDate;
     bottomSheetModalRef.current?.present(snapIndex);
     setMarkedDates(createMarkedDates());
-  }, [selDate]);
+    console.log('useEffect triggered');
+  }, [selDate, snapIndex, createMarkedDates]);
 
-  function createMarkedDates() {
-    const markedDates: MarkedDates = {};
-    // 선택한 날짜 원찍기
-    setCircle(markedDates, selDate.dateString);
-    // 오픈, 마감 날짜 점찍기
-    data?.forEach(e => {
-      addDots(markedDates, e);
-    });
-
-    return markedDates;
-  }
-
-  // renders
   return (
     <View style={{flex: 1}}>
-      {calendarType == CalendarType.NORMAL ? (
+      {calendarType === CalendarType.NORMAL ? (
         <NormalCalendarComponent
           selDate={selDate}
           setSelDate={setSelDate}
@@ -128,6 +130,7 @@ const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({data}) => {
           handlePresentModalPress={handlePresentModalPress}
           markedDates={markedDates}
           setMarkedDates={setMarkedDates}
+          onRefresh={onRefresh}
         />
       )}
       <View style={{position: 'absolute', bottom: '50%'}}>
@@ -238,11 +241,13 @@ const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({data}) => {
               ) : (
                 <FlatList
                   data={filteredData}
-                  renderItem={props => (
+                  renderItem={({item, index}) => (
                     <BottomSheetItem
-                      key={props.item.id} // 고유한 key 속성 추가
-                      item={props.item}
+                      key={`${item.id}-${index}`}
+                      item={item}
                       navigation={navigation}
+                      showToast={showToast}
+                      isLoggedIn={isLoggedIn}
                     />
                   )}
                 />
@@ -264,8 +269,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    // height:1000
-    // alignItems: 'center',
   },
   bottomSheetStyle: {
     height: 0,

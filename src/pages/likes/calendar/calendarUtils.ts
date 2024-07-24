@@ -49,6 +49,7 @@ export function checkIsClosed(
   const open = new Date(openDate);
   const close = new Date(closeDate);
   const selected = new Date(selDate.dateString);
+  console.log('Check is Closed:', {openDate, closeDate, selDate});
   return selected < open || selected > close;
 }
 
@@ -59,6 +60,7 @@ export function checkIsClosed(
  */
 export function createTodayDateData(): DateData {
   const today = new Date(); // 현재 날짜 및 시간을 가져옵니다.
+  console.log('Create Today Date Data:', today);
 
   return {
     dateString: today.toISOString().split('T')[0], // ISO 형식의 문자열로 변환하여 날짜 부분만 추출합니다.
@@ -88,6 +90,7 @@ export function setCircle(
     : globalColors.white;
 
   markedDates[dateWithHyphen] = markedDate;
+  console.log('Set Circle:', markedDates[dateWithHyphen]);
 }
 
 export function addDots(
@@ -99,38 +102,46 @@ export function addDots(
 
   const openDots: any = openMarkDate.dots;
   if (!openDots) {
-    openMarkDate.dots = [{color: globalColors.purple, key: e.name}];
+    openMarkDate.dots = [{color: globalColors.purple, key: `${e.name}-open`}];
     markedDates[e.open_date] = openMarkDate;
   } else {
     switch (openDots.length) {
       case 1:
-        openDots.push({color: globalColors.blue, key: e.name});
+        openDots.push({color: globalColors.blue, key: `${e.name}-open-1`});
         break;
       case 2:
-        openDots.push({color: globalColors.purpleLight, key: e.name});
+        openDots.push({
+          color: globalColors.purpleLight,
+          key: `${e.name}-open-2`,
+        });
         break;
     }
   }
 
   const closeDots = closeMarkDate.dots;
   if (!closeDots) {
-    closeMarkDate.dots = [{color: globalColors.purple, key: e.name}];
+    closeMarkDate.dots = [{color: globalColors.purple, key: `${e.name}-close`}];
     markedDates[e.close_date] = closeMarkDate;
   } else {
     switch (closeDots.length) {
       case 1:
-        closeDots.push({color: globalColors.blue, key: e.name});
+        closeDots.push({color: globalColors.blue, key: `${e.name}-close-1`});
         break;
       case 2:
-        closeDots.push({color: globalColors.purpleLight, key: e.name});
+        closeDots.push({
+          color: globalColors.purpleLight,
+          key: `${e.name}-close-2`,
+        });
         break;
     }
   }
+  console.log('Add Dots:', markedDates);
 }
 
 export function updateDate(date: Date, month: number, day: number): Date {
   date.setMonth(month);
   date.setDate(day);
+  console.log('Update Date:', date);
   return date;
 }
 
@@ -140,6 +151,7 @@ export const createDateData = (
   date: number,
 ): DateData => {
   const dates = new Date(year, month, date);
+  console.log('Create Date Data:', dates);
 
   return {
     dateString: dates.toISOString().split('T')[0],
@@ -151,7 +163,9 @@ export const createDateData = (
 };
 
 export const createDate = (year: number, month: number, date: number): Date => {
-  return new Date(year, month, date);
+  const dateObj = new Date(year, month, date);
+  console.log('Create Date:', dateObj);
+  return dateObj;
 };
 
 export const normalCalendarTheme = {

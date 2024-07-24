@@ -1,5 +1,4 @@
-/* eslint-disable */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {View} from 'react-native';
 import {CalendarList, DateData} from 'react-native-calendars';
 import globalColors from '../../../styles/color/globalColors.ts';
@@ -7,31 +6,11 @@ import {MarkedDates} from 'react-native-calendars/src/types';
 import HeaderTitle from './HeaderTitle.tsx';
 import {normalCalendarTheme} from './calendarUtils.ts';
 import XDate from 'xdate';
-
-interface NormalCalendarComponentProps {
-  handlePresentModalPress: any;
-  markedDates: MarkedDates;
-  setMarkedDates: React.Dispatch<React.SetStateAction<MarkedDates>>;
-  selDate: DateData;
-  setSelDate: React.Dispatch<React.SetStateAction<DateData>>;
-  dateTimePickerYearMonthRef: React.RefObject<string>;
-  onClickHeaderTitle: (dateData: DateData) => void;
-}
-function subtractMonthFromString(dateString: string) {
-  // 입력된 문자열을 연도와 월로 분리
-  const [year, month] = dateString.split('.').map(Number);
-  // 새로운 Date 객체 생성
-  const date = new Date(year, month - 1); // month - 1로 0부터 시작하는 월 보정
-  // 한 달 빼기
-  date.setMonth(date.getMonth() - 1);
-  // 결과 문자열 생성 (월을 2자리로 맞춤)
-  const newYear = date.getFullYear();
-  const newMonth = String(date.getMonth() + 1).padStart(2, '0'); // month + 1로 보정 후 2자리로 포맷
-
-  return `${newYear}.${newMonth}`;
-}
-
-const NormalCalendarComponent: React.FC<NormalCalendarComponentProps> = ({
+import {subtractMonthFromString} from '../../../utils/function/subtractMonthFromString.ts';
+import {NormalCalendarComponentProps} from '../../../types/NormalCalendarComponentProps.ts';
+export const NormalCalendarComponent: React.FC<
+  NormalCalendarComponentProps
+> = ({
   handlePresentModalPress,
   markedDates,
   setMarkedDates,
@@ -110,5 +89,3 @@ const NormalCalendarComponent: React.FC<NormalCalendarComponentProps> = ({
     </View>
   );
 };
-
-export default NormalCalendarComponent;

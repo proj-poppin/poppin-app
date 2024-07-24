@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import {
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,7 +13,7 @@ import {DayState, MarkedDates} from 'react-native-calendars/src/types';
 import {MarkingProps} from 'react-native-calendars/src/calendar/day/marking';
 import globalColors from '../../../styles/color/globalColors.ts';
 import HeaderTitle from './HeaderTitle.tsx';
-import {createDateData, fullCalendarTheme} from './calendarUtils.ts';
+import {fullCalendarTheme} from './calendarUtils.ts';
 import XDate from 'xdate';
 
 interface FullCalendarProps {
@@ -24,6 +25,7 @@ interface FullCalendarProps {
   setSelDate: React.Dispatch<React.SetStateAction<DateData>>;
   dateTimePickerYearMonthRef: React.RefObject<string>;
   onClickHeaderTitle: (dateData: DateData) => void;
+  onRefresh: () => void;
 }
 
 const FullCalendarComponent: React.FC<FullCalendarProps> = ({
@@ -35,23 +37,25 @@ const FullCalendarComponent: React.FC<FullCalendarProps> = ({
   onClickHeaderTitle,
   dateTimePickerYearMonthRef,
   setSelDate,
+  onRefresh,
 }) => {
-  function addMonthsToDateData(dateData: DateData, months: number): DateData {
-    const date = new Date(dateData.year, dateData.month - 1, dateData.day);
-    date.setMonth(date.getMonth() + months);
+  const [refreshing, setRefreshing] = useState(false);
 
-    return {
-      dateString: date.toISOString().split('T')[0], // ISO 문자열로 변환하여 날짜 부분만 추출
-      day: date.getDate(),
-      month: date.getMonth() + 1,
-      year: date.getFullYear(),
-      timestamp: date.getTime(),
-    };
-  }
+  const onRefreshHandler = useCallback(() => {
+    setRefreshing(true);
+    onRefresh();
+    setRefreshing(false);
+  }, [onRefresh]);
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
+    <View style={{flex: 1}}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefreshHandler}
+          />
+        }>
         <CalendarList
           current={selDate.dateString}
           renderHeader={(date?: XDate) => {
@@ -63,10 +67,10 @@ const FullCalendarComponent: React.FC<FullCalendarProps> = ({
               />
             );
           }}
-          onPressArrowLeft={(method, month) => {
+          onPressArrowLeft={method => {
             method();
           }}
-          onPressArrowRight={(method, month) => {
+          onPressArrowRight={method => {
             method();
           }}
           hideArrows={false}
@@ -77,17 +81,13 @@ const FullCalendarComponent: React.FC<FullCalendarProps> = ({
           dayComponent={({date, state, marking}) => (
             <TouchableOpacity
               onPress={() => {
-                // 새로운 마크된 날짜 객체 생성
                 const updatedMarkedDates = {...markedDates};
-
-                // 모든 select 초기화
                 Object.keys(updatedMarkedDates).forEach(day => {
                   if (!updatedMarkedDates[day].today) {
                     updatedMarkedDates[day].selected = false;
                   }
                 });
 
-                // 선택된 날로 select
                 if (updatedMarkedDates[date!.dateString]) {
                   updatedMarkedDates[date!.dateString].selected =
                     !updatedMarkedDates[date!.dateString].selected;
@@ -122,11 +122,11 @@ interface FullCalendarItemProps {
   marking: MarkingProps | undefined;
   popupList: GetInterestPopUpListResponse[] | null;
 }
+
 const FullCalendarItem: React.FC<FullCalendarItemProps> = ({
   date,
   state,
   marking,
-  popupList,
 }) => {
   return (
     <View style={[styles.calendarItemContainer]}>
@@ -138,7 +138,7 @@ const FullCalendarItem: React.FC<FullCalendarItemProps> = ({
             : {color: globalColors.white};
         return (
           <View
-            key={index}
+            key={`${e.key}-${index}`} // Unique key generation
             style={[styles.markedContainer, {backgroundColor: e.color}]}>
             <Text
               style={[styles.markedText, textColor]}
@@ -158,6 +158,7 @@ interface DayProps {
   state: string | undefined;
   marking: MarkingProps | undefined;
 }
+
 const DayComponent: React.FC<DayProps> = dayProps => {
   const todayStyle =
     dayProps.state === 'today'
@@ -189,7 +190,6 @@ const DayComponent: React.FC<DayProps> = dayProps => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingBottom: 60
   },
   calendarItemContainer: {
     flex: 1,
@@ -197,7 +197,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
   },
-
   calenderItemText: {
     color: 'black',
     textAlign: 'center',

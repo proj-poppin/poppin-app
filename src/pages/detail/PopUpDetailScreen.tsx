@@ -10,6 +10,7 @@ import {
   Text,
   View,
   TouchableWithoutFeedback,
+  Dimensions,
 } from 'react-native';
 import useGetDetailPopUp from '../../hooks/detailPopUp/useGetDetailPopUp';
 import ShareSvg from '../../assets/detail/share.svg';
@@ -74,6 +75,9 @@ export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
   'PopUpDetail'
 >;
+
+const {width} = Dimensions.get('window');
+const contentWidth = width * 0.8;
 
 const PopUpDetailScreen = ({route}) => {
   // useBlockPopup();
@@ -186,8 +190,9 @@ const PopUpDetailScreen = ({route}) => {
             detailPopUpData?.latitude ?? 0,
             detailPopUpData?.longitude ?? 0,
           );
+          console.log('distance⭐️⭐️⭐️⭐️', distance);
           const token = await EncryptedStorage.getItem('pushToken');
-          if (distance !== null && distance <= 0.05) {
+          if (distance !== null && distance <= 0.75) {
             const response = await addVisitorPopUp(
               detailPopUpData!.id!,
               token!,
@@ -300,7 +305,8 @@ const PopUpDetailScreen = ({route}) => {
       } else {
       }
     } catch (error) {
-      console.error('Recommend error:', error);
+      console.log('Recommend error:', error);
+      // console.error('Recommend error:', error);
     }
   };
 
@@ -410,7 +416,8 @@ const PopUpDetailScreen = ({route}) => {
       console.log('Share response:', response);
       console.log('share id: ', detailPopUpData.id);
     } catch (e) {
-      console.error('Share error:', e);
+      console.log('Share error:', e);
+      // console.error('Share error:', e);
     }
   };
 
@@ -546,10 +553,16 @@ const PopUpDetailScreen = ({route}) => {
                     }>{`${detailPopUpData.openTime} ~ ${detailPopUpData.closeTime}`}</Text>
                 </View>
                 <View style={styles.detailRow}>
-                  <Text style={[Text14B.text, {color: globalColors.purple}]}>
-                    주소:
+                  <View style={{height: 35}}>
+                    <Text style={[Text14B.text, {color: globalColors.purple}]}>
+                      주소:
+                    </Text>
+                  </View>
+
+                  <Text style={Text14M.text}>
+                    {detailPopUpData.address} {'\n'}{' '}
+                    {detailPopUpData.addressDetail}
                   </Text>
-                  <Text style={Text14M.text}>{detailPopUpData.address}</Text>
                 </View>
               </View>
 
@@ -751,6 +764,7 @@ const PopUpDetailScreen = ({route}) => {
           contentFirstLine={'해당 팝업의 50m 이내에 있으면'}
           contentSecondLine={'방문하기 버튼이 활성화 됩니다!'}
           checkText="확인했어요"
+          distance={distance!} // 거리 값을 전달
         />
         {isShowToast && (
           <ToastComponent

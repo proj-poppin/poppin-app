@@ -33,7 +33,7 @@ const useGetAlarmSettings = () => {
           setAlarmSettings(response.data);
         }
       } catch (error: any) {
-        console.error('Error fetching alarm settings:', error);
+        // console.error('Error fetching alarm settings:', error);
       }
     };
     fetchAlarmSettings();

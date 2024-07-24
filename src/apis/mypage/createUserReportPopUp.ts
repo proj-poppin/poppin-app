@@ -79,7 +79,7 @@ const createUserReportPopUp = async (
       };
     }
   } catch (error) {
-    console.error('Failed to submit user report', error);
+    // console.error('Failed to submit user report', error);
     return {
       success: false,
       error: {

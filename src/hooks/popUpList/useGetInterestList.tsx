@@ -1,8 +1,8 @@
 import {useState, useEffect, useCallback} from 'react';
 import {useDispatch} from 'react-redux';
 import {GetInterestPopUpListResponse} from '../../types/PopUpListData.ts';
-import getInterestList from '../../apis/popup/getInterestList.ts'; // 업데이트된 타입을 import
-import {setInitialInterests} from '../../redux/slices/interestSlice'; // Redux slice import
+import getInterestList from '../../apis/popup/getInterestList.ts';
+import {setInitialInterests} from '../../redux/slices/interestSlice';
 
 interface InterestListState {
   loading: boolean;
@@ -26,10 +26,9 @@ const useGetInterestList = () => {
     try {
       const response = await getInterestList();
       if (response.success) {
-        // Redux 상태에 관심 목록 저장
         const initialInterests = response.data!.reduce(
           (acc: any, item: any) => {
-            acc[item.id] = true; // 관심 팝업으로 표시
+            acc[item.id] = true;
             return acc;
           },
           {},

@@ -59,6 +59,7 @@ import ProfileEditOptions from './options/ProfileEditOptions.tsx';
 import DeleteCompleteScreen from '../pages/DeleteCompleteScreen.tsx';
 import BlockScreen from '../pages/report/BlockScreen.tsx';
 import BlockOptions from './options/BlockOptions.tsx';
+import FindResultScreen from '../pages/find/FindResultScreen.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -82,11 +83,6 @@ function AppNavigator() {
         name="MainTabNavigator"
         component={MainTabNavigator}
         options={DefaultNoHeaderOptions}
-      />
-      <Stack.Screen
-        name="findInputScreen"
-        component={FindInputScreen}
-        options={{headerShown: false}}
       />
       <Stack.Screen
         name="Entry"
@@ -192,6 +188,16 @@ function AppNavigator() {
         name="PasswordChange"
         component={PasswordChangeScreen}
         options={PasswordChangeOptions}
+      />
+      <Stack.Screen
+        name="FindInput"
+        component={FindInputScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="FindResult"
+        component={FindResultScreen}
+        options={{headerShown: false}}
       />
       <Stack.Screen name="MyReviewsList" component={MyReviewsList} />
       <Stack.Screen

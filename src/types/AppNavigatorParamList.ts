@@ -1,4 +1,5 @@
 export type AppNavigatorParamList = {
+  FindResult: {keyword: string};
   Block: {id: number};
   Report: {id: number; isReview?: boolean; reviewId?: number};
   PopUpEditRequest: {name: string; id: number};
@@ -34,7 +35,7 @@ export type AppNavigatorParamList = {
   Alarm: undefined;
   AlarmSetting: undefined;
   NoticeDetail: {nid: number};
-  findInputScreen: undefined;
+  FindInput: undefined;
   FAQForm: undefined;
   PasswordCheck: undefined;
   MyReviewsList: undefined;

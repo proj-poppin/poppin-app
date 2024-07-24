@@ -94,7 +94,8 @@ function ReviewWriteScreen() {
         dispatch(setReviewSubmitted(true));
       }
     } else if (response.error) {
-      console.error('Review submission error:', response.error.message);
+      console.log('Review submission error:', response.error.message);
+      // console.error('Review submission error:', response.error.message);
     }
   };
 

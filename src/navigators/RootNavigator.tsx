@@ -35,6 +35,8 @@ const RootNavigator = () => {
         await PushNotificationIOS.requestPermissions();
         const token = await messaging().getToken();
         const deviceId = await DeviceInfo.getUniqueId();
+        console.log('🙏🏻🙏🏻🙏🏻🙏🏻🙏🏻🙏🏻🙏🏻🙏🏻🙏🏻🙏🏻device id:', deviceId);
+        console.log('🙏🏻🙏🏻🙏🏻🙏🏻🙏🏻🙏🏻🙏🏻🙏🏻🙏🏻🙏🏻푸시 토큰:', token);
         const response = await registerPushToken({
           fcmToken: token,
           device: Platform.OS,
@@ -45,7 +47,8 @@ const RootNavigator = () => {
           await EncryptedStorage.setItem('pushToken', token);
           console.log('푸시 토큰 등록에 성공했습니다.');
         } else {
-          console.error(`푸시 토큰 등록에 실패했습니다. ${response?.error}`);
+          console.log(`푸시 토큰 등록에 실패했습니다. ${response?.error}`);
+          // console.error(`푸시 토큰 등록에 실패했습니다. ${response?.error}`);
         }
       } catch (error) {
         console.log('푸시 토큰 등록에 실패했습니다 ㅠㅠ');

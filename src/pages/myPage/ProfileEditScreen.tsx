@@ -157,7 +157,8 @@ function MyProfileEditScreen() {
           if (response.success) {
             dispatch(setProfileImageUrl({userImageUrl: null}));
           } else {
-            console.error('Failed to delete profile image:', response.error);
+            console.log('Failed to delete profile image:', response.error);
+            // console.error('Failed to delete profile image:', response.error);
           }
         } else if (buttonIndex === 1) {
           openGallery();

@@ -20,7 +20,7 @@ interface InterestPopUpCardProps {
   open_date: string;
   status: 'TERMINATED' | 'OPERATING' | 'NOTYET';
   id: number;
-  showToast: (message: string) => void; // Add showToast prop
+  showToast: (message: string) => void;
 }
 
 const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
@@ -30,7 +30,7 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
   open_date,
   status,
   id,
-  showToast, // Destructure showToast prop
+  showToast,
 }) => {
   const {deleteInterest, loading: deleteLoading} = useDeleteInterestPopUp();
   const {addInterest, loading: addLoading} = useAddInterestPopUp();
@@ -39,14 +39,19 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
   const isInterested = interestState[id] || false;
 
   const handleToggleInterest = async () => {
-    if (isInterested) {
-      await deleteInterest(id);
-      showToast('관심팝업에서 삭제되었어요!'); // Show toast message
-      dispatch(setInterest({id, isInterested: false}));
-    } else {
-      await addInterest(id);
-      showToast('관심팝업에 저장되었어요!'); // Show toast message
-      dispatch(setInterest({id, isInterested: true}));
+    try {
+      if (isInterested) {
+        await deleteInterest(id);
+        showToast('관심팝업에서 삭제되었어요!');
+        dispatch(setInterest({id, isInterested: false}));
+      } else {
+        await addInterest(id);
+        showToast('관심팝업에 저장되었어요!');
+        dispatch(setInterest({id, isInterested: true}));
+      }
+    } catch (error) {
+      // console.error('Error toggling interest:', error);
+      showToast('오류가 발생했어요. 다시 시도해주세요.');
     }
   };
 

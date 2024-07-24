@@ -118,8 +118,9 @@ function HomeScreen({navigation, route}) {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const navigateToFind = order => {
-    navigation.navigate('Find', {order});
+  const navigateToFind = (status, order) => {
+    navigation.navigate('Find', {status, order});
+    console.log('navigateToFind:', status, order);
   };
 
   useEffect(() => {
@@ -267,7 +268,7 @@ function HomeScreen({navigation, route}) {
             <View style={styles.middleContainer}>
               <Text style={Text18B.text}>새로 오픈</Text>
               <View style={styles.textAndQuestionContainer}>
-                <Pressable onPress={() => navigateToFind('OPEN')}>
+                <Pressable onPress={() => navigateToFind('OPERATING', 'OPEN')}>
                   <Text style={[Text14R.text, {color: globalColors.black}]}>
                     전체 보기
                   </Text>
@@ -304,7 +305,7 @@ function HomeScreen({navigation, route}) {
             <View style={styles.middleContainer}>
               <Text style={Text18B.text}>종료 임박</Text>
               <View style={styles.textAndQuestionContainer}>
-                <Pressable onPress={() => navigateToFind('CLOSE')}>
+                <Pressable onPress={() => navigateToFind('OPERATING', 'CLOSE')}>
                   <Text style={[Text14R.text, {color: globalColors.black}]}>
                     전체 보기
                   </Text>

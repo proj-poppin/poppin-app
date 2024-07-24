@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
   ScrollView,
   RefreshControl,
   Pressable,
@@ -19,7 +18,8 @@ import Text18B from '../../styles/texts/body_large/Text18B';
 import useGetInterestList from '../../hooks/popUpList/useGetInterestList.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import Animated, {FadeInDown} from 'react-native-reanimated';
-import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx'; // Import Animated and FadeInDown
+import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
+import NoSavedPopupsComponent from './NoSavedPopupComponent.tsx';
 
 interface ListViewProps {
   popUpTypes: string[];
@@ -36,7 +36,8 @@ interface ListViewProps {
     status: 'TERMINATED' | 'OPERATING' | 'NOTYET';
   }[];
   onRefresh: () => void;
-  showToast: (message: string) => void; // Add showToast prop
+  showToast: (message: string) => void;
+  isFiltering?: boolean;
 }
 
 const ListView: React.FC<ListViewProps> = ({
@@ -47,7 +48,8 @@ const ListView: React.FC<ListViewProps> = ({
   setSelectedOrderType,
   sortedInterestList,
   onRefresh,
-  showToast, // Destructure showToast prop
+  showToast,
+  isFiltering = false,
 }) => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -75,6 +77,10 @@ const ListView: React.FC<ListViewProps> = ({
     }
   }, [isFocused, refetch]);
 
+  const handleFindNavigation = (status: string) => {
+    navigation.navigate('Find', {status});
+  };
+
   return (
     <View style={{flex: 1}}>
       <View style={styles.dropdownContainer}>
@@ -85,14 +91,14 @@ const ListView: React.FC<ListViewProps> = ({
           iconComponent={<DownBlackSvg />}
           buttonTextAfterSelection={selectedItem => selectedItem}
           buttonTextStyle={{color: globalColors.font}}
-          defaultValue="운영 중인 팝업" // Set the default value
+          defaultValue="운영 중인 팝업"
         />
         <CustomSelectDropdown
           data={orderTypes.map(type => ({label: type}))}
           onSelect={setSelectedOrderType}
           buttonWidth={120}
           iconComponent={<OrderSvg />}
-          defaultValue="오픈일순" // Set the default value
+          defaultValue="오픈일순"
           buttonTextAfterSelection={selectedItem => selectedItem}
           buttonTextStyle={{color: globalColors.font}}
         />
@@ -105,45 +111,60 @@ const ListView: React.FC<ListViewProps> = ({
         ]}>
         {currentDate}
       </Text>
-      <DividerLine height={1} />
+      {!isFiltering && <DividerLine height={1} />}
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }>
-        <DismissKeyboardView>
-          {sortedInterestList?.length > 0 ? (
-            sortedInterestList.map((item, index) => (
-              <Animated.View
-                key={item.id}
-                entering={FadeInDown.delay(index * 100)} // Add delay to each item
-              >
-                <Pressable
-                  onPress={() =>
-                    navigation.navigate('PopUpDetail', {
-                      id: item.id,
-                      isLoggedIn: isLoggedIn,
-                    })
-                  }>
-                  <InterestPopUpCard
-                    key={item.id}
-                    image_url={item.image_url}
-                    name={item.name}
-                    close_date={item.close_date}
-                    open_date={item.open_date}
-                    status={item.status}
-                    id={item.id}
-                    isInterested={true}
-                    showToast={showToast} // Pass showToast prop
-                  />
-                </Pressable>
-              </Animated.View>
-            ))
-          ) : (
-            <Text style={styles.noItemsText}>조건에 맞는 팝업이 없습니다.</Text>
-          )}
-        </DismissKeyboardView>
+        {sortedInterestList?.length > 0 ? (
+          sortedInterestList.map((item, index) => (
+            <Animated.View
+              key={item.id}
+              entering={FadeInDown.delay(index * 100)}>
+              <Pressable
+                onPress={() =>
+                  navigation.navigate('PopUpDetail', {
+                    id: item.id,
+                    isLoggedIn: isLoggedIn,
+                  })
+                }>
+                <InterestPopUpCard
+                  key={item.id}
+                  image_url={item.image_url}
+                  name={item.name}
+                  close_date={item.close_date}
+                  open_date={item.open_date}
+                  status={item.status}
+                  id={item.id}
+                  showToast={showToast}
+                />
+              </Pressable>
+            </Animated.View>
+          ))
+        ) : (
+          <NoSavedPopupsComponent
+            text={
+              selectedPopUpType === '오픈 예정인 팝업'
+                ? '저장된 오픈 예정인 팝업이 없어요🥲\n관심있는 팝업을 저장해 보세요.'
+                : selectedPopUpType === '운영 중인 팝업'
+                ? '저장된 운영 중인 팝업이 없어요🥲\n관심있는 팝업을 저장해 보세요.'
+                : '저장된 운영 종료 팝업이 없어요🥲\n관심있는 팝업을 저장해 보세요.'
+            }
+            buttonText="저장하러 가기"
+            onPress={() =>
+              handleFindNavigation(
+                selectedPopUpType === '오픈 예정인 팝업'
+                  ? 'NOTYET'
+                  : selectedPopUpType === '운영 중인 팝업'
+                  ? 'OPERATING'
+                  : 'TERMINATED',
+              )
+            }
+            isFiltering={isFiltering}
+          />
+        )}
       </ScrollView>
-      <DividerLine height={3} />
+      {!isFiltering && <DividerLine height={3} />}
     </View>
   );
 };

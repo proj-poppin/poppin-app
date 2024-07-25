@@ -1,3 +1,4 @@
+import ViewSvg from '../../assets/icons/view.svg';
 import React, {useState} from 'react';
 import {
   View,
@@ -38,6 +39,7 @@ const FindCard = ({item, status, showToast}: any) => {
   const {addInterest, loading: addLoading} = useAddInterestPopUp();
   const {deleteInterest, loading: deleteLoading} = useDeleteInterestPopUp();
   const {refetch: refetchInterestList} = useGetInterestList();
+  const [viewCnt, setViewCnt] = useState(item.viewCnt); // Manage view count state
   const formattedTitle =
     item.name.length > 40 ? `${item.name.substring(0, 40)}...` : item.name;
   const onRefresh = useSelector((state: RootState) => state.refresh.onRefresh);
@@ -74,15 +76,24 @@ const FindCard = ({item, status, showToast}: any) => {
     setLoginModalVisible(false);
   };
 
+  const handlePress = () => {
+    // Increment the view count optimistically
+    const updatedViewCnt = viewCnt + 1;
+
+    // Update the local state with the incremented view count
+    setViewCnt(updatedViewCnt);
+
+    // Navigate to the detail screen with the updated view count
+    navigation.navigate('PopUpDetail', {
+      id: item.id,
+      isLoggedIn: isLoggedIn,
+      initialViewCnt: updatedViewCnt, // Pass the updated view count to the detail screen
+    });
+  };
+
   return (
     <>
-      <Pressable
-        onPress={() =>
-          navigation.navigate('PopUpDetail', {
-            id: item.id,
-            isLoggedIn: isLoggedIn,
-          })
-        }>
+      <Pressable onPress={handlePress}>
         <View style={styles.cardContainer}>
           <Spinner
             textContent={'로딩중...'}
@@ -128,11 +139,18 @@ const FindCard = ({item, status, showToast}: any) => {
               </Pressable>
             </View>
             <Text style={[styles.location]}>{item.address}</Text>
-            <Text style={[Text12B.text, styles.date]}>
-              {item.openDate}~{item.closeDate}
-            </Text>
+            <View style={styles.dateAndViewContainer}>
+              <Text style={[Text12B.text, styles.date]}>
+                {item.openDate}~{item.closeDate}
+              </Text>
+              <View style={styles.viewContainer}>
+                <ViewSvg />
+                <Text style={styles.viewText}>{viewCnt}</Text>
+              </View>
+            </View>
             <ScrollView
               horizontal
+              scrollEnabled={true}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.tagsContainer}>
               {Object.entries(item.prefered).map(([key, value]) => {
@@ -195,7 +213,6 @@ const FindCard = ({item, status, showToast}: any) => {
     </>
   );
 };
-
 const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: 'row',
@@ -243,10 +260,24 @@ const styles = StyleSheet.create({
     color: globalColors.font,
     height: 30,
   },
+  dateAndViewContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // Adjust this if necessary
+    marginBottom: 10,
+  },
   date: {
     color: globalColors.font,
     height: 15,
-    marginBottom: 10,
+  },
+  viewContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 10, // Adjust this if necessary
+  },
+  viewText: {
+    color: globalColors.font,
+    marginLeft: 5,
   },
   tagsWrapper: {
     width: '100%',

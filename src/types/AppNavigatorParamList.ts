@@ -1,4 +1,5 @@
 export type AppNavigatorParamList = {
+  BeginnerTips: undefined;
   FindResult: {keyword: string};
   Block: {id: number};
   Report: {id: number; isReview?: boolean; reviewId?: number};

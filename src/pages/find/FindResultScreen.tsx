@@ -148,12 +148,7 @@ function FindResultScreen({navigation, route}: FindResultScreenProps) {
                         handleTabPress(route.name);
                         navigation.navigate(route.name);
                       }}>
-                      <Text
-                        style={
-                          selectedTab === route.name
-                            ? styles.activeTab
-                            : styles.inactiveTab
-                        }>
+                      <Text style={styles.activeTab}>
                         {route.name === '운영 중'
                           ? '운영 중'
                           : route.name === '오픈 예정'
@@ -170,7 +165,7 @@ function FindResultScreen({navigation, route}: FindResultScreenProps) {
                   isSetting={isSettingApplied}
                 />
                 <CustomSelectDropdown
-                  style={{width: 120}}
+                  style={{width: 135}}
                   data={FIND_ORDER_TYPES}
                   onSelect={(selectedItem: any, index: any) =>
                     handleOrderSelect(index)

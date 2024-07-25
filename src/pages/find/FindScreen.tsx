@@ -19,6 +19,7 @@ import ToastComponent from '../../components/atoms/toast/ToastComponent.tsx';
 import {POP_UP_TYPES, TFilter} from '../../components/findPopup/constants';
 import useBackdrop from '../../hooks/common/useBackDrop.tsx';
 import {useReducedMotion} from 'react-native-reanimated';
+import {useFocusEffect} from '@react-navigation/native';
 
 export const FIND_ORDER_TYPES = [
   {label: '최근 오픈 순', value: 'OPEN'},
@@ -77,18 +78,50 @@ function FindScreen({navigation, route}: FindScreenProps) {
     );
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      if (route.params) {
+        const {status, order, searchText} = route.params;
+        if (status) {
+          setSelectedTab(
+            status === 'OPERATING'
+              ? '운영 중'
+              : status === 'NOTYET'
+              ? '오픈 예정'
+              : '운영 종료',
+          );
+        }
+        if (order) {
+          setSelectedOrder(order);
+        }
+        if (searchText) {
+          setSearchKeyword(searchText);
+        }
+      }
+    }, [route]),
+  );
+
   useEffect(() => {
-    if (route.params) {
-      const {searchText, order} = route.params;
-      if (searchText) {
-        setSearchKeyword(searchText);
+    if (route.params?.shouldRefresh) {
+      const {status, order, searchText} = route.params;
+      if (status) {
+        setSelectedTab(
+          status === 'OPERATING'
+            ? '운영 중'
+            : status === 'NOTYET'
+            ? '오픈 예정'
+            : '운영 종료',
+        );
       }
       if (order) {
         setSelectedOrder(order);
-        setSearchKeyword('');
       }
+      if (searchText) {
+        setSearchKeyword(searchText);
+      }
+      navigation.setParams({shouldRefresh: false});
     }
-  }, [route]);
+  }, [route, navigation]);
 
   useEffect(() => {
     const isSelected = selectedTags.some(tag => tag.selected);
@@ -145,7 +178,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
         </View>
       )}
       <Tab.Navigator
-        initialRouteName={'운영 중'}
+        initialRouteName={selectedTab}
         tabBar={({state, navigation}) => {
           return (
             <View style={styles.tabBarContainer}>
@@ -165,12 +198,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
                         handleTabPress(route.name);
                         navigation.navigate(route.name);
                       }}>
-                      <Text
-                        style={
-                          selectedTab === route.name
-                            ? styles.activeTab
-                            : styles.inactiveTab
-                        }>
+                      <Text style={styles.activeTab}>
                         {route.name === '운영 중'
                           ? '운영 중'
                           : route.name === '오픈 예정'
@@ -187,7 +215,7 @@ function FindScreen({navigation, route}: FindScreenProps) {
                   isSetting={isSettingApplied}
                 />
                 <CustomSelectDropdown
-                  style={{width: 120}}
+                  style={{width: 135}}
                   data={FIND_ORDER_TYPES}
                   onSelect={(selectedItem: any, index: any) =>
                     handleOrderSelect(index)

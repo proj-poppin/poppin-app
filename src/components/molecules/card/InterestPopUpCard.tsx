@@ -12,6 +12,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/stores/reducer.ts';
 import {setInterest} from '../../../redux/slices/interestSlice.ts';
+import FastImage from 'react-native-fast-image';
 
 interface InterestPopUpCardProps {
   image_url: string;
@@ -67,7 +68,10 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
         textStyle={{color: '#FFF'}}
       />
       <View style={styles.svgContainer}>
-        <Image source={{uri: image_url}} style={{width: 140, height: 140}} />
+        <FastImage
+          source={{uri: image_url}}
+          style={{width: 140, height: 140}}
+        />
         {status === 'TERMINATED' ? (
           <View style={styles.closeWrapper}>
             <Text style={styles.closeText}>운영 종료</Text>

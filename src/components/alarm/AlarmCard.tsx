@@ -5,6 +5,7 @@ import {AppNavigatorParamList} from '../../types/AppNavigatorParamList';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
+import FastImage from 'react-native-fast-image';
 
 type NoticeDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
@@ -59,7 +60,7 @@ const AlarmCard: React.FC<AlarmCardProps> = ({
         ]}>
         <View style={styles.leftWrapper}>
           <View style={styles.imgWrapper}>
-            <Image
+            <FastImage
               source={{uri: iconUrl}}
               style={{width: 28, height: 28, borderRadius: 100}}
             />

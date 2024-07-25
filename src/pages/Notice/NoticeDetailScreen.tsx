@@ -4,6 +4,7 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import useGetNoticeDetail from '../../hooks/alarm/useGetNoticeDetail.ts';
 import DividerLine from '../../components/DividerLine.tsx';
 import globalColors from '../../styles/color/globalColors.ts';
+import FastImage from 'react-native-fast-image';
 
 type ParamList = {
   NoticeDetail: {
@@ -25,7 +26,7 @@ function NoticeDetailScreen() {
       <Text style={styles.body}>{noticeDetail?.body}</Text>
       <Text style={styles.time}>{noticeDetail?.createdAt}</Text>
       <View>
-        <Image
+        <FastImage
           source={{uri: noticeDetail?.posterUrl}}
           style={styles.noticeImg}
         />

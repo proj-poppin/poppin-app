@@ -15,6 +15,7 @@ import UnderlinedTextButton from '../../UnderlineTextButton.tsx';
 import SvgWithNameBoxLabel from '../../SvgWithNameBoxLabel.tsx';
 import Text16M from '../../../styles/texts/body_medium_large/Text16M.ts';
 import globalColors from '../../../styles/color/globalColors.ts';
+import FastImage from 'react-native-fast-image';
 
 const ReviewSection = ({reviews, handleRecommendPress}) => (
   <View>
@@ -44,7 +45,11 @@ const ReviewSection = ({reviews, handleRecommendPress}) => (
         </View>
         <ScrollView horizontal style={styles.imageScroll}>
           {review.imageUrls.map((url, index) => (
-            <Image key={index} source={{uri: url}} style={styles.reviewImage} />
+            <FastImage
+              key={index}
+              source={{uri: url}}
+              style={styles.reviewImage}
+            />
           ))}
         </ScrollView>
         <Text style={styles.reviewText}>{review.text}</Text>

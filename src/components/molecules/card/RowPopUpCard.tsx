@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 // Props type definition
 interface RowPopUpCardProps {
@@ -17,7 +18,7 @@ const RowPopUpCard: React.FC<RowPopUpCardProps> = ({
 }) => {
   return (
     <View style={styles.cardContainer}>
-      <Image source={{uri: imageUrl}} style={styles.image} />
+      <FastImage source={{uri: imageUrl}} style={styles.image} />
       <View style={styles.textContainer}>
         <Text numberOfLines={1} style={styles.name}>
           {name}

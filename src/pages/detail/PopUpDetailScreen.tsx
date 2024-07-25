@@ -71,6 +71,8 @@ import SkipModal from '../../components/SkipModal.tsx';
 import BlockModal from '../../components/BlockModal.tsx';
 import userSlice from '../../redux/slices/user.ts';
 import useBlockPopup from '../../hooks/useBlockPopup.tsx';
+import FastImage from 'react-native-fast-image';
+import {Share} from 'react-native';
 export type PopUpDetailScreenNavigationProp = NativeStackNavigationProp<
   AppNavigatorParamList,
   'PopUpDetail'
@@ -86,7 +88,7 @@ const PopUpDetailScreen = ({route}) => {
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const navigation = useNavigation<PopUpDetailScreenNavigationProp>();
   const [fetchTrigger, setFetchTrigger] = useState(false);
-  let {id, alarmId, name, isAlarm, isLoggedIn} = route.params;
+  let {id, alarmId, name, isAlarm, isLoggedIn, initialViewCnt} = route.params;
   const [reviews, setReviews] = useState<Review[]>([]);
   const reviewSubmitted = useSelector(state => state.reviewSubmitted);
   const {
@@ -192,6 +194,7 @@ const PopUpDetailScreen = ({route}) => {
           );
           console.log('distance⭐️⭐️⭐️⭐️', distance);
           const token = await EncryptedStorage.getItem('pushToken');
+
           if (distance !== null && distance <= 0.75) {
             const response = await addVisitorPopUp(
               detailPopUpData!.id!,
@@ -376,18 +379,14 @@ const PopUpDetailScreen = ({route}) => {
     : reviews;
 
   const handleShare = async () => {
-    if (!isLoggedIn) {
-      openLoginModal('공유하기 위해서는 로그인이 필요합니다.');
-      return;
-    }
     try {
       const response = await KakaoShareLink.sendFeed({
         content: {
           title: detailPopUpData.name,
           imageUrl: firstImageUrl!,
           link: {
-            webUrl: `https://poppin.com/popup/${detailPopUpData.id}`,
-            mobileWebUrl: `https://poppin.com/popup/${detailPopUpData.id}`,
+            webUrl: `https://yourapp.com/popup/${detailPopUpData.id}`,
+            mobileWebUrl: `https://yourapp.com/popup/${detailPopUpData.id}`,
             androidExecutionParams: [
               {key: 'id', value: detailPopUpData.id.toString()},
             ],
@@ -401,8 +400,8 @@ const PopUpDetailScreen = ({route}) => {
           {
             title: '앱에서 보기',
             link: {
-              webUrl: `https://poppin.com/popup/${detailPopUpData.id}`,
-              mobileWebUrl: `https://poppin.com/popup/${detailPopUpData.id}`,
+              webUrl: `https://yourapp.com/popup/${detailPopUpData.id}`,
+              mobileWebUrl: `https://yourapp.com/popup/${detailPopUpData.id}`,
               androidExecutionParams: [
                 {key: 'id', value: detailPopUpData.id.toString()},
               ],
@@ -473,7 +472,10 @@ const PopUpDetailScreen = ({route}) => {
       <>
         <ScrollView style={styles.container}>
           <View style={styles.svgContainer}>
-            <Image source={{uri: firstImageUrl}} style={styles.posterImage} />
+            <FastImage
+              source={{uri: firstImageUrl}}
+              style={styles.posterImage}
+            />
             {detailPopUpData.operationStatus === 'TERMINATED' ? (
               <View style={styles.closeWrapper}>
                 <Text style={[Text24B.text, {color: globalColors.white}]}>
@@ -672,7 +674,7 @@ const PopUpDetailScreen = ({route}) => {
                   <View style={styles.rowBetweenContainer}>
                     <View style={styles.recentReviewHeader}>
                       {review.profileUrl ? (
-                        <Image
+                        <FastImage
                           source={{uri: review.profileUrl}}
                           style={{width: 50, height: 50, borderRadius: 40}}
                         />

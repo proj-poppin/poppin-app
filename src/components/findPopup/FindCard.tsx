@@ -26,6 +26,7 @@ import {setInterest} from '../../redux/slices/interestSlice.ts';
 import useGetInterestList from '../../hooks/popUpList/useGetInterestList.tsx';
 import Text16B from '../../styles/texts/body_medium_large/Text16B.ts';
 import TwoSelectConfirmationModal from '../TwoSelectConfirmationModal.tsx';
+import FastImage from 'react-native-fast-image';
 
 const FindCard = ({item, status, showToast}: any) => {
   const navigation = useNavigation();
@@ -101,7 +102,7 @@ const FindCard = ({item, status, showToast}: any) => {
             textStyle={{color: '#FFF'}}
           />
           <View style={styles.svgContainer}>
-            <Image
+            <FastImage
               source={{uri: item.posterUrl}}
               style={{width: 140, height: 140}}
             />
@@ -143,10 +144,10 @@ const FindCard = ({item, status, showToast}: any) => {
               <Text style={[Text12B.text, styles.date]}>
                 {item.openDate}~{item.closeDate}
               </Text>
-              <View style={styles.viewContainer}>
-                <ViewSvg />
-                <Text style={styles.viewText}>{viewCnt}</Text>
-              </View>
+              {/*<View style={styles.viewContainer}>*/}
+              {/*  <ViewSvg />*/}
+              {/*  <Text style={styles.viewText}>{viewCnt}</Text>*/}
+              {/*</View>*/}
             </View>
             <ScrollView
               horizontal

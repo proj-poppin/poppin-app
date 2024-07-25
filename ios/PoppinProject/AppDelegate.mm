@@ -3,11 +3,11 @@
 #import <React/RCTBundleURLProvider.h>
 #import <RNKakaoLogins.h>
 #import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
-#import <UserNotifications/UserNotifications.h> // Firebase 추가🚨
-#import <RNCPushNotificationIOS.h> // Firebase 추가🚨
-#import <Firebase.h> // Firebase 추가🚨
-#import <FirebaseMessaging.h> // Firebase Messaging 추가🚨
-#import <CodePush/CodePush.h> // CodePush 추가🚨
+#import <UserNotifications/UserNotifications.h> // Firebase 추가
+#import <RNCPushNotificationIOS.h> // Firebase 추가
+#import <Firebase.h> // Firebase 추가
+#import <FirebaseMessaging.h> // Firebase Messaging 추가
+#import <CodePush/CodePush.h> // CodePush 추가
 #import <React/RCTLinkingManager.h>
 
 @implementation AppDelegate
@@ -15,7 +15,7 @@
 // Required for the register event.
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
   [RNCPushNotificationIOS didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
-  // APNS 토큰을 Firebase에 설정 // 추가🚨
+  // APNS 토큰을 Firebase에 설정
   [FIRMessaging messaging].APNSToken = deviceToken;
 }
 
@@ -35,7 +35,7 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-  [FIRApp configure]; // Firebase 초기화 // 추가🚨
+  [FIRApp configure]; // Firebase 초기화
   self.moduleName = @"PoppinProject";
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
@@ -47,7 +47,7 @@
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
 
-  // 푸시 알림 권한 요청 추가🚨
+  // 푸시 알림 권한 요청
   UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
   [center requestAuthorizationWithOptions:authOptions completionHandler:^(BOOL granted, NSError * _Nullable error) {
     // Handle error if needed
@@ -55,7 +55,7 @@
 
   [application registerForRemoteNotifications];
 
-  // Firebase 초기화 완료 후 토큰 가져오기 추가🚨💡
+  // Firebase 초기화 완료 후 토큰 가져오기
   [[FIRMessaging messaging] tokenWithCompletion:^(NSString *token, NSError *error) {
     if (error != nil) {
       NSLog(@"Error fetching FCM registration token: %@", error);
@@ -65,7 +65,7 @@
     }
   }];
 
-  return YES; // 수정
+  return YES;
 }
 
 - (void)messaging:(FIRMessaging *)messaging didReceiveRegistrationToken:(NSString *)fcmToken {
@@ -76,13 +76,12 @@
   completionHandler(UNNotificationPresentationOptionSound | UNNotificationPresentationOptionAlert | UNNotificationPresentationOptionBadge);
 }
 
-- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
-{
-  #if DEBUG
-    return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
-  #else
-    return [CodePush bundleURL];
-  #endif
+- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge {
+#if DEBUG
+  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
+#else
+  return [CodePush bundleURL];
+#endif
 }
 
 - (NSURL *)getBundleURL {
@@ -93,10 +92,10 @@
 #endif
 }
 
-- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
   // Naver 로그인 처리
   if ([url.scheme isEqualToString:@"navertest"]) {
-    return [[NaverThirdPartyLoginConnection getSharedInstance] application:app openURL:url options:options];
+    return [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
   }
 
   // Kakao 로그인 처리
@@ -104,7 +103,8 @@
     return [RNKakaoLogins handleOpenUrl:url];
   }
 
-  return [RCTLinkingManager application:app openURL:url options:options];
+  // React Native LinkingManager 처리
+  return [RCTLinkingManager application:application openURL:url options:options];
 }
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler {

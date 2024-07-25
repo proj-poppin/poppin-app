@@ -17,7 +17,7 @@
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.2.2</string> <!-- 버전 번호를 업데이트 -->
+    <string>1.2.3</string> <!-- 버전 번호를 업데이트 -->
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleURLTypes</key>
@@ -47,12 +47,13 @@
             <string>com.bubble.poppinproject</string>
             <key>CFBundleURLSchemes</key>
             <array>
+                <string>poppin</string>
                 <string>com.googleusercontent.apps.807321583109-ga5ufm8ce8kfnf7nn12ucse59ihm0jj7</string>
             </array>
         </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>2</string> <!-- 빌드 번호를 업데이트 -->
+    <string>3</string> <!-- 빌드 번호를 업데이트 -->
     <key>FirebaseAppDelegateProxyEnabled</key>
     <true/>
     <key>ITSAppUsesNonExemptEncryption</key>

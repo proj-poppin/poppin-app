@@ -15,10 +15,11 @@ const ProgressBarLayout = ({
   children,
   isNextDisabled,
   isCompleteDisabled,
+  isTabNeed = true, // 디폴트 값을 true로 설정
 }) => {
   return (
     <View style={[{flex: 1}]}>
-      <ProgressBarComponent step={step} />
+      {isTabNeed && <ProgressBarComponent step={step} />}
       <ScrollView style={styles.contentContainer}>{children}</ScrollView>
       <View style={styles.buttonContainer}>
         {step === 1 && (

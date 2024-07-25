@@ -84,6 +84,7 @@ function FindInputScreen({navigation}: any) {
           onChangeText={onChangeText}
           value={text}
           placeholder="텍스트를 입력하세요."
+          placeholderTextColor={globalColors.font}
         />
         <Pressable style={styles.searchIcon} onPress={handleSubmit}>
           <SearchInput />

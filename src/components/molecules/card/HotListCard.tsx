@@ -17,7 +17,7 @@ const HotListCard: React.FC<HotListCardProps> = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  console.log('hello is logged in', isLoggedIn);
+  // console.log('hello is logged in', isLoggedIn);
 
   useEffect(() => {
     const interval = setInterval(() => {

@@ -17,7 +17,6 @@ import RightSvg from '../../assets/icons/smallright.svg';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import useGetHotList from '../../hooks/popUpList/useGetHotList.tsx';
 import useGetNewList from '../../hooks/popUpList/useGetNewList.tsx';
-import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import RowPopUpCard from '../../components/molecules/card/RowPopUpCard.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import UpSvg from '../../assets/icons/up.svg';
@@ -243,14 +242,14 @@ function HomeScreen({navigation, route}) {
 
             <View style={styles.middleContainer}>
               <Text style={Text18B.text}>새로 오픈</Text>
-              <View style={styles.textAndQuestionContainer}>
-                <Pressable onPress={() => navigateToFind('OPERATING', 'OPEN')}>
+              <Pressable onPress={() => navigateToFind('OPERATING', 'OPEN')}>
+                <View style={styles.textAndQuestionContainer}>
                   <Text style={[Text14M.text, {color: globalColors.stroke2}]}>
                     전체 보기
                   </Text>
-                </Pressable>
-                <RightSvg style={{paddingLeft: 20}} />
-              </View>
+                  <RightSvg style={{paddingLeft: 20}} />
+                </View>
+              </Pressable>
             </View>
             <ScrollView
               horizontal={true}
@@ -280,14 +279,14 @@ function HomeScreen({navigation, route}) {
 
             <View style={styles.middleContainer}>
               <Text style={Text18B.text}>종료 임박</Text>
-              <View style={styles.textAndQuestionContainer}>
-                <Pressable onPress={() => navigateToFind('OPERATING', 'CLOSE')}>
+              <Pressable onPress={() => navigateToFind('OPERATING', 'CLOSE')}>
+                <View style={styles.textAndQuestionContainer}>
                   <Text style={[Text14M.text, {color: globalColors.stroke2}]}>
                     전체 보기
                   </Text>
-                </Pressable>
-                <RightSvg style={{paddingLeft: 20}} />
-              </View>
+                  <RightSvg style={{paddingLeft: 20}} />
+                </View>
+              </Pressable>
             </View>
             <ScrollView
               horizontal={true}
@@ -360,6 +359,7 @@ const styles = StyleSheet.create({
   noticeAbsoluteContainer: {
     position: 'absolute',
     shadowOpacity: 0.1,
+    shadowColor: 'black',
     right: -200,
     top: -30,
     zIndex: 1,

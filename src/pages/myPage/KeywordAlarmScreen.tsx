@@ -52,6 +52,7 @@ function KeywordAlarmScreen() {
           <TextInput
             style={styles.input}
             placeholder="텍스트를 입력하세요."
+            placeholderTextColor={globalColors.font}
             value={keyword}
             onChangeText={setKeyword}
           />

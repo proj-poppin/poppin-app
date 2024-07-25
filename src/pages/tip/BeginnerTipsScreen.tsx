@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Image,
-  Dimensions,
-  View,
-  Text,
-} from 'react-native';
+import {StyleSheet, Dimensions, View} from 'react-native';
 import TipOrderHeader from '../../components/organisms/header/TipHeader.tsx';
 import TipProgressBarLayout from './TipProgressBarLayout.tsx';
 import Tip1Png from '../../assets/png/tip1.png';

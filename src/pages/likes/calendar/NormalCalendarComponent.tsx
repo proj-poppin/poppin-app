@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import {View} from 'react-native';
 import {CalendarList, DateData} from 'react-native-calendars';
 import globalColors from '../../../styles/color/globalColors.ts';
-import {MarkedDates} from 'react-native-calendars/src/types';
 import HeaderTitle from './HeaderTitle.tsx';
 import {normalCalendarTheme} from './calendarUtils.ts';
 import XDate from 'xdate';

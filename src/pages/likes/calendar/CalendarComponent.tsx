@@ -1,5 +1,12 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {View, StyleSheet, Text, FlatList, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import {BottomSheetModal, BottomSheetView} from '@gorhom/bottom-sheet';
 import globalColors from '../../../styles/color/globalColors.ts';
 import {GetInterestPopUpListResponse} from '../../../types/PopUpListData.ts';
@@ -56,6 +63,7 @@ const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({
   const [selDate, setSelDate] = useState<DateData>(createTodayDateData());
   const [markedDates, setMarkedDates] = useState<MarkedDates>({});
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [calendarType, setCalendarType] = useState<CalendarType>(
     CalendarType.NORMAL,
   );
@@ -106,6 +114,11 @@ const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({
 
   return (
     <View style={{flex: 1}}>
+      {isLoading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color={globalColors.blue} />
+        </View>
+      )}
       {calendarType === CalendarType.NORMAL ? (
         <NormalCalendarComponent
           selDate={selDate}
@@ -133,7 +146,7 @@ const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({
           onRefresh={onRefresh}
         />
       )}
-      <View style={{position: 'absolute', bottom: '50%'}}>
+      <View style={{position: 'absolute', bottom: '0%', width: '100%'}}>
         <DateTimePickerModal
           date={createDate(
             bottomModalDateRef.current.year,
@@ -194,8 +207,10 @@ const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({
                   style={{flex: 1, height: 42}}
                   onPress={() => {
                     setIsDateTimePickerVisible(false);
+                    setIsLoading(true);
                     setSelDate(bottomModalDateRef.current);
                     setMarkedDates(createMarkedDates());
+                    setIsLoading(false);
                   }}>
                   <Text style={styles.bottomModalButtonTextConfirm}>확인</Text>
                 </TouchableOpacity>
@@ -207,6 +222,16 @@ const CalendarComponent: React.FC<LikeCalendarComponentProps> = ({
           display={'spinner'}
           mode={'date'}
           isVisible={isDateTimePickerVisible}
+          customStyles={{
+            dateInput: {
+              backgroundColor: globalColors.white,
+            },
+            datePicker: {
+              backgroundColor: globalColors.white,
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+            },
+          }}
         />
       </View>
 
@@ -294,6 +319,11 @@ const styles = StyleSheet.create({
     padding: 12,
     textAlign: 'center',
   },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
-
 export default CalendarComponent;

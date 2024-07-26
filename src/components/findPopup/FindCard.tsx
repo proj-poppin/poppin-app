@@ -51,7 +51,8 @@ const FindCard = ({item, status, showToast}: any) => {
     return Math.ceil(timeDifference / (1000 * 3600 * 24));
   };
 
-  const remainingDays = calculateRemainingDays(item.closeDate);
+  const remainingCloseDate = calculateRemainingDays(item.closeDate);
+  const remainingOpenDate = calculateRemainingDays(item.openDate);
 
   const handleToggleInterest = async () => {
     if (!isLoggedIn) {
@@ -114,11 +115,15 @@ const FindCard = ({item, status, showToast}: any) => {
               </View>
             ) : status === 'NOTYET' ? (
               <View style={styles.deadlineWrapper}>
-                <Text style={styles.deadlineText}>오픈 D-{remainingDays}</Text>
+                <Text style={styles.deadlineText}>
+                  오픈 D-{remainingOpenDate}
+                </Text>
               </View>
             ) : (
               <View style={styles.deadlineWrapper}>
-                <Text style={styles.deadlineText}>종료 D-{remainingDays}</Text>
+                <Text style={styles.deadlineText}>
+                  종료 D-{remainingCloseDate}
+                </Text>
               </View>
             )}
           </View>
@@ -244,7 +249,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   titleContainer: {
-    width: '90%',
+    width: '93%',
   },
   starIcon: {
     position: 'absolute',

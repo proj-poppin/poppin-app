@@ -93,11 +93,7 @@ const InterestPopUpCard: React.FC<InterestPopUpCardProps> = ({
             onPress={handleToggleInterest}
             style={styles.starIcon}
             disabled={addLoading || deleteLoading}>
-            {isInterested ? (
-              <StarOnSvg style={styles.starIcon} />
-            ) : (
-              <StarOffSvg style={styles.starIcon} />
-            )}
+            {isInterested ? <StarOnSvg /> : <StarOffSvg />}
           </Pressable>
         </View>
         <Text style={[Text18B.text, styles.title]} numberOfLines={2}>

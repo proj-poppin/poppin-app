@@ -223,9 +223,9 @@ function HomeScreen({navigation, route}) {
                 </View>
                 <Pressable onPress={toggleDropdown}>
                   {isDropdownOpen ? (
-                    <UpSvg style={{paddingLeft: 420}} />
+                    <UpSvg style={{paddingLeft: 435}} />
                   ) : (
-                    <DownSvg style={{paddingLeft: 420}} />
+                    <DownSvg style={{paddingLeft: 435}} />
                   )}
                 </Pressable>
               </View>
@@ -242,14 +242,14 @@ function HomeScreen({navigation, route}) {
 
             <View style={styles.middleContainer}>
               <Text style={Text18B.text}>새로 오픈</Text>
-              <Pressable onPress={() => navigateToFind('OPERATING', 'OPEN')}>
-                <View style={styles.textAndQuestionContainer}>
-                  <Text style={[Text14M.text, {color: globalColors.stroke2}]}>
-                    전체 보기
-                  </Text>
-                  <RightSvg style={{paddingLeft: 20}} />
-                </View>
-              </Pressable>
+              {/*<Pressable onPress={() => navigateToFind('OPERATING', 'OPEN')}>*/}
+              {/*  <View style={styles.textAndQuestionContainer}>*/}
+              {/*    <Text style={[Text14M.text, {color: globalColors.stroke2}]}>*/}
+              {/*      전체 보기*/}
+              {/*    </Text>*/}
+              {/*    <RightSvg style={{paddingLeft: 20}} />*/}
+              {/*  </View>*/}
+              {/*</Pressable>*/}
             </View>
             <ScrollView
               horizontal={true}
@@ -279,14 +279,14 @@ function HomeScreen({navigation, route}) {
 
             <View style={styles.middleContainer}>
               <Text style={Text18B.text}>종료 임박</Text>
-              <Pressable onPress={() => navigateToFind('OPERATING', 'CLOSE')}>
-                <View style={styles.textAndQuestionContainer}>
-                  <Text style={[Text14M.text, {color: globalColors.stroke2}]}>
-                    전체 보기
-                  </Text>
-                  <RightSvg style={{paddingLeft: 20}} />
-                </View>
-              </Pressable>
+              {/*<Pressable onPress={() => navigateToFind('OPERATING', 'CLOSE')}>*/}
+              {/*  <View style={styles.textAndQuestionContainer}>*/}
+              {/*    <Text style={[Text14M.text, {color: globalColors.stroke2}]}>*/}
+              {/*      전체 보기*/}
+              {/*    </Text>*/}
+              {/*    <RightSvg style={{paddingLeft: 20}} />*/}
+              {/*  </View>*/}
+              {/*</Pressable>*/}
             </View>
             <ScrollView
               horizontal={true}
@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
   },
   noticeAbsoluteContainer: {
     position: 'absolute',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowColor: 'black',
     right: -200,
     top: -30,

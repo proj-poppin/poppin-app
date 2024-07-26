@@ -60,6 +60,7 @@ import DeleteCompleteScreen from '../pages/DeleteCompleteScreen.tsx';
 import BlockScreen from '../pages/report/BlockScreen.tsx';
 import BlockOptions from './options/BlockOptions.tsx';
 import FindResultScreen from '../pages/find/FindResultScreen.tsx';
+import BeginnerTipsScreen from '../pages/tip/BeginnerTipsScreen.tsx';
 
 const Stack = createNativeStackNavigator<AppNavigatorParamList>();
 
@@ -83,6 +84,21 @@ function AppNavigator() {
         name="MainTabNavigator"
         component={MainTabNavigator}
         options={DefaultNoHeaderOptions}
+      />
+      <Stack.Screen
+        name="BeginnerTips"
+        component={BeginnerTipsScreen}
+        options={({navigation}) => ({
+          headerShown: true,
+          title: '팝핀 활용 팁',
+          headerLeft: () => (
+            <Pressable
+              onPress={() => navigation.goBack()}
+              style={({pressed}) => ({opacity: pressed ? 0.5 : 1})}>
+              <GoBackSvg />
+            </Pressable>
+          ),
+        })}
       />
       <Stack.Screen
         name="Entry"

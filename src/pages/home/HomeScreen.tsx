@@ -17,7 +17,6 @@ import RightSvg from '../../assets/icons/smallright.svg';
 import Text18B from '../../styles/texts/body_large/Text18B.ts';
 import useGetHotList from '../../hooks/popUpList/useGetHotList.tsx';
 import useGetNewList from '../../hooks/popUpList/useGetNewList.tsx';
-import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import RowPopUpCard from '../../components/molecules/card/RowPopUpCard.tsx';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import UpSvg from '../../assets/icons/up.svg';
@@ -33,6 +32,7 @@ import useGetPreferenceSettingOnce from '../../hooks/usePreferenceSettingOnce.ts
 import useGetUserSetting from '../../hooks/myPage/useGetUserSetting.tsx';
 import Animated, {FadeInDown} from 'react-native-reanimated';
 import {resetPreferenceRefresh} from '../../redux/slices/preferenceRefreshSlice';
+import Text14M from '../../styles/texts/body_medium/Text14M.ts';
 
 function HomeScreen({navigation, route}) {
   const dispatch = useDispatch();
@@ -119,7 +119,7 @@ function HomeScreen({navigation, route}) {
   };
 
   const navigateToFind = (status, order) => {
-    navigation.navigate('Find', {status, order});
+    navigation.navigate('Find', {status, order, shouldRefresh: true});
     console.log('navigateToFind:', status, order);
   };
 
@@ -223,9 +223,9 @@ function HomeScreen({navigation, route}) {
                 </View>
                 <Pressable onPress={toggleDropdown}>
                   {isDropdownOpen ? (
-                    <UpSvg style={{paddingLeft: 420}} />
+                    <UpSvg style={{paddingLeft: 435}} />
                   ) : (
-                    <DownSvg style={{paddingLeft: 420}} />
+                    <DownSvg style={{paddingLeft: 435}} />
                   )}
                 </Pressable>
               </View>
@@ -239,42 +239,17 @@ function HomeScreen({navigation, route}) {
                 isLoggedIn={isLoggedIn}
               />
             )}
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              style={styles.popUpScrollView}>
-              {hotList?.slice(0, 5).map((item, index) => (
-                <Animated.View
-                  key={item.id}
-                  entering={FadeInDown.delay(index * 100)}>
-                  <Pressable
-                    onPress={() =>
-                      navigation.navigate('PopUpDetail', {
-                        id: item.id,
-                        isLoggedIn: isLoggedIn,
-                      })
-                    }>
-                    <RowPopUpCard
-                      id={item.id}
-                      imageUrl={item.image_url}
-                      name={item.name}
-                      introduce={item.introduce}
-                    />
-                  </Pressable>
-                </Animated.View>
-              ))}
-            </ScrollView>
 
             <View style={styles.middleContainer}>
               <Text style={Text18B.text}>새로 오픈</Text>
-              <View style={styles.textAndQuestionContainer}>
-                <Pressable onPress={() => navigateToFind('OPERATING', 'OPEN')}>
-                  <Text style={[Text14R.text, {color: globalColors.black}]}>
-                    전체 보기
-                  </Text>
-                </Pressable>
-                <RightSvg style={{paddingLeft: 20}} />
-              </View>
+              {/*<Pressable onPress={() => navigateToFind('OPERATING', 'OPEN')}>*/}
+              {/*  <View style={styles.textAndQuestionContainer}>*/}
+              {/*    <Text style={[Text14M.text, {color: globalColors.stroke2}]}>*/}
+              {/*      전체 보기*/}
+              {/*    </Text>*/}
+              {/*    <RightSvg style={{paddingLeft: 20}} />*/}
+              {/*  </View>*/}
+              {/*</Pressable>*/}
             </View>
             <ScrollView
               horizontal={true}
@@ -304,14 +279,14 @@ function HomeScreen({navigation, route}) {
 
             <View style={styles.middleContainer}>
               <Text style={Text18B.text}>종료 임박</Text>
-              <View style={styles.textAndQuestionContainer}>
-                <Pressable onPress={() => navigateToFind('OPERATING', 'CLOSE')}>
-                  <Text style={[Text14R.text, {color: globalColors.black}]}>
-                    전체 보기
-                  </Text>
-                </Pressable>
-                <RightSvg style={{paddingLeft: 20}} />
-              </View>
+              {/*<Pressable onPress={() => navigateToFind('OPERATING', 'CLOSE')}>*/}
+              {/*  <View style={styles.textAndQuestionContainer}>*/}
+              {/*    <Text style={[Text14M.text, {color: globalColors.stroke2}]}>*/}
+              {/*      전체 보기*/}
+              {/*    </Text>*/}
+              {/*    <RightSvg style={{paddingLeft: 20}} />*/}
+              {/*  </View>*/}
+              {/*</Pressable>*/}
             </View>
             <ScrollView
               horizontal={true}
@@ -383,7 +358,8 @@ const styles = StyleSheet.create({
   },
   noticeAbsoluteContainer: {
     position: 'absolute',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
+    shadowColor: 'black',
     right: -200,
     top: -30,
     zIndex: 1,

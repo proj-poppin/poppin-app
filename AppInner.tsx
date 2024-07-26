@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {AppState} from 'react-native';
 import codePush from 'react-native-code-push';
-import RootNavigator from './src/navigators/RootNavigator.tsx';
+import RootNavigator from './src/navigators/RootNavigator';
 
 let codePushOptions = {checkFrequency: codePush.CheckFrequency.MANUAL};
 

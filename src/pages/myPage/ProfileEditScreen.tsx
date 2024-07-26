@@ -38,6 +38,7 @@ import {
 import {RootState} from '../../redux/stores/reducer.ts';
 import {requestGalleryPermissions} from '../../utils/function/requestGalleryPermission.ts';
 import useDeleteProfileImage from '../../hooks/myPage/usedeleteProfileImage.tsx';
+import FastImage from 'react-native-fast-image';
 
 type ProfileEditScreenRouteProp = RouteProp<
   AppNavigatorParamList,
@@ -218,7 +219,7 @@ function MyProfileEditScreen() {
     <DismissKeyboardView style={styles.container}>
       <View style={styles.profileContainer}>
         <View style={styles.imageContainer}>
-          <Image
+          <FastImage
             style={styles.image}
             source={profileImage.uri ? profileImage : PoppinCirclePng}
           />

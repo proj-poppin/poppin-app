@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import PoppinSvg from '../../../assets/icons/poppin.svg';
 import AlarmOffSvg from '../../../assets/icons/alarmOff.svg';
@@ -9,6 +9,12 @@ import {EntryScreenNavigationProp} from '../../HomeLoginHeader';
 import useIsLoggedIn from '../../../hooks/auth/useIsLoggedIn.tsx';
 import useGetAlarmStatus from '../../../hooks/alarm/useGetAlarmStatus.ts';
 import TwoSelectConfirmationModal from '../../TwoSelectConfirmationModal.tsx';
+import Animated, {
+  Easing,
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated';
 
 const HomeHeader = () => {
   const [showInfo, setShowInfo] = useState(false);
@@ -16,23 +22,30 @@ const HomeHeader = () => {
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
+  const opacity = useSharedValue(1);
+
   // 알람 빨간점 불러오기
   const {alarmStatus, fetchAlarmStatus} = useGetAlarmStatus();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowInfo(false);
-    }, 4000);
+    setShowInfo(true);
 
-    return () => clearTimeout(timer);
-  }, []);
+    const hideInfoTimeout = setTimeout(() => {
+      opacity.value = withTiming(0, {
+        duration: 2000,
+        easing: Easing.out(Easing.ease),
+      });
+    }, 3000);
 
-  const toggleInfo = () => {
-    setShowInfo(prev => !prev);
-  };
+    return () => clearTimeout(hideInfoTimeout);
+  }, [opacity]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
 
   useFocusEffect(
-    useCallback(() => {
+    React.useCallback(() => {
       fetchAlarmStatus().then();
       return () => {
         // Cleanup if needed
@@ -55,11 +68,15 @@ const HomeHeader = () => {
     setLoginModalVisible(false);
   };
 
+  const handleInfoPress = () => {
+    navigation.navigate('BeginnerTips');
+  };
+
   return (
     <View style={styles.container}>
       <PoppinSvg />
       <View style={styles.iconsContainer}>
-        <Pressable onPress={toggleInfo} style={styles.infoTouchable}>
+        <Pressable onPress={handleInfoPress} style={styles.infoTouchable}>
           <InfoSvg style={{marginRight: 5}} />
         </Pressable>
         <Pressable style={[styles.alarmTouchable]} onPress={handleAlarmPress}>
@@ -74,13 +91,17 @@ const HomeHeader = () => {
                   width: 6,
                   height: 6,
                   borderRadius: 5,
-                  // backgroundColor: 'red',
+                  backgroundColor: 'red',
                 }}
               />
             ) : null}
           </View>
         </Pressable>
-        {showInfo && <HeaderInfoSvg style={styles.headerInfoSvg} />}
+        {showInfo && (
+          <Animated.View style={[styles.headerInfoSvg, animatedStyle]}>
+            <HeaderInfoSvg />
+          </Animated.View>
+        )}
       </View>
       <TwoSelectConfirmationModal
         isVisible={loginModalVisible}

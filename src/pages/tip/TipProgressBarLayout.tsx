@@ -1,12 +1,12 @@
 import React from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
-import CompleteButton from '../components/atoms/button/CompleteButton.tsx';
-import BackMiddleButton from '../components/atoms/button/BackMiddleButton.tsx';
-import NextMiddleButton from '../components/atoms/button/NextMiddleButton.tsx';
-import globalColors from '../styles/color/globalColors.ts';
-import ProgressBarComponent from '../components/atoms/image/ProgressBarComponent.tsx';
+import {View, StyleSheet} from 'react-native';
+import ProgressBarComponent from '../../components/atoms/image/ProgressBarComponent.tsx';
+import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
+import BackMiddleButton from '../../components/atoms/button/BackMiddleButton.tsx';
+import NextMiddleButton from '../../components/atoms/button/NextMiddleButton.tsx';
+import globalColors from '../../styles/color/globalColors.ts';
 
-const ProgressBarLayout = ({
+const TipProgressBarLayout = ({
   step,
   maxStep = 3,
   handleBack,
@@ -20,7 +20,7 @@ const ProgressBarLayout = ({
   return (
     <View style={[{flex: 1}]}>
       {isTabNeed && <ProgressBarComponent step={step} />}
-      <ScrollView style={styles.contentContainer}>{children}</ScrollView>
+      <View style={styles.contentContainer}>{children}</View>
       <View style={styles.buttonContainer}>
         {step === 1 && (
           <CompleteButton
@@ -86,4 +86,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProgressBarLayout;
+export default TipProgressBarLayout;

@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -16,9 +16,9 @@ import InterestPopUpCard from '../../components/molecules/card/InterestPopUpCard
 import CustomSelectDropdown from '../../components/CustomDropDown';
 import Text18B from '../../styles/texts/body_large/Text18B';
 import useGetInterestList from '../../hooks/popUpList/useGetInterestList.tsx';
-import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import Animated, {FadeInDown} from 'react-native-reanimated';
 import useIsLoggedIn from '../../hooks/auth/useIsLoggedIn.tsx';
+import NoSavedPopupsComponentZero from './NoSavedPopupComponentZero.tsx';
 import NoSavedPopupsComponent from './NoSavedPopupComponent.tsx';
 
 interface ListViewProps {
@@ -88,7 +88,7 @@ const ListView: React.FC<ListViewProps> = ({
           data={popUpTypes.map(type => ({label: type}))}
           onSelect={selectedItem => setSelectedPopUpType(selectedItem)}
           buttonWidth={150}
-          iconComponent={<DownBlackSvg />}
+          iconComponent={<DownBlackSvg style={{marginLeft: 10}} />}
           buttonTextAfterSelection={selectedItem => selectedItem}
           buttonTextStyle={{color: globalColors.font}}
           defaultValue="운영 중인 팝업"
@@ -96,21 +96,24 @@ const ListView: React.FC<ListViewProps> = ({
         <CustomSelectDropdown
           data={orderTypes.map(type => ({label: type}))}
           onSelect={setSelectedOrderType}
-          buttonWidth={120}
-          iconComponent={<OrderSvg />}
+          buttonWidth={105}
+          iconComponent={<OrderSvg style={{marginLeft: 5}} />}
           defaultValue="오픈일순"
           buttonTextAfterSelection={selectedItem => selectedItem}
           buttonTextStyle={{color: globalColors.font}}
         />
       </View>
-      <Text
-        style={[
-          Text18B.text,
-          {color: globalColors.font},
-          styles.bodyContainer,
-        ]}>
-        {currentDate}
-      </Text>
+      {sortedInterestList.length > 0 && (
+        <Text
+          style={[
+            Text18B.text,
+            {color: globalColors.font},
+            styles.bodyContainer,
+          ]}>
+          {currentDate}
+        </Text>
+      )}
+      <DividerLine height={2} />
       {!isFiltering && <DividerLine height={1} />}
       <ScrollView
         refreshControl={
@@ -138,9 +141,12 @@ const ListView: React.FC<ListViewProps> = ({
                   id={item.id}
                   showToast={showToast}
                 />
+                <DividerLine height={2} />
               </Pressable>
             </Animated.View>
           ))
+        ) : data?.length === 0 ? (
+          <NoSavedPopupsComponentZero />
         ) : (
           <NoSavedPopupsComponent
             text={

@@ -15,6 +15,7 @@ import PlusSvg from '../assets/icons/plus.svg';
 import ImageDeleteSvg from '../assets/icons/imageDelete.svg';
 import globalColors from '../styles/color/globalColors.ts';
 import {requestGalleryPermissions} from '../utils/function/requestGalleryPermission.ts';
+import FastImage from 'react-native-fast-image';
 
 const ImageContainerRow = ({
   selectedImages,
@@ -56,7 +57,7 @@ const ImageContainerRow = ({
         )}
         {selectedImages.map((image, index) => (
           <View key={index} style={styles.imageContainer}>
-            <Image source={{uri: image.uri}} style={styles.selectedImage} />
+            <FastImage source={{uri: image.uri}} style={styles.selectedImage} />
             <TouchableOpacity
               style={styles.deleteIcon}
               onPress={() => handleRemoveImage(index)}>

@@ -109,27 +109,21 @@ function ReviewWriteScreen() {
   const isOverLimit = characterCount > 200;
   const isReviewValid = characterCount >= 10;
 
-  const renderNameWithLineBreaks = text => {
-    return text.split(' ').map((word, index) => (
-      <Text key={index} style={Text20B.text}>
-        {word} {index < text.split(' ').length - 1 ? ' ' : ''}
-      </Text>
-    ));
-  };
-
   return (
     <DismissKeyboardView style={styles.container}>
       <View style={styles.titleRow}>
         <View style={styles.titleContainer}>
-          <Text style={Text20B.text}>{renderNameWithLineBreaks(name)}</Text>
-        </View>
-        {isVisited ? (
-          <ReviewWriteBadgeAuthSvg style={{height: '80%'}} />
-        ) : (
-          <Text style={[Text14M.text, {color: globalColors.font}]}>
-            일반 후기
+          <Text style={Text20B.text} numberOfLines={2} ellipsizeMode="tail">
+            {name}
           </Text>
-        )}
+        </View>
+        {/*{isVisited ? (*/}
+        {/*  <ReviewWriteBadgeAuthSvg style={{height: '80%'}} />*/}
+        {/*) : (*/}
+        {/*  <Text style={[Text14M.text, {color: globalColors.font}]}>*/}
+        {/*    일반 후기*/}
+        {/*  </Text>*/}
+        {/*)}*/}
       </View>
       <View style={styles.sectionContainer}>
         <Text style={[Text14B.text, {color: globalColors.purple}, {width: 65}]}>
@@ -287,7 +281,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   titleContainer: {
-    width: screenWidth * 0.6, // 화면 너비의 60%
+    width: screenWidth, // 화면 너비의 60%
   },
   container: {
     flex: 1,

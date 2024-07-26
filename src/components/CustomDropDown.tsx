@@ -52,17 +52,15 @@ const CustomSelectDropdown: React.FC<CustomSelectDropdownProps> = ({
 
 const styles = StyleSheet.create({
   dropdownButtonStyle: {
-    width: 30,
     backgroundColor: 'white', // Set button background color to white
     height: 40, // Set a fixed height for the button
     justifyContent: 'center', // Center the content vertically
     paddingHorizontal: 10, // Add some padding to the sides
   },
   buttonInnerContainer: {
-    flexDirection: 'row', // Align text and icon horizontally
-    alignItems: 'center', // Center align vertically
-    gap: 5, // Add some space between text and icon
-    width: '100%', // Ensure the content takes full width
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
   },
   dropdownStyle: {
     borderRadius: 10, // Rounded corners for the dropdown
@@ -73,5 +71,4 @@ const styles = StyleSheet.create({
     fontSize: 16, // Set font size to 16
   },
 });
-
 export default CustomSelectDropdown;

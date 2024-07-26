@@ -1,11 +1,11 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import SignUpIndex1Off from '../../../assets/icons/sign/signUpIndex1Off.svg';
-import SignUpIndex1On from '../../../assets/icons/sign/signUpIndex1On.svg';
-import SignUpIndex2Off from '../../../assets/icons/sign/signUpIndex2Off.svg';
-import SignUpIndex2On from '../../../assets/icons/sign/signUpIndex2On.svg';
-import SignUpIndex3Off from '../../../assets/icons/sign/signUpIndex3Off.svg';
-import SignUpIndex3On from '../../../assets/icons/sign/signUpIndex3On.svg';
+import SignUpIndex1Off from '../../../assets/icons/sign/customIndex1Off.svg';
+import SignUpIndex1On from '../../../assets/icons/sign/customIndex1On.svg';
+import SignUpIndex2Off from '../../../assets/icons/sign/customIndex2Off.svg';
+import SignUpIndex2On from '../../../assets/icons/sign/customIndex2On.svg';
+import SignUpIndex3Off from '../../../assets/icons/sign/customIndex3Off.svg';
+import SignUpIndex3On from '../../../assets/icons/sign/customIndex3On.svg';
 
 // Props 타입 정의
 interface SignUpOrderHeaderProps {

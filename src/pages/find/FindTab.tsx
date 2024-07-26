@@ -101,21 +101,35 @@ function FindTab({
         setLoadingMore(true);
         setTimeout(() => {
           loadingMoreRef.current = false;
-        }, 500);
+        });
       }
     },
-    1000,
+    500,
     {leading: true, trailing: true},
   );
 
-  if (page === 0 && findPopupListData.length === 0 && !findPopupListLoading) {
-    return <NotList />;
-  } else if (findPopupListLoading && page === 0) {
+  // if (page === 0 && findPopupListData.length === 0 && !findPopupListLoading) {
+  //   return <NotList />;
+  // } else if (findPopupListLoading && page === 0) {
+  //   return (
+  //     <View>
+  //       <ActivityIndicator size="large" color={globalColors.purple} />
+  //     </View>
+  //   );
+  // }
+
+  if (findPopupListLoading && page === 0) {
     return (
       <View>
         <ActivityIndicator size="large" color={globalColors.purple} />
       </View>
     );
+  } else if (
+    page === 0 &&
+    findPopupListData.length === 0 &&
+    !findPopupListLoading
+  ) {
+    return <NotList />;
   }
 
   return (

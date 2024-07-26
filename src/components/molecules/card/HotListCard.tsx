@@ -17,7 +17,7 @@ const HotListCard: React.FC<HotListCardProps> = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  console.log('hello is logged in', isLoggedIn);
+  // console.log('hello is logged in', isLoggedIn);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     borderColor: globalColors.redLight,
     padding: 10,
     marginVertical: 10,
-    marginRight: 8,
+    marginRight: 0,
     marginBottom: 28,
     alignItems: 'flex-start',
     gap: 12, // Note: React Native does not support `gap` property. Use margin/padding instead.

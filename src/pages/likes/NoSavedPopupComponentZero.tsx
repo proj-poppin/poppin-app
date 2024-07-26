@@ -13,7 +13,7 @@ interface NoSavedPopupsComponentProps {
   isFiltering?: boolean;
 }
 
-const NoSavedPopupsComponent: React.FC<NoSavedPopupsComponentProps> = ({
+const NoSavedPopupsComponentZero: React.FC<NoSavedPopupsComponentProps> = ({
   text,
   buttonText,
   status,
@@ -25,7 +25,7 @@ const NoSavedPopupsComponent: React.FC<NoSavedPopupsComponentProps> = ({
   };
 
   return (
-    <View>
+    <SafeAreaView style={[{flex: 1}]}>
       {!isFiltering && (
         <View style={styles.header}>
           <Text style={[Text24B.text]}>관심 팝업</Text>
@@ -46,20 +46,19 @@ const NoSavedPopupsComponent: React.FC<NoSavedPopupsComponentProps> = ({
           {buttonText || '저장하러 가기'}
         </Text>
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   content: {
     flex: 1,
-    marginTop: 100,
     justifyContent: 'center',
     alignItems: 'center',
   },
   contentFiltered: {
     justifyContent: 'flex-end',
-    marginBottom: 20,
+    marginBottom: 100,
   },
   header: {
     flexDirection: 'row',
@@ -84,8 +83,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    marginTop: 140,
+    marginBottom: 100,
   },
 });
 
-export default NoSavedPopupsComponent;
+export default NoSavedPopupsComponentZero;

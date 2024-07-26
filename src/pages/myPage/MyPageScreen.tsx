@@ -37,6 +37,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/stores/reducer.ts';
 import Text14R from '../../styles/texts/body_medium/Text14R.ts';
 import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
+import FastImage from 'react-native-fast-image';
 
 function MyPageScreen({navigation}) {
   const {handleLogout, logoutStatus} = useLogout();
@@ -146,7 +147,7 @@ function MyPageScreen({navigation}) {
         </View>
         <View style={styles.rowHeaderContainer}>
           {user.userImageUrl ? (
-            <Image
+            <FastImage
               source={{uri: user.userImageUrl}}
               style={styles.profileImage}
             />

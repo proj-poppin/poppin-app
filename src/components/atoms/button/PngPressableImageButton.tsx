@@ -6,6 +6,7 @@ import {
   ImageSourcePropType,
   ViewStyle,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 // Props 타입 정의
 interface ImageButtonProps {
@@ -21,7 +22,7 @@ const PngPressableImageButton: React.FC<ImageButtonProps> = ({
 }) => {
   return (
     <Pressable onPress={onPress}>
-      <Image source={source} style={[styles.image, style]} />
+      <FastImage source={source} style={[styles.image, style]} />
     </Pressable>
   );
 };

@@ -25,6 +25,9 @@ import NoSavedPopupsComponent from './NoSavedPopupComponent.tsx';
 import refreshSlice from '../../redux/slices/refreshSlice';
 import ToastComponent from '../../components/atoms/toast/ToastComponent.tsx';
 import {debounce} from 'lodash';
+import Text10B from '../../styles/texts/body_small/Text10B.ts';
+import Text12M from '../../styles/texts/label/Text12M.ts';
+import NoSavedPopupsComponentZero from './NoSavedPopupComponentZero.tsx';
 
 const popUpTypes = ['오픈 예정인 팝업', '운영 중인 팝업', '운영 종료 팝업'];
 const orderTypes = ['오픈일순', '마감일순', '저장순'];
@@ -46,7 +49,7 @@ function LikesScreen({navigation}) {
     dispatch(loadingSlice.actions.setLoading({isLoading: true}));
     setTimeout(() => {
       dispatch(loadingSlice.actions.setLoading({isLoading: false}));
-    }, 2000);
+    });
   }, [dispatch]);
 
   const toggleView = () => {
@@ -126,7 +129,7 @@ function LikesScreen({navigation}) {
     );
   }
 
-  if (!isLoggedIn) {
+  if (!isLoggedIn && !loading) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <ForLoginBox
@@ -148,7 +151,7 @@ function LikesScreen({navigation}) {
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={handleRefresh} />
         }>
-        <NoSavedPopupsComponent />
+        <NoSavedPopupsComponentZero />
       </ScrollView>
     );
   }
@@ -157,13 +160,35 @@ function LikesScreen({navigation}) {
     <SafeAreaView style={[{flex: 1}, {marginBottom: 100}]}>
       <BottomSheetModalProvider>
         <View style={styles.header}>
-          <Text style={[Text24B.text]}>팝업 목록</Text>
+          <Text style={[Text24B.text]}>관심 팝업</Text>
           <TouchableOpacity style={styles.iconButton} onPress={toggleView}>
-            {isCalendarView ? (
-              <ListIconSvg width={24} height={24} fill={globalColors.font} />
-            ) : (
-              <CalendarSvg width={24} height={24} fill={globalColors.font} />
-            )}
+            <View style={styles.iconWithText}>
+              {isCalendarView ? (
+                <>
+                  <Text
+                    style={[Text12M.text, styles.iconText, {marginRight: 5}]}>
+                    리스트 보기
+                  </Text>
+                  <ListIconSvg
+                    width={24}
+                    height={24}
+                    fill={globalColors.font}
+                  />
+                </>
+              ) : (
+                <>
+                  <Text
+                    style={[Text12M.text, styles.iconText, {marginRight: 5}]}>
+                    캘린더 보기
+                  </Text>
+                  <CalendarSvg
+                    width={24}
+                    height={24}
+                    fill={globalColors.font}
+                  />
+                </>
+              )}
+            </View>
           </TouchableOpacity>
         </View>
         {isCalendarView ? (
@@ -220,6 +245,14 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     padding: 8,
+  },
+  iconWithText: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconText: {
+    marginLeft: 2,
+    color: globalColors.blue,
   },
   bottomSheetContent: {
     padding: 16,

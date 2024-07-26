@@ -53,7 +53,7 @@
         </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>3</string> <!-- 빌드 번호를 업데이트 -->
+    <string>4</string> <!-- 빌드 번호를 업데이트 -->
     <key>FirebaseAppDelegateProxyEnabled</key>
     <true/>
     <key>ITSAppUsesNonExemptEncryption</key>

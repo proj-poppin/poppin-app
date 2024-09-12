@@ -16,7 +16,6 @@ const randomNickName = async () => {
       };
     }
   } catch (error) {
-    console.log('random nickname error:', error);
     return {
       success: false,
       error: {code: 'Network', message: 'Network error'},

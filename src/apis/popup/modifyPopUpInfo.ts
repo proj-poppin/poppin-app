@@ -51,7 +51,6 @@ const modifyPopUpInfo = async (
       };
     }
   } catch (error) {
-    console.log('Error modifying info:', error);
     return {
       success: false,
       error: {

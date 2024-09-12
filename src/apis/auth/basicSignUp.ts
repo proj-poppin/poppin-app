@@ -44,7 +44,6 @@ const basicSignUp = async (
 
     return response.data;
   } catch (error) {
-    console.log('Network error:', error);
     return {
       success: false,
       error: {

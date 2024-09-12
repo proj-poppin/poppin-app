@@ -34,9 +34,7 @@ function AlarmSettingScreen({navigation}) {
 
   useEffect(() => {
     PushNotification.configure({
-      onNotification: function (notification) {
-        console.log('LOCAL NOTIFICATION ==>', notification);
-      },
+      onNotification: function (notification) {},
       requestPermissions: true,
     });
   }, []);

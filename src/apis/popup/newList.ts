@@ -16,7 +16,6 @@ const getNewList = async (): Promise<
       };
     }
   } catch (error) {
-    console.log('getNewList error:', error);
     return {
       success: false,
       error: {

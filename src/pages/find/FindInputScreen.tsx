@@ -58,7 +58,6 @@ function FindInputScreen({navigation}: any) {
           setKeywordRecord([]);
         }
       } catch (e) {
-        console.log('Failed to fetch the data from storage', e);
         // console.error('Failed to fetch the data from storage', e);
       }
     };

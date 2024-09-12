@@ -84,7 +84,6 @@ function FindScreen({navigation}: FindScreenProps) {
   useEffect(() => {
     if (debouncedSearchKeyword.trim()) {
       // Perform search with debounced keyword
-      console.log('Searching with keyword:', debouncedSearchKeyword);
       // Add your search API call here
     }
   }, [debouncedSearchKeyword]);
@@ -103,7 +102,6 @@ function FindScreen({navigation}: FindScreenProps) {
     setIsSearchMode(false);
     setSearchKeyword('');
     // Add logic to refetch all popups
-    console.log('Fetching all popups');
     // Add your refetch API call here
   };
 

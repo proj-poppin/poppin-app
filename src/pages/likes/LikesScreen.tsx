@@ -59,7 +59,6 @@ function LikesScreen({navigation}) {
   const isLoggedIn = useIsLoggedIn();
 
   const handleRefresh = useCallback(() => {
-    console.log('Handle Refresh');
     setSelectedPopUpType('운영 중인 팝업');
     refetch();
   }, [refetch]);

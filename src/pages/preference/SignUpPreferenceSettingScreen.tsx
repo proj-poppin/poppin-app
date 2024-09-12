@@ -63,7 +63,6 @@ function SignUpPreferenceSettingScreen({route}) {
         routes: [{name: 'MainTabNavigator', params: {shouldRefresh: true}}],
       });
     } else {
-      console.log('Failed to submit preferences:', response.error);
       // console.error('Failed to submit preferences:', response.error);
     }
   };

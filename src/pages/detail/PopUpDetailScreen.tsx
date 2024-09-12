@@ -192,7 +192,6 @@ const PopUpDetailScreen = ({route}) => {
             detailPopUpData?.latitude ?? 0,
             detailPopUpData?.longitude ?? 0,
           );
-          console.log('distance⭐️⭐️⭐️⭐️', distance);
           const token = await EncryptedStorage.getItem('pushToken');
 
           if (distance !== null && distance <= 0.75) {
@@ -213,9 +212,7 @@ const PopUpDetailScreen = ({route}) => {
             setCompleteModalVisible(true);
           }
         },
-        error => {
-          console.log(error.code, error.message);
-        },
+        error => {},
         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
       );
     }
@@ -308,7 +305,6 @@ const PopUpDetailScreen = ({route}) => {
       } else {
       }
     } catch (error) {
-      console.log('Recommend error:', error);
       // console.error('Recommend error:', error);
     }
   };
@@ -412,10 +408,7 @@ const PopUpDetailScreen = ({route}) => {
           },
         ],
       });
-      console.log('Share response:', response);
-      console.log('share id: ', detailPopUpData.id);
     } catch (e) {
-      console.log('Share error:', e);
       // console.error('Share error:', e);
     }
   };

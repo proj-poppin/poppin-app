@@ -135,11 +135,8 @@ function MyProfileEditScreen() {
         type: image.mime,
         name: image.filename || 'profileImage',
       });
-      console.log('ImagePicker Success: ', image);
       dispatch(setProfileImageUrl({userImageUrl: image.path}));
-    } catch (error) {
-      console.log('ImagePicker Error: ', error);
-    }
+    } catch (error) {}
   };
 
   const showActionSheet = () => {
@@ -158,7 +155,6 @@ function MyProfileEditScreen() {
           if (response.success) {
             dispatch(setProfileImageUrl({userImageUrl: null}));
           } else {
-            console.log('Failed to delete profile image:', response.error);
             // console.error('Failed to delete profile image:', response.error);
           }
         } else if (buttonIndex === 1) {
@@ -199,9 +195,7 @@ function MyProfileEditScreen() {
       await patchUserInfo(updatedData);
       dispatch(setProfileNickname({nickname: nickname}));
       openCompleteModal();
-    } catch (error) {
-      console.log('Nickname change error: ', error);
-    }
+    } catch (error) {}
   };
 
   if (!user) {

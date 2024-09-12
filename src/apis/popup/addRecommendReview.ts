@@ -21,7 +21,6 @@ const addRecommendReview = async (popupId: number, reviewId: number) => {
       };
     }
   } catch (error) {
-    console.log('Error fetching pop up detail:', error);
     return {
       success: false,
       error: {

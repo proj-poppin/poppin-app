@@ -37,7 +37,6 @@ const getDetailPopUpPublic = async (
       };
     }
   } catch (error) {
-    console.log('Error fetching pop up detail:', error);
     return {
       success: false,
       error: {

@@ -39,7 +39,6 @@ const useAddRecommendReview = () => {
         return response;
       }
     } catch (error) {
-      console.log('error', error);
       const err =
         error instanceof Error
           ? error

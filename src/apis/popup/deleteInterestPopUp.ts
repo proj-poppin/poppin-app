@@ -17,8 +17,6 @@ const deleteInterestPopUp = async (params: AddInterestPopupParams) => {
       },
     );
 
-    console.log(response.data);
-
     if (response.data.success) {
       return response.data;
     } else {
@@ -28,7 +26,6 @@ const deleteInterestPopUp = async (params: AddInterestPopupParams) => {
       };
     }
   } catch (error) {
-    console.log('Error fetching pop up detail:', error);
     return {
       success: false,
       error: {

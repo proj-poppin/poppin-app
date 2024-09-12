@@ -32,7 +32,6 @@ const addInterestPopup = async (params: AddInterestPopupParams) => {
       };
     }
   } catch (error) {
-    console.log('Error fetching pop up detail:', error);
     return {
       success: false,
       error: {

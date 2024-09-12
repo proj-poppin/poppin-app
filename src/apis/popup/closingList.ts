@@ -18,7 +18,6 @@ const getClosingList = async (): Promise<
       };
     }
   } catch (error) {
-    console.log('getClosingList error:', error);
     return {
       success: false,
       error: {

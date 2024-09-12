@@ -24,7 +24,6 @@ const reportReview = async (
       };
     }
   } catch (error) {
-    console.log('Error reporting review:', error);
     return {
       success: false,
       error: {

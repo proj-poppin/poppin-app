@@ -31,7 +31,6 @@ function KeywordAlarmScreen() {
   const toggleAlarm = () => {
     // 여기서는 상태를 토글하도록 로직을 작성
     // 예를 들어, 아이콘 상태를 변경하거나 API 호출
-    console.log('알람 토글');
   };
 
   const removeKeyword = (index: number | null) => {
@@ -78,7 +77,6 @@ function KeywordAlarmScreen() {
             <Pressable
               onPress={() => {
                 setDeleteIndex(index);
-                console.log(index);
                 setIsDeleteModalVisible(true);
               }}>
               <CloseSvg />

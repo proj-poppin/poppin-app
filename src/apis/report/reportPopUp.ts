@@ -24,7 +24,6 @@ const reportPopup = async (
       };
     }
   } catch (error) {
-    console.log('Error reporting popup:', error);
     return {
       success: false,
       error: {

@@ -26,7 +26,6 @@ const basicLogin = async (
       },
     );
     if (response.data.success) {
-      console.log('Login success');
       const {accessToken, refreshToken} = response.data.data!;
       await EncryptedStorage.setItem('refreshToken', refreshToken);
       await EncryptedStorage.setItem('accessToken', accessToken);
@@ -40,8 +39,6 @@ const basicLogin = async (
       };
     }
   } catch (error) {
-    console.log('Login error:', error);
-    // 네트워크 에러 또는 기타 예외 처리
     return {
       success: false,
       error: {

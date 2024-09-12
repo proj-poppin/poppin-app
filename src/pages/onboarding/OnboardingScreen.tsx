@@ -23,7 +23,6 @@ const OnboardingScreen = ({navigation}) => {
   ];
 
   const handleScreenTouch = () => {
-    console.log('currentIndex:', currentIndex);
     if (currentIndex < onboardingItems.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {

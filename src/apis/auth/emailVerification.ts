@@ -16,9 +16,6 @@ const emailVerification = async (
     );
 
     if (response.data.success && response.data.data) {
-      console.log(
-        `Email verification success, AuthCode: ${response.data.data.authCode}`,
-      );
       return {
         success: true,
         data: {authCode: response.data.data.authCode},
@@ -30,7 +27,6 @@ const emailVerification = async (
       };
     }
   } catch (error) {
-    console.log('Email verification error:', error);
     return {
       success: false,
       data: {authCode: ''},

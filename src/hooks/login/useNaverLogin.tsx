@@ -51,7 +51,6 @@ export const useNaverLogin = () => {
             loginResult.error?.code === '40024' ||
             loginResult.error?.code === '40026'
           ) {
-            console.log('Error:', loginResult.error.message);
             Alert.alert('안내', loginResult.error.message);
           } else {
             // 신규 유저라면 닉네임 입력 화면으로 이동
@@ -63,9 +62,7 @@ export const useNaverLogin = () => {
           }
         }
       }
-    } catch (err) {
-      console.log('Failed to login with Naver:', err);
-    }
+    } catch (err) {}
   };
 
   return {signInWithNaver: signInWithNaver, naverLoginStatus: naverLoginStatus};

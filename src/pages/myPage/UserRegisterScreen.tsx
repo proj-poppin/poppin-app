@@ -155,7 +155,6 @@ function UserRegisterScreen() {
     if (response.success) {
       openCompleteModal();
     } else {
-      console.log(response.error?.message || 'Failed to submit report');
       // console.error(response.error?.message || 'Failed to submit report');
     }
   };

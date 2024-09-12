@@ -17,10 +17,7 @@ const loginSocial = async (
       },
     );
 
-    console.log('Server response:', response.data);
-
     if (response.data.success) {
-      console.log(`${type} login success`);
       return response.data;
     } else {
       return {
@@ -29,7 +26,6 @@ const loginSocial = async (
       };
     }
   } catch (error) {
-    console.log(`${type} login error:`, error);
     return {
       success: false,
       error: {

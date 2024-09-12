@@ -48,8 +48,6 @@ function MyPageScreen({navigation}) {
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
-  console.log('user:', user);
-
   useEffect(() => {
     if (user.nickname) {
       setLoadingUser(false);
@@ -58,10 +56,8 @@ function MyPageScreen({navigation}) {
 
   useEffect(() => {
     if (logoutStatus.success) {
-      console.log('로그아웃 성공');
       navigation.navigate('MyPage');
     } else if (logoutStatus.error) {
-      console.log('로그아웃 실패:', logoutStatus.error);
     }
   }, [logoutStatus, navigation]);
 
@@ -122,9 +118,7 @@ function MyPageScreen({navigation}) {
     }
   }, [isLoggedIn]);
 
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
-  }, []);
+  const handleSheetChanges = useCallback((index: number) => {}, []);
 
   const handleFaqPress = useCallback(() => {
     Linking.openURL('http://pf.kakao.com/_CCtFG');
@@ -137,6 +131,17 @@ function MyPageScreen({navigation}) {
 
   const closeLoginModal = () => {
     setLoginModalVisible(false);
+  };
+
+  const navigateToReviewWrite = () => {
+    isLoggedIn
+      ? navigation.navigate('MyPageReviewWrite')
+      : navigation.navigate('Entry');
+  };
+  const navigateToReviewWriteComplete = () => {
+    isLoggedIn
+      ? navigation.navigate('MyPageReviewWriteComplete')
+      : navigation.navigate('Entry');
   };
 
   return (
@@ -174,6 +179,38 @@ function MyPageScreen({navigation}) {
           </View>
         </View>
         <CompleteButton onPress={handlePresentModal} title={'팝업 제보하기'} />
+        <View style={styles.rowBodyContainer}>
+          <View style={styles.colMidContainer}>
+            <Text style={[Text13R.text, {marginBottom: 5}]}>후기 작성하기</Text>
+            <View style={[styles.infoRow]}>
+              <Pressable onPress={navigateToReviewWrite}>
+                <FeedBackSvg />
+              </Pressable>
+              <Text
+                style={[
+                  Text18B.text,
+                  {color: globalColors.blue},
+                  {marginLeft: 1},
+                ]}>
+                {2}
+              </Text>
+            </View>
+          </View>
+          <DividerSvg style={styles.dividerPadding} />
+          <View style={styles.colMidContainer}>
+            <Text style={[Text13R.text, {marginBottom: 5}]}>
+              작성 완료한 후기
+            </Text>
+            <View style={styles.infoRow}>
+              <Pressable onPress={navigateToReviewWriteComplete}>
+                <CompleteSvg />
+              </Pressable>
+              <Text style={[Text18B.text, {color: 'gray'}, {marginLeft: 3}]}>
+                {4}
+              </Text>
+            </View>
+          </View>
+        </View>
         <Pressable onPress={handleFaqPress} style={styles.middleContainer}>
           <Text style={Text14M.text}>문의하기</Text>
           <RightSvg style={styles.svgStyle} onPress={handleFaqPress} />
@@ -338,11 +375,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginTop: 15,
     paddingHorizontal: 10,
-  },
-  iconPadding: {
-    paddingTop: 5,
-    marginBottom: -5,
-    marginHorizontal: 3,
   },
   dividerPadding: {
     paddingHorizontal: 30,

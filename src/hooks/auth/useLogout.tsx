@@ -27,9 +27,7 @@ const useLogout = () => {
         setLogoutStatus({success: true, error: null});
         return setLogoutStatus({success: true, error: null});
       }
-    } catch (error) {
-      console.log('Logout error:', error);
-    }
+    } catch (error) {}
   }, [dispatch]);
 
   return {

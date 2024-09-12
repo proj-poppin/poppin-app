@@ -20,7 +20,6 @@ const addVisitor = async (
         fcmToken,
       },
     );
-    console.log('addVisitor response:', response.data);
 
     if (response.data.success) {
       return response.data;
@@ -31,7 +30,6 @@ const addVisitor = async (
       };
     }
   } catch (error) {
-    console.log('Error fetching pop up detail:', error);
     return {
       success: false,
       error: {

@@ -53,14 +53,9 @@ const RootNavigator = () => {
         console.log('consol response', response);
         if (response?.success) {
           await EncryptedStorage.setItem('pushToken', token);
-          console.log('푸시 토큰 등록에 성공했습니다.');
         } else {
-          console.log(`푸시 토큰 등록에 실패했습니다. ${response?.error}`);
         }
-      } catch (error) {
-        console.log('푸시 토큰 등록에 실패했습니다 ㅠㅠ');
-        console.log(error);
-      }
+      } catch (error) {}
     }
 
     getToken();
@@ -105,7 +100,6 @@ const RootNavigator = () => {
       const route = url.replace(/.*?:\/\//g, '');
       setRouteUrl(route);
       const id = route.split('=')[1]; // id 추출 방식 수정
-      console.log('🔗 Deep link:', route);
       if (route.includes('kakaolink')) {
         console.log('🔗 Kakao link detected:', route);
         navigationRef.current?.navigate('PopUpDetail', {

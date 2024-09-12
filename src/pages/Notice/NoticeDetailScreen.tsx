@@ -17,8 +17,6 @@ function NoticeDetailScreen() {
   const {nid} = route.params;
   const noticeDetail = useGetNoticeDetail(nid);
 
-  console.log('NoticeDetailScreen@@@@@@@@@@ render');
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{noticeDetail?.title}</Text>

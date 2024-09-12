@@ -31,8 +31,6 @@ function ReportScreen({navigation, route}) {
   const [content, setContent] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
-  console.log(id, isReview, reviewId);
-
   const openModal = () => {
     setModalVisible(true);
   };
@@ -51,7 +49,6 @@ function ReportScreen({navigation, route}) {
         reviewId.toString(),
         reportContent,
       );
-      console.log(resp);
     } else {
       await reportPopupDetails(id, reportContent);
     }

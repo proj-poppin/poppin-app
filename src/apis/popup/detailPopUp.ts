@@ -20,7 +20,6 @@ const getDetailPopUp = async (
       : await nonPublicApiInstance.get(url, {params: {popupId: id}});
 
     if (response.data.success) {
-      console.log('DetailPopUpDataNonPublic:', response.data);
       return response.data;
     } else {
       return {
@@ -29,7 +28,6 @@ const getDetailPopUp = async (
       };
     }
   } catch (error) {
-    console.log('Error fetching pop up detail:', error);
     return {
       success: false,
       error: {

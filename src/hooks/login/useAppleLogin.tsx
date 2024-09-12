@@ -39,7 +39,6 @@ export const useAppleLogin = () => {
         const {identityToken} = appleAuthRequestResponse;
         if (identityToken) {
           const loginResult = await loginSocial('apple', identityToken);
-          console.log('Apple loginResult:', loginResult);
 
           if (loginResult.success && loginResult.data?.refreshToken) {
             const {accessToken, refreshToken} = loginResult.data;
@@ -51,7 +50,6 @@ export const useAppleLogin = () => {
               loginResult.error?.code === '40026' ||
               loginResult.error?.code === '40024'
             ) {
-              console.log('Error:', loginResult.error.message);
               Alert.alert('안내', loginResult.error.message);
             } else {
               // 신규 유저라면 닉네임 입력 화면으로 이동
@@ -66,11 +64,8 @@ export const useAppleLogin = () => {
           throw new Error("Apple login didn't provide an identityToken.");
         }
       } else {
-        console.log('Apple login failed:', credentialState);
       }
-    } catch (err) {
-      console.log('Failed to login with Apple:', err);
-    }
+    } catch (err) {}
   };
 
   return {signInWithApple, appleLoginStatus: appleLoginStatus};

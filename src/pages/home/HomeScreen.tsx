@@ -120,7 +120,6 @@ function HomeScreen({navigation, route}) {
 
   const navigateToFind = (status, order) => {
     navigation.navigate('Find', {status, order, shouldRefresh: true});
-    console.log('navigateToFind:', status, order);
   };
 
   useEffect(() => {

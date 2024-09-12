@@ -4,18 +4,21 @@
   "private": true,
   "scripts": {
     "start": "react-native start",
-    "ios:simulator": "react-native run-ios --simulator='PickplySimulator'",
-    "ios:device": "react-native run-ios --device 'puretension'",
-    "android:device": "react-native run-android",
-    "dev:ios:simulator": "yarn ios:simulator --scheme Develop --configuration Debug",
-    "dev:ios:device": "yarn ios:device --scheme Develop --configuration Debug",
-    "dev:android": "yarn android:device --mode=developDebug",
-    "stg:ios:simulator": "yarn ios:simulator --scheme Stage --configuration Debug",
-    "stg:ios:device": "yarn ios:device --scheme Stage --configuration Debug",
-    "stg:android": "yarn android:device --mode=stagedebug",
-    "prd:ios:simulator": "yarn ios:simulator --scheme Production --configuration Release",
-    "prd:ios:device": "yarn ios:device --scheme Production --configuration Release",
-    "prd:android": "yarn android:device --mode=productrelease"
+    "ios:simulator": "concurrently \"npm start\" \"open -a Simulator && react-native run-ios --simulator='PickplySimulator'\"",
+    "ios:device": "concurrently \"npm start\" \"react-native run-ios --device 'puretension'\"",
+    "android:device": "concurrently \"npm start\" \"react-native run-android\"",
+
+    "dev:ios:simulator": "concurrently \"npm start\" \"open -a Simulator && react-native run-ios --simulator='PickplySimulator' --scheme Develop --configuration Debug\"",
+    "dev:ios:device": "concurrently \"npm start\" \"react-native run-ios --device 'puretension' --scheme Develop --configuration Debug\"",
+    "dev:android": "concurrently \"npm start\" \"react-native run-android --mode=developDebug\"",
+
+    "stg:ios:simulator": "concurrently \"npm start\" \"open -a Simulator && react-native run-ios --simulator='PickplySimulator' --scheme Stage --configuration Debug\"",
+    "stg:ios:device": "concurrently \"npm start\" \"react-native run-ios --device 'puretension' --scheme Stage --configuration Debug\"",
+    "stg:android": "concurrently \"npm start\" \"react-native run-android --mode=stagedebug\"",
+
+    "prd:ios:simulator": "concurrently \"npm start\" \"open -a Simulator && react-native run-ios --simulator='PickplySimulator' --scheme Production --configuration Release\"",
+    "prd:ios:device": "concurrently \"npm start\" \"react-native run-ios --device 'puretension' --scheme Production --configuration Release\"",
+    "prd:android": "concurrently \"npm start\" \"react-native run-android --mode=productrelease\""
   },
 
   "dependencies": {
@@ -43,6 +46,7 @@
     "@reduxjs/toolkit": "^2.1.0",
     "@types/react-native-vector-icons": "^6.4.18",
     "axios": "^1.6.7",
+    "concurrently": "^9.0.1",
     "encrypt-storage": "^2.12.22",
     "image-resize": "^1.3.2",
     "lodash": "^4.17.21",

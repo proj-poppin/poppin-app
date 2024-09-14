@@ -1,0 +1,48 @@
+diff --git a/node_modules/@react-native-seoul/kakao-login/ios/RNKakaoLogins/RNKakaoLogins.swift b/node_modules/@react-native-seoul/kakao-login/ios/RNKakaoLogins/RNKakaoLogins.swift
+index 202e945..92a39ee 100644
+--- a/node_modules/@react-native-seoul/kakao-login/ios/RNKakaoLogins/RNKakaoLogins.swift
++++ b/node_modules/@react-native-seoul/kakao-login/ios/RNKakaoLogins/RNKakaoLogins.swift
+@@ -249,26 +249,26 @@ class RNKakaoLogins: NSObject {
+ 
+                     var result: [String: Any] = [:]
+ 
+-                    if let useId = userServiceTerms?.id {
++                    if let useId = userServiceTerms?.userId {
+                         result["userId"] = useId
+                     }
+ 
+-                    if let serviceTerms = userServiceTerms?.serviceTerms {
+-                        result["serviceTerms"] = serviceTerms.map {
+-                            var terms = [
+-                                "tag": $0.tag,
+-                                "agreed": $0.agreed,
+-                                "required": $0.required,
+-                                "revocable": $0.revocable
+-                            ]
+-
+-                            if let agreedAt = $0.agreedAt {
+-                                terms["agreedAt"] = dateFormatter.string(from: agreedAt)
+-                            }
+-
+-                            return terms
+-                        }
+-                    }
++//                     if let serviceTerms = userServiceTerms?.serviceTerms {
++//                         result["serviceTerms"] = serviceTerms.map {
++//                             var terms = [
++//                                 "tag": $0.tag,
++//                                 "agreed": $0.agreed,
++//                                 "required": $0.required,
++//                                 "revocable": $0.revocable
++//                             ]
++//
++//                             if let agreedAt = $0.agreedAt {
++//                                 terms["agreedAt"] = dateFormatter.string(from: agreedAt)
++//                             }
++//
++//                             return terms
++//                         }
++//                     }
+ 
+                     resolve(result)
+                 }

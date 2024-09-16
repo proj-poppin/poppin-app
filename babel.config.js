@@ -1,4 +1,26 @@
 module.exports = {
-  presets: ['module:@react-native/babel-preset'],
-  plugins: ['react-native-reanimated/plugin'], // 플러그인 추가
+  presets: ['module:metro-react-native-babel-preset'],
+  plugins: [
+    'babel-plugin-styled-components',
+    'react-native-reanimated/plugin',
+    [
+      'module-resolver',
+      {
+        root: ['.'],
+        alias: {
+          src: './src',
+        },
+        extensions: [
+          '.ios.js',
+          '.android.js',
+          '.js',
+          '.jsx',
+          '.json',
+          '.tsx',
+          '.ts',
+          '.native.js',
+        ],
+      },
+    ],
+  ],
 };

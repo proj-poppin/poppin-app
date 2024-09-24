@@ -1,16 +1,16 @@
-import {UserSchema} from 'Schema/User/user.schema.ts';
-import {UserNotificationSettingSchema} from 'Schema/User/userNotificationSetting.schema.ts';
-import {UserPreferenceSchema} from 'Schema/User/userPreferenceSetting.schema.ts';
-import customAxios, {AUTH, RESET_PASSWORD, USER} from '../axios.core.ts';
-import {handleAxiosError} from 'Util/axios.Util.ts';
-import {UserJwtTokenSchema} from 'Schema/User/userJwtToken.schema.ts';
-import {StateWrapper} from 'Axios/wrapper/state_wrapper.ts';
 import messaging from '@react-native-firebase/messaging';
+import {handleAxiosError} from 'src/Util/axios.Util';
+import {UserJwtTokenSchema} from 'src/Schema/User/userJwtToken.schema';
+import customAxios, {AUTH, RESET_PASSWORD, USERS} from 'src/Axios/axios.core';
+import {UserNotificationSettingSchema} from 'src/Schema/User/userNotificationSetting.schema';
+import {PreferenceSchema} from 'src/Schema/Preference/preference.schema';
+import {StateWrapper} from 'src/Axios/wrapper/state_wrapper';
+import {UserSchema} from 'src/Schema/User/user.schema';
 
 type UserInfo = {
   user: UserSchema;
   userNotificationSetting: UserNotificationSettingSchema;
-  userPreferenceSetting: UserPreferenceSchema;
+  userPreferenceSetting: PreferenceSchema;
   jwtToken: UserJwtTokenSchema;
 };
 
@@ -22,7 +22,7 @@ export const axiosVerifyEmailAuthCode = async (param: {email: string}) => {
   return await customAxios
     .request<void>({
       method: 'POST',
-      url: `${AUTH}/email/verification`,
+      url: `v1/${AUTH}/email/verification`,
       data: param,
     })
     .then(response => {
@@ -34,6 +34,22 @@ export const axiosVerifyEmailAuthCode = async (param: {email: string}) => {
         errorMessage: '인증번호 전송에 실패했습니다\n잠시 후 다시 시도해주세요',
       });
       return false;
+    });
+};
+
+export const axiosPostConfirmPassword = async (password: string) => {
+  return await customAxios
+    .request<void>({
+      method: 'POST',
+      url: `v1/${AUTH}/verification/password`,
+      data: {password},
+    })
+    .then(response => response.data)
+    .catch(error => {
+      handleAxiosError({
+        error,
+        errorMessage: '비밀번호 확인에 실패했습니다',
+      });
     });
 };
 
@@ -49,7 +65,7 @@ export const axiosResetPassword = async (param: {
   return await customAxios
     .request<void>({
       method: 'POST',
-      url: `${AUTH}/${RESET_PASSWORD}/no-auth`,
+      url: `v1/${AUTH}/${RESET_PASSWORD}/no-auth`,
       data: param,
     })
     .then(response => {
@@ -76,7 +92,7 @@ export const axiosChangePassword = async (param: {
   return await customAxios
     .request<void>({
       method: 'PUT',
-      url: `${AUTH}/${RESET_PASSWORD}`,
+      url: `v1/${AUTH}/${RESET_PASSWORD}`,
       data: param,
     })
     .then(response => {
@@ -99,12 +115,13 @@ export const axiosLogout = async () => {
   return await customAxios
     .request<void>({
       method: 'POST',
-      url: `${AUTH}/sign-out`,
+      url: `v1/${AUTH}/sign-out`,
     })
     .then(response => {
       return response.data;
     })
     .catch(error => {
+      handleAxiosError({error, errorMessage: '로그아웃에 실패했습니다'});
       return null;
     });
 };
@@ -122,7 +139,7 @@ export const axiosSocialLogin = async (param: {
   return await customAxios
     .request<StateWrapper<UserInfo>>({
       method: 'POST',
-      url: `${AUTH}/login/${param.type}`,
+      url: `v1/${AUTH}/login/${param.type}`,
       headers: {
         Authorization: `Bearer ${param.token}`,
       },
@@ -153,7 +170,7 @@ export const axiosEmailLogin = async (auth: {
   return await customAxios
     .request<StateWrapper<UserInfo>>({
       method: 'POST',
-      url: `${AUTH}/sign-in`,
+      url: `v1/${AUTH}/login`,
       headers: {
         Authorization: `Basic ${btoa(`${auth.email}:${auth.password}`)}`,
       },
@@ -169,7 +186,8 @@ export const axiosEmailLogin = async (auth: {
 };
 
 /**
- * 소셜 회원가입합니다.
+ * 회원가입합니다.
+ * 이메일을 이용한 회원가입, 카카오톡 계정을 이용한 간편 로그인을 모두 포괄합니다.
  * @author 도형
  */
 
@@ -180,7 +198,7 @@ export const axiosSocialSignUp = async (param: {
   return await customAxios
     .request<StateWrapper<UserInfo>>({
       method: 'POST',
-      url: `${AUTH}/register`,
+      url: `v1/${USERS}/social`,
       data: param,
     })
     .then(response => response.data)
@@ -206,7 +224,7 @@ export const axiosEmailSignUp = async (param: {
   return await customAxios
     .request<StateWrapper<UserInfo>>({
       method: 'POST',
-      url: `${AUTH}/sign-up`,
+      url: `v1/${USERS}`,
       data: param,
     })
     .then(response => response.data)

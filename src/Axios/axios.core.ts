@@ -1,7 +1,6 @@
 import axios, {AxiosResponse, InternalAxiosRequestConfig} from 'axios';
 import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {performLogout} from './performLogout.tsx';
 
 /**
  * axios 요청에 공통적으로 사용되는 설정들을 지정해둔 axios 요청 인스턴스입니다.
@@ -19,7 +18,7 @@ export interface CommonResponse<T> {
 }
 
 const customAxios = axios.create({
-  baseURL: `${Config.API_URL}/api/v1/`,
+  baseURL: `${Config.API_URL}/api/`,
   timeout: 5000,
 });
 
@@ -64,11 +63,11 @@ customAxios.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return axios(originalRequest);
         } else {
-          await performLogout();
+          // await performLogout();
           return Promise.reject(error);
         }
       } catch (refreshError) {
-        await performLogout();
+        // await performLogout();
         return Promise.reject(refreshError);
       }
     }
@@ -84,13 +83,12 @@ export const AUTH = 'auth';
 export const INTEREST = 'interest';
 export const POPUP = 'popup';
 export const REPORTS = 'reports';
-export const USER = 'user';
+export const USERS = 'users';
 export const NOTI = 'noti';
 export const BLOCK = 'block';
 export const ALARM = 'alarm';
 export const KEYWORDS = 'keywords';
 export const REVIEWS = 'reviews';
-export const REVIEW = 'review';
 export const WRITE = 'w';
 export const FINISH = 'finish';
 export const IMAGE = 'image';

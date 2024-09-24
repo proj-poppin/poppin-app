@@ -3,11 +3,6 @@
  * @author 도형
  */
 
-// /** 유저 이미지 URL */
-// userImageUrl: string;
-//
-// /** 이메일 */
-// email: string;
 export type UserNotificationSettingSchema = {
   /** 푸시 알림을 위한 fcm 토큰 */
   fcmToken: string;
@@ -29,4 +24,14 @@ export type UserNotificationSettingSchema = {
 
   /** 관심 팝업 정보 변경 알림 */
   interestedPopupInfoUpdatedPush: boolean; // 기존 changeInfoYn
+};
+
+export const BlankUserNotificationSetting: UserNotificationSettingSchema = {
+  fcmToken: '',
+  appPush: true,
+  nightPush: true,
+  helpfulReviewPush: true,
+  interestedPopupOpenPush: true,
+  interestedPopupDeadlinePush: true,
+  interestedPopupInfoUpdatedPush: true,
 };

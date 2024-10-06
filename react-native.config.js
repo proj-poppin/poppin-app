@@ -1,3 +1,11 @@
+/**
+ * React Native CLI가 ios 디렉토리의 Podfile만 참조하도록 합니다.
+ * @author 도형
+ */
 module.exports = {
-  assets: ['src/assets/fonts'],
+  project: {
+    ios: {
+      sourceDir: './ios',
+    },
+  },
 };

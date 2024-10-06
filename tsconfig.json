@@ -1,14 +1,8 @@
-//{
-//  "extends": "@react-native/typescript-config/tsconfig.json",
-//  "compilerOptions": {
-//    "baseUrl": "src"
-//  },
-//  "baseUrl": ["src"]
-//}
 {
   // 어떤 부분 때문인지는 모르겠지만, extend 한 tsconfig 를 사용하면 styled-components/native 인식을 못합니다.
   // "extends": "@tsconfig/react-native/tsconfig.json" /* Recommended React Native TSConfig base */,
   "compilerOptions": {
+    "typeRoots" : ["./@types", "./node_modules/@types"],
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
     "target": "esnext" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */,

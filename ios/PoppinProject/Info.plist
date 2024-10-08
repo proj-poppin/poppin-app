@@ -75,12 +75,10 @@
     <key>NMFClientId</key>
     <string>${NAVER_MAP_CLIENT_ID}</string>
     <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <false/>
-        <key>NSAllowsLocalNetworking</key>
-        <true/>
-    </dict>
+        <dict>
+            <key>NSAllowsArbitraryLoads</key>
+            <true/>
+        </dict>
     <key>NSCameraUsageDescription</key>
     <string>팝핀에서 사진 접근 기능 사용시 필요한 사진 촬영을 위해 카메라 권한이 필요합니다.</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -95,24 +93,12 @@
     <string>팝핀에서 프로필 사진 설정과 리뷰 작성, 제보하기 기능 사용시 필요한 사진 첨부 기능 사용을 위해 사진 라이브러리 접근 권한 동의가 필요합니다. 설정에서 이를 변경할 수 있습니다.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>팝핀에서 프로필 사진 설정과 리뷰 작성, 제보하기 기능 사용시 필요한 사진 첨부 기능 사용을 위해 사진 라이브러리 접근 권한 동의가 필요합니다. 설정에서 이를 변경할 수 있습니다.</string>
-    <key>UIAppFonts</key>
-    <array>
-        <string>Pretendard-Black.otf</string>
-        <string>Pretendard-Bold.otf</string>
-        <string>Pretendard-ExtraBold.otf</string>
-        <string>Pretendard-ExtraLight.otf</string>
-        <string>Pretendard-Light.otf</string>
-        <string>Pretendard-Medium.otf</string>
-        <string>Pretendard-Regular.otf</string>
-        <string>Pretendard-SemiBold.otf</string>
-        <string>Pretendard-Thin.otf</string>
-    </array>
     <key>UIBackgroundModes</key>
     <array>
         <string>remote-notification</string>
     </array>
     <key>UILaunchStoryboardName</key>
-    <string>LaunchScreen</string>
+    	<string>Launch Screen.storyboard</string>
     <key>UIRequiredDeviceCapabilities</key>
     <array>
         <string>armv7</string>

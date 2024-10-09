@@ -13,7 +13,7 @@ import globalColors from '../../styles/color/globalColors.ts';
 import DismissKeyboardView from '../../components/DismissKeyboardView.tsx';
 import CompleteButton from '../../components/atoms/button/CompleteButton.tsx';
 import TwoSelectConfirmationModal from '../../components/TwoSelectConfirmationModal.tsx';
-import GoBackSvg from '../../assets/icons/goBack.svg';
+import GoBackSvg from 'src/Resource/svg/left-arrow-black-icon.svg';
 import ConfirmationModal from '../../components/ConfirmationModal.tsx';
 import ImageContainerRow from '../../components/ImageContainerRow.tsx';
 import Text20B from '../../styles/texts/title/Text20B.ts';
@@ -21,7 +21,7 @@ import Text12R from '../../styles/texts/label/Text12R.ts';
 import {AppNavigatorParamList} from '../../types/AppNavigatorParamList.ts';
 import useModifyPopUpInfo from '../../hooks/modify/useModifyPopUpInfo.tsx';
 import {useImageSelector} from '../../hooks/useImageSelector';
-import {requestGalleryPermissions} from '../../utils/function/requestGalleryPermission.ts';
+import {requestGalleryPermissions} from '../../Util/function/requestGalleryPermission.ts';
 
 type PopUpEditRequestScreenRouteProp = RouteProp<
   AppNavigatorParamList,

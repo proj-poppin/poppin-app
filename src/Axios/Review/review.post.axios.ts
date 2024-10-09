@@ -1,6 +1,6 @@
 import customAxios, {REVIEWS} from 'src/Axios/axios.core';
 import {PopupReviewSchema} from 'src/Schema/Popup/popupReview.schema';
-import {handleAxiosError} from 'src/Util/axios.Util';
+import {handleAxiosError} from 'src/Util/axios.util';
 import {PopupSchema} from 'src/Schema/Popup/popup.schema';
 
 export const axiosAddRecommendReview = async (

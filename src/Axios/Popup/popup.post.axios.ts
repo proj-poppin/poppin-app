@@ -1,6 +1,6 @@
 import customAxios, {POPUP} from 'src/Axios/axios.core';
 import {PopupSchema} from 'src/Schema/Popup/popup.schema';
-import {handleAxiosError} from 'src/Util/axios.Util';
+import {handleAxiosError} from 'src/Util/axios.util';
 
 /**
  * 팝업 정보 수정 요청을 합니다.
@@ -34,7 +34,8 @@ export const axiosModifyPopupInfo = async (formData: FormData) => {
 };
 
 /**
- * 팝업스토어를 신고합니다.
+ * 게시된 팝업스토어 작성글을 신고합니다.
+ * @return 성공 시 true | 실패 시 false
  * @author 도형
  */
 export const axiosReportPopup = async (param: {
@@ -48,7 +49,7 @@ export const axiosReportPopup = async (param: {
       data: {popupId: param.popupId, content: param.reportContent},
     })
     .then(response => {
-      return response.data;
+      return true;
     })
     .catch(error => {
       handleAxiosError({

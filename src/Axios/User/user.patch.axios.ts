@@ -1,6 +1,6 @@
 import customAxios, {USERS} from 'src/Axios/axios.core';
 import {UserNotificationSettingSchema} from 'src/Schema/User/userNotificationSetting.schema';
-import {handleAxiosError} from 'src/Util/axios.Util';
+import {handleAxiosError} from 'src/Util/axios.util';
 
 /**
  * 유저 프로필 정보를 수정합니다.(닉네임, 프로필 이미지)
@@ -53,6 +53,29 @@ export const axiosUpdateUserNotificationSetting = async (
         error,
         errorMessage: '알림 설정 수정에 실패했습니다.',
       });
+      return null;
+    });
+};
+
+/**
+ * 특정 알림을 읽음 처리합니다.
+ * 만약 알림 _id 가 빈 문자열인 경우 요청을 보내지 않습니다.
+ * @author 현웅
+ */
+export const axiosCheckNotification = async (notificationId: string) => {
+  if (notificationId === undefined || notificationId === '') {
+    return null;
+  }
+  return await customAxios
+    .request<void>({
+      method: 'PATCH',
+      url: `${USERS}/notifications/check`,
+      data: {notificationId},
+    })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
       return null;
     });
 };

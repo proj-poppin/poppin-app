@@ -1,14 +1,14 @@
 import customAxios, {POPUP} from 'src/Axios/axios.core';
 import {PopupSchema} from 'src/Schema/Popup/popup.schema';
 import {PopupScrapSchema} from 'src/Schema/Popup/popupScrap.schema';
-import {handleAxiosError} from 'src/Util/axios.Util';
+import {handleAxiosError} from 'src/Util/axios.util';
 
 /**
  * 관심팝업 추가
  * @author 도형
  */
 
-export const axiosScrapInterestPopup = async (popupId: number) => {
+export const axiosScrapInterestPopup = async (popupId: string) => {
   return await customAxios
     .request<{
       updatedPopup: PopupSchema;
@@ -35,7 +35,7 @@ export const axiosScrapInterestPopup = async (popupId: number) => {
  * @author 도형
  */
 
-export const axiosUnscrapInterestPopup = async (popupId: number) => {
+export const axiosUnscrapInterestPopup = async (popupId: string) => {
   return await customAxios
     .request<{
       updatedPopup: PopupSchema;

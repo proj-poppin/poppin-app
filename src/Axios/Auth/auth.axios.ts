@@ -1,17 +1,38 @@
 import messaging from '@react-native-firebase/messaging';
-import {handleAxiosError} from 'src/Util/axios.Util';
-import {UserJwtTokenSchema} from 'src/Schema/User/userJwtToken.schema';
+import {handleAxiosError} from 'src/Util/axios.util';
 import customAxios, {AUTH, RESET_PASSWORD, USERS} from 'src/Axios/axios.core';
 import {UserNotificationSettingSchema} from 'src/Schema/User/userNotificationSetting.schema';
 import {PreferenceSchema} from 'src/Schema/Preference/preference.schema';
 import {StateWrapper} from 'src/Axios/wrapper/state_wrapper';
 import {UserSchema} from 'src/Schema/User/user.schema';
+import {APP_VERSION} from '../../Constant/app.constant';
+import {Platform} from 'react-native';
+import {PopupScrapSchema} from 'src/Schema/Popup/popupScrap.schema';
+import {
+  SocialAccountType,
+  TotalAccountType,
+} from 'src/Object/Enum/account.type';
+import {NotificationSchema} from 'src/Schema/User/notification.schema';
+import {UserNoticeSchema} from 'src/Schema/User/userNotice.schema';
+
+export type LoginResponse = StateWrapper<UserInfo>;
+
+export type UserActivities = {
+  scrappedPopups: PopupScrapSchema[];
+  notifications: {
+    POPUP: NotificationSchema[];
+    NOTICE: NotificationSchema[];
+  };
+};
 
 type UserInfo = {
   user: UserSchema;
+  userNotice: UserNoticeSchema;
+  userActivities: UserActivities;
   userNotificationSetting: UserNotificationSettingSchema;
   userPreferenceSetting: PreferenceSchema;
-  jwtToken: UserJwtTokenSchema;
+  accessToken: string;
+  refreshToken: string;
 };
 
 /**
@@ -131,7 +152,7 @@ export const axiosLogout = async () => {
  * @author 도형
  */
 export const axiosSocialLogin = async (param: {
-  type: string;
+  type: SocialAccountType;
   token: string;
 }) => {
   const fcmToken = await messaging().getToken();
@@ -161,14 +182,14 @@ export const axiosSocialLogin = async (param: {
  * 이메일과 비밀번호를 이용해 로그인합니다(일반 로그인).
  * @author 도형
  */
-export const axiosEmailLogin = async (auth: {
+export const axiosLoginWithEmailPassword = async (auth: {
   email: string;
   password: string;
 }) => {
   const fcmToken = await messaging().getToken();
 
   return await customAxios
-    .request<StateWrapper<UserInfo>>({
+    .request<LoginResponse>({
       method: 'POST',
       url: `v1/${AUTH}/login`,
       headers: {
@@ -186,38 +207,47 @@ export const axiosEmailLogin = async (auth: {
 };
 
 /**
- * 회원가입합니다.
- * 이메일을 이용한 회원가입, 카카오톡 계정을 이용한 간편 로그인을 모두 포괄합니다.
- * @author 도형
+ * JWT를 이용하여 자동 로그인합니다.
+ * @author 현웅
  */
+export const axiosLoginWithAccessToken = async (jwt: string) => {
+  // 로그인 시 사용자 OS, 앱 버전, fcmToken 값을 추가로 전달합니다.
+  const OS = Platform.OS;
+  const version = APP_VERSION;
+  const fcmToken = await messaging().getToken();
 
-export const axiosSocialSignUp = async (param: {
-  accountType: string;
-  nickname: string;
-}) => {
   return await customAxios
     .request<StateWrapper<UserInfo>>({
       method: 'POST',
-      url: `v1/${USERS}/social`,
-      data: param,
+      url: `v1/${AUTH}/app/start`,
+      headers: {Authorization: `Bearer ${jwt}`},
+      data: {OS, version, fcmToken},
     })
-    .then(response => response.data)
+    .then(response => {
+      return response.data;
+    })
     .catch(error => {
-      handleAxiosError({error, errorMessage: '회원가입에 실패했습니다'});
+      handleAxiosError({
+        error,
+        errorMessage: '자동 로그인에 실패하였습니다\n다시 로그인 해 주세요',
+      });
       return null;
     });
 };
 
 /**
- * 일반 회원가입합니다.
+ * 회원가입합니다.
+ * 이메일을 이용한 회원가입, 카카오톡 계정을 이용한 간편 로그인을 모두 포괄합니다.
  * @author 도형
  */
 
-export const axiosEmailSignUp = async (param: {
+export const axiosSignUp = async (param: {
+  accountType: TotalAccountType;
   email: string;
-  password: string;
-  passwordConfirm: string;
+  password?: string;
+  passwordConfirm?: string;
   nickname: string;
+  fcmToken: string;
   agreedToPrivacyPolicy: boolean;
   agreedToServiceTerms: boolean;
 }) => {
@@ -233,3 +263,29 @@ export const axiosEmailSignUp = async (param: {
       return null;
     });
 };
+
+// /**
+//  * 일반 회원가입합니다.
+//  * @author 도형
+//  */
+//
+// export const axiosEmailSignUp = async (param: {
+//   email: string;
+//   password: string;
+//   passwordConfirm: string;
+//   nickname: string;
+//   agreedToPrivacyPolicy: boolean;
+//   agreedToServiceTerms: boolean;
+// }) => {
+//   return await customAxios
+//     .request<StateWrapper<UserInfo>>({
+//       method: 'POST',
+//       url: `v1/${USERS}`,
+//       data: param,
+//     })
+//     .then(response => response.data)
+//     .catch(error => {
+//       handleAxiosError({error, errorMessage: '회원가입에 실패했습니다'});
+//       return null;
+//     });
+// };

@@ -1,5 +1,5 @@
 import customAxios, {POPUP} from 'src/Axios/axios.core';
-import {handleAxiosError} from 'src/Util/axios.Util';
+import {handleAxiosError} from 'src/Util/axios.util';
 
 /**
  * 관리자 제보하기를 요청합니다.

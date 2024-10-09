@@ -1,6 +1,6 @@
 import {InformerManagerSchema} from 'src/Schema/Informer/informerManager.schema';
 import customAxios from 'src/Axios/axios.core';
-import {handleAxiosError} from 'src/Util/axios.Util';
+import {handleAxiosError} from 'src/Util/axios.util';
 
 /**
  * 매니저 팝업 생성 요청 함수

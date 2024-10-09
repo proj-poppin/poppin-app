@@ -8,5 +8,5 @@ export interface StateWrapper<T> {
     code: string;
     message: string;
   };
-  data?: T;
+  data: T;
 }

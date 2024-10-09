@@ -4,6 +4,9 @@
  */
 
 export type UserSchema = {
+  /** 유저 _id */
+  id: string;
+
   /** 유저 이미지 URL */
   userImageUrl: string;
 
@@ -21,4 +24,17 @@ export type UserSchema = {
 
   /** 후기 작성하기 아래 숫자 */
   visitedPopupCnt: number;
+
+  isPreferenceSetting: boolean;
+};
+
+export const BlankUser: UserSchema = {
+  id: '',
+  userImageUrl: '',
+  email: '',
+  nickname: '',
+  accountType: '',
+  writtenReviewCnt: 0,
+  visitedPopupCnt: 0,
+  isPreferenceSetting: false,
 };

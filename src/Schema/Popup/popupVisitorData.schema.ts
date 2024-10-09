@@ -1,4 +1,4 @@
-import {CongestionRate} from 'src/types/CongestionRate';
+import {CongestionRate} from 'src/Object/Type/congestionRate.type';
 
 export type VisitorDataDetailSchema = {
   congestionRatio: number;
@@ -11,4 +11,24 @@ export type VisitorDataSchema = {
   weekendAm: VisitorDataDetailSchema;
   weekendPm: VisitorDataDetailSchema;
   satisfaction?: number;
+};
+
+export const BlankVisitorData: VisitorDataSchema = {
+  weekdayAm: {
+    congestionRatio: 0,
+    congestionRate: CongestionRate.Low,
+  },
+  weekdayPm: {
+    congestionRatio: 0,
+    congestionRate: CongestionRate.Low,
+  },
+  weekendAm: {
+    congestionRatio: 0,
+    congestionRate: CongestionRate.Low,
+  },
+  weekendPm: {
+    congestionRatio: 0,
+    congestionRate: CongestionRate.Low,
+  },
+  satisfaction: 0,
 };

@@ -4,6 +4,12 @@
  */
 
 export type UserNotificationSettingSchema = {
+  /** 마지막으로 알림을 확인한 시간 */
+  lastCheck: string;
+
+  // 알림 설정 변경 시간
+  lastUpdatedAt?: string;
+
   /** 푸시 알림을 위한 fcm 토큰 */
   fcmToken: string;
 
@@ -27,6 +33,7 @@ export type UserNotificationSettingSchema = {
 };
 
 export const BlankUserNotificationSetting: UserNotificationSettingSchema = {
+  lastCheck: '',
   fcmToken: '',
   appPush: true,
   nightPush: true,

@@ -3,12 +3,12 @@
  * @author 도형
  */
 export type PopupScrapSchema = {
-  _id: string;
+  id: string;
 
-  // 스크랩 대상 팝업 _id
+  // 스크랩 대상 팝업 id
   popupId: string;
 
-  // 스크랩한 유저 _id
+  // 스크랩한 유저 id
   userId: string;
 
   // 스크랩 일시

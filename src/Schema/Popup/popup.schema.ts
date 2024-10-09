@@ -1,6 +1,12 @@
-import {PreferenceSchema} from 'src/Schema/Preference/preference.schema';
+import {
+  BlankPreference,
+  PreferenceSchema,
+} from 'src/Schema/Preference/preference.schema';
 import {PopupReviewSchema} from 'src/Schema/Popup/popupReview.schema';
-import {VisitorDataSchema} from 'src/Schema/Popup/popupVisitorData.schema';
+import {
+  BlankVisitorData,
+  VisitorDataSchema,
+} from 'src/Schema/Popup/popupVisitorData.schema';
 
 /**
  * 팝업 스토어 스키마
@@ -8,7 +14,7 @@ import {VisitorDataSchema} from 'src/Schema/Popup/popupVisitorData.schema';
  */
 export type PopupSchema = {
   /** 팝업 아이디 */
-  id: number;
+  id: string;
 
   /** 팝업 인스타그램 혹은 홈페이지 링크 */
   homepageLink: string;
@@ -101,4 +107,37 @@ export type PopupSchema = {
 
   /** 팝업스토어에 속한 취향(선호도) 카테고리들 */
   preferences: PreferenceSchema;
+};
+
+export const BlankPopup: PopupSchema = {
+  preferences: BlankPreference,
+  realTimeVisit: 0,
+  id: '',
+  homepageLink: '',
+  isInstagram: false,
+  name: '',
+  introduce: '',
+  address: '',
+  addressDetail: '',
+  entranceFee: '',
+  availableAge: '',
+  parkingAvailable: false,
+  isReservationRequired: false,
+  reopenDemandCnt: 0,
+  interestScrapCnt: 0,
+  viewCnt: 0,
+  createdAt: '',
+  editedAt: '',
+  openDate: '',
+  closeDate: '',
+  openTime: '',
+  closeTime: '',
+  latitude: 0,
+  longitude: 0,
+  operationExcept: '',
+  operationStatus: '',
+  mainImageUrl: '',
+  imageUrls: [],
+  review: [],
+  visitorData: BlankVisitorData,
 };

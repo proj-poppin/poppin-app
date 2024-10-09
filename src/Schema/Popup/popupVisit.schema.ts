@@ -12,6 +12,8 @@ export type PopupVisitSchema = {
   /** 방문한 유저 ID */
   userId: string;
 
+  status: 'VISIT_NOW' | 'VISIT_COMPLETE' | 'RECEIVE_REOPEN_ALERT';
+
   /** 방문 일시 */
   createdAt: string;
 };

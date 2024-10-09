@@ -3,7 +3,7 @@ export type PopupReviewSchema = {
   reviewId: number;
   nickname: string;
   reviewCnt: number;
-  userId: number;
+  userId: string;
   text: string;
   imageUrls: string[];
   isCertificated: boolean;

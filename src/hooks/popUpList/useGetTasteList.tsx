@@ -1,6 +1,6 @@
 import {useState, useEffect, useCallback} from 'react';
 import {GetTastePopUpListResponse} from '../../types/PopUpListData.ts';
-import getTasteList from '../../apis/popup/taste-list.ts';
+import getTasteList from '../../Axios/popup/⭐\uFE0Ftaste-list.ts';
 
 interface TastListState {
   loading: boolean;

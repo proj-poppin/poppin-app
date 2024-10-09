@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import appleAuth from '@invertase/react-native-apple-authentication';
 import {Alert, Platform} from 'react-native';
-import loginSocial from '../../apis/auth/loginSocial.ts';
+import loginSocial from '../../Axios/Auth/⭐\uFE0FloginSocial.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../../redux/slices/user.ts';
 import {useAppDispatch} from '../../redux/stores';

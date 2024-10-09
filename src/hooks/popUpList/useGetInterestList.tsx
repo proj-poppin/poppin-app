@@ -1,7 +1,7 @@
 import {useState, useEffect, useCallback} from 'react';
 import {useDispatch} from 'react-redux';
 import {GetInterestPopUpListResponse} from '../../types/PopUpListData.ts';
-import getInterestList from '../../apis/popup/getInterestList.ts';
+import getInterestList from '../../Axios/popup/⭐\uFE0FgetInterestList.ts';
 import {setInitialInterests} from '../../redux/slices/interestSlice';
 
 interface InterestListState {

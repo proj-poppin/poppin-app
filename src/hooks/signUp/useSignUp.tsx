@@ -1,6 +1,6 @@
 import {useState, useCallback} from 'react';
 import {useSelector} from 'react-redux';
-import basicSignUp from '../../apis/auth/basicSignUp.ts';
+import basicSignUp from '../../Axios/Auth/⭐\uFE0FbasicSignUp.ts';
 import {RootState} from '../../redux/stores/reducer.ts';
 import useSetAccessTokenAndRefreshToken from '../auth/useSetAccessTokenAndRefreshToken.ts';
 

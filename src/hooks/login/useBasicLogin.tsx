@@ -1,5 +1,5 @@
 import {useState, useCallback} from 'react';
-import basicLogin from '../../apis/auth/basicLogin.ts';
+import basicLogin from '../../Axios/Auth/⭐\uFE0FbasicLogin.ts';
 import {useDispatch} from 'react-redux';
 import userSlice from '../../redux/slices/user.ts';
 import {useNavigation} from '@react-navigation/native';

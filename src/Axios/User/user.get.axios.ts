@@ -7,7 +7,7 @@ import {PreferenceSchema} from '../../Schema/Preference/preference.schema';
 
 /**
  * 유저 기본 정보와 특성 정보를 가져옵니다.
- * @author 현웅
+ * @author 도형
  */
 export const axiosGetSelfInfo = async () => {
   return await customAxios
@@ -93,7 +93,7 @@ export async function axiosGetKakaoAccountStatus(param: {email: string}) {
 
 /**
  * 주어진 이메일의 apple 계정 상태를 반환합니다.
- * @author 현웅
+ * @author 도형
  */
 export async function axiosGetAppleAccountStatus(param: {
   email?: string;
@@ -115,7 +115,7 @@ export async function axiosGetAppleAccountStatus(param: {
 
 /**
  * 주어진 이메일의 google 계정 상태를 반환합니다.
- * @author 현웅
+ * @author 도형
  */
 export async function axiosGetGoogleAccountStatus(param: {email: string}) {
   return await customAxios
@@ -134,7 +134,7 @@ export async function axiosGetGoogleAccountStatus(param: {email: string}) {
 
 /**
  * 주어진 이메일의 naver 계정 상태를 반환합니다.
- * @author 현웅
+ * @author 도형
  */
 export async function axiosGetNaverAccountStatus(param: {email: string}) {
   return await customAxios

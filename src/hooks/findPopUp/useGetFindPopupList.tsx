@@ -1,6 +1,6 @@
 import {useState, useEffect, useCallback} from 'react';
-import getFindPopUpList from '../../apis/popup/findPopupList.ts';
-import getPublicFindPopUpList from '../../apis/popup/publicFindPopupList.ts';
+import getFindPopUpList from '../../Axios/popup/⭐\uFE0FfindPopupList.ts';
+import getPublicFindPopUpList from '../../Axios/popup/⭐\uFE0FpublicFindPopupList.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {
   GetClosingState,

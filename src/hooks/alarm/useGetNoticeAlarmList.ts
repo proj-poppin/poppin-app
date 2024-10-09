@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from 'react';
-import getNoticeAlarmList from '../../apis/alarm/getNoticeAlarmList.ts';
+import getNoticeAlarmList from '../../Axios/alarm/getNoticeAlarmList.ts';
 
 export interface AlarmCardInfoProps {
   id: number;

@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import resetPasswordPublic from '../../apis/auth/resetPasswordPublic.ts';
+import {axiosResetPassword} from '../../Axios/auth/auth.axios.ts';
 
 const useResetPasswordPublic = () => {
   const [resetPasswordStatus, setResetPasswordStatus] = useState({
@@ -14,11 +14,11 @@ const useResetPasswordPublic = () => {
     passwordConfirm: string,
   ) => {
     try {
-      const response = await resetPasswordPublic(
+      const response = await axiosResetPassword({
         email,
         password,
         passwordConfirm,
-      );
+      });
       if (response.success) {
         console.log('Password reset successful:', response.data);
         setResetPasswordStatus({

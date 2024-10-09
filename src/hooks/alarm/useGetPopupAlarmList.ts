@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from 'react';
-import getPopupAlarmList from '../../apis/alarm/getPopupAlarmList.ts';
+import getPopupAlarmList from '../../Axios/alarm/getPopupAlarmList.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 export interface AlarmCardInfoProps {

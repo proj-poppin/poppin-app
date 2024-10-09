@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import patchUserSetting from '../../apis/myPage/patchUserSetting.ts';
+import patchUserSetting from '../../Axios/myPage/⭐\uFE0FpatchUserSetting.ts';
 
 interface IUserInfoState {
   loading: boolean;

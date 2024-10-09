@@ -1,5 +1,6 @@
 import {useState, useCallback} from 'react';
-import passwordEmailVerification from '../../apis/auth/passwordEmailVerification.ts';
+import passwordEmailVerification from '../../Axios/Auth/⭐\uFE0FpasswordEmailVerification.ts';
+import {axiosVerifyEmailAuthCode} from '../../Axios/auth/auth.axios.ts';
 
 const usePasswordEmailVerification = (email: string) => {
   const [authCode, setAuthCode] = useState<string>('');
@@ -9,7 +10,7 @@ const usePasswordEmailVerification = (email: string) => {
     setError('');
     if (email) {
       try {
-        const response = await passwordEmailVerification(email);
+        const response = await axiosVerifyEmailAuthCode({email});
         if (response.success && response.data) {
           setAuthCode(response.data.authCode);
         } else {

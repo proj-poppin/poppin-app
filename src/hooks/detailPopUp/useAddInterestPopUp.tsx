@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import addInterestPopUp from '../../apis/popup/addInterestPopUp.ts';
+import addInterestPopUp from '../../Axios/popup/axiosScrapInterestPopup.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 interface AddInterestState {

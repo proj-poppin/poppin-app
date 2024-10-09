@@ -1,7 +1,7 @@
 // src/hooks/review/useCreateReview.tsx
 import {useState} from 'react';
-import createPopUpReview from '../../apis/popup/createReview.tsx';
-import {ImageType} from '../../types/ImageType.ts';
+import createPopUpReview from '../../Axios/popup/⭐\uFE0FcreateReview.tsx';
+import {ImageTypeSchema} from '../../Schema/imageType.schema.ts';
 import {useDispatch} from 'react-redux';
 import {setReviewSubmitted} from '../../redux/slices/reviewSubmittedSlice.ts';
 
@@ -29,7 +29,7 @@ const useCreateReview = () => {
     satisfaction: string,
     congestion: string,
     nickname: string,
-    images: ImageType[],
+    images: ImageTypeSchema[],
     isVisited: boolean,
   ): Promise<CommonResponse<any>> => {
     if (!Array.isArray(images)) {

@@ -1,6 +1,6 @@
 import {useState, useEffect, useCallback} from 'react';
 import {GetPopUpListResponse} from '../../types/PopUpListData.ts';
-import getNewList from '../../apis/popup/newList.ts';
+import getNewList from '../../Axios/popup/⭐\uFE0FnewList.ts';
 
 interface GetNewState {
   loading: boolean;

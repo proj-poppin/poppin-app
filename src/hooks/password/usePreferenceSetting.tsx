@@ -6,7 +6,7 @@ import {
   setPreference,
 } from '../../redux/slices/preferenceSlice.ts';
 import userSlice from '../../redux/slices/user.ts';
-import preferenceSetting from '../../apis/auth/preferenceSetting copy.ts';
+import preferenceSetting from '../../Axios/auth/preferenceSetting copy.ts';
 
 const usePreferenceSetting = () => {
   const dispatch = useDispatch();

@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import blockPopup from '../apis/blockPopup.ts';
+import blockPopup from '../Axios/⭐\uFE0FblockPopup.ts';
 
 interface BlockPopupState {
   loading: boolean;

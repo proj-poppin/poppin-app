@@ -208,7 +208,7 @@ export const axiosLoginWithEmailPassword = async (auth: {
 
 /**
  * JWT를 이용하여 자동 로그인합니다.
- * @author 현웅
+ * @author 도형
  */
 export const axiosLoginWithAccessToken = async (jwt: string) => {
   // 로그인 시 사용자 OS, 앱 버전, fcmToken 값을 추가로 전달합니다.

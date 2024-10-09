@@ -1,5 +1,5 @@
 import {useState, useEffect, useCallback} from 'react';
-import getUser, {GetUserData} from '../../apis/user/getUser';
+import userGetAxios, {GetUserData} from '../../Axios/User/user.get.axios.ts';
 
 interface UserState {
   loading: boolean;
@@ -17,7 +17,7 @@ const useGetUser = () => {
   const fetchUser = useCallback(async () => {
     setUserState(prevState => ({...prevState, loading: true}));
     try {
-      const data = await getUser();
+      const data = await userGetAxios();
       if (data.success) {
         setUserState({loading: false, error: null, data: data.data || null});
       } else {

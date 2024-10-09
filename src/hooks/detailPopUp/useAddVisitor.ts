@@ -1,5 +1,7 @@
 import {useState} from 'react';
-import addVisitor, {AddVisitorResponse} from '../../apis/popup/addVisitor';
+import addVisitor, {
+  AddVisitorResponse,
+} from '../../Axios/popup/⭐\uFE0FaddVisitor';
 
 interface AddVisitorState {
   loading: boolean;

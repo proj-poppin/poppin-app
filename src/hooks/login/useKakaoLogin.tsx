@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {getAccessToken, login} from '@react-native-seoul/kakao-login';
-import loginSocial from '../../apis/auth/loginSocial.ts';
+import loginSocial from '../../Axios/Auth/⭐\uFE0FloginSocial.ts';
 import {useAppDispatch} from '../../redux/stores';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../../redux/slices/user.ts';

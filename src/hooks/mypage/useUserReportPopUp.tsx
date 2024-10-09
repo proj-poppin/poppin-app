@@ -1,6 +1,6 @@
 import {useState} from 'react';
-import {ImageType} from '../../types/ImageType.ts';
-import createUserReportPopUp from '../../apis/myPage/createUserReportPopUp.ts';
+import {ImageTypeSchema} from '../../Schema/imageType.schema.ts';
+import createUserReportPopUp from '../../Axios/myPage/⭐\uFE0FcreateUserReportPopUp.ts';
 
 interface UserReportPopUpInfoState {
   loading: boolean;
@@ -33,7 +33,7 @@ const useUserReportPopUp = () => {
     alcohol: boolean,
     animalPlant: boolean,
     etc: boolean,
-    images: ImageType[],
+    images: ImageTypeSchema[],
   ): Promise<CommonResponse<any>> => {
     setUserReportPopUpInfoState({loading: true, error: null, success: null});
     try {

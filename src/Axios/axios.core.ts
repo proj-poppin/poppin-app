@@ -1,6 +1,7 @@
-import axios, {AxiosResponse, InternalAxiosRequestConfig} from 'axios';
+import axios from 'axios';
 import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {useUserStore} from '../Zustand/User/user.zustand';
 
 /**
  * axios 요청에 공통적으로 사용되는 설정들을 지정해둔 axios 요청 인스턴스입니다.
@@ -18,26 +19,57 @@ export interface CommonResponse<T> {
 }
 
 const customAxios = axios.create({
-  baseURL: `${Config.API_URL}/api/`,
+  baseURL: `http://13.209.155.81/api/`,
   timeout: 5000,
 });
 
+// JSON 데이터 예쁘게 출력하는 함수
+const prettyPrintJson = (json: any) => JSON.stringify(json, null, 2);
+
+// 요청 인터셉터: API 요청 전 로그 출력
 customAxios.interceptors.request.use(config => {
-  const accessToken = EncryptedStorage.getItem('accessToken');
-  if (accessToken) {
+  const accessToken = useUserStore.getState().accessToken;
+  if (accessToken !== '') {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
-  printRequestLog(config);
+
+  // 요청 경로 및 데이터 로그 출력
+  console.log('Making request to:', config.baseURL + config.url);
+  if (config.method === 'get') {
+    console.log('Request Params:', prettyPrintJson(config.params));
+  } else if (config.data) {
+    console.log('Request Body:', prettyPrintJson(config.data));
+  }
+
   return config;
 });
 
+// 응답 인터셉터: API 응답 후 로그 출력
 customAxios.interceptors.response.use(
   response => {
-    // printResponseLog(response);
+    // 응답 로그 출력
+    console.log(
+      'Response from:',
+      response.config.baseURL + response.config.url,
+    );
+    console.log('Response Data:', prettyPrintJson(response.data));
     return response;
   },
   async error => {
     const originalRequest = error.config;
+
+    // 에러 응답 로그 출력
+    // console.error(
+    //   'Error Response from:',
+    //   originalRequest.baseURL + originalRequest.url,
+    // );
+    if (error.response?.data) {
+      // console.error(
+      //   'Error Response Data:',
+      //   prettyPrintJson(error.response.data),
+      // );
+    }
+
     if (
       (error.response?.status === 401 || error.response?.status === 403) &&
       !originalRequest._retry
@@ -82,6 +114,7 @@ export default customAxios;
 export const AUTH = 'auth';
 export const INTEREST = 'interest';
 export const POPUP = 'popup';
+export const DETAIL = 'detail';
 export const REPORTS = 'reports';
 export const USERS = 'users';
 export const NOTI = 'noti';
@@ -96,29 +129,3 @@ export const MANAGER_INFORM = 'manager-inform';
 export const USER_INFORM = 'user-inform';
 export const POPUP_TASTE = 'popup-taste';
 export const RESET_PASSWORD = 'reset-password';
-
-export function printRequestLog(config: InternalAxiosRequestConfig) {
-  console.log('\n=====');
-  console.log('%cRequest', 'color: blue; font-weight: bold;');
-  console.log('Header: ', config.headers);
-  console.log('Method: ', config.method);
-  console.log('URL: ', config.url);
-  console.log('Params: ', config.params);
-  console.log('[Request Body]');
-  console.log(prettyPrintJson(config.data));
-  console.log('=====\n');
-}
-
-export function printResponseLog(response: AxiosResponse) {
-  console.log('\n=====');
-  console.log('%cResponse', 'color: blue; font-weight: bold;');
-  console.log('URL: ', response.config.url);
-  console.log('Header: ', response.config.headers);
-  console.log('Method: ', response.config.method);
-  console.log('Code: ', response.status);
-  console.log('[Response Body]');
-  console.log(prettyPrintJson(response.data));
-  console.log('=====\n');
-}
-
-const prettyPrintJson = (json: any) => JSON.stringify(json, null, 2);

@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import getAlarmSettings from '../../apis/alarm/getAlarmSettings.ts';
+import getAlarmSettings from '../../Axios/alarm/getAlarmSettings.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 interface AlarmSettingsProps {

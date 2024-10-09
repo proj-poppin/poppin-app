@@ -1,6 +1,6 @@
 import {useState, useEffect, useCallback} from 'react';
 import {GetPopUpListResponse} from '../../types/PopUpListData.ts';
-import getClosingList from '../../apis/popup/closingList.ts';
+import getClosingList from '../../Axios/popup/⭐\uFE0FclosingList.ts';
 
 interface GetClosingState {
   loading: boolean;

@@ -1,8 +1,8 @@
 import {useState, useCallback} from 'react';
 import {useAppDispatch} from '../../redux/stores';
 import userSlice from '../../redux/slices/user.ts';
-import logout from '../../apis/auth/logout.ts';
 import {resetInterests} from '../../redux/slices/interestSlice.ts';
+import {axiosLogout} from '../../Axios/auth/auth.axios.ts';
 
 const useLogout = () => {
   const dispatch = useAppDispatch();
@@ -13,7 +13,7 @@ const useLogout = () => {
 
   const handleLogout = useCallback(async () => {
     try {
-      const result = await logout();
+      const result = await axiosLogout();
       if (result && result.success) {
         dispatch(
           userSlice.actions.setAccessTokenAndRefreshToken({

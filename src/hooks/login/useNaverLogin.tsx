@@ -4,7 +4,7 @@ import {useAppDispatch} from '../../redux/stores';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../../redux/slices/user.ts';
 import NaverLogin from '@react-native-seoul/naver-login';
-import loginSocial from '../../apis/auth/loginSocial.ts';
+import loginSocial from '../../Axios/Auth/⭐\uFE0FloginSocial.ts';
 import {useNavigation} from '@react-navigation/native';
 import useSetAccessTokenAndRefreshToken from '../auth/useSetAccessTokenAndRefreshToken.ts';
 import {Alert} from 'react-native';

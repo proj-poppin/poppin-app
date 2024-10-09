@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import addRecommendReview, {
   AddRecommendReviewResponse,
-} from '../../apis/popup/addRecommendReview';
+} from '../../Axios/popup/⭐\uFE0FaddRecommendReview';
 
 interface AddRecommendReviewState {
   loading: boolean;

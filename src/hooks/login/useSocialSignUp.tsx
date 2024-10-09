@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import socialSignUp from '../../apis/auth/socialSignUp.ts';
+import socialSignUp from '../../Axios/Auth/⭐\uFE0FsocialSignUp.ts';
 import useSetAccessTokenAndRefreshToken from '../auth/useSetAccessTokenAndRefreshToken.ts';
 
 function useSocialSignUp() {

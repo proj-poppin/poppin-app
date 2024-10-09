@@ -12,7 +12,7 @@ const {getDefaultConfig} = require('metro-config');
  * #SETTING(svg) svg 파일을 import 할 수 있도록 설정
  * @see https://velog.io/@ricale/React-Native-%EC%97%90-SVG-Icon-%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8-%EC%9E%91%EC%84%B1
  * @see https://bestofreactjs.com/repo/magicismight-react-native-svg-react-react-native-awesome-components
- * @author 현웅
+ * @author 도형
  */
 module.exports = (async () => {
   const {

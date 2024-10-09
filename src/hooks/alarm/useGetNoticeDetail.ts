@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import getNoticeDetail from '../../apis/alarm/getNoticeDetail.ts';
+import getNoticeDetail from '../../Axios/alarm/getNoticeDetail.ts';
 
 interface NoticeDetailProps {
   id: string;

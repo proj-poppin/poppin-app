@@ -1,6 +1,6 @@
 import {useState} from 'react';
-import putPreferenceSetting from '../../apis/auth/putPreferenceSetting.ts';
-import {transformData} from '../../utile/updattePopUpTypesWithServerData.ts';
+import putPreferenceSetting from '../../Axios/Auth/⭐\uFE0FputPreferenceSetting.ts';
+import {transformData} from '../../utility/updattePopUpTypesWithServerData.ts';
 
 interface IPreferenceState {
   loading: boolean;

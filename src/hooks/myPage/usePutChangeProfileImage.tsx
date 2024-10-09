@@ -1,6 +1,6 @@
 import {useState} from 'react';
-import {ImageType} from '../../types/ImageType.ts';
-import putChangeProfileImage from '../../apis/myPage/putChangeProfileImage.ts';
+import {ImageTypeSchema} from '../../Schema/imageType.schema.ts';
+import putChangeProfileImage from '../../Axios/myPage/⭐\uFE0FputChangeProfileImage.ts';
 
 interface ChangeProfileImageInfoState {
   loading: boolean;
@@ -17,7 +17,7 @@ const useChangeProfileImageInfo = () => {
     });
 
   const changeProfileImageInfo = async (
-    profileImage: ImageType,
+    profileImage: ImageTypeSchema,
   ): Promise<CommonResponse<any>> => {
     setModifyInfoState({loading: true, error: null, success: null});
     try {

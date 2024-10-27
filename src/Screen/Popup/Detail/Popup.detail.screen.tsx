@@ -1,11 +1,12 @@
 import React from 'react';
 import {PopupSchema} from 'src/Schema/Popup/popup.schema';
-import {AppStackProps} from '../../Navigator/App.stack.navigator';
+import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {PopupDetailProvider} from './Detail/Provider/Popup.detail.provider';
-import {PopupDetailReviewProvider} from './Detail/Provider/Popup.detail.review.provider';
-import {PopupDetailReportProvider} from './Detail/Provider/Popup.detail.report.provider';
-import {PopupDetailContainer} from './Detail/Popup.detail.container';
+import {PopupDetailProvider} from './Provider/Popup.detail.provider';
+import {PopupDetailReviewProvider} from './Provider/Popup.detail.review.provider';
+import {PopupDetailReportProvider} from './Provider/Popup.detail.report.provider';
+import {PopupDetailContainer} from './Popup.detail.container';
+import {PopupDetailServiceProvider} from './Provider/popup.detail.service.provider';
 
 export type PopupDetailScreenProps = {popup: PopupSchema} | {popupId: string};
 
@@ -21,7 +22,9 @@ export function PopupDetailScreen({
     <PopupDetailProvider>
       <PopupDetailReviewProvider>
         <PopupDetailReportProvider>
-          <PopupDetailContainer params={route.params} />
+          <PopupDetailServiceProvider>
+            <PopupDetailContainer params={route.params} />
+          </PopupDetailServiceProvider>
         </PopupDetailReportProvider>
       </PopupDetailReviewProvider>
     </PopupDetailProvider>

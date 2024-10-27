@@ -46,6 +46,7 @@ export const PopupDetailReportProvider = ({children}: {children: any}) => {
   const popupReportOptions = PopupReportOptions;
 
   const onPressReportOption = (index: number) => {
+    console.log('index', index);
     setSelectedReportOptionIndexes([index]);
   };
 

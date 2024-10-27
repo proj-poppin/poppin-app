@@ -8,7 +8,7 @@ import {themeColors} from '../../../Theme/theme';
  * 아직 popupDetail 정보를 가져오는 중인 경우 보여주는 로딩 화면입니다.
  * @author 도형
  */
-export const VoteDetailLoadingScreen = () => {
+export const PopupDetailLoadingScreen = () => {
   return (
     <Container>
       <ActivityIndicator size={'large'} color={themeColors().purple.main} />

@@ -98,7 +98,6 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
     const popup = await axiosGetPopupById(popupId);
 
     if (popup === null) return;
-    console.log('PopupDetailProvider!!!!!!!', popup);
     setPopupDetail(popup);
     usePopupStore.getState().spreadPopupUpdated(popup);
   };

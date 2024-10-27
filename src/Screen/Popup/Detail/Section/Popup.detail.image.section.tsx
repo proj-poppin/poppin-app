@@ -2,9 +2,9 @@ import React, {useRef} from 'react';
 import {Dimensions, FlatList, Animated, View} from 'react-native';
 import {ExpandingDot} from 'react-native-animated-pagination-dots'; // Importing pagination dots
 import {moderateScale} from 'src/Util';
-import {FastImageContainer} from '../../../Component/Image/FastImage.component';
-import {usePopupDetailContext} from './Provider/Popup.detail.provider';
-import {themeColors} from '../../../Theme/theme';
+import {FastImageContainer} from '../../../../Component/Image/FastImage.component';
+import {usePopupDetailContext} from '../Provider/Popup.detail.provider';
+import {themeColors} from '../../../../Theme/theme';
 
 const screenWidth = Dimensions.get('window').width;
 

@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {View} from 'react-native';
-import UnderlinedTextButton from '../../../Component/UnderlineTextButton';
-import {usePopupDetailContext} from './Provider/Popup.detail.provider';
-import {SectionContainer} from '../../../Unit/View';
-import {H1} from '../../../StyledComponents/Text';
-import {moderateScale} from '../../../Util';
-import {BodyLargeText} from '../../../StyledComponents/Text/bodyLarge.component';
+import UnderlinedTextButton from '../../../../Component/UnderlineTextButton';
+import {usePopupDetailContext} from '../Provider/Popup.detail.provider';
+import {SectionContainer} from '../../../../Unit/View';
+import {H1} from '../../../../StyledComponents/Text';
+import {moderateScale} from '../../../../Util';
+import {BodyLargeText} from '../../../../StyledComponents/Text/bodyLarge.component';
 
 interface PopupDetailTitleSectionProps {
   popupName: string;

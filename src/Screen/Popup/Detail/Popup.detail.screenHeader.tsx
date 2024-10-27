@@ -8,6 +8,7 @@ import shallow from 'zustand/shallow';
 import {useUserStore} from '../../../Zustand/User/user.zustand';
 import {usePopupDetailContext} from './Provider/Popup.detail.provider';
 import {MenuOptionRowProps, ThreeDotMenu} from '../../../Component/Menu';
+import {usePopupDetailServiceContext} from './Provider/popup.detail.service.provider';
 
 export const PopupDetailScreenHeader = () => {
   return (
@@ -43,22 +44,28 @@ const DotMenu = () => {
     shallow,
   );
   const {popupDetail} = usePopupDetailContext();
+  const {blockPopup} = usePopupDetailServiceContext();
 
   const isUserBlocked = userRelation.blockedUserIds.includes(popupDetail?.id);
 
   const onPressReportPopup = () => {
-    if (!checkLoginAndShowModal('POPUP_REPORT')) return;
+    // if (!checkLoginAndShowModal('POPUP_REPORT')) return;
+    navigation.navigate('PopupDetailReportScreen', {
+      popupId: popupDetail?.id,
+    });
     // 신고 로직 추가
   };
 
-  const onPressBlockPopup = () => {
-    if (!checkLoginAndShowModal('POPUP_BLOCK')) return;
-    // 차단 로직 추가
+  const onPressBlockPopup = async () => {
+    console.log('onPressBlockPopup');
+    await blockPopup();
   };
 
   const onPressModifyRequestPopup = () => {
-    if (!checkLoginAndShowModal('POPUP_MODIFY_REQUEST')) return;
-    // 수정 요청 로직 추가
+    navigation.navigate('PopupDetailEditScreen', {
+      popupId: popupDetail?.id,
+      popup: popupDetail,
+    });
   };
 
   const userMenuOptionsRows: MenuOptionRowProps[] = [

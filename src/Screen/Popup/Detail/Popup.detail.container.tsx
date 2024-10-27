@@ -5,14 +5,20 @@ import {usePopupDetailContext} from './Provider/Popup.detail.provider';
 import {usePopupDetailReviewContext} from './Provider/Popup.detail.review.provider';
 import {PopupReviewSchema} from '../../../Schema/Popup/popupReview.schema';
 import {ReviewComponent} from '../../../Component/Popup/Popup.review.component';
-import {PopupDetailScreenProps} from '../Popup.detail.screen';
+import {PopupDetailScreenProps} from './Popup.detail.screen';
 import {FlatList, View} from 'react-native';
 import {moderateScale} from 'src/Util';
-import {VoteDetailLoadingScreen} from './Popup.detail.loading.screen';
+import {PopupDetailLoadingScreen} from './Popup.detail.loading.screen';
 import {PopupDetailScreenHeader} from './Popup.detail.screenHeader';
-import {PopupDetailImageSection} from './Popup.detail.image.section';
-import {PopupDetailTitleSection} from './Popup.detail.title.section';
-import PopupDetailIconSection from './Popup.detail.icon.section';
+import {PopupDetailImageSection} from './Section/Popup.detail.image.section';
+import {PopupDetailTitleSection} from './Section/Popup.detail.title.section';
+import PopupDetailIconSection from './Section/Popup.detail.icon.section';
+import {PopupDetailDividerSection} from './Section/Popup.detail.divider.section';
+import {PopupDetailInfoSection} from './Section/Popup.detail.info.section';
+import {PopupDetailVisitorSection} from './Section/Popup.detail.visitor.section';
+import DividerLine from 'src/Component/DividerLine/DividerLine';
+import {PopupDetailReviewSection} from './Section/Popup.detail.review.section';
+import PopupDetailBottomButtonRowSection from './Section/Popup.detail.button.row.section';
 
 export const PopupDetailContainer = ({
   params,
@@ -38,7 +44,7 @@ export const PopupDetailContainer = ({
   } = usePopupDetailReviewContext();
 
   /**
-   * 팝업 상세 정보와 리뷰를 가져오는 함수
+   * 팝업 상세 정보 상태값을 설정합니다.
    */
   const updatePopupDetailInfo = async () => {
     let popupId = '';
@@ -71,9 +77,7 @@ export const PopupDetailContainer = ({
     }
     //* 2초 이상 페이지에 머무르는 경우 투표 조회를 요청합니다.
     const popupId = 'popup' in params ? params.popup.id : params.popupId;
-    // const makeVoteView = setTimeout(() => viewVote(voteId), 2000);
     return () => {
-      // clearTimeout(makeVoteView);
       clearTimeout(updatePopupInfo);
     };
   }, []);
@@ -120,22 +124,31 @@ export const PopupDetailContainer = ({
         contentContainerStyle={{paddingBottom: moderateScale(120)}}
         ListHeaderComponent={
           loading ? (
-            <VoteDetailLoadingScreen />
+            <PopupDetailLoadingScreen />
           ) : (
             <>
               <PopupDetailImageSection />
               <PopupDetailTitleSection />
               <PopupDetailIconSection />
-              {/*<PopupDetailTitleSection*/}
-              {/*  popupName={popupDetail.name}*/}
-              {/*  popupIntroduce={popupDetail.introduce}*/}
-              {/*/>*/}
+              <PopupDetailDividerSection />
+              <PopupDetailInfoSection />
+              <DividerLine style={[{marginTop: moderateScale(20)}]} />
+              <PopupDetailVisitorSection />
+              <DividerLine
+                style={[
+                  {marginTop: moderateScale(30)},
+                  {marginBottom: moderateScale(30)},
+                ]}
+              />
+              <PopupDetailReviewSection />
             </>
           )
         }
         keyExtractor={keyExtractor}
-        ItemSeparatorComponent={ItemSeparatorComponent}
       />
+      <PopupDetailBottomButtonRowSection
+        onRealTimePress={() => {}}
+        onVisitPress={() => {}}></PopupDetailBottomButtonRowSection>
     </>
   );
 };

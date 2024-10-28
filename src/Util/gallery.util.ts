@@ -13,8 +13,8 @@ export const requestCameraPermissionFromAndroid = async (param?: {
     const permissionRequestResult = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.CAMERA,
       {
-        title: '픽플리에서 카메라/갤러리에 접근할 수 있도록 허용해주세요',
-        message: '권한을 허용하고 투표를 더 풍성하게 만들어보세요!',
+        title: '팝핀에서 카메라/갤러리에 접근할 수 있도록 허용해주세요',
+        message: '권한을 허용하고 팝업스토어를 더 풍성하게 찾아보아요!',
         buttonPositive: '좋아요',
         buttonNeutral: '나중에 할게요',
         buttonNegative: '아니요',
@@ -41,7 +41,6 @@ export const requestCameraPermissionFromAndroid = async (param?: {
  * @param param.requestRationale 권한이 허용되지 않았을 경우 사용자에게 보여줄 권한 요청 창에 표시될 정보
  *
  * @returns Promise<ImagePickerResponse> | undefined
- * @author 원제
  * @author 도형
  */
 export const getGalleryImages = async (param?: {

@@ -10,6 +10,8 @@ import {
 } from '../../Schema/User/userNotificationSetting.schema';
 import {axiosGetSelfInfo} from 'src/Axios/User/user.get.axios';
 import {
+  axiosAppleLogin,
+  axiosKakaoLogin,
   axiosLoginWithEmailPassword,
   axiosLogout,
   axiosSignUp,
@@ -83,6 +85,12 @@ type UserStoreProps = {
     email: string;
     password: string;
   }) => Promise<{success: boolean}>;
+
+  kakaoLogin: (kakaoLoginParam: {email: string}) => Promise<{success: boolean}>;
+
+  appleLogin: (appleLoginParam: {appleUserId: string}) => Promise<{
+    success: boolean;
+  }>;
 
   /**
    * 4종 소셜 로그인 타입과 토큰을 받아 로그인합니다.(Social Login)
@@ -224,6 +232,24 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
     }
     await useUserStore.getState().setLoggedInUserInfo(loginResponse);
 
+    return {success: true};
+  },
+
+  kakaoLogin: async (kakaoLoginParam: {email: string}) => {
+    const loginResponse = await axiosKakaoLogin(kakaoLoginParam);
+    if (loginResponse === null) {
+      return {success: false};
+    }
+    await useUserStore.getState().setLoggedInUserInfo(loginResponse);
+    return {success: true};
+  },
+
+  appleLogin: async (appleLoginParam: {appleUserId: string}) => {
+    const loginResponse = await axiosAppleLogin(appleLoginParam);
+    if (loginResponse === null) {
+      return {success: false};
+    }
+    await useUserStore.getState().setLoggedInUserInfo(loginResponse);
     return {success: true};
   },
 

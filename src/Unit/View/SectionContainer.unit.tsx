@@ -26,6 +26,7 @@ export function SectionContainer({
     <View
       style={[
         {
+          backgroundColor: 'white',
           flex: fullPage ? 1 : undefined,
           paddingHorizontal: fullPage ? 0 : 16,
           justifyContent: alignCenter ? 'center' : undefined,

@@ -10,14 +10,12 @@ import {
   HomeLandingScreen,
   HomeLandingScreenProps,
 } from '../Screen/Home/Landing/Home.landing.screen';
-import {
-  PopupSearchLandingScreen,
-  PopupSearchLandingScreenProps,
-} from '../Screen/PopupSearch/Landing/PopupSearch.landing.screen';
+import {PopupLandingScreen} from '../Screen/Popup/Landing/Popup.landing.screen';
 import {
   PopupLikesLandingScreen,
   PopupLikesLandingScreenProps,
 } from '../Screen/PopupLikes/Landing/PopupLikes.landing.screen';
+
 import {
   MyPageLandingScreen,
   MyPageLandingScreenProps,
@@ -37,7 +35,7 @@ const LandingBottomTab = createBottomTabNavigator<LandingBottomTabProps>();
 
 export type LandingBottomTabProps = {
   HomeLandingScreen: HomeLandingScreenProps;
-  PopupSearchLandingScreen: PopupSearchLandingScreenProps;
+  PopupLandingScreen: PopupLandingScreenProps;
   PopupLikesLandingScreen: PopupLikesLandingScreenProps;
   MyPageLandingScreen: MyPageLandingScreenProps;
 };
@@ -55,14 +53,6 @@ export const LandingBottomTabNavigator = ({
     state => ({homeFeedRef: state.homeFeedRef}),
     shallow,
   );
-  // const { researchListRef } = useResearchLandingScreenStore(
-  //   state => ({ researchListRef: state.researchListRef }),
-  //   shallow,
-  // );
-  // const { voteListRef } = useCommunityLandingScreenStore(
-  //   state => ({ voteListRef: state.recentVoteListRef }),
-  //   shallow,
-  // );
 
   const onPressHome = () => {
     homeFeedRef.current?.scrollToOffset({offset: 0, animated: false});
@@ -71,7 +61,7 @@ export const LandingBottomTabNavigator = ({
   };
 
   const onPressPopupSearch = () => {
-    navigation.navigate('PopupSearchLandingScreen', {});
+    navigation.navigate('PopupLandingScreen', {});
   };
 
   const onPressPopupLikes = () => {
@@ -105,8 +95,8 @@ export const LandingBottomTabNavigator = ({
         })}
       />
       <LandingBottomTab.Screen
-        name={'PopupSearchLandingScreen'}
-        component={PopupSearchLandingScreen}
+        name={'PopupLandingScreen'}
+        component={PopupLandingScreen}
         options={({route}) => ({
           tabBarIcon: ({focused}) => (
             <TabBarIcon
@@ -183,7 +173,6 @@ function TabBarSvgIcon({label, focused}: TabBarIconProps) {
       return <MyPageSymbol size={28} fill={fill} />;
   }
 }
-
 const TabBarIcon__Container = styled.TouchableOpacity`
   position: relative;
   justify-content: center;

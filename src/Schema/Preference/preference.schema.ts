@@ -25,7 +25,7 @@ export const BlankPreference: PreferenceSchema = {
     fashionBeauty: false,
     characters: false,
     foodBeverage: false,
-    webtoonAnimation: false,
+    webtoonAni: false,
     interiorThings: false,
     movie: false,
     musical: false,
@@ -35,6 +35,7 @@ export const BlankPreference: PreferenceSchema = {
     kpop: false,
     alcohol: false,
     animalPlant: false,
+    guitar: false,
   },
   preferenceCompanion: {
     id: 0,

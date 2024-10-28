@@ -13,6 +13,7 @@ const commonThemeColors: CommonThemeColorsType = {
     deep: '#007AFF',
     main: '#0EB5F9',
     mild: '#C3E9F8',
+    selected: '#EDFAFF',
     focused: '#0B8FCA',
   },
   purple: {

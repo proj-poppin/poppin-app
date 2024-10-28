@@ -3,6 +3,10 @@ import create from 'zustand';
 import {axiosLoadInitialData} from 'src/Axios/App/app.axios';
 import {usePopupStore} from '../Popup/popup.zustand';
 import Config from 'react-native-config';
+import {PopupSearchParams} from '../../Object/Type/filtering.type';
+import {PopupSortOrder} from '../../Object/Type/popupSortOrder.type';
+import {usePopupScreenStore} from '../../Screen/Popup/Landing/Popup.landing.zustand';
+import {OperationStatus} from '../../Object/Type/operationStatus.type';
 
 export type HomeLandingSectionType =
   | 'NEWLY_OPENED'
@@ -156,6 +160,52 @@ export const useAppStore = create<AppStoreProps>((set, get) => ({
     console.log('initialData', initialData);
     if (initialData === null) return false;
 
+    // Load initial data for each operation status
+    const notyetTabSearchParams: PopupSearchParams = {
+      operationStatus: OperationStatus.NOTYET,
+      searchName: '',
+      filteringThreeCategories: '000',
+      order: PopupSortOrder.RECENTLY_OPENED,
+      filteringFourteenCategories: '00000000000000',
+      page: 0,
+      size: 10,
+    };
+    const operatingTabSearchParams: PopupSearchParams = {
+      operationStatus: OperationStatus.OPERATING,
+      searchName: '',
+      filteringThreeCategories: '000',
+      order: PopupSortOrder.RECENTLY_OPENED,
+      filteringFourteenCategories: '00000000000000',
+      page: 0,
+      size: 10,
+    };
+    const terminatedTabSearchParams: PopupSearchParams = {
+      operationStatus: OperationStatus.TERMINATED,
+      searchName: '',
+      filteringThreeCategories: '000',
+      order: PopupSortOrder.RECENTLY_OPENED,
+      filteringFourteenCategories: '00000000000000',
+      page: 0,
+      size: 10,
+    };
+
+    // Load for each operation status
+    await usePopupScreenStore
+      .getState()
+      .getFilteredPopupStores(OperationStatus.NOTYET, operatingTabSearchParams);
+    await usePopupScreenStore
+      .getState()
+      .getFilteredPopupStores(
+        OperationStatus.OPERATING,
+        operatingTabSearchParams,
+      );
+    await usePopupScreenStore
+      .getState()
+      .getFilteredPopupStores(
+        OperationStatus.TERMINATED,
+        terminatedTabSearchParams,
+      );
+
     usePopupStore.getState().setInitialPopupStores({
       recommendedPopupStores: initialData.data.recommendedPopupStores,
       popularTop5PopupStores: initialData.data.popularTop5PopupStores,
@@ -173,26 +223,6 @@ export const useAppStore = create<AppStoreProps>((set, get) => ({
       popularTop5PopupStores: currentState.popularTop5PopupStores,
       recommendedPopupStores: currentState.recommendedPopupStores,
     });
-    // useOperationStore.getState().setInitialOperationData({
-    //   banners: initialData.banners,
-    //   events: initialData.events,
-    //   notices: initialData.notices,
-    //   products: initialData.products,
-    //   dailyContent: initialData.dailyContent,
-    //   pincruxAdvertisements: initialData.pincruxAdvertisements,
-    // });
-    // useResearchStore.getState().setInitialResearches({
-    //   homeResearches: initialData.homeResearches,
-    //   researches: initialData.researches,
-    //   fixedResearches: initialData.fixedResearches,
-    // });
-    // useVoteStore.getState().setInitialVotes({
-    //   homeVotes: initialData.homeVotes,
-    //   votes: initialData.votes,
-    //   trendingVote: initialData.trendingVote,
-    //   hotVotes: initialData.hotVotes,
-    //   fixedVotes: initialData.fixedVotes,
-    // });
     return true;
   },
 

@@ -24,10 +24,12 @@ type PopupStoreProps = {
   newlyOpenedPopupStores: PopupSchema[];
   closingSoonPopupStores: PopupSchema[];
   searchedPopupStores: PopupSchema[];
+  pageInfo: PageInfoType; // Add pageInfo here
   interestedPopupStores: PopupSchema[];
 
   popupScraps: PopupScrapSchema[];
   popupVisits: PopupVisitSchema[];
+  previousSearchParams: PopupSearchParams;
   setPopupVisits: (visitations: PopupVisitSchema[]) => void;
 
   scrappedPopupStores: PopupSchema[];
@@ -61,6 +63,8 @@ type PopupStoreProps = {
 
   /** 최신 팝업 정보를 다시 가져옵니다 */
   refreshPopupStores: () => Promise<void>;
+
+  loadMorePopupStores: () => Promise<void>;
 
   /** 서버에 존재하는 모든 팝업을 가져왔는지 여부 */
   noMoreOlderPopupStores: boolean;
@@ -104,15 +108,58 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
   closingSoonPopupStores: [],
   recommendedPopupStores: [],
   interestedPopupStores: [],
-  searchedPopupStores: [],
+  searchedPopupStores: [] as PopupSchema[],
+  pageInfo: {} as PageInfoType,
   popupScraps: [] as PopupScrapSchema[],
   popupVisits: [] as PopupVisitSchema[],
+  previousSearchParams: {} as PopupSearchParams,
   setPopupVisits: (visitations: PopupVisitSchema[]) => {
     set({popupVisits: visitations});
   },
   scrappedPopupStores: [] as PopupSchema[],
   visitedPopupStores: [] as PopupSchema[],
 
+  getFilteredPopupStores: async (param: PopupSearchParams) => {
+    try {
+      const response = await axiosGetPopupsBySearchFiltering(param);
+      if (response !== null) {
+        set({
+          searchedPopupStores: response.items,
+          pageInfo: response.pageInfo,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching popup stores:', error);
+    }
+  },
+  loadMorePopupStores: async () => {
+    const {pageInfo, searchedPopupStores} = get();
+    if (pageInfo.isLast) {
+      console.log('No more pages to load.');
+      return;
+    }
+
+    // 이전에 사용한 검색 조건을 가져와 페이지네이션 정보를 덧붙입니다.
+    const previousSearchParams = get().previousSearchParams;
+
+    // 페이지 번호를 증가시켜 다음 페이지 데이터를 요청합니다.
+    const param: PopupSearchParams = {
+      ...previousSearchParams, // 이전 검색 조건 유지
+      page: pageInfo.page + 1, // 다음 페이지 번호
+    };
+
+    try {
+      const response = await axiosGetPopupsBySearchFiltering(param);
+      if (response !== null) {
+        set({
+          searchedPopupStores: [...searchedPopupStores, ...response.items],
+          pageInfo: response.pageInfo,
+        });
+      }
+    } catch (error) {
+      console.error('Error loading more popup stores:', error);
+    }
+  },
   setInitialPopupStores: (param: {
     searchedPopupStores: PopupSchema[];
     popularTop5PopupStores: PopupSchema[];
@@ -148,9 +195,9 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
   },
 
   togglePopupScrap: async (popupId: string) => {
-    if (!useUserStore.getState().isLoggedIn()) {
-      return {updatedPopup: null};
-    }
+    // if (!useUserStore.getState().isLoggedIn()) {
+    //   return {updatedPopup: null};
+    // }
     let updatedPopup: PopupSchema | null = null;
     const previousPopupScrap = get().interestedPopupStores.find(
       popup => popupId === popup.id,
@@ -195,40 +242,32 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
 
     let response: {
       pageInfo: PageInfoType;
-      updatedPopupStores: PopupSchema[];
+      items: PopupSchema[];
     } | null = null;
-    if (get().searchedPopupStores.length === 0) {
-      Alert.alert('팝업이 없습니다1.');
+
+    try {
       response = await axiosGetPopupsBySearchFiltering(param);
-    } else {
-      const lastPopupId = get().searchedPopupStores.slice(-1)[0].id;
+      if (response === null) {
+        return;
+      }
 
-      if (!Boolean(lastPopupId)) return;
+      const olderPopupStores = response.items;
 
-      Alert.alert('팝업이 없습니다2.');
-
-      response = await axiosGetPopupsBySearchFiltering({
-        ...param,
-        lastPopupId,
-      });
+      if (olderPopupStores.length === 0) {
+        set({noMoreOlderPopupStores: true});
+      } else {
+        set({
+          searchedPopupStores: appendVoteListItem(
+            olderPopupStores,
+            get().searchedPopupStores,
+          ),
+          pageInfo: response.pageInfo,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching older popup stores:', error);
     }
-
-    if (response === null) {
-      return;
-    }
-
-    const olderPopupStores = response.updatedPopupStores; // updatedPopupStores만 추출
-
-    set({
-      searchedPopupStores: appendVoteListItem(
-        olderPopupStores,
-        get().searchedPopupStores,
-      ),
-    });
-
-    return;
   },
-
   // * Spread
   // * 업데이트된 팝업 정보 전파
   spreadPopupUpdated: (popup: PopupSchema) => {

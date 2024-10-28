@@ -150,7 +150,7 @@ export const axiosLogout = async () => {
 
 /**
  * 카카오톡 계정으로 간편 로그인합니다.
- * @author 현웅
+ * @author 도형
  */
 export const axiosKakaoLogin = async (param: {email: string}) => {
   // 로그인 시 사용자 OS, 앱 버전, fcmToken 값을 추가로 전달합니다.

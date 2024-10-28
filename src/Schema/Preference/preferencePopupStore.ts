@@ -4,8 +4,8 @@
  */
 export type PreferencePopupStore = {
   id: number;
-  market: boolean; // 마켓 선호 여부
-  display: boolean; // 디스플레이 선호 여부
-  experience: boolean; // 경험 선호 여부
-  wantFree: boolean; // 무료 혜택 선호 여부
+  market: boolean; // 소비형
+  display: boolean; // 전시형
+  experience: boolean; // 체험형
+  wantFree: boolean; // 무료였으면 좋겠어요
 };

@@ -44,7 +44,25 @@ import {AlarmNotificationTabScreen} from '../Screen/Notification/Alarm.notificat
 import {
   PopupDetailScreen,
   PopupDetailScreenProps,
-} from '../Screen/Popup/Popup.detail.screen';
+} from '../Screen/Popup/Detail/Popup.detail.screen';
+
+import {PopupDetailReportScreen} from 'src/Screen/Popup/Report/Popup.detail.report.screen';
+
+import '../Screen/Popup/Landing/Popup.landing.screen';
+import PopupDetailEditScreen from '../Screen/Popup/Report/Popup.detail.edit.screen';
+import PopupDetailReviewWriteScreen from '../Screen/Popup/Review/Popup.detail.review.write.screen';
+import {
+  AuthLandingScreen,
+  AuthLandingScreenProps,
+} from '../Screen/Auth/Landing/Auth.landing.Screen';
+import {
+  SignupScreen,
+  SignupScreenProps,
+} from '../Screen/Auth/Signup/Auth.signup.screen';
+import {
+  LoginScreen,
+  LoginScreenProps,
+} from '../Screen/Auth/Login/Auth.login.screen';
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
@@ -56,6 +74,13 @@ export type AppStackProps = {
   SplashScreen: SplashScreenProps;
   // 앱 업데이트 강제 페이지
   ForceUpdateScreen: ForceUpdateScreenProps;
+
+  AuthLandingScreen: AuthLandingScreenProps;
+
+  LoginScreen: LoginScreenProps;
+
+  SignupScreen: SignupScreenProps;
+
   // 각 서비스별 랜딩 페이지 네비게이터
   LandingBottomTabNavigator: LandingBottomTabProps;
 
@@ -68,6 +93,12 @@ export type AppStackProps = {
   AlarmNotificationDetailScreen: AlarmNotificationDetailScreenProps;
 
   PopupDetailScreen: PopupDetailScreenProps;
+
+  PopupDetailReportScreen: PopupDetailScreenProps;
+
+  PopupDetailEditScreen: PopupDetailScreenProps;
+
+  PopupDetailReviewWriteScreen: PopupDetailScreenProps;
 };
 
 const AppStack = createNativeStackNavigator<AppStackProps>();
@@ -165,7 +196,7 @@ const AppStackScreen = () => {
   useEffect(() => {
     //* background 상태에서 푸시 알림으로 진입한 경우: 곧바로 해당 화면으로 이동
     messaging().onNotificationOpenedApp(remoteMessage => {
-      const pushNotification = remoteMessage as PushNotification;
+      const pushNotification = remoteMessage as unknown as PushNotification;
       axiosCheckNotification(pushNotification.data.notificationId);
       // makeFirebaseLogEvent(APP_LOGS.goto_app_by_push(pushNotification.data));
       // navigateInAppScreen({navigation, destination: pushNotification.data});
@@ -177,7 +208,7 @@ const AppStackScreen = () => {
       .getInitialNotification()
       .then(remoteMessage => {
         if (remoteMessage) {
-          const pushNotification = remoteMessage as PushNotification;
+          const pushNotification = remoteMessage as unknown as PushNotification;
           axiosCheckNotification(pushNotification.data.notificationId);
           // makeFirebaseLogEvent(
           //   APP_LOGS.open_app_by_push(pushNotification.data),
@@ -188,7 +219,7 @@ const AppStackScreen = () => {
 
     //* foreground 상태에서 푸시 알람을 받은 경우: 상단에 토스트메세지를 띄웁니다
     const unsubscribe = messaging().onMessage(async pushNotification => {
-      const message = pushNotification as PushNotification;
+      const message = pushNotification as unknown as PushNotification;
       if (message.notification) {
         const {title, body} = message.notification;
         const data = message.data;
@@ -298,6 +329,25 @@ const AppStackScreen = () => {
       />
       {/* 카카오톡 공유하기 링크를 통해 앱 접근 시 자동으로 이동하는 Screen */}
       <AppStack.Screen name="KakaoLinkScreen" component={KakaoLinkScreen} />
+      {/* Auth 관련 Screen 그룹 */}
+      <AppStack.Group>
+        <AppStack.Screen
+          name="AuthLandingScreen"
+          component={AuthLandingScreen}
+        />
+        <AppStack.Screen name="LoginScreen" component={LoginScreen} />
+        <AppStack.Screen name="SignupScreen" component={SignupScreen} />
+        {/*<AppStack.Screen*/}
+        {/*  name="AuthPasswordResetScreen"*/}
+        {/*  component={AuthPasswordResetScreen}*/}
+        {/*/>*/}
+        {/*<AppStack.Screen name="LoginScreen" component={LoginScreen} />*/}
+        {/*<AppStack.Screen name="SignupScreen" component={SignupScreen} />*/}
+        {/*<AppStack.Screen*/}
+        {/*  name="AuthPasswordResetScreen"*/}
+        {/*  component={AuthPasswordResetScreen}*/}
+        {/*/>*/}
+      </AppStack.Group>
       {/* 랜딩 페이지 BottomTab Navigator */}
       <AppStack.Screen
         name="LandingBottomTabNavigator"
@@ -320,6 +370,18 @@ const AppStackScreen = () => {
         <AppStack.Screen
           name={'PopupDetailScreen'}
           component={PopupDetailScreen}
+        />
+        <AppStack.Screen
+          name={'PopupDetailEditScreen'}
+          component={PopupDetailEditScreen}
+        />
+        <AppStack.Screen
+          name={'PopupDetailReportScreen'}
+          component={PopupDetailReportScreen}
+        />
+        <AppStack.Screen
+          name={'PopupDetailReviewWriteScreen'}
+          component={PopupDetailReviewWriteScreen}
         />
       </AppStack.Group>
     </AppStack.Navigator>

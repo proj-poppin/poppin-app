@@ -17,6 +17,8 @@ import HomeLandingPopupSection from './Section/Home.landing.popup.section';
 import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
 import {useHomeLandingScreenStore} from './Home.landing.zustand';
 
+export type HomeLandingScreenProps = {};
+
 export const HomeLandingScreen = ({
   route,
   navigation,
@@ -90,6 +92,7 @@ export const HomeLandingScreen = ({
         <ActionPromptBox
           boxType="LOGIN"
           onPress={() => {
+            navigation.navigate('AuthLandingScreen');
             // 로그인 화면으로 이동하는 로직 추가
           }}
         />

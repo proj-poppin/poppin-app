@@ -7,6 +7,7 @@ export type CommonThemeColorsType = {
     deep: string;
     main: string;
     mild: string;
+    selected: string;
     focused: string;
   };
 

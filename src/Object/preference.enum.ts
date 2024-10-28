@@ -42,6 +42,8 @@ export function getPreferenceTitle(key: string): string {
       return '🍷 주류';
     case 'animalPlant':
       return '🪴 동물/식물';
+    case 'guitar':
+      return '🎸 기타';
 
     // WHO_WITH options
     case 'solo':

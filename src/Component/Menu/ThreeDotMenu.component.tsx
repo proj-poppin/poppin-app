@@ -13,7 +13,7 @@ import {themeColors} from '../../Theme/theme';
 
 /**
  * 3점 버튼 메뉴 컴포넌트입니다.
- * 프로젝트, 투표 상세 페이지 헤더 메뉴, (대)댓글 옵션 등에 사용됩니다.
+ * 메뉴 선택지들을 인자로 받아 3점 버튼을 누르면 메뉴가 나타납니다.
  *
  * @param menuOptions 메뉴 선택지들
  * @param triggerIcon 메뉴 열림 버튼 아이콘

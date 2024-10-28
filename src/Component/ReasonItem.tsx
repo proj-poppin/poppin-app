@@ -1,7 +1,7 @@
 import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import globalColors from '../styles/color/globalColors.ts';
 import Check from 'src/Resource/svg/selected-option-white-check.svg';
+import {themeColors} from '../Theme/theme';
 
 // Define types for the props
 interface ReasonItemProps {
@@ -15,7 +15,7 @@ const ReasonItem: React.FC<ReasonItemProps> = ({isSelected, onClicked}) => {
       <View
         style={[
           styles.circle,
-          isSelected && {backgroundColor: globalColors.purple},
+          isSelected && {backgroundColor: themeColors().purple.main},
         ]}
       />
       {isSelected && <Check style={{position: 'absolute', top: 7, left: 7}} />}
@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: globalColors.purple,
-    backgroundColor: globalColors.white,
+    borderColor: themeColors().purple.main,
+    backgroundColor: themeColors().grey.white,
   },
   reasonText: {
     fontSize: 16,

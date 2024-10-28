@@ -21,14 +21,15 @@ const UnderlinedTextButton: React.FC<UnderlinedTextButtonProps> = ({
 };
 
 // 스타일드 컴포넌트
-const ButtonPressable = styled.Pressable`
+const ButtonPressable = styled.TouchableOpacity`
+  opacity: 0.7;
   margin-top: ${moderateScale(10)}px;
 `;
 
 const ButtonText = styled.Text`
   text-decoration-line: underline;
   color: ${themeColors().grey.main};
-  font-size: ${moderateScale(14)}px;
+  font-size: ${moderateScale(13)}px;
   font-weight: 400;
 `;
 

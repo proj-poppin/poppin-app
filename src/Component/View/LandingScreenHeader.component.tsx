@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleProp, ViewStyle} from 'react-native';
+import {StyleProp, ViewStyle, Pressable} from 'react-native';
 import styled from 'styled-components/native';
 import {moderateScale} from 'src/Util';
 
@@ -9,16 +9,20 @@ export const LandingScreenHeader = ({
   title,
   LeftComponents,
   RightComponents,
+  onRightPress, // 추가된 onPress 함수
 }: {
   style?: StyleProp<ViewStyle>;
   title?: string;
   LeftComponents?: JSX.Element;
   RightComponents?: JSX.Element;
+  onRightPress?: () => void; // 추가된 onPress 타입 정의
 }) => {
   return (
     <Container style={[{backgroundColor: '#ffffff'}, style]}>
       {LeftComponents ? LeftComponents : <TitleText>{title}</TitleText>}
-      {RightComponents}
+      {RightComponents && (
+        <Pressable onPress={onRightPress}>{RightComponents}</Pressable>
+      )}
     </Container>
   );
 };

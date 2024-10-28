@@ -1,53 +1,69 @@
 import React from 'react';
 import {Text, StyleSheet, View, Pressable} from 'react-native';
-import FilterSvg from 'src/Resource/svg/filter-icon.svg';
-import globalColors from '../../styles/color/globalColors';
 import LinearGradient from 'react-native-linear-gradient';
+import {themeColors} from 'src/Theme/theme';
 
-interface FilterSettingsButtonProps {
-  onPress: any;
-  isSetting: boolean;
+interface GradientButtonProps {
+  onPress: () => void;
+  isSelected: boolean;
+  selectedButtonName?: string;
+  unSelectedButtonName?: string;
+  useOptionalNames?: boolean; // Optional parameter to use button names
+  icon?: React.ReactNode; // Optional icon component
 }
 
-const FilterSettingsButton: React.FC<FilterSettingsButtonProps> = ({
+const GradientButton: React.FC<GradientButtonProps> = ({
   onPress,
-  isSetting,
+  isSelected,
+  selectedButtonName = 'Selected',
+  unSelectedButtonName = 'Unselected',
+  useOptionalNames = false,
+  icon,
 }) => {
+  const buttonText = useOptionalNames
+    ? isSelected
+      ? selectedButtonName
+      : unSelectedButtonName
+    : isSelected
+    ? '필터 적용'
+    : '필터 설정';
+
   return (
-    <Pressable onPress={onPress}>
-      {isSetting ? (
-        <LinearGradient
-          colors={globalColors.blueToPurpleGradient}
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 1}}
-          style={styles.gradientBorder}>
-          <View style={styles.innerContent}>
-            <View style={styles.iconContainer}>
-              <FilterSvg />
+    <View style={styles.container}>
+      <Pressable onPress={onPress}>
+        {isSelected ? (
+          <LinearGradient
+            colors={themeColors().gradient.purpleBlue}
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 1}}
+            style={styles.gradientBorder}>
+            <View style={styles.innerContent}>
+              {icon && <View style={styles.iconContainer}>{icon}</View>}
+              <Text style={styles.text}>{buttonText}</Text>
             </View>
-            <Text style={styles.text}>필터 적용</Text>
+          </LinearGradient>
+        ) : (
+          <View style={styles.button}>
+            {icon && <View style={styles.iconContainer}>{icon}</View>}
+            <Text style={styles.text}>{buttonText}</Text>
           </View>
-        </LinearGradient>
-      ) : (
-        <View style={styles.button}>
-          <View style={styles.iconContainer}>
-            <FilterSvg />
-          </View>
-          <Text style={styles.text}>필터 설정</Text>
-        </View>
-      )}
-    </Pressable>
+        )}
+      </Pressable>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    height: 35,
+    width: 90,
+  },
   button: {
     flexDirection: 'row',
-    backgroundColor: globalColors.component,
+    backgroundColor: themeColors().grey.component,
     borderRadius: 35,
     paddingVertical: 8,
     paddingHorizontal: 15,
-    margin: 5,
     height: 35,
     alignItems: 'center',
     justifyContent: 'center',
@@ -58,18 +74,18 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     flexDirection: 'row',
-    paddingRight: 10, // space between icon and text
+    paddingRight: 10,
   },
   text: {
-    color: globalColors.black,
+    color: 'black',
   },
   gradientBorder: {
     borderRadius: 35,
-    padding: 1.5, // Set padding for the gradient border
+    padding: 1.5,
   },
   innerContent: {
-    borderRadius: 33.5,
-    backgroundColor: globalColors.component,
+    backgroundColor: themeColors().grey.component,
+    borderRadius: 35,
     paddingVertical: 8,
     paddingHorizontal: 15,
     height: 35,
@@ -83,4 +99,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FilterSettingsButton;
+export default GradientButton;

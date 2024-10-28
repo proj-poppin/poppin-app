@@ -5,6 +5,7 @@ import {
   ViewStyle,
   Modal,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 /**
@@ -67,8 +68,7 @@ export const BlackBackgroundModal = ({
       transparent
       animationType="slide"
       {...props}>
-      <TouchableOpacity
-        activeOpacity={1}
+      <TouchableWithoutFeedback
         style={[
           {
             position: 'relative',
@@ -87,7 +87,7 @@ export const BlackBackgroundModal = ({
             : undefined
         }>
         {children}
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };

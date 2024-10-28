@@ -11,12 +11,11 @@ import {
   Alert,
   Linking,
 } from 'react-native';
-import PlusSvg from '../assets/icons/plus.svg';
+import PlusSvg from 'src/Resource/svg/image-container-plus-icon.svg';
 import ImageDeleteSvg from 'src/Resource/svg/image-container-delete-icon.svg';
-import globalColors from '../styles/color/globalColors.ts';
-import {requestGalleryPermissions} from '../utility/function/requestGalleryPermission.ts';
 import FastImage from 'react-native-fast-image';
-
+import {themeColors} from '../Theme/theme';
+import {requestGalleryPermissions} from '../Util/temp.gallery.util';
 const ImageContainerRow = ({
   selectedImages,
   handleSelectImages,
@@ -76,7 +75,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addImageButton: {
-    borderColor: globalColors.component,
+    borderColor: themeColors().grey.component,
     borderWidth: 2,
     borderRadius: 20,
     justifyContent: 'center',
@@ -92,7 +91,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   addImageText: {
-    color: globalColors.font,
+    color: themeColors().grey.main,
     paddingTop: 8,
     textAlign: 'center',
   },

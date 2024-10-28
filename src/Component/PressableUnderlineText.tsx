@@ -1,61 +1,55 @@
 import React from 'react';
-import {View, Text, Pressable, StyleSheet} from 'react-native';
-import globalColors from '../styles/color/globalColors.ts';
+import {View, Pressable} from 'react-native';
+import styled from 'styled-components/native';
+import {themeColors} from '../Theme/theme';
+import {BodyMediumText} from '../StyledComponents/Text/bodyMedium.component';
+import {moderateScale} from '../Util';
 
 // Props 타입 정의
 interface TermsAndPrivacyPolicyAgreementProps {
-  onLocationPrivacyPolicyPress: () => void;
   onPrivacyPolicyPress: () => void;
   onTermsOfServicePress: () => void;
 }
 
 const TermsAndPrivacyPolicyAgreement: React.FC<
   TermsAndPrivacyPolicyAgreementProps
-> = ({
-  onLocationPrivacyPolicyPress,
-  onPrivacyPolicyPress,
-  onTermsOfServicePress,
-}) => {
+> = ({onPrivacyPolicyPress, onTermsOfServicePress}) => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.infoText}>
+    <Container>
+      <InfoText>
         회원가입을 완료할 시,{' '}
-        <Pressable onPress={onLocationPrivacyPolicyPress}>
-          <Text style={styles.link}>위치 정보</Text>
-        </Pressable>
-        <Text style={styles.infoText}> 및 </Text>
         <Pressable onPress={onPrivacyPolicyPress}>
-          <Text style={styles.link}>개인정보 처리방침,</Text>
+          <TextWithUnderline>위치 정보 및 개인정보 처리방침</TextWithUnderline>
         </Pressable>
-        <Text style={styles.infoText} />
         <Pressable onPress={onTermsOfServicePress}>
-          <Text style={styles.link}>서비스 이용약관</Text>
+          <TextWithUnderline>서비스 이용약관</TextWithUnderline>
         </Pressable>
-        <Text style={styles.infoText}>에 동의하게 됩니다.</Text>
-      </Text>
-    </View>
+        <InfoText>에 동의하게 됩니다.</InfoText>
+      </InfoText>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 20,
-    alignItems: 'center',
-    paddingHorizontal: 16,
-  },
-  infoText: {
-    textAlign: 'center',
-    color: globalColors.font,
-    fontSize: 14,
-    lineHeight: 22,
-    fontWeight: '200',
-  },
-  link: {
-    textDecorationLine: 'underline',
-    color: globalColors.font,
-    fontSize: 14,
-    fontWeight: '200',
-  },
-});
+const Container = styled.View`
+  margin-top: 20px;
+  align-items: center;
+  padding-horizontal: 16px;
+`;
+
+const InfoText = styled(BodyMediumText)`
+  text-align: center;
+  color: ${themeColors().grey.main};
+  font-size: ${moderateScale(12)}px;
+  line-height: ${moderateScale(20)}px;
+  font-weight: 200;
+`;
+
+const TextWithUnderline = styled(BodyMediumText)`
+  color: ${themeColors().grey.main};
+  font-size: ${moderateScale(12)}px;
+  font-weight: 200;
+  text-decoration: underline;
+  text-decoration-color: ${themeColors().grey.main};
+`;
 
 export default TermsAndPrivacyPolicyAgreement;

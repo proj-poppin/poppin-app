@@ -14,7 +14,7 @@ import {
 } from 'src/Object/Enum/account.type';
 import {NotificationSchema} from 'src/Schema/User/notification.schema';
 import {UserNoticeSchema} from 'src/Schema/User/userNotice.schema';
-
+import {btoa, atob} from 'react-native-quick-base64';
 export type LoginResponse = StateWrapper<UserInfo>;
 
 export type UserActivities = {
@@ -37,6 +37,7 @@ type UserInfo = {
 
 /**
  * 일반 회원가입시, 비밀번호 재설정시 이메일로 인증번호를 전송합니다.
+ * 인증코드를 서버에서 검증받는 API도 개발해야하나 일단 보류합니다.
  * @author 도형
  */
 export const axiosVerifyEmailAuthCode = async (param: {email: string}) => {
@@ -148,6 +149,51 @@ export const axiosLogout = async () => {
 };
 
 /**
+ * 카카오톡 계정으로 간편 로그인합니다.
+ * @author 현웅
+ */
+export const axiosKakaoLogin = async (param: {email: string}) => {
+  // 로그인 시 사용자 OS, 앱 버전, fcmToken 값을 추가로 전달합니다.
+  const OS = Platform.OS;
+  const version = APP_VERSION;
+  const fcmToken = await messaging().getToken();
+
+  return await customAxios
+    .request<LoginResponse>({
+      method: 'POST',
+      url: `${AUTH}/kakao-login`,
+      data: {...param, OS, version, fcmToken},
+    })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      handleAxiosError({error, errorMessage: '로그인에 실패하였습니다'});
+      return null;
+    });
+};
+
+export const axiosAppleLogin = async (param: {appleUserId: string}) => {
+  const OS = Platform.OS;
+  const version = APP_VERSION;
+  const fcmToken = await messaging().getToken();
+
+  return await customAxios
+    .request<LoginResponse>({
+      method: 'POST',
+      url: `${AUTH}/apple-login`,
+      data: {...param, OS, version, fcmToken},
+    })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      handleAxiosError({error, errorMessage: '로그인에 실패하였습니다'});
+      return null;
+    });
+};
+
+/**
  * 4종 소셜로그인으로 간편로그인합니다
  * @author 도형
  */
@@ -178,29 +224,34 @@ export const axiosSocialLogin = async (param: {
     });
 };
 
+export const testFcmToken =
+  'fpKiorjzKUyRnTLoaPMQxL:APA91bGofOxiZ0M-RzFZ7T-1rlKsiqjuDuPdYulvWwx3TFMFC7QAeG9oGrPMAx-_aMZ3u1PF3l9w9vp33-AWB6NUYXAt3sqWyEeE-EnDQcc8h3dM5hla-INJc4ClqfNuteMOMm7R6nwd';
+
 /**
  * 이메일과 비밀번호를 이용해 로그인합니다(일반 로그인).
  * @author 도형
  */
+
 export const axiosLoginWithEmailPassword = async (auth: {
   email: string;
   password: string;
 }) => {
-  const fcmToken = await messaging().getToken();
+  // const fcmToken = await messaging().getToken();
 
   return await customAxios
     .request<LoginResponse>({
       method: 'POST',
-      url: `v1/${AUTH}/login`,
+      url: `v1/${AUTH}/sign-in`,
       headers: {
         Authorization: `Basic ${btoa(`${auth.email}:${auth.password}`)}`,
       },
-      data: {fcmToken},
+      data: {testFcmToken},
     })
     .then(response => {
       return response.data;
     })
     .catch(error => {
+      console.log('error', error);
       handleAxiosError({error, errorMessage: '로그인에 실패했습니다'});
       return null;
     });
@@ -214,14 +265,14 @@ export const axiosLoginWithAccessToken = async (jwt: string) => {
   // 로그인 시 사용자 OS, 앱 버전, fcmToken 값을 추가로 전달합니다.
   const OS = Platform.OS;
   const version = APP_VERSION;
-  const fcmToken = await messaging().getToken();
-
+  // const fcmToken = await messaging().getToken();
+  const fcmToken = testFcmToken;
   return await customAxios
     .request<StateWrapper<UserInfo>>({
       method: 'POST',
       url: `v1/${AUTH}/app/start`,
       headers: {Authorization: `Bearer ${jwt}`},
-      data: {OS, version, fcmToken},
+      data: {OS, version, testFcmToken},
     })
     .then(response => {
       return response.data;

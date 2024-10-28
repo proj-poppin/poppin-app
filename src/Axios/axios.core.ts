@@ -19,7 +19,7 @@ export interface CommonResponse<T> {
 }
 
 const customAxios = axios.create({
-  baseURL: `http://13.209.155.81/api/`,
+  baseURL: `http://3.36.136.115/api/`,
   timeout: 5000,
 });
 
@@ -34,7 +34,6 @@ customAxios.interceptors.request.use(config => {
   }
 
   // 요청 경로 및 데이터 로그 출력
-  console.log('Making request to:', config.baseURL + config.url);
   if (config.method === 'get') {
     console.log('Request Params:', prettyPrintJson(config.params));
   } else if (config.data) {
@@ -50,8 +49,9 @@ customAxios.interceptors.response.use(
     // 응답 로그 출력
     console.log(
       'Response from:',
-      response.config.baseURL + response.config.url,
+      // response.config.baseURL + response.config.url,
     );
+
     console.log('Response Data:', prettyPrintJson(response.data));
     return response;
   },

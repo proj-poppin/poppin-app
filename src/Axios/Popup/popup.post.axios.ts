@@ -60,7 +60,7 @@ export const axiosReportPopup = async (param: {
     });
 };
 
-export const axiosBlockPopup = async (popupId: number) => {
+export const axiosBlockPopup = async (popupId: string) => {
   return await customAxios
     .request<void>({
       method: 'POST',
@@ -84,7 +84,7 @@ export const axiosBlockPopup = async (popupId: number) => {
  * @param popupId
  * @author 도형
  */
-export const axiosVisitPopupStore = async (popupId: number) => {
+export const axiosVisitPopupStore = async (popupId: string) => {
   return await customAxios
     .request<{updatedPopup: PopupSchema}>({
       method: 'POST',

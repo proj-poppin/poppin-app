@@ -18,17 +18,21 @@ export const axiosGetPopupsBySearchFiltering = async (
 ) => {
   return await customAxios
     .request<{
-      pageInfo: PageInfoType;
-      updatedPopupStores: PopupSchema[];
+      data: {
+        pageInfo: PageInfoType;
+        items: PopupSchema[];
+      };
     }>({
       method: 'GET',
-      url: '/v1/popup/search',
-      data: param,
+      url: 'v1/popup/guest/search',
+      params: param,
     })
     .then(response => {
-      return response.data;
+      console.log('debugging: ', response.data);
+      return response.data.data; // response.data.data로 반환
     })
     .catch(error => {
+      console.log(`error: ${error}`);
       handleAxiosError({
         error,
         errorMessage: '팝업 검색이 정상적으로 처리되지 못했습니다',

@@ -42,6 +42,7 @@ export type CommonThemeColorsType = {
 
   red: {
     warning: string;
+    mild: string;
   };
 };
 

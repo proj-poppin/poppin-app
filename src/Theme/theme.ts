@@ -34,6 +34,7 @@ const commonThemeColors: CommonThemeColorsType = {
   },
   red: {
     warning: '#EF4452',
+    mild: '#FAF4FC',
   },
 };
 

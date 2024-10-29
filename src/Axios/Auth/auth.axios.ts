@@ -14,7 +14,7 @@ import {
 } from 'src/Object/Enum/account.type';
 import {NotificationSchema} from 'src/Schema/User/notification.schema';
 import {UserNoticeSchema} from 'src/Schema/User/userNotice.schema';
-import {btoa, atob} from 'react-native-quick-base64';
+// import {btoa, atob} from 'react-native-quick-base64';
 export type LoginResponse = StateWrapper<UserInfo>;
 
 export type UserActivities = {
@@ -243,7 +243,7 @@ export const axiosLoginWithEmailPassword = async (auth: {
       method: 'POST',
       url: `v1/${AUTH}/sign-in`,
       headers: {
-        Authorization: `Basic ${btoa(`${auth.email}:${auth.password}`)}`,
+        // Authorization: `Basic ${btoa(`${auth.email}:${auth.password}`)}`,
       },
       data: {testFcmToken},
     })

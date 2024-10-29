@@ -29,6 +29,9 @@ import {EdgeInsets} from 'react-native-safe-area-context';
 import PopupLandingFilterModalContent from './PopupLandingFilterModalContent';
 import GradientButton from '../../../Component/Button/FilterSettingButton';
 import {BlackBackgroundModal} from '../../../Component/Modal';
+import PopupStoreCard from '../../../Component/Popup/Landing/PopupSearchCard';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 
 interface SearchBarProps {
   isSearchMode: boolean;
@@ -149,10 +152,22 @@ const PopupListScreen: React.FC<PopupListScreenProps> = ({operationStatus}) => {
     loadMorePopupStores,
     [operationStatus]: {searchedPopupStores, isLoading, pageInfo},
   } = usePopupScreenStore();
+  //
+  const navigation = useNavigation<NavigationProp<AppStackProps>>();
+
+  const handlePressCard = (id: string) => {
+    navigation.navigate('PopupDetailScreen', {popupId: id});
+  };
 
   const renderPopupItem = ({item}: {item: PopupSchema}) => (
     <View style={popupItemStyles.popupItemContainer}>
-      <Text>{item.name}</Text>
+      <PopupStoreCard
+        item={item}
+        key={item.id}
+        onPress={() => {
+          handlePressCard(item.id);
+        }}
+      />
     </View>
   );
 

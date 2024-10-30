@@ -1,38 +1,42 @@
-import {useUserStore} from '../../../Zustand/User/user.zustand';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppStackProps} from '../../../Navigator/App.stack.navigator';
-import {useNavigation} from '@react-navigation/native';
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
-import {LandingBottomTabProps} from '../../../Navigator/Landing.bottomTab.navigator';
-import {BackHandler} from 'react-native';
-import React, {useEffect} from 'react';
+import {ScrollView} from 'react-native';
+import React from 'react';
 import styled from 'styled-components/native';
-import {DetailText} from '../../../StyledComponents/Text';
-import {themeColors} from '../../../Theme/theme';
 import {Screen} from '../../../Component/Screen/Screen.component';
 import {SectionContainer} from '../../../Unit/View';
+import {MyPageLandingScreenHeader} from './Mypage.landing.screenHeader';
+import {MyPageLandingProfileSection} from './Section/Mypage.landing.profile.section';
+import {MyPageLandingReportSection} from './Section/MyPage.landing.report.section';
+import {MyPageLandingReviewSection} from './Section/MyPage.landing.review.section';
+import {MyPageLandingRecentPopupSection} from './Section/Mypage.landing.recentPopup.section';
+import {MyPageLandingMenuSection} from './Section/Mypage.landing.menu.section';
+import {moderateScale} from '../../../Util';
 
 export type MyPageLandingScreenProps = {};
 
-export const MyPageLandingScreen = ({
-  route,
-  navigation,
-}: NativeStackScreenProps<LandingBottomTabProps, 'MyPageLandingScreen'>) => {
+export const MyPageLandingScreen = () => {
   /**
    * 뒤로 가기 버튼을 누르면 홈 랜딩 페이지로 이동합니다.
    * @author 도형
    */
-  const bottomTabNavigation =
-    useNavigation<
-      BottomTabNavigationProp<LandingBottomTabProps, 'MyPageLandingScreen'>
-    >();
 
   return (
     <Screen
       fullScreen
       ScreenContent={
         <SectionContainer fullPage style={{position: 'relative'}}>
-          <DetailText>sss</DetailText>
+          <MyPageLandingScreenHeader />
+
+          <ScrollView>
+            <MyPagePaddingSection>
+              <MyPageLandingProfileSection />
+              <MyPageLandingReportSection />
+              <MyPageLandingReviewSection />
+            </MyPagePaddingSection>
+            <MyPagePaddingSection>
+              <MyPageLandingRecentPopupSection />
+              <MyPageLandingMenuSection />
+            </MyPagePaddingSection>
+          </ScrollView>
         </SectionContainer>
       }
     />
@@ -68,9 +72,8 @@ export const MyPageLandingScreen = ({
   // );
 };
 
-const Container = styled.View`
-  position: relative;
-  flex: 1;
+const MyPagePaddingSection = styled.View`
+  padding: ${moderateScale(4)}px ${moderateScale(12)}px;
 `;
 
 /**

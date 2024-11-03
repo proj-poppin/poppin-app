@@ -40,7 +40,11 @@ type UserInfo = {
  * 인증코드를 서버에서 검증받는 API도 개발해야하나 일단 보류합니다.
  * @author 도형
  */
-export const axiosVerifyEmailAuthCode = async (param: {email: string}) => {
+export type VerificationType = 'PASSWORD_RESET' | 'SIGN_UP';
+export const axiosSendEmailAuthCode = async (param: {
+  email: string;
+  verificationType: VerificationType;
+}) => {
   return await customAxios
     .request<void>({
       method: 'POST',
@@ -237,7 +241,7 @@ export const axiosLoginWithEmailPassword = async (auth: {
   password: string;
 }) => {
   // const fcmToken = await messaging().getToken();
-
+  // console.log(`btoa: ${btoa(`${auth.email}:${auth.password}`)}`);
   return await customAxios
     .request<LoginResponse>({
       method: 'POST',
@@ -305,7 +309,7 @@ export const axiosSignUp = async (param: {
   return await customAxios
     .request<StateWrapper<UserInfo>>({
       method: 'POST',
-      url: `v1/${USERS}`,
+      url: `v1/${AUTH}/sign-up`,
       data: param,
     })
     .then(response => response.data)

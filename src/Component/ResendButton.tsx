@@ -1,18 +1,23 @@
-// ResendButton.tsx
-import React from 'react';
+import React, {useState} from 'react';
 import {Pressable, StyleSheet, Text} from 'react-native';
 import RedoSvg from 'src/Resource/svg/resend-verification-icon.svg';
-import globalColors from '../styles/color/globalColors.ts';
+import {themeColors} from '../Theme/theme';
 
 interface ResendButtonProps {
-  onPressed: () => void;
+  onPress: () => void;
+  isLoading: boolean;
 }
 
-const ResendButton: React.FC<ResendButtonProps> = ({onPressed}) => {
+const ResendButton: React.FC<ResendButtonProps> = ({onPress, isLoading}) => {
   return (
-    <Pressable onPress={onPressed} style={styles.resendButton}>
+    <Pressable
+      onPress={onPress}
+      style={styles.resendButton}
+      disabled={isLoading}>
       <RedoSvg />
-      <Text style={styles.resendText}>재전송하기</Text>
+      <Text style={styles.resendText}>
+        {isLoading ? '재전송 중입니다...' : '재전송하기'}
+      </Text>
     </Pressable>
   );
 };
@@ -24,7 +29,7 @@ const styles = StyleSheet.create({
   },
   resendText: {
     marginLeft: 10,
-    color: globalColors.blue,
+    color: themeColors().blue.main,
   },
 });
 

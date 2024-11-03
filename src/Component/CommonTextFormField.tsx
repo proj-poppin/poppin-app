@@ -1,39 +1,63 @@
-import React, {useState} from 'react';
-import {TextInput, KeyboardTypeOptions, Pressable} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {TextInput, KeyboardTypeOptions, Pressable, View} from 'react-native';
 import styled from 'styled-components/native';
 import PasswordWatchSvg from '../Resource/svg/password-watch-gray-icon.svg';
 import PasswordWatchFilledSvg from '../Resource/svg/password-watch-blue-icon.svg';
 import {themeColors} from '../Theme/theme';
 import {moderateScale} from 'src/Util';
 
-// Props 타입 정의
 interface CommonTextFormFieldProps {
   onChangeText: (text: string) => void;
-  onEndEditing?: () => void;
   placeholder: string;
   keyboardType?: KeyboardTypeOptions;
   secureTextEntry?: boolean;
   errorText?: string;
-  isPasswordType?: boolean; // 비밀번호 토글 버튼 필요 여부
+  isPasswordType?: boolean;
+  isAuthCodeForm?: boolean;
+  countdown?: number;
+  isLoading?: boolean; // Prop to show "재전송 중입니다..."
 }
 
 const CommonTextFormField: React.FC<CommonTextFormFieldProps> = ({
   onChangeText,
-  onEndEditing,
   placeholder,
   keyboardType = 'default',
   secureTextEntry = false,
   errorText,
   isPasswordType = false,
+  isAuthCodeForm = false,
+  countdown = 180,
+  isLoading = false,
 }) => {
-  const [isSecure, setIsSecure] = useState(secureTextEntry); // 비밀번호 보기 상태
+  const [isSecure, setIsSecure] = useState(secureTextEntry);
+  const [timeLeft, setTimeLeft] = useState(countdown);
+
   const toggleSecureEntry = () => setIsSecure(!isSecure);
+
+  useEffect(() => {
+    if (isAuthCodeForm && timeLeft > 0 && !isLoading) {
+      const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+      return () => clearInterval(timer);
+    }
+  }, [isAuthCodeForm, timeLeft, isLoading]);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${`0${remainingSeconds}`.slice(-2)} 초 남음`;
+  };
 
   return (
     <Container>
+      {isAuthCodeForm && (
+        <TimerContainer>
+          <TimerText>
+            {isLoading ? '재전송 중입니다...' : formatTime(timeLeft)}
+          </TimerText>
+        </TimerContainer>
+      )}
       <StyledTextInput
         onChangeText={onChangeText}
-        onEndEditing={onEndEditing}
         placeholder={placeholder}
         placeholderTextColor={themeColors().grey.main}
         keyboardType={keyboardType}
@@ -76,5 +100,16 @@ const IconButton = styled(Pressable)`
 const ErrorText = styled.Text`
   color: red;
   margin-top: ${moderateScale(5)}px;
+  font-size: ${moderateScale(14)}px;
+`;
+
+const TimerContainer = styled.View`
+  position: absolute;
+  right: 0;
+  top: -20px;
+`;
+
+const TimerText = styled.Text`
+  color: ${themeColors().blue.main};
   font-size: ${moderateScale(14)}px;
 `;

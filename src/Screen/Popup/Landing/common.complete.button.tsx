@@ -15,7 +15,7 @@ import styled from 'styled-components/native';
 import {SvgProps} from 'react-native-svg';
 
 interface CommonCompleteButtonProps {
-  onPress?: (event: GestureResponderEvent) => void;
+  onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   title: string;
   isDisabled?: boolean;
@@ -36,7 +36,9 @@ const CommonCompleteButton: React.FC<CommonCompleteButtonProps> = ({
   const throttledOnPress = useMemo(
     () =>
       throttle((event: GestureResponderEvent) => {
-        if (onPress && !isDisabled) onPress(event);
+        if (onPress && !isDisabled) {
+          onPress();
+        }
       }, 2000),
     [onPress, isDisabled],
   );

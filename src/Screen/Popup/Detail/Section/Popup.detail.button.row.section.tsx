@@ -79,7 +79,7 @@ const RowContainer = styled.View`
 
 const LabelText = styled.Text`
   font-size: ${moderateScale(12)}px;
-  font-weight: 600;
+  font-weight: 500;
   color: ${themeColors().grey.main};
   margin-right: ${moderateScale(5)}px;
 `;

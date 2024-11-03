@@ -107,7 +107,7 @@ const TitleText = styled.Text`
 
 const LabelText = styled.Text`
   color: black;
-  font-size: ${moderateScale(16)}px;
+  font-size: ${moderateScale(18)}px;
   margin-bottom: ${moderateScale(4)}px;
-  font-weight: 600;
+  font-weight: 500;
 `;

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, Pressable} from 'react-native';
+import {Image, Pressable, TouchableOpacity} from 'react-native';
 import styled from 'styled-components/native';
 import {PopupSchema} from '../../../Schema/Popup/popup.schema';
 import {moderateScale} from '../../../Util';
@@ -104,8 +104,10 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
   );
 };
 
-// Styled Components
-const CardContainer = styled(Pressable)`
+// 사용자가 누름을 감지할 수 있게 TouchableOpacity 추가해줍시다.
+const CardContainer = styled.TouchableOpacity.attrs({
+  activeOpacity: 0.5,
+})`
   position: relative;
   display: flex;
   flex-direction: row;

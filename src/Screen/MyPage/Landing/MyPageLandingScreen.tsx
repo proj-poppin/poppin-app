@@ -5,11 +5,11 @@ import {Screen} from '../../../Component/Screen/Screen.component';
 import {SectionContainer} from '../../../Unit/View';
 import {MyPageLandingScreenHeader} from './Mypage.landing.screenHeader';
 import {MyPageLandingProfileSection} from './Section/Mypage.landing.profile.section';
-import {MyPageLandingReportSection} from './Section/MyPage.landing.report.section';
 import {MyPageLandingReviewSection} from './Section/MyPage.landing.review.section';
 import {MyPageLandingRecentPopupSection} from './Section/Mypage.landing.recentPopup.section';
 import {MyPageLandingMenuSection} from './Section/Mypage.landing.menu.section';
 import {moderateScale} from '../../../Util';
+import {MyPageLandingReportSection} from './Section/MyPage.landing.report.section';
 
 export type MyPageLandingScreenProps = {};
 

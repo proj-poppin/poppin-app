@@ -63,6 +63,9 @@ import {
   LoginScreen,
   LoginScreenProps,
 } from '../Screen/Auth/Login/Auth.login.screen';
+import ReportScreen, {
+  ReportScreenProps,
+} from '../Screen/MyPage/Report/Mypage.report.screen';
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
@@ -99,6 +102,8 @@ export type AppStackProps = {
   PopupDetailEditScreen: PopupDetailScreenProps;
 
   PopupDetailReviewWriteScreen: PopupDetailScreenProps;
+
+  ReportScreen: ReportScreenProps;
 };
 
 const AppStack = createNativeStackNavigator<AppStackProps>();
@@ -320,6 +325,8 @@ const AppStackScreen = () => {
         //! 업데이트 강제 페이지에서 iOS 뒤로 가기 제스쳐를 방지합니다.
         options={{gestureEnabled: false}}
       />
+      <AppStack.Screen name="ReportScreen" component={ReportScreen} />
+
       {/* 서비스 상태 페이지 */}
       <AppStack.Screen
         name="ServiceStatusScreen"

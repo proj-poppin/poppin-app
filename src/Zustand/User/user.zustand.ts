@@ -43,6 +43,9 @@ import {
   UserRelationSchema,
 } from 'src/Schema/User/userRelation.schema';
 import {usePopupStore} from '../Popup/popup.zustand';
+import {PreferencePopupStore} from '../../Schema/Preference/preferencePopupStore';
+import {PreferenceCategory} from '../../Schema/Preference/preferenceCategory.schema';
+import {PreferenceCompanion} from '../../Schema/Preference/preferenceCompanion.schema';
 
 type UserStoreProps = {
   accessToken: string;
@@ -53,6 +56,17 @@ type UserStoreProps = {
   userNotificationSetting: UserNotificationSettingSchema;
   userPreferenceSetting: PreferenceSchema;
   userRelation: UserRelationSchema;
+
+  // Preference 설정 상태
+  preferencePopupStore: PreferencePopupStore;
+  preferenceCategory: PreferenceCategory;
+  preferenceCompanion: PreferenceCompanion;
+
+  // Preference 설정 함수
+  setPreferencePopupStore: (preferencePopupStore: PreferencePopupStore) => void;
+  setPreferenceCategory: (preferenceCategory: PreferenceCategory) => void;
+  setPreferenceCompanion: (preferenceCompanion: PreferenceCompanion) => void;
+  saveUserPreferenceSetting: () => void;
 
   setUser: (user: UserSchema) => void;
   setUserPreferenceSetting: (userPreferenceSetting: PreferenceSchema) => void;
@@ -170,6 +184,31 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
   userPreferenceSetting: BlankPreference,
   userRelation: BlankUserRelation,
 
+  // 각 페이지별 Preference 상태 초기화
+  preferencePopupStore: BlankPreference.preferencePopupStore,
+  preferenceCategory: BlankPreference.preferenceCategory,
+  preferenceCompanion: BlankPreference.preferenceCompanion,
+
+  // Preference 설정 업데이트 함수들
+  setPreferencePopupStore: (preferencePopupStore: PreferencePopupStore) =>
+    set({preferencePopupStore}),
+  setPreferenceCategory: (preferenceCategory: PreferenceCategory) =>
+    set({preferenceCategory}),
+  setPreferenceCompanion: (preferenceCompanion: PreferenceCompanion) =>
+    set({preferenceCompanion}),
+
+  // Preference 전체 저장 함수
+  saveUserPreferenceSetting: () => {
+    const {preferencePopupStore, preferenceCategory, preferenceCompanion} =
+      get();
+    const newPreference: PreferenceSchema = {
+      preferencePopupStore,
+      preferenceCategory,
+      preferenceCompanion,
+    };
+    set({userPreferenceSetting: newPreference});
+  },
+
   setUser: (user: UserSchema) => set({user}),
   setUserPreferenceSetting: (userPreferenceSetting: PreferenceSchema) =>
     set({userPreferenceSetting}),
@@ -203,15 +242,18 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
       return false;
     }
 
-    if (param.accountType === 'EMAIL') {
+    if (param.accountType === 'DEFAULT') {
       await setStorage('EMAIL', result.data.user.email);
     }
-    await setEncryptedStorage('ACCESS_TOKEN', result.data.accessToken);
-    await setEncryptedStorage('REFRESH_TOKEN', result.data.refreshToken);
+    await setEncryptedStorage('ACCESS_TOKEN', result.data.jwtToken.accessToken);
+    await setEncryptedStorage(
+      'REFRESH_TOKEN',
+      result.data.jwtToken.refreshToken,
+    );
 
     set({
-      accessToken: result.data.accessToken,
-      refreshToken: result.data.refreshToken,
+      accessToken: result.data.jwtToken.accessToken,
+      refreshToken: result.data.jwtToken.refreshToken,
       user: result.data.user,
       userNotice: result.data.userNotice,
       userNotificationSetting: result.data.userNotificationSetting,
@@ -270,16 +312,22 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
     if (accountType === 'EMAIL') {
       await setStorage('EMAIL', loginResponse.data.user.email);
     }
-    await setEncryptedStorage('ACCESS_TOKEN', loginResponse.data.accessToken);
-    await setEncryptedStorage('REFRESH_TOKEN', loginResponse.data.refreshToken);
+    await setEncryptedStorage(
+      'ACCESS_TOKEN',
+      loginResponse.data.jwtToken.accessToken,
+    );
+    await setEncryptedStorage(
+      'REFRESH_TOKEN',
+      loginResponse.data.jwtToken.refreshToken,
+    );
 
     set({
       user: loginResponse.data.user,
       userNotice: loginResponse.data.userNotice,
       userNotificationSetting: loginResponse.data.userNotificationSetting,
       userPreferenceSetting: loginResponse.data.userPreferenceSetting,
-      accessToken: loginResponse.data.accessToken,
-      refreshToken: loginResponse.data.refreshToken,
+      accessToken: loginResponse.data.jwtToken.accessToken,
+      refreshToken: loginResponse.data.jwtToken.refreshToken,
     });
   },
 

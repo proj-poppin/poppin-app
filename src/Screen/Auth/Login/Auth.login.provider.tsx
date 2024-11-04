@@ -112,6 +112,8 @@ export function AuthLoginProvider({children}: {children: ReactNode}) {
         email: email.trim(),
         password: password.trim(),
       });
+      // console.log('email: ', email);
+      // console.log('password: ', password);
       if (loginResponse?.success) {
         await useUserStore.getState().setLoggedInUserInfo(loginResponse);
         return true;

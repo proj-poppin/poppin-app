@@ -2,17 +2,18 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useUserStore} from '../Zustand/User/user.zustand';
+import messaging from '@react-native-firebase/messaging';
+import {StateWrapper} from './wrapper/state_wrapper';
+import {axiosLogout, testFcmToken, UserInfo} from './Auth/auth.axios';
+import {handleAxiosError} from '../Util';
 
 /**
  * axios 요청에 공통적으로 사용되는 설정들을 지정해둔 axios 요청 인스턴스입니다.
- * @author 도형
  */
-
 export interface CommonResponse<T> {
   success: boolean;
-  data?: T; // `data` 필드를 선택적으로 만듦
+  data?: T;
   error?: {
-    // `error` 필드를 선택적으로 만듦
     code: string;
     message: string;
   };
@@ -23,84 +24,81 @@ const customAxios = axios.create({
   timeout: 5000,
 });
 
-// JSON 데이터 예쁘게 출력하는 함수
-const prettyPrintJson = (json: any) => JSON.stringify(json, null, 2);
-
 // 요청 인터셉터: API 요청 전 로그 출력
 customAxios.interceptors.request.use(config => {
   const accessToken = useUserStore.getState().accessToken;
-  if (accessToken !== '') {
+  if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
-
-  // 요청 경로 및 데이터 로그 출력
+  console.log('Request Details:');
+  console.log(`Endpoint: ${config.baseURL}${config.url}`);
+  console.log(`Method: ${config.method?.toUpperCase()}`);
+  console.log('Headers:', config.headers);
   if (config.method === 'get') {
-    console.log('Request Params:', prettyPrintJson(config.params));
-  } else if (config.data) {
-    console.log('Request Body:', prettyPrintJson(config.data));
+    console.log('Params:', config.params);
+  } else {
+    console.log('Body:', config.data);
   }
 
   return config;
 });
 
-// 응답 인터셉터: API 응답 후 로그 출력
-customAxios.interceptors.response.use(
-  response => {
-    // 응답 로그 출력
-    console.log(
-      'Response from:',
-      // response.config.baseURL + response.config.url,
-    );
+/**
+ * refreshToken을 사용해 accessToken과 refreshToken을 재발급하며, 사용자 정보를 반환합니다.
+ */
+export const axiosAutoLogin = async (
+  originalRefreshToken: string,
+): Promise<StateWrapper<UserInfo> | null> => {
+  try {
+    const response = await customAxios.request<StateWrapper<UserInfo>>({
+      method: 'POST',
+      url: `v1/auth/refresh`,
+      headers: {
+        Authorization: `Bearer ${originalRefreshToken}`,
+      },
+      data: {
+        fcmToken: testFcmToken,
+      },
+    });
 
-    console.log('Response Data:', prettyPrintJson(response.data));
-    return response;
-  },
+    const {accessToken, refreshToken} = response.data.data.jwtToken;
+    await EncryptedStorage.setItem('accessToken', accessToken);
+    await EncryptedStorage.setItem('refreshToken', refreshToken);
+    return response.data;
+  } catch (error) {
+    handleAxiosError({
+      error,
+      errorMessage: '자동 로그인에 실패하였습니다\n다시 로그인 해 주세요',
+    });
+    return null;
+  }
+};
+// 응답 인터셉터: 오류 발생 시 처리 로직
+customAxios.interceptors.response.use(
+  response => response,
   async error => {
     const originalRequest = error.config;
 
-    // 에러 응답 로그 출력
-    // console.error(
-    //   'Error Response from:',
-    //   originalRequest.baseURL + originalRequest.url,
-    // );
-    if (error.response?.data) {
-      // console.error(
-      //   'Error Response Data:',
-      //   prettyPrintJson(error.response.data),
-      // );
-    }
+    if (!originalRequest._retry) {
+      const errorCode = error.response?.data?.error?.code;
 
-    if (
-      (error.response?.status === 401 || error.response?.status === 403) &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true;
-
-      try {
-        const originalRefreshToken = await EncryptedStorage.getItem(
-          'refreshToken',
-        );
-        const response = await axios.post(
-          `${Config.API_URL}/api/v1/auth/refresh`,
-          {},
-          {
-            headers: {Authorization: `Bearer ${originalRefreshToken}`},
-          },
-        );
-
-        if (response.data.success) {
-          const {accessToken, refreshToken} = response.data.data;
-          await EncryptedStorage.setItem('accessToken', accessToken);
-          await EncryptedStorage.setItem('refreshToken', refreshToken);
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-          return axios(originalRequest);
-        } else {
-          // await performLogout();
-          return Promise.reject(error);
-        }
-      } catch (refreshError) {
-        // await performLogout();
-        return Promise.reject(refreshError);
+      // 에러 코드별 처리
+      if (errorCode === '40102') {
+        handleAxiosError({
+          error,
+          errorMessage: '유효하지 않은 토큰입니다. 다시 로그인하세요.',
+        });
+        // 로그아웃 로직을 추가할 수 있습니다.
+      } else if (errorCode === '403') {
+        handleAxiosError({
+          error,
+          errorMessage: '권한이 없습니다. 접근이 제한됩니다.',
+        });
+      } else if (errorCode === '50000') {
+        handleAxiosError({
+          error,
+          errorMessage: '서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',
+        });
       }
     }
 

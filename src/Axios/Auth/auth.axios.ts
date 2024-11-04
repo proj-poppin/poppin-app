@@ -25,14 +25,16 @@ export type UserActivities = {
   };
 };
 
-type UserInfo = {
+export type UserInfo = {
   user: UserSchema;
   userNotice: UserNoticeSchema;
   userActivities: UserActivities;
   userNotificationSetting: UserNotificationSettingSchema;
   userPreferenceSetting: PreferenceSchema;
-  accessToken: string;
-  refreshToken: string;
+  jwtToken: {
+    accessToken: string;
+    refreshToken: string;
+  };
 };
 
 /**
@@ -52,6 +54,7 @@ export const axiosSendEmailAuthCode = async (param: {
       data: param,
     })
     .then(response => {
+      console.log('인증번호: ', response.data);
       return true;
     })
     .catch(error => {
@@ -236,20 +239,28 @@ export const testFcmToken =
  * @author 도형
  */
 
+// 임시 FCM 토큰
+export const tempFcmToken =
+  'fpKiorjzKUyRnTLoaPMQxL:APA91bGofOxiZ0M-RzFZ7T-1rlKsiqjuDuPdYulvWwx3TFMFC7QAeG9oGrPMAx-_aMZ3u1PF3l9w9vp33-AWB6NUYXAt3sqWyEeE-EnDQcc8h3dM5hla-INJc4ClqfNuteMOMm7R6nwd';
+
 export const axiosLoginWithEmailPassword = async (auth: {
   email: string;
   password: string;
 }) => {
   // const fcmToken = await messaging().getToken();
-  // console.log(`btoa: ${btoa(`${auth.email}:${auth.password}`)}`);
+  console.log('emailDebug: ', auth.email);
+  console.log('passwordDebug: ', auth.password);
+  console.log('fcmTokenDebug: ', tempFcmToken);
+
   return await customAxios
     .request<LoginResponse>({
       method: 'POST',
       url: `v1/${AUTH}/sign-in`,
-      headers: {
-        // Authorization: `Basic ${btoa(`${auth.email}:${auth.password}`)}`,
+      data: {
+        email: auth.email,
+        password: auth.password,
+        fcmToken: tempFcmToken,
       },
-      data: {testFcmToken},
     })
     .then(response => {
       return response.data;

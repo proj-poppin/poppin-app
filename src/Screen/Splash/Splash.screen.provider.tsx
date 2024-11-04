@@ -14,6 +14,8 @@ import {useDynamicServiceConstant} from '../../Zustand/App/service.dynamic.const
 import {useUserStore} from '../../Zustand/User/user.zustand';
 import {axiosLoginWithAccessToken} from '../../Axios/Auth/auth.axios';
 import {Alert} from 'react-native';
+import {axiosAutoLogin} from '../../Axios/axios.core';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 /** */
 type SplashScreenState = {
@@ -145,96 +147,94 @@ export function SplashScreenProvider({
    */
   async function bootstrap() {
     dispatch({type: 'UPDATE_STATE', payload: {loading: true}});
+
     /** 저장된 access token */
     const accessToken = await getEncryptedStorage('ACCESS_TOKEN');
     /** 웰컴 화면을 봤는지 여부 */
     const sawWelcomeScreen = await getStringKeyStorage('saw-welcome-screen');
 
-    /** 최초 정보 수신 성공 여부만 반환 받습니다. */
-    const result = await Promise.all([
-      setInAppMessagingVisible(),
-      useAppStore.getState().getDynamicConstants(),
-      useAppStore.getState().loadInitialData(),
-      handleAutoLogin(accessToken),
-    ]).then(([_, __, loadInitialData, userStatus]) => {
-      return {loadInitialData, userStatus};
-    });
+    /** 먼저 자동 로그인부터 처리합니다 */
+    const userStatus = await handleAutoLogin(accessToken);
 
-    //* 최초 정보를 받아오는 데 실패한 경우:
-    //* loading 플래그를 false 로 설정합니다
-    if (result === undefined || result.loadInitialData === false) {
+    // Check if userStatus is valid; exit early if it fails
+    if (!userStatus) {
+      console.error('Auto-login failed');
       updateStatus({loading: false});
       return;
     }
 
-    //* 최초 정보를 받아오는 데 성공한 경우:
-    //* appStore 의 bootstrapped 값을 true 로 설정합니다.
+    // Now proceed with other initial data fetches
+    const loadDataResult = await Promise.all([
+      setInAppMessagingVisible(),
+      useAppStore.getState().getDynamicConstants(),
+      useAppStore.getState().loadInitialData(),
+    ]).then(([_, dynamicConstants, loadInitialData]) => {
+      return {loadInitialData, userStatus};
+    });
+
+    //* Check if initial data fetch was successful
+    if (loadDataResult.loadInitialData === false) {
+      updateStatus({loading: false});
+      return;
+    }
+
+    //* Mark as bootstrapped in appStore
     useAppStore.getState().setBootStrapped(true);
+
     /** 현재 앱이 최신 버전인지 여부 */
     const isAppRecent = doesAppMeetRequiredVersion();
 
-    //* 1) 앱 초기 정보를 가져왔을 때 현재 서비스가 가능한 상태가 아닌 경우: 서비스 상태 안내 화면으로 이동합니다.
+    //* 1) 서비스 상태 확인 후 ServiceStatusScreen으로 이동
     if (!useDynamicServiceConstant.getState().SERVICE_STATUS.available) {
       screenProps.navigation.replace('ServiceStatusScreen', {});
       return;
     }
-    //* 2) 앱 초기 정보를 가져왔을 때 최소 요구 버전을 충족하지 못하는 경우: 앱 강제 업데이트 화면으로 이동합니다.
+
+    //* 2) 앱이 최소 요구 버전 미충족시 ForceUpdateScreen으로 이동
     if (!isAppRecent) {
       screenProps.navigation.replace('ForceUpdateScreen', {});
       return;
     }
-    //* 3) 앱이 최신 버전이고, 초기 데이터를 성공적으로 받아온 경우: 홈 랜딩 화면으로 이동합니다.
-    if (result.loadInitialData) {
+
+    //* 3) 성공적인 데이터 수신 후 홈 랜딩 화면으로 이동
+    if (loadDataResult.loadInitialData) {
       screenProps.navigation.replace('LandingBottomTabNavigator', {
         HomeLandingScreen: {},
         PopupSearchLandingScreen: {},
         PopupLikesLandingScreen: {},
         MyPageLandingScreen: {},
       });
-
-      // //* 4) 로그인한 적이 없고, 웰컴 화면도 본 적 없는 경우: 추가로 웰컴 화면으로 이동합니다.
-      // if (
-      //   (accessToken === null || accessToken === '') &&
-      //   (sawWelcomeScreen === null || sawWelcomeScreen === 'false')
-      // ) {
-      //   screenProps.navigation.navigate('WelcomeScreen', {});
-      // }
-
-      // //* 5) 자동 로그인한 유저가 다중 계정을 사용하는 경우: 추가로 다중 계정 선택 페이지로 이동합니다. (팝핀은 다중허용 X)
-      // if (result.userStatus) {
-      //   screenProps.navigation.navigate('MultiAccountScreen', {
-      //     jwt: result.userStatus.jwt,
-      //   });
-      // }
     }
+
     /** */
     async function setInAppMessagingVisible() {
-      //* #SETTING #Firebase #InAppMessaging Firebase 인앱 메세지가 보이도록 설정합니다.
       await inAppMessaging().setMessagesDisplaySuppressed(false);
     }
   }
+
   /** */
   async function handleAutoLogin(accessToken: string | null) {
-    //* accessToken 가 저장되어 있지 않거나 (로그인한 적 없음), 빈 문자열인 경우 (로그아웃 함):
-    //* 비회원 상태로 로그인합니다.
     if (accessToken === null || accessToken === '') {
       useUserStore.getState().setNonMemberUserInfo();
       return;
     }
 
-    //* 자동 로그인 조건을 충족하는 경우엔 JWT 를 이용해 자동 로그인합니다.
-    const loginData = await axiosLoginWithAccessToken(accessToken);
+    // await EncryptedStorage.removeItem('ACCESS_TOKEN');
+    // await EncryptedStorage.removeItem('REFRESH_TOKEN');
+
+    const refreshToken = await getEncryptedStorage('REFRESH_TOKEN');
+
+    if (refreshToken === null || refreshToken === '') {
+      useUserStore.getState().setNonMemberUserInfo();
+      return;
+    }
+
+    const loginData = await axiosAutoLogin(refreshToken!);
+
     if (loginData !== null) {
       await setStorage('EMAIL', loginData.data.user.email);
       await useUserStore.getState().setLoggedInUserInfo(loginData);
       return {success: true};
-      //* 이 때, 로그인 한 유저가 다중 계정을 사용 중인 경우 'MULTI_ACCOUNT' 를 반환합니다.(팝핀은 다중허용 X)
-      // if (
-      //   loginData.userInfo.user.multiAccountIds &&
-      //   loginData.userInfo.user.multiAccountIds.length > 1
-      // ) {
-      //   return {jwt: loginData.jwt};
-      // }
     }
     return;
   }

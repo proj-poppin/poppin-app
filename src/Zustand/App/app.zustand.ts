@@ -154,13 +154,11 @@ export const useAppStore = create<AppStoreProps>((set, get) => ({
     //     .updateCreditConstants(constants.credit);
     // }
   },
-
   loadInitialData: async () => {
     const initialData = await axiosLoadInitialData();
     console.log('initialData', initialData);
     if (initialData === null) return false;
 
-    // Load initial data for each operation status
     const notyetTabSearchParams: PopupSearchParams = {
       operationStatus: OperationStatus.NOTYET,
       searchName: '',
@@ -213,15 +211,6 @@ export const useAppStore = create<AppStoreProps>((set, get) => ({
       closingSoonPopupStores: initialData.data.closingSoonPopupStores,
       searchedPopupStores: initialData.data.filteredPopupStores,
       interestedPopupStores: initialData.data.interestedPopupStores,
-    });
-
-    // 디버깅용으로 저장된 상태 확인
-    const currentState = usePopupStore.getState();
-    console.log('State after initial load:', {
-      newlyOpenedPopupStores: currentState.newlyOpenedPopupStores,
-      closingSoonPopupStores: currentState.closingSoonPopupStores,
-      popularTop5PopupStores: currentState.popularTop5PopupStores,
-      recommendedPopupStores: currentState.recommendedPopupStores,
     });
     return true;
   },

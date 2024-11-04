@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, Pressable, TouchableOpacity} from 'react-native';
+import {Image, Pressable, Text, TouchableOpacity} from 'react-native';
 import styled from 'styled-components/native';
 import {PopupSchema} from '../../../Schema/Popup/popup.schema';
 import {moderateScale} from '../../../Util';
@@ -50,7 +50,6 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
   item,
   onPress,
 }) => {
-  // preferences에서 true인 카테고리들만 필터링하고 label 매핑
   const activeCategories = Object.entries(item.preferences.preferenceCategory)
     .filter(([key, value]) => value === true && key !== 'id')
     .map(([key]) => getFilterLabel(key));
@@ -60,11 +59,13 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
     .map(([key]) => getFilterLabel(key));
 
   const dday = calculateDday(item.closeDate);
-  const popupScraps = usePopupStore(state => state.popupScraps);
-  const {scrapPopup, unScrapPopup} = usePopupDetailContext();
+  const interestedPopupStores = usePopupStore(
+    state => state.interestedPopupStores,
+  );
+  const {scrapPopup, unScrapPopup, scrapping} = usePopupDetailContext();
 
   const scrapped =
-    item?.id && popupScraps.some(popup => popup?.popupId === item.id);
+    interestedPopupStores?.some(popup => popup.id === item.id) ?? false;
 
   return (
     <CardContainer onPress={onPress}>
@@ -73,11 +74,13 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
         <DdayText>종료 D-{dday}</DdayText>
       </DdayBadge>
       <FavoriteButton>
-        <Pressable onPress={scrapped ? unScrapPopup : scrapPopup}>
+        <Pressable
+          onPress={scrapped ? unScrapPopup : scrapPopup}
+          disabled={scrapping}>
           {scrapped ? <StarFilledSvg /> : <StarOutlineSvg />}
         </Pressable>
+        {scrapping && <LoadingText>로딩중...</LoadingText>}
       </FavoriteButton>
-
       <CardContent>
         <InfoContainer>
           <StoreName>{item.name}</StoreName>
@@ -104,9 +107,8 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
   );
 };
 
-// 사용자가 누름을 감지할 수 있게 TouchableOpacity 추가해줍시다.
 const CardContainer = styled.TouchableOpacity.attrs({
-  activeOpacity: 0.5,
+  activeOpacity: 0.4,
 })`
   position: relative;
   display: flex;
@@ -142,7 +144,14 @@ const FavoriteButton = styled.View`
   border-radius: ${moderateScale(20)}px;
   padding: ${moderateScale(6)}px;
 `;
-
+const LoadingText = styled(Text)`
+  font-size: ${moderateScale(10)}px;
+  position: absolute;
+  color: ${({theme}) => theme.color.blue.main};
+  margin-left: ${moderateScale(55)}px;
+  width: ${moderateScale(35)}px;
+  top: ${moderateScale(30)}px;
+`;
 const CardContent = styled.View`
   padding: ${moderateScale(4)}px ${moderateScale(16)}px;
 `;

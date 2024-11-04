@@ -420,7 +420,7 @@ export const signupStepOrder: SignupStep[] = [
 
 type SignupInput = {
   email: string;
-  accountType: 'EMAIL' | 'KAKAO' | 'APPLE' | 'GOOGLE' | 'NAVER';
+  accountType: 'DEFAULT' | 'KAKAO' | 'APPLE' | 'GOOGLE' | 'NAVER';
   password: string;
   authCode: string;
   nickname: string;

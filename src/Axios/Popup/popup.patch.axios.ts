@@ -2,28 +2,27 @@ import customAxios, {INTEREST, POPUP} from 'src/Axios/axios.core';
 import {PopupSchema} from 'src/Schema/Popup/popup.schema';
 import {PopupScrapSchema} from 'src/Schema/Popup/popupScrap.schema';
 import {handleAxiosError} from 'src/Util/axios.util';
+import {StateWrapper} from '../wrapper/state_wrapper';
 
 /**
  * 관심팝업 추가
  * @author 도형
  */
 
-export const TestAccessToken =
-  'eyJhbGciOiJIUzUxMiJ9.eyJ1aWQiOjEyLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMDAwNTAyNywiZXhwIjoxNzM2MDUzMDI3fQ.8n-si2ekxzAVSVoMC851zu_Gm-2lLEzXFVj0UDnCdZ0WgW6xl-9XQqfMbo90li-ft3_L00YDJcaYHDrV3x2vUQ';
+export interface ScrapResponseData {
+  updatedPopup: PopupSchema;
+  newPopupScrap: PopupScrapSchema;
+}
+
 export const axiosScrapInterestPopup = async (popupId: string) => {
   return await customAxios
-    .request<{
-      updatedPopup: PopupSchema;
-      newPopupScrap: PopupScrapSchema;
-    }>({
+    .request<StateWrapper<ScrapResponseData>>({
       url: `v1/${INTEREST}`,
       method: 'POST',
       data: {popupId},
-      headers: {
-        Authorization: `Bearer ${TestAccessToken}`,
-      },
     })
     .then(response => {
+      console.log('response: ', response.data);
       return response.data;
     })
     .catch(error => {
@@ -43,16 +42,10 @@ export const axiosScrapInterestPopup = async (popupId: string) => {
 
 export const axiosUnscrapInterestPopup = async (popupId: string) => {
   return await customAxios
-    .request<{
-      updatedPopup: PopupSchema;
-      newPopupScrap: PopupScrapSchema;
-    }>({
+    .request<StateWrapper<ScrapResponseData>>({
       url: `v1/${INTEREST}`,
       method: 'DELETE',
       data: {popupId},
-      headers: {
-        Authorization: `Bearer ${TestAccessToken}`,
-      },
     })
     .then(response => {
       return response.data;

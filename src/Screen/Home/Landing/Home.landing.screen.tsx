@@ -68,13 +68,18 @@ export const HomeLandingScreen = ({
     shallow,
   );
 
+  const interestedPopupStores = usePopupStore(
+    state => state.interestedPopupStores,
+    shallow,
+  );
+
   const loggedin = isLoggedIn();
 
   const renderContent = () => (
     <>
       {loggedin ? (
         <>
-          <TitleText>
+          <TitleText style={{marginLeft: 12}}>
             어서오세요, {user.nickname}님{'\n'}취향저격 팝업 알려드릴게요
           </TitleText>
           {user.isPreferenceSetting ? (
@@ -92,8 +97,7 @@ export const HomeLandingScreen = ({
         <ActionPromptBox
           boxType="LOGIN"
           onPress={() => {
-            navigation.navigate('AuthLandingScreen');
-            // 로그인 화면으로 이동하는 로직 추가
+            navigation.navigate('AuthLandingScreen', {});
           }}
         />
       )}

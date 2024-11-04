@@ -193,40 +193,58 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
   setScrappedPopupStore: (popupScraps: PopupScrapSchema[]) => {
     set({popupScraps});
   },
-
   togglePopupScrap: async (popupId: string) => {
-    // if (!useUserStore.getState().isLoggedIn()) {
-    //   return {updatedPopup: null};
-    // }
     let updatedPopup: PopupSchema | null = null;
-    const previousPopupScrap = get().interestedPopupStores.find(
-      popup => popupId === popup.id,
+
+    const interestedPopupStores = get().interestedPopupStores || [];
+
+    // isAlreadyScrapped 계산 전에 각 팝업의 id와 비교하는 popupId를 출력하여 확인
+    interestedPopupStores.forEach(popup => {});
+
+    const isAlreadyScrapped = interestedPopupStores.some(
+      popup => popup?.id.toString() === popupId.toString(),
     );
-    if (previousPopupScrap === undefined) {
-      //* 스크랩하지 않았던 투표인 경우
-      const result = await axiosScrapInterestPopup(popupId);
-      if (result !== null) {
-        set({popupScraps: [result.newPopupScrap, ...get().popupScraps]});
-        updatedPopup = result.updatedPopup;
-      }
+
+    if (!isAlreadyScrapped) {
+      // If not scrapped, proceed to scrap
+      try {
+        const result = await axiosScrapInterestPopup(popupId);
+
+        if (result) {
+          const updatedPopupSchema = result.data.updatedPopup as PopupSchema;
+          set({
+            popupScraps: [result.data.newPopupScrap, ...get().popupScraps],
+            interestedPopupStores: [
+              updatedPopupSchema,
+              ...interestedPopupStores,
+            ],
+          });
+          updatedPopup = updatedPopupSchema;
+        } else {
+        }
+      } catch (error) {}
     } else {
-      //* 스크랩한 투표인 경우
-      const result = await axiosUnscrapInterestPopup(popupId);
-      if (result) {
-        set({
-          popupScraps: get().popupScraps.filter(
-            popupScrap => popupScrap.popupId !== popupId,
-          ),
-        });
-        updatedPopup = result.updatedPopup;
-      }
+      // If already scrapped, proceed to unscrap
+      try {
+        const result = await axiosUnscrapInterestPopup(popupId);
+
+        if (result) {
+          set({
+            popupScraps: get().popupScraps.filter(
+              popup => popup?.popupId !== popupId,
+            ),
+            interestedPopupStores: interestedPopupStores.filter(
+              popup => popup?.id.toString() !== popupId.toString(),
+            ),
+          });
+          updatedPopup = result.data.updatedPopup;
+        } else {
+        }
+      } catch (error) {}
     }
-    if (updatedPopup !== null) {
-      get().spreadPopupUpdated(updatedPopup);
-    }
+
     return {updatedPopup};
   },
-
   refreshPopupStores: async () => {},
 
   noMoreOlderPopupStores: false,

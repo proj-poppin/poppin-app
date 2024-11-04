@@ -77,7 +77,6 @@ export const axiosBlockPopup = async (popupId: string) => {
       return null;
     });
 };
-
 /**
  * 팝업 방문하기를 요청합니다.
  *
@@ -87,11 +86,12 @@ export const axiosBlockPopup = async (popupId: string) => {
 export const axiosVisitPopupStore = async (popupId: string) => {
   return await customAxios
     .request<{updatedPopup: PopupSchema}>({
-      method: 'POST',
+      method: 'PATCH',
       url: `v1/${POPUP}/visit`,
       data: {popupId},
     })
     .then(response => {
+      console.log('response@@@@@@@: ', response.data);
       return response.data;
     })
     .catch(error => {

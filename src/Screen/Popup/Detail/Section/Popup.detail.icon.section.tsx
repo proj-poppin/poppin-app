@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import styled from 'styled-components/native';
-import {Linking, Pressable} from 'react-native';
+import {Linking, Pressable, Text} from 'react-native';
 import InstagramTestSvg from 'src/Resource/svg/instagram-border-button.svg';
 import LinkCopySvg from 'src/Resource/svg/link-copy-blue-icon.svg';
 import StarFilledSvg from 'src/Resource/svg/star-filled-icon.svg';
@@ -14,7 +14,6 @@ import {usePopupStore} from '../../../../Zustand/Popup/popup.zustand';
 
 const PopupDetailIconSection = () => {
   const user = useUserStore(state => state.user);
-  const popupScraps = usePopupStore(state => state.popupScraps);
   const {
     popupDetail,
     scrapping,
@@ -22,14 +21,15 @@ const PopupDetailIconSection = () => {
     unScrapPopup,
     showPopupDetailModal,
   } = usePopupDetailContext();
-  //* 스크랩 여부
-  const scrapped =
-    popupDetail?.id &&
-    popupScraps.some(popup => popup?.popupId === popupDetail.id);
+  const interestedPopupStores = usePopupStore(
+    state => state.interestedPopupStores,
+  );
 
-  // console.log('scrapped : ', scrapped);
+  const scrapped =
+    interestedPopupStores?.some(popup => popup.id === popupDetail.id) ?? false;
+
   const onPressUnScrap = () => {
-    showPopupDetailModal('UNSCRAP');
+    unScrapPopup();
   };
 
   const handleOpenLink = (link: string) => {
@@ -37,7 +37,7 @@ const PopupDetailIconSection = () => {
   };
 
   const handleShare = () => {
-    // Sharing logic
+    // Sharing logic can be implemented here
   };
 
   return (
@@ -63,9 +63,14 @@ const PopupDetailIconSection = () => {
           )}
         </Pressable>
         <RightIconsContainer>
-          <Pressable onPress={scrapped ? onPressUnScrap : scrapPopup}>
-            {scrapped ? <StarFilledSvg /> : <StarOutlineSvg />}
-          </Pressable>
+          <FavoriteButton>
+            <Pressable
+              onPress={scrapped ? onPressUnScrap : scrapPopup}
+              disabled={scrapping}>
+              {scrapped ? <StarFilledSvg /> : <StarOutlineSvg />}
+            </Pressable>
+            {scrapping && <LoadingText>로딩중...</LoadingText>}
+          </FavoriteButton>
           <Pressable onPress={handleShare}>
             <ShareSvg style={{marginLeft: 20}} />
           </Pressable>
@@ -74,6 +79,7 @@ const PopupDetailIconSection = () => {
     </IconSectionContainer>
   );
 };
+
 const IconSectionContainer = styled.View`
   padding: ${moderateScale(16)}px;
 `;
@@ -87,6 +93,20 @@ const LeftRightContainer = styled.View`
 const RightIconsContainer = styled.View`
   flex-direction: row;
   align-items: center;
+`;
+
+const FavoriteButton = styled.View`
+  align-items: center;
+  position: relative;
+`;
+
+const LoadingText = styled(Text)`
+  font-size: ${moderateScale(10)}px;
+  position: absolute;
+  color: ${({theme}) => theme.color.blue.main};
+  margin-left: ${moderateScale(55)}px;
+  width: ${moderateScale(35)}px;
+  top: ${moderateScale(30)}px;
 `;
 
 export default PopupDetailIconSection;

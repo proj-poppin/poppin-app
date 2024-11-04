@@ -4,6 +4,12 @@ import {createContext, useContext, useState} from 'react';
 import {axiosGetPopupById} from '../../../../Axios/Popup/popup.get.axios';
 import {usePopupStore} from '../../../../Zustand/Popup/popup.zustand';
 import {useAppStore} from '../../../../Zustand/App/app.zustand';
+import {axiosVisitPopupStore} from '../../../../Axios/Popup/popup.post.axios';
+
+export type VisitButtonType =
+  | 'VISIT_NOW'
+  | 'VISIT_COMPLETE'
+  | 'RECEIVE_REOPEN_ALERT';
 
 export type PopupDetailModalType =
   | undefined
@@ -45,6 +51,10 @@ type PopupDetailContextProp = {
   /** 방문 참여 중 여부 */
   visiting: boolean;
   setVisiting: (status: boolean) => void;
+
+  /** 방문 참여 버튼 타입 */
+  visitPopup: () => Promise<void>;
+  visitButtonType: VisitButtonType;
 };
 
 const PopupDetailContext = createContext<PopupDetailContextProp>({
@@ -62,6 +72,8 @@ const PopupDetailContext = createContext<PopupDetailContextProp>({
   unScrapPopup: async () => false,
   visiting: false,
   setVisiting: () => {},
+  visitPopup: async () => {},
+  visitButtonType: 'VISIT_NOW',
 });
 
 /**
@@ -83,6 +95,17 @@ export const usePopupDetailContext = () => useContext(PopupDetailContext);
 
 export const PopupDetailProvider = ({children}: {children: any}) => {
   const [popupDetail, setPopupDetail] = useState<PopupSchema>(BlankPopup);
+  const [visitButtonType, setVisitButtonType] =
+    useState<VisitButtonType>('VISIT_NOW');
+
+  const visitPopup = async () => {
+    const response = await axiosVisitPopupStore(popupDetail.id);
+    if (response?.updatedPopup) {
+      setPopupDetail(response.updatedPopup);
+      setVisitButtonType('VISIT_COMPLETE');
+    }
+  };
+
   const [popupDetailModalVisible, setPopupDetailModalVisible] =
     useState<boolean>(false);
   const [popupDetailModalType, setPopupDetailModalType] =
@@ -121,7 +144,9 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
     setScrapping(false);
   };
   const unScrapPopup = async () => {
+    console.log('unScrapPopup');
     if (scrapping) return false;
+
     setScrapping(true);
     const {updatedPopup} = await usePopupStore
       .getState()
@@ -148,6 +173,8 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
     unScrapPopup: unScrapPopup,
     visiting,
     setVisiting,
+    visitPopup,
+    visitButtonType,
   };
 
   return (

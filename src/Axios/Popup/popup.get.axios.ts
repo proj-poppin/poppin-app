@@ -24,7 +24,7 @@ export const axiosGetPopupsBySearchFiltering = async (
       };
     }>({
       method: 'GET',
-      url: 'v1/popup/guest/search',
+      url: 'v1/popup/search',
       params: param,
     })
     .then(response => {

@@ -6,6 +6,7 @@ import {
   getEncryptedStorage,
   getStorage,
   getStringKeyStorage,
+  setEncryptedStorage,
   setStorage,
 } from 'src/Util';
 import {AppStackProps} from '../../Navigator/App.stack.navigator';
@@ -152,18 +153,19 @@ export function SplashScreenProvider({
     const accessToken = await getEncryptedStorage('ACCESS_TOKEN');
     /** 웰컴 화면을 봤는지 여부 */
     const sawWelcomeScreen = await getStringKeyStorage('saw-welcome-screen');
-
-    /** 먼저 자동 로그인부터 처리합니다 */
-    const userStatus = await handleAutoLogin(accessToken);
-
-    // Check if userStatus is valid; exit early if it fails
-    if (!userStatus) {
-      console.error('Auto-login failed');
-      updateStatus({loading: false});
-      return;
+    if (accessToken === '') {
+      useUserStore.getState().setNonMemberUserInfo();
     }
+    /** 먼저 자동 로그인부터 처리합니다 */
+    const userStatus = await handleAutoLogin();
 
-    // Now proceed with other initial data fetches
+    // // Check if userStatus is valid; exit early if it fails
+    // if (!userStatus) {
+    //   console.error('Auto-login failed');
+    //   updateStatus({loading: false});
+    //   return;
+    // }
+
     const loadDataResult = await Promise.all([
       setInAppMessagingVisible(),
       useAppStore.getState().getDynamicConstants(),
@@ -213,18 +215,18 @@ export function SplashScreenProvider({
   }
 
   /** */
-  async function handleAutoLogin(accessToken: string | null) {
-    if (accessToken === null || accessToken === '') {
-      useUserStore.getState().setNonMemberUserInfo();
-      return;
-    }
-
-    // await EncryptedStorage.removeItem('ACCESS_TOKEN');
-    // await EncryptedStorage.removeItem('REFRESH_TOKEN');
+  async function handleAutoLogin() {
+    // await setEncryptedStorage('ACCESS_TOKEN', '');
+    // await setEncryptedStorage('REFRESH_TOKEN', '');
 
     const refreshToken = await getEncryptedStorage('REFRESH_TOKEN');
 
-    if (refreshToken === null || refreshToken === '') {
+    if (
+      refreshToken === null ||
+      refreshToken === '' ||
+      typeof refreshToken === 'undefined'
+    ) {
+      console.log('refreshToken is null');
       useUserStore.getState().setNonMemberUserInfo();
       return;
     }

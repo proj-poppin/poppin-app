@@ -10,6 +10,7 @@ import {MyPageLandingRecentPopupSection} from './Section/Mypage.landing.recentPo
 import {MyPageLandingMenuSection} from './Section/Mypage.landing.menu.section';
 import {moderateScale} from '../../../Util';
 import {MyPageLandingReportSection} from './Section/MyPage.landing.report.section';
+import {MypageLandingLogoutModal} from './Mypage.landing.logout.modal';
 
 export type MyPageLandingScreenProps = {};
 
@@ -20,13 +21,15 @@ export const MyPageLandingScreen = () => {
    */
 
   return (
-    <Screen
-      fullScreen
-      ScreenContent={
-        <SectionContainer fullPage style={{position: 'relative'}}>
-          <MyPageLandingScreenHeader />
-
-          <ScrollView>
+    <Container>
+      <Screen
+        contentContainerStyle={{
+          paddingTop: moderateScale(16),
+          paddingBottom: moderateScale(50),
+        }}
+        ScreenHeader={<MyPageLandingScreenHeader />}
+        ScreenContent={
+          <>
             <MyPagePaddingSection>
               <MyPageLandingProfileSection />
               <MyPageLandingReportSection />
@@ -36,10 +39,11 @@ export const MyPageLandingScreen = () => {
               <MyPageLandingRecentPopupSection />
               <MyPageLandingMenuSection />
             </MyPagePaddingSection>
-          </ScrollView>
-        </SectionContainer>
-      }
-    />
+            <MypageLandingLogoutModal />
+          </>
+        }
+      />
+    </Container>
   );
 
   // return (
@@ -74,6 +78,11 @@ export const MyPageLandingScreen = () => {
 
 const MyPagePaddingSection = styled.View`
   padding: ${moderateScale(4)}px ${moderateScale(12)}px;
+`;
+
+const Container = styled.View`
+  position: relative;
+  flex: 1;
 `;
 
 /**

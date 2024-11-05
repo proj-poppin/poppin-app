@@ -391,6 +391,7 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
 
   logout: async () => {
     await axiosLogout();
+    // 유저 상태 초기화
     set({
       accessToken: '',
       refreshToken: '',
@@ -400,6 +401,7 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
       userPreferenceSetting: BlankPreference,
       userRelation: BlankUserRelation,
     });
+    // Encrypted Storage 초기화
     await setEncryptedStorage('ACCESS_TOKEN', '');
     await setEncryptedStorage('REFRESH_TOKEN', '');
     useNotificationStore.getState().clearNotificationStates();

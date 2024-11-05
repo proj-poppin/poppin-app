@@ -66,9 +66,10 @@ export const BlackBackgroundModal = ({
       //? 하드웨어 뒤로 가기 버튼이 눌렸을 때 행동 지정
       onRequestClose={allowIgnore ? onClose : () => {}}
       transparent
-      animationType="slide"
+      animationType="fade"
       {...props}>
-      <TouchableWithoutFeedback
+      <TouchableOpacity
+        activeOpacity={1}
         style={[
           {
             position: 'relative',
@@ -87,7 +88,7 @@ export const BlackBackgroundModal = ({
             : undefined
         }>
         {children}
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     </Modal>
   );
 };

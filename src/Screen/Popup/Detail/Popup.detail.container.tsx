@@ -35,6 +35,8 @@ export const PopupDetailContainer = ({
     setPopupDetail,
     getRecentPopupDetail,
     showPopupDetailModal,
+    visitPopup,
+    visitButtonType,
   } = usePopupDetailContext();
 
   const {
@@ -61,6 +63,11 @@ export const PopupDetailContainer = ({
     const updatePopupDetail = await getRecentPopupDetail(popupId);
     const updatePopupDetailReviews = await getPopupDetailReviews(popupId);
     Promise.all([updatePopupDetail, updatePopupDetailReviews]);
+  };
+  const onVisitPress = () => {
+    if (visitButtonType === 'VISIT_NOW') {
+      visitPopup();
+    }
   };
 
   /**
@@ -148,7 +155,7 @@ export const PopupDetailContainer = ({
       />
       <PopupDetailBottomButtonRowSection
         onRealTimePress={() => {}}
-        onVisitPress={() => {}}></PopupDetailBottomButtonRowSection>
+        onVisitPress={onVisitPress}></PopupDetailBottomButtonRowSection>
     </>
   );
 };

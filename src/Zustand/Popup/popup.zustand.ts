@@ -407,6 +407,7 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
           : [],
       scrappedPopupStores: [],
       visitedPopupStores: [],
+      interestedPopupStores: [], // interestedPopupStores(관심팝업) 초기화
     });
   },
 }));

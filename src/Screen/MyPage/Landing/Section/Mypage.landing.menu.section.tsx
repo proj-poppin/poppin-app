@@ -1,8 +1,14 @@
-// Section/MenuSection.tsx
 import React from 'react';
 import styled from 'styled-components/native';
 import {moderateScale} from '../../../../Util';
 import ArrowIcon from '../../../../Resource/svg/right-arrow-gray-icon.svg';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AppStackProps} from '../../../../Navigator/App.stack.navigator';
+import {useMypageLandingScreenStore} from '../Mypage.landing.zustand';
+import {useUserStore} from '../../../../Zustand/User/user.zustand';
+import shallow from 'zustand/shallow';
+
 interface MenuItem {
   title: string;
   rightText?: string;
@@ -10,30 +16,27 @@ interface MenuItem {
 }
 
 export const MyPageLandingMenuSection = () => {
-  // const navigation = useNavigation<NavigationProp<AppStackProps>>();
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackProps>>();
+  const {setLogoutModalVisible} = useMypageLandingScreenStore(
+    state => ({setLogoutModalVisible: state.setLogoutModalVisible}),
+    shallow,
+  );
+  const isLoggedIn = useUserStore(state => state.isLoggedIn);
+
   const menuItems: MenuItem[] = [
+    {title: '키워드 알림 설정', onPress: () => {}},
+    {title: '문의하기 / FAQ', onPress: () => {}},
+    {title: '앱 버전', rightText: '1.16.0', onPress: () => {}},
+    {title: '이용 약관 및 정책', onPress: () => {}},
     {
-      title: '키워드 알림 설정',
+      title: isLoggedIn() ? '로그아웃' : '로그인 하러 가기',
       onPress: () => {
-        // navigation.navigate('FAQFormScreen');
+        if (isLoggedIn()) {
+          setLogoutModalVisible();
+        } else {
+          navigation.navigate('AuthLandingScreen', {});
+        }
       },
-    },
-    {
-      title: '문의하기 / FAQ',
-      onPress: () => {},
-    },
-    {
-      title: '앱 버전',
-      rightText: '1.16.0',
-      onPress: () => {},
-    },
-    {
-      title: '이용 약관 및 정책',
-      onPress: () => {},
-    },
-    {
-      title: '로그아웃',
-      onPress: () => {},
     },
   ];
 
@@ -42,7 +45,6 @@ export const MyPageLandingMenuSection = () => {
       {menuItems.map((item, index) => (
         <MenuItem key={index} onPress={item.onPress}>
           <MenuTitle>{item.title}</MenuTitle>
-          {/*//TODO - [규진] 앱 버전 가변 값으로 바꿔야 함.*/}
           {item.rightText ? (
             <RightText>{item.rightText}</RightText>
           ) : (

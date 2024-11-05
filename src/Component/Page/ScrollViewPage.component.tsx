@@ -6,6 +6,7 @@ import {View, ScrollView, StyleProp, ViewStyle} from 'react-native';
  * @author 도형
  */
 export function ScrollViewPage({
+  ref,
   UpperPart,
   PageContent,
   BottomPart,
@@ -13,6 +14,7 @@ export function ScrollViewPage({
   bottomPartStyle,
   keyboardShouldPersistTaps = 'handled',
 }: {
+  ref?: React.RefObject<ScrollView>;
   UpperPart?: JSX.Element;
   PageContent?: JSX.Element;
   BottomPart?: JSX.Element;
@@ -26,6 +28,7 @@ export function ScrollViewPage({
     <View style={{position: 'relative', flex: 1}}>
       {UpperPart}
       <ScrollView
+        ref={ref}
         style={{backgroundColor: '#ffffff'}}
         contentContainerStyle={[{paddingBottom}, contentContainerStyle]}
         showsVerticalScrollIndicator={false}

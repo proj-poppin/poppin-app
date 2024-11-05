@@ -29,7 +29,6 @@ export function ReportScreen({
       ) : (
         <MyPageReportOperatorScreen />
       )}
-      <ScrollView></ScrollView>
     </Container>
   );
 }

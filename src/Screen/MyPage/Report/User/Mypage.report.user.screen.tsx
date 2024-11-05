@@ -2,14 +2,12 @@ import CustomBottomSheet from '../../../../Component/BottomSheet/CustomBottomShe
 import styled from 'styled-components/native';
 import {moderateScale} from '../../../../Util';
 import React, {useState} from 'react';
-import PopupLandingFilterModalContent from '../../../../Component/PopupCategoryModal';
 import {useImagePicker} from '../../../../hooks/useImagePicker';
-import {ReportScreenProps} from '../Mypage.report.screen';
+import PopupCategoryModal from '../../../../Component/PopupCategoryModal';
 import {
   HelperText,
   SubmitButton,
-} from '../Operator/Mypage.report.operator.screen';
-import PopupCategoryModal from '../../../../Component/PopupCategoryModal';
+} from '../../../../Component/operatorRequest/ReportStepTwo';
 
 export const MyPageReportUserScreen: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);

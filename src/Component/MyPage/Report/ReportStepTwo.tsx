@@ -1,53 +1,49 @@
 // components/StepTwo.tsx
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {ScrollView} from 'react-native';
-import {moderateScale} from '../../Util';
-import CustomBottomSheet from '../BottomSheet/CustomBottomSheet';
+import {HHMMFormatTime, moderateScale, YYYYHHMMFormatDate} from '../../../Util';
+import CustomBottomSheet from '../../BottomSheet/CustomBottomSheet';
 import Postcode from '@actbase/react-daum-postcode';
-import CalendarPicker from '../CalendarPicker';
-import TimePicker from '../TimePicker';
-import PopupCategoryModal from '../PopupCategoryModal';
-import CloseIcon from '../../Resource/svg/close-icon.svg';
-import {useImagePicker} from '../../hooks/useImagePicker';
-import {useReportStore} from './Mypage.report.operator.zustand';
+import CalendarPicker from '../../CalendarPicker';
+import TimePicker from '../../TimePicker';
+import PopupCategoryModal from '../../PopupCategoryModal';
+import CloseIcon from '../../../Resource/svg/close-icon.svg';
+import {useImagePicker} from '../../../hooks/useImagePicker';
+import {useReportStore} from '../../../Screen/MyPage/Report/Operator/Mypage.report.operator.zustand';
 import {StepProps} from './ReportStepOne';
-
+import CustomBottomSheetButton from '../../BottomSheet/CustomBottomSheetButton';
 const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
   const {
+    // State
     modalVisible,
     postcodeVisible,
-    popupName,
-    category,
-    address,
-    detailAddress,
-    siteUrl,
-    showCalendar,
-    dateType,
-    startDate,
-    endDate,
-    showTimePicker,
-    timePickerType,
-    startTime,
-    endTime,
-    timeDetail,
+    storeName,
+    storeAddress,
+    storeDetailAddress,
+    storeUrl,
+    openDate,
+    closeDate,
+    openTime,
+    closeTime,
+    operationException,
+
+    // Actions
     setModalVisible,
     setPostcodeVisible,
-    setPopupName,
-    setCategory,
-    setAddress,
-    setDetailAddress,
-    setSiteUrl,
-    setShowCalendar,
-    setDateType,
-    setStartDate,
-    setEndDate,
-    setShowTimePicker,
-    setTimePickerType,
-    setStartTime,
-    setEndTime,
-    setTimeDetail,
-    setImageFileUri,
+    setStoreName,
+    setStoreAddress,
+    setStoreDetailAddress,
+    setStoreUrl,
+    setOpenDate,
+    setCloseDate,
+    setOpenTime,
+    setCloseTime,
+    setOperationException,
+    setImages,
+    setLatitude,
+    setLongitude,
+    setCategories,
   } = useReportStore();
 
   const {
@@ -60,68 +56,67 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
     maxHeight: 512,
   });
 
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return '날짜 선택';
-    const date = new Date(dateString);
-    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(
-      2,
-      '0',
-    )}.${String(date.getDate()).padStart(2, '0')}`;
-  };
-
-  const formatTime = (date: Date) => {
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const period = hours >= 12 ? 'PM' : 'AM';
-    const formattedHours = hours % 12 || 12;
-    return `${formattedHours}:${minutes.toString().padStart(2, '0')} ${period}`;
-  };
-
   const handleDateSelect = (type: 'start' | 'end', date: string) => {
     if (type === 'start') {
-      setStartDate(date);
+      setOpenDate(date);
     } else {
-      setEndDate(date);
+      setCloseDate(date);
     }
   };
 
   const handleTimeSelect = (type: 'start' | 'end', time: Date) => {
+    const timeString = `${String(time.getHours()).padStart(2, '0')}:${String(
+      time.getMinutes(),
+    ).padStart(2, '0')}`;
     if (type === 'start') {
-      setStartTime(time);
+      setOpenTime(timeString);
     } else {
-      setEndTime(time);
+      setCloseTime(timeString);
     }
   };
 
   const handlePostcode = (data: any) => {
-    setAddress(data.address);
+    setStoreAddress(data.address);
+    // 카카오 우편번호 API에서 위도/경도 정보도 받아와서 설정
+    setLatitude(data.latitude);
+    setLongitude(data.longitude);
     setPostcodeVisible(false);
   };
 
+  const handleCategorySelect = (selectedCategories: string) => {
+    setCategories(selectedCategories);
+    setModalVisible(false);
+  };
+
   const secondReportHandler = () => {
-    setImageFileUri(images);
+    setImages(images);
     onNext();
   };
+
+  const [showCalendar, setShowCalendar] = useState<boolean>(false);
+  const [showTimePicker, setShowTimePicker] = useState<boolean>(false);
+  const [isOpenDate, setIsOpenDate] = useState<boolean>(false);
+  const [isOpenTime, setIsOpenTime] = useState<boolean>(false);
 
   return (
     <ContentContainer>
       <ScrollView>
         <InputSection>
           <TitleText>POPPIN이 모르는 새로운{'\n'}팝업을 알려주세요</TitleText>
-
           <SubTitleContainer>
             <SubTitle>📝 팝업의 상세 정보를 알려주세요</SubTitle>
           </SubTitleContainer>
+
           <InputLabel>
             팝업 이름<RequiredMark>*</RequiredMark>
           </InputLabel>
           <InputContainer>
             <StyledInput
               placeholder="팝업 이름을 입력해주세요"
-              value={popupName}
-              onChangeText={setPopupName}
+              value={storeName}
+              onChangeText={setStoreName}
             />
-            <ClearButton onPress={() => setPopupName('')}>
+            <ClearButton onPress={() => setStoreName('')}>
               <ClearButtonText>×</ClearButtonText>
             </ClearButton>
           </InputContainer>
@@ -129,12 +124,10 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <InputLabel>
             카테고리<RequiredMark>*</RequiredMark>
           </InputLabel>
-          <CategorySelectButton onPress={() => setModalVisible(true)}>
-            <CategorySelectText>
-              {category || '카테고리를 선택해주세요'}
-            </CategorySelectText>
-            <DownArrowText>▼</DownArrowText>
-          </CategorySelectButton>
+          <CustomBottomSheetButton
+            text={'카테고리를 선택해주세요'}
+            onPress={() => setModalVisible(true)}
+          />
 
           <InputLabel>
             운영 날짜<RequiredMark>*</RequiredMark>
@@ -142,18 +135,18 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <DateContainer>
             <DateButton
               onPress={() => {
-                setDateType('start');
                 setShowCalendar(true);
+                setIsOpenDate(true);
               }}>
-              <DateButtonText>{formatDate(startDate)}</DateButtonText>
+              <DateButtonText>{YYYYHHMMFormatDate(openDate)}</DateButtonText>
             </DateButton>
             <DateSeparator>~</DateSeparator>
             <DateButton
               onPress={() => {
-                setDateType('end');
                 setShowCalendar(true);
+                setIsOpenDate(false);
               }}>
-              <DateButtonText>{formatDate(endDate)}</DateButtonText>
+              <DateButtonText>{YYYYHHMMFormatDate(closeDate)}</DateButtonText>
             </DateButton>
           </DateContainer>
 
@@ -163,18 +156,18 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <TimeContainer>
             <TimeButton
               onPress={() => {
-                setTimePickerType('start');
                 setShowTimePicker(true);
+                setIsOpenTime(true);
               }}>
-              <TimeText>{formatTime(startTime)}</TimeText>
+              <TimeText>{HHMMFormatTime(openTime)}</TimeText>
             </TimeButton>
             <TimeSeparator>~</TimeSeparator>
             <TimeButton
               onPress={() => {
-                setTimePickerType('end');
                 setShowTimePicker(true);
+                setIsOpenTime(false);
               }}>
-              <TimeText>{formatTime(endTime)}</TimeText>
+              <TimeText>{HHMMFormatTime(closeTime)}</TimeText>
             </TimeButton>
           </TimeContainer>
 
@@ -186,11 +179,11 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
               }
               numberOfLines={2}
               multiline={true}
-              value={timeDetail}
-              onChangeText={setTimeDetail}
+              value={operationException}
+              onChangeText={setOperationException}
               textAlignVertical="top"
             />
-            <ClearButton onPress={() => setTimeDetail('')}>
+            <ClearButton onPress={() => setOperationException('')}>
               <ClearButtonText>×</ClearButtonText>
             </ClearButton>
           </InputBigContainer>
@@ -200,7 +193,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           </InputLabel>
           <AddressContainer>
             <AddressInput
-              value={address}
+              value={storeAddress}
               editable={false}
               placeholder="주소를 검색해주세요"
             />
@@ -211,8 +204,8 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <InputContainer>
             <StyledInput
               placeholder="상세 주소를 입력해주세요"
-              value={detailAddress}
-              onChangeText={setDetailAddress}
+              value={storeDetailAddress}
+              onChangeText={setStoreDetailAddress}
             />
           </InputContainer>
 
@@ -222,10 +215,10 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <InputContainer>
             <StyledInput
               placeholder="URL을 입력해주세요"
-              value={siteUrl}
-              onChangeText={setSiteUrl}
+              value={storeUrl}
+              onChangeText={setStoreUrl}
             />
-            <ClearButton onPress={() => setSiteUrl('')}>
+            <ClearButton onPress={() => setStoreUrl('')}>
               <ClearButtonText>×</ClearButtonText>
             </ClearButton>
           </InputContainer>
@@ -235,7 +228,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           </InputLabel>
           <ImageUploadSection>
             {images?.map((image, index) => (
-              <ImageContainer>
+              <ImageContainer key={index}>
                 <UploadedImage source={image} />
                 <DeleteButton onPress={() => handleDeleteImage(index)}>
                   <DeleteButtonText>×</DeleteButtonText>
@@ -252,7 +245,6 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
               </ImageUploadButton>
             )}
           </ImageUploadSection>
-
           <HelperText>
             *첨부파일은 20MB 이하의 파일만 업로드 가능하며, 최대 5장까지 등록
             가능합니다.
@@ -276,13 +268,8 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <PopupCategoryModal
             visible={modalVisible}
             onClose={() => setModalVisible(false)}
-            onApply={selectedFilters => {
-              // TODO: 카테고리 선택 처리
-              setModalVisible(false);
-            }}
-            onReset={() => {
-              // TODO: 카테고리 초기화
-            }}
+            onApply={handleCategorySelect}
+            onReset={() => {}}
             buttonName={'카테고리 설정'}
           />
         </CustomBottomSheet>
@@ -293,11 +280,11 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           height={'70%'}
           title={'날짜 설정'}>
           <CalendarPicker
-            type={dateType}
-            startDate={startDate}
-            endDate={endDate}
+            openDate={openDate}
+            closeDate={closeDate}
             onSelectDate={handleDateSelect}
             onClose={() => setShowCalendar(false)}
+            type={isOpenDate ? 'start' : 'end'}
           />
         </CustomBottomSheet>
 
@@ -307,11 +294,11 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           height={'40%'}
           title={'시간 설정'}>
           <TimePicker
-            initialStartTime={startTime}
-            initialEndTime={endTime}
-            type={timePickerType}
+            initialStartTime={new Date()}
+            initialEndTime={new Date()}
             onTimeSelect={handleTimeSelect}
             onClose={() => setShowTimePicker(false)}
+            type={isOpenTime ? 'start' : 'end'}
           />
         </CustomBottomSheet>
 
@@ -328,11 +315,11 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
             />
           </PostcodeModal>
         )}
+
         <RowButtonContainer>
           <SubmitButton onPress={onBackPress}>
             <SubmitButtonText>돌아가기</SubmitButtonText>
           </SubmitButton>
-
           <SubmitButton onPress={secondReportHandler}>
             <SubmitButtonText>다음</SubmitButtonText>
           </SubmitButton>
@@ -409,25 +396,6 @@ const StyledBigInput = styled.TextInput`
   text-align-vertical: top;
   height: ${moderateScale(40)}px;
   font-size: ${moderateScale(14)}px;
-`;
-
-const CategorySelectButton = styled.TouchableOpacity`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: ${moderateScale(12)}px;
-  border: 1px solid ${props => props.theme.color.grey.main};
-  border-radius: ${moderateScale(20)}px;
-  margin-bottom: ${moderateScale(16)}px;
-`;
-
-const DownArrowText = styled.Text`
-  font-size: ${moderateScale(12)}px;
-  color: ${props => props.theme.color.grey.main};
-`;
-const CategorySelectText = styled.Text`
-  font-size: ${moderateScale(16)}px;
-  color: ${props => props.theme.color.grey.main};
 `;
 
 const ClearButton = styled.TouchableOpacity`
@@ -600,6 +568,7 @@ const UploadText = styled.Text`
 
 export const RowButtonContainer = styled.View`
   flex-direction: row;
+  margin-top: ${moderateScale(12)}px;
   justify-content: space-between; // 또는 space-evenly, space-around
 `;
 export default ReportStepTwo;

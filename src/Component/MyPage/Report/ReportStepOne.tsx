@@ -1,8 +1,8 @@
 // components/StepOne.tsx
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
-import {moderateScale} from '../../Util';
-import {useReportStore} from './Mypage.report.operator.zustand';
+import {moderateScale} from '../../../Util';
+import {useReportStore} from '../../../Screen/MyPage/Report/Operator/Mypage.report.operator.zustand';
 import {Alert} from 'react-native';
 import {RequiredMark} from './ReportStepTwo';
 
@@ -12,16 +12,16 @@ export interface StepProps {
 }
 
 const ReportStepOne: React.FC<StepProps> = ({onNext}) => {
-  const [affiliationLength, setAffiliationLength] = useState(0);
+  const [informerCompanyLength, setInformerCompanyLength] = useState(0);
   const [informerEmailLength, setInformerEmailLength] = useState(0);
 
-  const {affiliation, informerEmail, setAffiliation, setInformerEmail} =
+  const {informerCompany, informerEmail, setInformerCompany, setInformerEmail} =
     useReportStore();
 
-  const handleAffiliationChange = (text: string) => {
+  const handleinformerCompanyChange = (text: string) => {
     if (text.length <= 30) {
-      setAffiliation(text);
-      setAffiliationLength(text.length);
+      setInformerCompany(text);
+      setInformerCompanyLength(text.length);
     }
   };
 
@@ -33,7 +33,7 @@ const ReportStepOne: React.FC<StepProps> = ({onNext}) => {
   };
 
   const handleNext = () => {
-    if (!affiliation.trim()) {
+    if (!informerCompany.trim()) {
       Alert.alert('알림', '소속(업체명)을 입력해주세요.');
       return;
     }
@@ -58,11 +58,11 @@ const ReportStepOne: React.FC<StepProps> = ({onNext}) => {
         </Label>
         <StyledInput
           placeholder="소속(업체명)"
-          value={affiliation}
-          onChangeText={handleAffiliationChange}
+          value={informerCompany}
+          onChangeText={handleinformerCompanyChange}
           maxLength={30}
         />
-        <CountText>{affiliationLength}/30</CountText>
+        <CountText>{informerCompanyLength}/30</CountText>
       </InputWrapper>
 
       <InputWrapper>

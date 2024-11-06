@@ -8,35 +8,50 @@ import {
   SubTitle,
   SubTitleContainer,
 } from './ReportStepTwo';
-import {moderateScale} from '../../Util';
+import {moderateScale} from '../../../Util';
 import {StepProps} from './ReportStepOne';
-import PopupCategoryModal from '../PopupCategoryModal';
-import CustomBottomSheet from '../BottomSheet/CustomBottomSheet';
-import {useReportStore} from './Mypage.report.operator.zustand';
-import CategorySelectButton from '../../Screen/Popup/Landing/category.select.button';
-import CustomBottomSheetButton from '../BottomSheet/CustomBottomSheetButton';
-import AgeChooseBottomSheet from '../BottomSheet/Age/AgeChooseBottomSheet';
+import CustomBottomSheet from '../../BottomSheet/CustomBottomSheet';
+import {useReportStore} from '../../../Screen/MyPage/Report/Operator/Mypage.report.operator.zustand';
+import CustomBottomSheetButton from '../../BottomSheet/CustomBottomSheetButton';
+import AgeChooseBottomSheet from '../../BottomSheet/Age/AgeChooseBottomSheet';
 
 interface RadioOption {
   label: string;
-  value: string;
+  value: boolean;
 }
-
 const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
-  const [selectedReservation, setSelectedReservation] = useState<string>('');
-  const [selectedFee, setSelectedFee] = useState<string>('');
+  const {
+    storeBriefDescription,
+    isReservationRequired,
+    availableAge,
+    parkingAvailable,
+    isEntranceFeeRequired,
+    entranceFee,
+    modalVisible,
+    setModalVisible,
+    setStoreBriefDescription,
+    setIsReservationRequired,
+    setAvailableAge,
+    setParkingAvailable,
+    setIsEntranceFeeRequired,
+    setEntranceFee,
+  } = useReportStore();
 
   const reservationOptions: RadioOption[] = [
-    {label: '필수 아님', value: 'not_required'},
-    {label: '예약 필수', value: 'required'},
+    {label: '필수 아님', value: false},
+    {label: '예약 필수', value: true},
+  ];
+
+  const parkingOptions: RadioOption[] = [
+    {label: '주차 불가', value: false},
+    {label: '주차 가능', value: true},
   ];
 
   const feeOptions: RadioOption[] = [
-    {label: '없음', value: 'free'},
-    {label: '있음', value: 'paid'},
+    {label: '없음', value: false},
+    {label: '있음', value: true},
   ];
 
-  const {modalVisible, setModalVisible} = useReportStore();
   return (
     <Container>
       <Title>POPPIN에 등록하기 위한{'\n'}정보가 필요해요!</Title>
@@ -52,6 +67,8 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
           placeholder="팝업에 대한 내용을 소개해 주세요."
           multiline
           textAlignVertical="top"
+          value={storeBriefDescription}
+          onChangeText={setStoreBriefDescription}
         />
 
         <Label>
@@ -60,15 +77,16 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
         <RadioGroup>
           {reservationOptions.map(option => (
             <RadioButton
-              key={option.value}
-              selected={selectedReservation === option.value}
-              onPress={() => setSelectedReservation(option.value)}>
-              <RadioText selected={selectedReservation === option.value}>
+              key={option.label}
+              selected={isReservationRequired === option.value}
+              onPress={() => setIsReservationRequired(option.value)}>
+              <RadioText selected={isReservationRequired === option.value}>
                 {option.label}
               </RadioText>
             </RadioButton>
           ))}
         </RadioGroup>
+
         <Label>
           이용가능 연령<RequiredMark>*</RequiredMark>
         </Label>
@@ -76,16 +94,33 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
           onPress={() => setModalVisible(true)}
           text={'이용 가능 연령을 선택하세요'}
         />
+
+        <Label>
+          주차 가능 여부<RequiredMark>*</RequiredMark>
+        </Label>
+        <RadioGroup>
+          {parkingOptions.map(option => (
+            <RadioButton
+              key={option.label}
+              selected={parkingAvailable === option.value}
+              onPress={() => setParkingAvailable(option.value)}>
+              <RadioText selected={parkingAvailable === option.value}>
+                {option.label}
+              </RadioText>
+            </RadioButton>
+          ))}
+        </RadioGroup>
+
         <Label>
           입장료 유무<RequiredMark>*</RequiredMark>
         </Label>
         <RadioGroup>
           {feeOptions.map(option => (
             <RadioButton
-              key={option.value}
-              selected={selectedFee === option.value}
-              onPress={() => setSelectedFee(option.value)}>
-              <RadioText selected={selectedFee === option.value}>
+              key={option.label}
+              selected={isEntranceFeeRequired === option.value}
+              onPress={() => setIsEntranceFeeRequired(option.value)}>
+              <RadioText selected={isEntranceFeeRequired === option.value}>
                 {option.label}
               </RadioText>
             </RadioButton>
@@ -97,34 +132,39 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
           placeholder={`입장료가 있다면 작성해주세요. \nex)성인 16,000원, 어린이 7,000원`}
           multiline={true}
           textAlignVertical="top"
+          value={entranceFee}
+          onChangeText={setEntranceFee}
         />
       </FormSection>
 
-      <CustomBottomSheet
-        isVisible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        title={'제보하려는 팝업의 카테고리를 설정해주세요'}
-        height={'40%'}>
-        <AgeChooseBottomSheet
-          onApply={() => setModalVisible(false)}
-          onClose={() => setModalVisible(false)}
-          selectedAges={['', '', '']}
-          visible={modalVisible}
-        />
-      </CustomBottomSheet>
       <RowButtonContainer>
         <SubmitButton onPress={onBackPress}>
           <SubmitButtonText>돌아가기</SubmitButtonText>
         </SubmitButton>
-
         <SubmitButton onPress={onNext}>
           <SubmitButtonText>제보하기</SubmitButtonText>
         </SubmitButton>
       </RowButtonContainer>
+
+      <CustomBottomSheet
+        isVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        title={'이용 가능 연령을 선택해주세요'}
+        height={'40%'}>
+        <AgeChooseBottomSheet
+          onClose={() => setModalVisible(false)}
+          selectedAges={availableAge}
+          visible={modalVisible}
+          onAgeSelected={age =>
+            setAvailableAge(
+              age as 'G_RATED' | 'PG_7' | 'PG_12' | 'PG_15' | 'PG_18',
+            )
+          }
+        />
+      </CustomBottomSheet>
     </Container>
   );
 };
-
 const Container = styled.View`
   flex: 1;
   padding: ${moderateScale(10)}px;
@@ -157,6 +197,7 @@ const InputBox = styled.TextInput`
 
 const RadioGroup = styled.View`
   flex-direction: row;
+  justify-content: space-between;
   gap: 12px;
 `;
 
@@ -165,7 +206,7 @@ interface RadioProps {
 }
 
 const RadioButton = styled.TouchableOpacity<RadioProps>`
-  flex: 1;
+  width: 49%;
   background-color: ${props =>
     props.selected
       ? props.theme.color.blue.mild

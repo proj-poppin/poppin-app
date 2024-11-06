@@ -1,7 +1,7 @@
 // components/Header.tsx
 import React from 'react';
 import styled from 'styled-components/native';
-import {moderateScale} from '../../Util';
+import {moderateScale} from '../../../Util';
 import {SubmitButtonText} from './ReportStepTwo';
 
 interface HeaderProps {

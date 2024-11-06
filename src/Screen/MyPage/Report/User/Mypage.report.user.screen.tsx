@@ -7,7 +7,7 @@ import PopupCategoryModal from '../../../../Component/PopupCategoryModal';
 import {
   HelperText,
   SubmitButton,
-} from '../../../../Component/operatorRequest/ReportStepTwo';
+} from '../../../../Component/MyPage/Report/ReportStepTwo';
 
 export const MyPageReportUserScreen: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);

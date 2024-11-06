@@ -1,9 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {ScrollViewPage} from '../../../../Component/Page';
-import StepOne from '../../../../Component/operatorRequest/ReportStepOne';
-import StepTwo from '../../../../Component/operatorRequest/ReportStepTwo';
-import StepHeader from '../../../../Component/operatorRequest/StepHeader';
-import StepThree from '../../../../Component/operatorRequest/ReportStepThree';
+import StepOne from '../../../../Component/MyPage/Report/ReportStepOne';
+import StepTwo from '../../../../Component/MyPage/Report/ReportStepTwo';
+import StepHeader from '../../../../Component/MyPage/Report/StepHeader';
+import StepThree from '../../../../Component/MyPage/Report/ReportStepThree';
 import {StyleProp, ViewStyle, Platform, ScrollView} from 'react-native';
 import {useScrollToTop} from '@react-navigation/native';
 

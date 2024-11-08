@@ -1,7 +1,7 @@
 // components/StepTwo.tsx
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
-import {ScrollView} from 'react-native';
+import {Alert, ScrollView} from 'react-native';
 import {HHMMFormatTime, moderateScale, YYYYHHMMFormatDate} from '../../../Util';
 import CustomBottomSheet from '../../BottomSheet/CustomBottomSheet';
 import Postcode from '@actbase/react-daum-postcode';
@@ -13,6 +13,7 @@ import {useImagePicker} from '../../../hooks/useImagePicker';
 import {useReportStore} from '../../../Screen/MyPage/Report/Operator/Mypage.report.operator.zustand';
 import {StepProps} from './ReportStepOne';
 import CustomBottomSheetButton from '../../BottomSheet/CustomBottomSheetButton';
+import PostalCodeModal from '../../operatorRequest/PostalCodeModal';
 const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
   const {
     // State
@@ -23,6 +24,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
     storeDetailAddress,
     storeUrl,
     openDate,
+    categories,
     closeDate,
     openTime,
     closeTime,
@@ -56,6 +58,37 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
     maxHeight: 512,
   });
 
+  const validateStep = () => {
+    if (!storeName.trim()) {
+      Alert.alert('알림', '팝업 이름을 입력해주세요.');
+      return false;
+    }
+    if (!categories || categories.length === 0) {
+      Alert.alert('알림', '카테고리를 선택해주세요.');
+      return false;
+    }
+    if (!openDate || !closeDate) {
+      Alert.alert('알림', '운영 날짜를 선택해주세요.');
+      return false;
+    }
+    if (!openTime || !closeTime) {
+      Alert.alert('알림', '운영 시간을 선택해주세요.');
+      return false;
+    }
+    if (!storeAddress.trim()) {
+      Alert.alert('알림', '주소를 입력해주세요.');
+      return false;
+    }
+    if (!storeUrl.trim()) {
+      Alert.alert('알림', '공식 사이트 주소를 입력해주세요.');
+      return false;
+    }
+    if (!images || images.length === 0) {
+      Alert.alert('알림', '최소 1장의 사진을 업로드해주세요.');
+      return false;
+    }
+    return true;
+  };
   const handleDateSelect = (type: 'start' | 'end', date: string) => {
     if (type === 'start') {
       setOpenDate(date);
@@ -89,8 +122,23 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
   };
 
   const secondReportHandler = () => {
-    setImages(images);
-    onNext();
+    if (validateStep()) {
+      setImages(images);
+      onNext();
+    }
+  };
+
+  const isFormValid = () => {
+    return (
+      storeName.trim() &&
+      categories?.length > 0 &&
+      openDate &&
+      closeDate &&
+      openTime &&
+      closeTime &&
+      storeAddress.trim() &&
+      storeUrl.trim()
+    );
   };
 
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
@@ -174,10 +222,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <InputLabel>운영 시간외 예외 사항</InputLabel>
           <InputBigContainer>
             <StyledBigInput
-              placeholder={
-                '운영 시간 외 예외사항이 있다면 작성해 주세요.\nex) 마지막 날에는 5시에 조기 마감'
-              }
-              numberOfLines={2}
+              placeholder={`운영 시간 외 예외사항이 있다면 작성해 주세요. \nex) 마지막 날에는 5시에 조기 마감`}
               multiline={true}
               value={operationException}
               onChangeText={setOperationException}
@@ -302,19 +347,11 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           />
         </CustomBottomSheet>
 
-        {postcodeVisible && (
-          <PostcodeModal>
-            <CloseIconContainer onPress={() => setPostcodeVisible(false)}>
-              <CloseIcon />
-            </CloseIconContainer>
-            <Postcode
-              style={{width: '100%', height: '50%', position: 'relative'}}
-              jsOptions={{animation: false}}
-              onSelected={handlePostcode}
-              onError={(error: any) => console.log(error)}
-            />
-          </PostcodeModal>
-        )}
+        <PostalCodeModal
+          isVisible={postcodeVisible}
+          onClose={() => setPostcodeVisible(false)}
+          onSelected={handlePostcode}
+        />
 
         <RowButtonContainer>
           <SubmitButton onPress={onBackPress}>
@@ -394,6 +431,7 @@ const StyledBigInput = styled.TextInput`
   flex: 1;
   padding: ${moderateScale(12)}px;
   text-align-vertical: top;
+  min-height: ${moderateScale(80)}px;
   height: ${moderateScale(40)}px;
   font-size: ${moderateScale(14)}px;
 `;
@@ -492,9 +530,9 @@ export const HelperText = styled.Text`
   color: ${props => props.theme.color.grey.main};
   margin-bottom: ${moderateScale(4)}px;
 `;
-
-export const SubmitButton = styled.TouchableOpacity`
-  background-color: ${props => props.theme.color.grey.main};
+export const SubmitButton = styled.TouchableOpacity<{disabled?: boolean}>`
+  background-color: ${props =>
+    props.disabled ? props.theme.color.grey.mild : props.theme.color.blue.main};
   width: 49%;
   padding: ${moderateScale(16)}px;
   border-radius: ${moderateScale(8)}px;
@@ -502,7 +540,11 @@ export const SubmitButton = styled.TouchableOpacity`
 `;
 
 export const SubmitButtonText = styled.Text`
-  color: white;
+  color: ${props =>
+    props.disabled
+      ? props.theme.color.grey.black
+      : props.theme.color.grey.white};
+
   font-size: ${moderateScale(16)}px;
   font-weight: 600;
 `;

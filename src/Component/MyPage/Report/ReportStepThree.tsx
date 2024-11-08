@@ -14,6 +14,7 @@ import CustomBottomSheet from '../../BottomSheet/CustomBottomSheet';
 import {useReportStore} from '../../../Screen/MyPage/Report/Operator/Mypage.report.operator.zustand';
 import CustomBottomSheetButton from '../../BottomSheet/CustomBottomSheetButton';
 import AgeChooseBottomSheet from '../../BottomSheet/Age/AgeChooseBottomSheet';
+import {Alert} from 'react-native';
 
 interface RadioOption {
   label: string;
@@ -36,7 +37,39 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
     setIsEntranceFeeRequired,
     setEntranceFee,
   } = useReportStore();
+  const validateStep = () => {
+    if (!storeBriefDescription.trim()) {
+      Alert.alert('알림', '팝업 소개를 입력해주세요.');
+      return false;
+    }
+    if (isReservationRequired === undefined) {
+      Alert.alert('알림', '예약 필수 여부를 선택해주세요.');
+      return false;
+    }
+    if (!availableAge) {
+      Alert.alert('알림', '이용가능 연령을 선택해주세요.');
+      return false;
+    }
+    if (parkingAvailable === undefined) {
+      Alert.alert('알림', '주차 가능 여부를 선택해주세요.');
+      return false;
+    }
+    if (isEntranceFeeRequired === undefined) {
+      Alert.alert('알림', '입장료 유무를 선택해주세요.');
+      return false;
+    }
+    if (isEntranceFeeRequired && !entranceFee.trim()) {
+      Alert.alert('알림', '입장료 정보를 입력해주세요.');
+      return false;
+    }
+    return true;
+  };
 
+  const handleNext = () => {
+    if (validateStep()) {
+      onNext();
+    }
+  };
   const reservationOptions: RadioOption[] = [
     {label: '필수 아님', value: false},
     {label: '예약 필수', value: true},

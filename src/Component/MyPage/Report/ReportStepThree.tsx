@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import styled from 'styled-components/native';
 import {
   RequiredMark,
@@ -15,6 +15,7 @@ import {useReportStore} from '../../../Screen/MyPage/Report/Operator/Mypage.repo
 import CustomBottomSheetButton from '../../BottomSheet/CustomBottomSheetButton';
 import AgeChooseBottomSheet from '../../BottomSheet/Age/AgeChooseBottomSheet';
 import {Alert} from 'react-native';
+import {useAppStore} from 'src/Zustand/App/app.zustand';
 
 interface RadioOption {
   label: string;
@@ -37,6 +38,8 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
     setIsEntranceFeeRequired,
     setEntranceFee,
   } = useReportStore();
+
+  const {setAppModalVisible, showAppModal} = useAppStore();
   const validateStep = () => {
     if (!storeBriefDescription.trim()) {
       Alert.alert('알림', '팝업 소개를 입력해주세요.');
@@ -68,6 +71,9 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
   const handleNext = () => {
     if (validateStep()) {
       onNext();
+      setAppModalVisible(true);
+      showAppModal('POPUP_REPORT_COMPLETED');
+      // navigation.navigate('MyPage', {});
     }
   };
   const reservationOptions: RadioOption[] = [
@@ -174,7 +180,7 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
         <SubmitButton onPress={onBackPress}>
           <SubmitButtonText>돌아가기</SubmitButtonText>
         </SubmitButton>
-        <SubmitButton onPress={onNext}>
+        <SubmitButton onPress={handleNext}>
           <SubmitButtonText>제보하기</SubmitButtonText>
         </SubmitButton>
       </RowButtonContainer>

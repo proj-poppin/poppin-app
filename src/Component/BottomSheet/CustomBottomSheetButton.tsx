@@ -10,18 +10,16 @@ interface CustomBottomSheetButtonProps {
   text: string;
   onPress: () => void;
   selected?: boolean;
-  placeholder?: string;
 }
 
 const CustomBottomSheetButton: React.FC<CustomBottomSheetButtonProps> = ({
-  text,
+  text = '선택해주세요',
   onPress,
   selected = false,
-  placeholder = '선택해주세요',
 }) => {
   return (
     <ButtonContainer onPress={onPress} selected={selected}>
-      <ButtonText selected={selected}>{text || placeholder}</ButtonText>
+      <ButtonText selected={selected}>{text}</ButtonText>
       <ArrowIcon>▼</ArrowIcon>
     </ButtonContainer>
   );

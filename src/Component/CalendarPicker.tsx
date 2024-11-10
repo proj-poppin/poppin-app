@@ -51,29 +51,29 @@ type DateType = 'start' | 'end';
 
 interface CalendarPickerProps {
   type: DateType;
-  startDate?: string;
-  endDate?: string;
+  openDate?: string;
+  closeDate?: string;
   onSelectDate: (type: DateType, date: string) => void;
   onClose: () => void;
 }
 
 const CalendarPicker: React.FC<CalendarPickerProps> = ({
   type,
-  startDate,
-  endDate,
+  openDate,
+  closeDate,
   onSelectDate,
   onClose,
 }) => {
   const [selected, setSelected] = useState(
-    type === 'start' ? startDate : endDate,
+    type === 'start' ? openDate : closeDate,
   );
 
   const handleDayPress = (day: any) => {
     // 시작일이 종료일보다 늦거나, 종료일이 시작일보다 이르면 선택 불가
-    if (type === 'start' && endDate && day.dateString > endDate) {
+    if (type === 'start' && closeDate && day.dateString > closeDate) {
       return;
     }
-    if (type === 'end' && startDate && day.dateString < startDate) {
+    if (type === 'end' && openDate && day.dateString < openDate) {
       return;
     }
 
@@ -81,23 +81,23 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({
   };
 
   // 선택 가능한 날짜 범위 설정
-  const minDate = type === 'end' && startDate ? startDate : undefined;
-  const maxDate = type === 'start' && endDate ? endDate : undefined;
+  const minDate = type === 'end' && openDate ? openDate : undefined;
+  const maxDate = type === 'start' && closeDate ? closeDate : undefined;
 
   // 마킹할 날짜들 계산
   const getMarkedDates = () => {
     const marked: any = {};
 
-    if (startDate) {
-      marked[startDate] = {
+    if (openDate) {
+      marked[openDate] = {
         selected: true,
         selectedColor: '#007AFF',
         startingDay: true,
       };
     }
 
-    if (endDate) {
-      marked[endDate] = {
+    if (closeDate) {
+      marked[closeDate] = {
         selected: true,
         selectedColor: '#007AFF',
         endingDay: true,
@@ -105,7 +105,7 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({
     }
 
     // 현재 선택된 날짜 마킹
-    if (selected && selected !== startDate && selected !== endDate) {
+    if (selected && selected !== openDate && selected !== closeDate) {
       marked[selected] = {
         selected: true,
         selectedColor: '#007AFF',

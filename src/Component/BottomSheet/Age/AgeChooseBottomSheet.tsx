@@ -1,43 +1,38 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import {View, TouchableWithoutFeedback} from 'react-native';
+import {TouchableWithoutFeedback} from 'react-native';
 import {moderateScale} from '../../../Util';
 
 interface AgeGroupModalProps {
   visible: boolean;
   onClose: () => void;
-  onApply: (selectedAges: string[]) => void;
-  selectedAges: string[];
+  selectedAges: string;
+  onAgeSelected: (age: string) => void;
 }
 
 const AgeChooseBottomSheet: React.FC<AgeGroupModalProps> = ({
   onClose,
-  onApply = console.log(''),
   selectedAges,
+  onAgeSelected,
 }) => {
-  const [selected, setSelected] = React.useState<string[]>(selectedAges);
+  const [selected, setSelected] = React.useState<string>(selectedAges || '');
 
   const ageGroups = [
-    {id: 'all', label: '😀 전체'},
-    {id: '7up', label: '🐥 7세 이상'},
-    {id: '12up', label: '👧🏻 12세 이상'},
-    {id: '15up', label: '🏃 15세 이상'},
-    {id: 'adult', label: '🍷 성인'},
+    {id: 'G_RATED', label: '😀 전체'},
+    {id: 'PG_7', label: '🐥 7세 이상'},
+    {id: 'PG_12', label: '👧🏻 12세 이상'},
+    {id: 'PG_15', label: '🏃 15세 이상'},
+    {id: 'PG_18', label: '🍷 성인'},
   ];
 
   const handleSelect = (ageId: string) => {
-    if (ageId === 'all') {
-      setSelected(['all']);
-    } else {
-      const newSelected = selected.includes(ageId)
-        ? selected.filter(id => id !== ageId)
-        : [...selected.filter(id => id !== 'all'), ageId];
-      setSelected(newSelected);
-    }
+    setSelected(ageId);
   };
 
   const handleApply = () => {
-    onApply(selected);
+    onAgeSelected(selected);
+    console.log(selected);
+
     onClose();
   };
 
@@ -53,8 +48,8 @@ const AgeChooseBottomSheet: React.FC<AgeGroupModalProps> = ({
               <AgeOption
                 key={age.id}
                 onPress={() => handleSelect(age.id)}
-                isSelected={selected.includes(age.id)}>
-                <AgeOptionText isSelected={selected.includes(age.id)}>
+                isSelected={selected === age.id}>
+                <AgeOptionText isSelected={selected === age.id}>
                   {age.label}
                 </AgeOptionText>
               </AgeOption>
@@ -69,6 +64,7 @@ const AgeChooseBottomSheet: React.FC<AgeGroupModalProps> = ({
     </ModalContainer>
   );
 };
+
 const ModalContainer = styled.View`
   flex: 1;
   justify-content: flex-end;
@@ -106,9 +102,15 @@ interface OptionProps {
 const AgeOption = styled.TouchableOpacity<OptionProps>`
   padding: ${moderateScale(10)}px ${moderateScale(20)}px;
   border-radius: ${moderateScale(20)}px;
-  background-color: ${props => (props.isSelected ? '#E8F3FF' : '#F8F8F8')};
-  border: ${moderateScale(1)}px solid
-    ${props => (props.isSelected ? '#2D9CDB' : 'transparent')};
+  background-color: ${props =>
+    props.isSelected
+      ? props.theme.color.blue.mild
+      : props.theme.color.grey.white};
+
+  border: ${props =>
+    props.isSelected
+      ? props.theme.color.blue.main
+      : props.theme.color.grey.mild};
 `;
 
 const AgeOptionText = styled.Text<OptionProps>`

@@ -16,32 +16,34 @@ import {BlankPreference} from 'src/Schema/Preference/preference.schema';
 import {themeColors} from 'src/Theme/theme';
 import CommonCompleteButton from '../Screen/Popup/Landing/common.complete.button';
 import ImagePicker from 'react-native-image-crop-picker';
+import styled from 'styled-components/native';
 
 interface PopupCategoryModalProps {
   visible: boolean;
   onClose: () => void;
-  onApply: (selectedFilters: {
-    selectedCategories: string[];
+  onApply: (selectedCategories: {
     selectedPopupTypes: string[];
+    selectedCategories: string[];
   }) => void;
   buttonName: string;
   onReset: () => void;
+  validationMode: 'both' | 'any';
 }
+
 const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
   onClose,
   onApply,
   onReset,
   buttonName,
+  validationMode = 'any',
 }) => {
-  const {setSelectedCategories, setSelectedPopupStores} = usePopupScreenStore();
   const [preferenceCategory, setPreferenceCategory] = useState(
     BlankPreference.preferenceCategory,
   );
-  const [images, setImages] = useState(null);
   const [preferencePopupStore, setPreferencePopupStore] = useState(
     BlankPreference.preferencePopupStore,
   );
-  const [isOneSelected, setIsOneSelected] = useState(false);
+  const [isValidSelection, setIsValidSelection] = useState(false);
 
   const popupStoreKeys = ['market', 'display', 'experience'];
   const categoryKeys = [
@@ -62,11 +64,18 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
   ];
 
   useEffect(() => {
-    setIsOneSelected(
-      Object.values(preferenceCategory).some(value => value) ||
-        Object.values(preferencePopupStore).some(value => value),
+    const hasCategory = Object.values(preferenceCategory).some(value => value);
+    const hasPopupType = Object.values(preferencePopupStore).some(
+      value => value,
     );
-  }, [preferenceCategory, preferencePopupStore]);
+
+    // validationMode에 따라 다른 검증 로직 적용
+    if (validationMode === 'both') {
+      setIsValidSelection(hasCategory && hasPopupType);
+    } else {
+      setIsValidSelection(hasCategory || hasPopupType);
+    }
+  }, [preferenceCategory, preferencePopupStore, validationMode]);
 
   const toggleCategory = (
     key: keyof typeof BlankPreference.preferenceCategory,
@@ -106,13 +115,16 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
   };
 
   return (
-    <View style={styles.modalOverlay}>
+    <ModalOverlay>
       <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.backgroundTouchable} />
+        <BackgroundTouchable />
       </TouchableWithoutFeedback>
-      <View style={styles.modalContent}>
-        <Text style={styles.subCategoryTitle}>팝업 카테고리</Text>
-        <View style={styles.selectionContainer}>
+      <ModalContent>
+        <CategoryTitle type="category">
+          팝업 카테고리
+          {validationMode === 'both' && <RequiredMark> *</RequiredMark>}
+        </CategoryTitle>
+        <SelectionContainer>
           {categoryKeys.map(key => (
             <CategorySelectButton
               key={key}
@@ -125,10 +137,13 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
               }
             />
           ))}
-        </View>
+        </SelectionContainer>
 
-        <Text style={styles.subTypeTitle}>팝업 유형</Text>
-        <View style={styles.selectionContainer}>
+        <CategoryTitle type="type">
+          팝업 유형
+          {validationMode === 'both' && <RequiredMark> *</RequiredMark>}
+        </CategoryTitle>
+        <SelectionContainer>
           {popupStoreKeys.map(key => (
             <CategorySelectButton
               key={key}
@@ -141,9 +156,9 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
               }
             />
           ))}
-        </View>
+        </SelectionContainer>
 
-        <View style={styles.buttonsWrapper}>
+        <ButtonsWrapper>
           <BackMiddleButton
             title="초기화"
             onPress={() => {
@@ -157,56 +172,52 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
             title={buttonName}
             onPress={handleApplyFilter}
             style={{width: '60%'}}
-            disabled={!isOneSelected}
+            disabled={!isValidSelection}
           />
-        </View>
-      </View>
-    </View>
+        </ButtonsWrapper>
+      </ModalContent>
+    </ModalOverlay>
   );
 };
 export default PopupCategoryModal;
+const ModalOverlay = styled.View`
+  flex: 1;
+  justify-content: flex-end;
+`;
 
-const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  backgroundTouchable: {
-    flex: 1,
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    paddingBottom: 20,
-    paddingHorizontal: 16,
-    maxHeight: '100%',
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '700',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  subCategoryTitle: {
-    fontSize: 15,
-    color: themeColors().purple.main,
-    textAlign: 'center',
-  },
-  subTypeTitle: {
-    fontSize: 15,
-    color: themeColors().blue.main,
-    textAlign: 'center',
-    marginTop: 20,
-  },
-  selectionContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    padding: 10,
-  },
-  buttonsWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 10,
-    marginTop: 20,
-  },
-});
+const BackgroundTouchable = styled.View`
+  flex: 1;
+`;
+
+const ModalContent = styled.View`
+  background-color: white;
+  padding: 20px 16px;
+  max-height: 100%;
+`;
+
+const CategoryTitle = styled.Text<{type: 'category' | 'type'}>`
+  font-size: 15px;
+  text-align: center;
+  color: ${props =>
+    props.type === 'category'
+      ? props.theme.color.purple.main
+      : props.theme.color.blue.main};
+`;
+
+const RequiredMark = styled.Text`
+  color: red;
+`;
+
+const SelectionContainer = styled.View`
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 10px;
+`;
+
+const ButtonsWrapper = styled.View`
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+`;

@@ -4,11 +4,9 @@ import styled from 'styled-components/native';
 import {Alert, ScrollView} from 'react-native';
 import {HHMMFormatTime, moderateScale, YYYYHHMMFormatDate} from '../../../Util';
 import CustomBottomSheet from '../../BottomSheet/CustomBottomSheet';
-import Postcode from '@actbase/react-daum-postcode';
 import CalendarPicker from '../../CalendarPicker';
 import TimePicker from '../../TimePicker';
 import PopupCategoryModal from '../../PopupCategoryModal';
-import CloseIcon from '../../../Resource/svg/close-icon.svg';
 import {useImagePicker} from '../../../hooks/useImagePicker';
 import {useReportStore} from '../../../Screen/MyPage/Report/Operator/Mypage.report.operator.zustand';
 import {StepProps} from './ReportStepOne';
@@ -20,11 +18,13 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
     modalVisible,
     postcodeVisible,
     storeName,
+
+    filteringThreeCategories,
+    filteringFourteenCategories,
     storeAddress,
     storeDetailAddress,
     storeUrl,
     openDate,
-    categories,
     closeDate,
     openTime,
     closeTime,
@@ -34,6 +34,9 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
     setModalVisible,
     setPostcodeVisible,
     setStoreName,
+
+    setFilteringThreeCategories,
+    setFilteringFourteenCategories,
     setStoreAddress,
     setStoreDetailAddress,
     setStoreUrl,
@@ -45,7 +48,6 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
     setImages,
     setLatitude,
     setLongitude,
-    setCategories,
   } = useReportStore();
 
   const {
@@ -63,7 +65,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
       Alert.alert('알림', '팝업 이름을 입력해주세요.');
       return false;
     }
-    if (!categories || categories.length === 0) {
+    if (!filteringFourteenCategories || filteringThreeCategories.length === 0) {
       Alert.alert('알림', '카테고리를 선택해주세요.');
       return false;
     }
@@ -110,14 +112,21 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
 
   const handlePostcode = (data: any) => {
     setStoreAddress(data.address);
+    console.log(data);
     // 카카오 우편번호 API에서 위도/경도 정보도 받아와서 설정
     setLatitude(data.latitude);
     setLongitude(data.longitude);
     setPostcodeVisible(false);
   };
 
-  const handleCategorySelect = (selectedCategories: string) => {
-    setCategories(selectedCategories);
+  const handleCategorySelect = (selectedCategories: {
+    selectedPopupTypes: string[];
+    selectedCategories: string[];
+  }) => {
+    setFilteringThreeCategories(selectedCategories.selectedPopupTypes.join(''));
+    setFilteringFourteenCategories(
+      selectedCategories.selectedCategories.join(''),
+    );
     setModalVisible(false);
   };
 
@@ -131,7 +140,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
   const isFormValid = () => {
     return (
       storeName.trim() &&
-      categories?.length > 0 &&
+      filteringThreeCategories?.length > 0 &&
       openDate &&
       closeDate &&
       openTime &&
@@ -316,6 +325,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
             onApply={handleCategorySelect}
             onReset={() => {}}
             buttonName={'카테고리 설정'}
+            validationMode={'both'}
           />
         </CustomBottomSheet>
 
@@ -470,20 +480,6 @@ const SearchButtonText = styled.Text`
   font-size: ${moderateScale(14)}px;
 `;
 
-const PostcodeModal = styled.View`
-  position: absolute;
-  padding: ${moderateScale(24)}px;
-  background-color: ${props => props.theme.color.grey.white};
-  top: ${moderateScale(70)}px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 10;
-`;
-const CloseIconContainer = styled.TouchableOpacity`
-  position: absolute;
-  top: ${moderateScale(20)}px;
-`;
 const DateContainer = styled.View`
   flex-direction: row;
   align-items: center;

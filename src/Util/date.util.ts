@@ -179,6 +179,34 @@ export function convertTimeToYYYYMMDDHHMM(time: string | Date) {
 }
 
 /**
+ *  2024.11.03 이런 식으로 YYYY.MM.DD 날짜를 표시를 해줍니다.
+ *  @author 홍규진
+ *  */
+
+export const YYYYHHMMFormatDate = (dateString?: string) => {
+  if (!dateString) return '날짜 선택';
+  const date = new Date(dateString);
+  return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(
+    2,
+    '0',
+  )}.${String(date.getDate()).padStart(2, '0')}`;
+};
+
+/**
+ *  HH:MM AM/PM 식으로 시간을 표시해줍니다.
+ *  @author 홍규진
+ *  */
+
+export const HHMMFormatTime = (timeString: string) => {
+  if (!timeString) return '시간 선택';
+  const [hours, minutes] = timeString.split(':');
+  const hour = parseInt(hours);
+  const period = hour >= 12 ? 'PM' : 'AM';
+  const formattedHour = hour % 12 || 12;
+  return `${formattedHour}:${minutes} ${period}`;
+};
+
+/**
  * 인자로 받은 시간이 오늘과 같은 날인지 확인합니다.
  * correction 인자가 주어지는 경우, 오늘로 간주할 시간을 조정할 수 있습니다.
  * @author 도형

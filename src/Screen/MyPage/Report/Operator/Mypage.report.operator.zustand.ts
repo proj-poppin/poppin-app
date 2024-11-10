@@ -21,7 +21,8 @@ export interface ReportStore {
   closeTime: string; // endTime -> closeTime (format: hh:mm)
   operationException: string; // timeDetail -> operationException
   images: Array<Asset> | undefined;
-  categories: string;
+  filteringThreeCategories: string;
+  filteringFourteenCategories: string;
 
   // StepThree states
   isReservationRequired: boolean; // reservationType -> isReservationRequired
@@ -29,12 +30,6 @@ export interface ReportStore {
   isEntranceFeeRequired: boolean; // feeType -> isEntranceFeeRequired
   entranceFee: string;
   parkingAvailable: boolean;
-
-  // Visit With states
-  solo: boolean;
-  withFriend: boolean;
-  withFamily: boolean;
-  withLover: boolean;
 
   // UI control states (not part of API but needed for UI)
   modalVisible: boolean;
@@ -62,9 +57,8 @@ export interface ReportStore {
   setOperationException: (text: string) => void;
   setImages: (images: Array<Asset> | undefined) => void;
   handleDeleteImage: (index: number) => void;
-
-  // Category actions
-  setCategories: (categories: string) => void;
+  setFilteringThreeCategories: (categories: string) => void;
+  setFilteringFourteenCategories: (categories: string) => void;
 
   // StepThree actions
   setIsReservationRequired: (required: boolean) => void;
@@ -107,7 +101,6 @@ export const useReportStore = create<ReportStore>(set => ({
   closeTime: '',
   operationException: '',
   images: [],
-  categories: '',
 
   // StepThree initial states
   isReservationRequired: false,
@@ -116,17 +109,13 @@ export const useReportStore = create<ReportStore>(set => ({
   entranceFee: '',
   parkingAvailable: false,
 
-  // Visit With initial states
-  solo: false,
-  withFriend: false,
-  withFamily: false,
-  withLover: false,
-
   // UI control initial states
   modalVisible: false,
   postcodeVisible: false,
   showCalendar: false,
   showTimePicker: false,
+  filteringThreeCategories: '',
+  filteringFourteenCategories: '',
 
   // Actions
   setInformerCompany: text => set({informerCompany: text}),
@@ -145,6 +134,10 @@ export const useReportStore = create<ReportStore>(set => ({
   setCloseTime: time => set({closeTime: time}),
   setOperationException: text => set({operationException: text}),
   setImages: images => set({images}),
+  setFilteringThreeCategories: filteringThreeCategories =>
+    set({filteringThreeCategories: filteringThreeCategories}),
+  setFilteringFourteenCategories: filteringFourteenCategories =>
+    set({filteringFourteenCategories: filteringFourteenCategories}),
   handleDeleteImage: (index: number) =>
     set(state => ({
       images: state.images
@@ -152,7 +145,6 @@ export const useReportStore = create<ReportStore>(set => ({
         : undefined,
     })),
 
-  setCategories: categories => set({categories: categories}),
   setIsReservationRequired: required => set({isReservationRequired: required}),
   setAvailableAge: age => set({availableAge: age}),
   setIsEntranceFeeRequired: required => set({isEntranceFeeRequired: required}),

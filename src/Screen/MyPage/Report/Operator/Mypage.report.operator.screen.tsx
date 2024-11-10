@@ -4,14 +4,13 @@ import StepOne from '../../../../Component/MyPage/Report/ReportStepOne';
 import StepTwo from '../../../../Component/MyPage/Report/ReportStepTwo';
 import StepHeader from '../../../../Component/MyPage/Report/StepHeader';
 import StepThree from '../../../../Component/MyPage/Report/ReportStepThree';
-import {StyleProp, ViewStyle, Platform, ScrollView} from 'react-native';
-import {useScrollToTop} from '@react-navigation/native';
+import {StyleProp, ViewStyle, Platform} from 'react-native';
+import {axiosMyPageOperatorReport} from '../../../../Axios/Mypage/mypage.post.axios';
+import {useReportStore} from './Mypage.report.operator.zustand';
 
 export const MyPageReportOperatorScreen: React.FC = () => {
-  const scrollViewRef = useRef<ScrollView>(null);
-  useScrollToTop(scrollViewRef);
   const [currentStep, setCurrentStep] = useState(1);
-
+  const param = useReportStore();
   const handleBackPress = () => {
     if (currentStep > 1) {
       setCurrentStep(prev => prev - 1);
@@ -33,7 +32,7 @@ export const MyPageReportOperatorScreen: React.FC = () => {
         return (
           //TODO- [규진]- 제보하기 API 연동 기능 추가
           <StepThree
-            onNext={() => console.log('연동')}
+            onNext={() => axiosMyPageOperatorReport(param)}
             onBackPress={handleBackPress}
           />
         );
@@ -44,7 +43,6 @@ export const MyPageReportOperatorScreen: React.FC = () => {
 
   return (
     <ScrollViewPage
-      ref={scrollViewRef}
       UpperPart={
         <StepHeader stepNum={currentStep} onBackPress={handleBackPress} />
       }

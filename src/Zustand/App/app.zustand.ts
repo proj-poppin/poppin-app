@@ -32,7 +32,7 @@ export type AppModalType =
   | 'RESIGN_CONFIRMATION' // 계정 탈퇴 확인
   | 'INQUIRY_SUBMISSION_CONFIRMATION'
   | 'PROFILE_UPDATED' // 프로필 설정 변경 완료
-  | 'POPUP_REPORT_COMPLETED';
+  | 'POPUP_REPORT_COMPLETED'; // 팝업 제보 완료;
 
 /** 로그인 요구 모달 타입 (표시된 이유) */
 type RequireLoginModalType =

@@ -1,21 +1,38 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import {moderateScale} from '../../../../Util';
+import {useUserStore} from '../../../../Zustand/User/user.zustand';
+import RightArrowGrayIcon from 'src/Resource/svg/right-arrow-gray-icon.svg';
+import shallow from 'zustand/shallow';
 
 export const MyPageLandingProfileSection = () => {
+  const {user, isLoggedIn} = useUserStore(
+    state => ({user: state.user, isLoggedIn: state.isLoggedIn}),
+    shallow,
+  );
+  const loggedIn = isLoggedIn();
   return (
     <ProfileContainer>
-      <ProfileIcon source={require('../../../../Resource/png/app-logo.png')} />
+      <ProfileIcon source={require('src/Resource/png/app-logo.png')} />
       <ProfileInfoContainer>
-        {/*//TODO - [규진]가변값으로바꿔야함.*/}
-        <ProfileTitle>팝핀퀸</ProfileTitle>
+        <ProfileTitle>
+          {loggedIn ? user.nickname : '로그인 후 이용해주세요'}
+        </ProfileTitle>
         <ManageButton onPress={() => {}}>
-          <ManageText>내 정보 및 취향 관리 ﹥</ManageText>
+          <Row>
+            <ManageText>내 정보 및 취향 관리</ManageText>
+            <RightArrowGrayIcon style={{marginLeft: moderateScale(4)}} />
+          </Row>
         </ManageButton>
       </ProfileInfoContainer>
     </ProfileContainer>
   );
 };
+
+const Row = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
 
 const ProfileContainer = styled.View`
   flex-direction: row;

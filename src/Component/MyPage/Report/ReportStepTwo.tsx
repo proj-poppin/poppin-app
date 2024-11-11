@@ -8,10 +8,11 @@ import CalendarPicker from '../../CalendarPicker';
 import TimePicker from '../../TimePicker';
 import PopupCategoryModal from '../../PopupCategoryModal';
 import {useImagePicker} from '../../../hooks/useImagePicker';
-import {useReportStore} from '../../../Screen/MyPage/Report/Operator/Mypage.report.operator.zustand';
+import {useOperatorReportStore} from '../../../Screen/MyPage/Request/Operator/Mypage.report.operator.zustand';
 import {StepProps} from './ReportStepOne';
 import CustomBottomSheetButton from '../../BottomSheet/CustomBottomSheetButton';
 import PostalCodeModal from '../../operatorRequest/PostalCodeModal';
+import CategorySelectButton from '../../../Screen/Popup/Landing/category.select.button';
 const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
   const {
     // State
@@ -45,10 +46,8 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
     setOpenTime,
     setCloseTime,
     setOperationException,
-    setImages,
-    setLatitude,
-    setLongitude,
-  } = useReportStore();
+    addImages,
+  } = useOperatorReportStore();
 
   const {
     images,
@@ -113,9 +112,6 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
   const handlePostcode = (data: any) => {
     setStoreAddress(data.address);
     console.log(data);
-    // 카카오 우편번호 API에서 위도/경도 정보도 받아와서 설정
-    setLatitude(data.latitude);
-    setLongitude(data.longitude);
     setPostcodeVisible(false);
   };
 
@@ -132,7 +128,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
 
   const secondReportHandler = () => {
     if (validateStep()) {
-      setImages(images);
+      addImages(images);
       onNext();
     }
   };
@@ -184,7 +180,37 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <CustomBottomSheetButton
             text={'카테고리를 선택해주세요'}
             onPress={() => setModalVisible(true)}
+            filteringFourteenCategories={filteringFourteenCategories} // 선택된 카테고리 표시를 위해 추가
           />
+          {/* 여기에 팝업 유형 섹션 추가 */}
+          <InputLabel>
+            팝업 유형<RequiredMark>*</RequiredMark>
+          </InputLabel>
+          <SelectionContainer>
+            {['market', 'display', 'experience'].map(key => (
+              <CategorySelectButton
+                key={key}
+                preferenceKey={key}
+                isSelected={filteringThreeCategories.includes(key)}
+                onPress={() => {
+                  // 토글 로직
+                  const currentCategories = filteringThreeCategories
+                    ? filteringThreeCategories.split(',').filter(Boolean)
+                    : [];
+
+                  if (currentCategories.includes(key)) {
+                    setFilteringThreeCategories(
+                      currentCategories.filter(cat => cat !== key).join(','),
+                    );
+                  } else {
+                    setFilteringThreeCategories(
+                      [...currentCategories, key].join(','),
+                    );
+                  }
+                }}
+              />
+            ))}
+          </SelectionContainer>
 
           <InputLabel>
             운영 날짜<RequiredMark>*</RequiredMark>
@@ -318,14 +344,18 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}
           title={'제보하려는 팝업의 카테고리를 설정해주세요'}
-          height={'70%'}>
+          height={'60%'}>
           <PopupCategoryModal
             visible={modalVisible}
             onClose={() => setModalVisible(false)}
             onApply={handleCategorySelect}
-            onReset={() => {}}
+            onReset={() => {
+              setFilteringFourteenCategories(''); // reset 함수 추가
+            }}
             buttonName={'카테고리 설정'}
             validationMode={'both'}
+            isPopupRequestModal={true}
+            initialSelectedCategories={filteringFourteenCategories} // 초기값 전달
           />
         </CustomBottomSheet>
 
@@ -387,16 +417,16 @@ const InputSection = styled.View`
 `;
 
 const TitleText = styled.Text`
-  font-size: ${moderateScale(24)}px;
-  font-weight: bold;
+  font-size: ${moderateScale(20)}px;
+  font-weight: 600;
   margin-bottom: ${moderateScale(32)}px;
-  line-height: ${moderateScale(34)}px;
+  line-height: ${moderateScale(24)}px;
 `;
 
 export const SubTitleContainer = styled.View`
   background-color: ${theme => theme.theme.color.purple.mild};
-  align-items: center;
-  padding: ${moderateScale(10)}px;
+  text-align: start;
+  padding: ${moderateScale(6)}px;
 `;
 export const SubTitle = styled.Text`
   font-size: 18px;
@@ -415,6 +445,12 @@ export const RequiredMark = styled.Text`
   color: red;
 `;
 
+const SelectionContainer = styled.View`
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: ${moderateScale(8)}px;
+  margin-bottom: ${moderateScale(16)}px;
+`;
 const InputContainer = styled.View`
   flex-direction: row;
   align-items: center;

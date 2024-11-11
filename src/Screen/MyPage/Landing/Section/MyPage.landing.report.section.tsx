@@ -3,6 +3,7 @@ import styled from 'styled-components/native';
 import {moderateScale} from '../../../../Util';
 import CustomBottomSheet from '../../../../Component/BottomSheet/CustomBottomSheet';
 import MypageReportBottomSheetContainer from '../../Report/Mypage.report.bottomsheet.container';
+import CommonCompleteButton from '../../../Popup/Landing/common.complete.button';
 
 export const MyPageLandingReportSection: React.FC = () => {
   const [isVisible, setIsVisible] = React.useState(false);
@@ -17,9 +18,18 @@ export const MyPageLandingReportSection: React.FC = () => {
 
   return (
     <>
-      <ReportButton onPress={pressReportButtonHandler}>
-        <ReportButtonText>팝업 제보하기</ReportButtonText>
-      </ReportButton>
+      <CommonCompleteButton
+        style={{
+          width: '100%',
+        }}
+        textStyle={{
+          color: 'white',
+          fontSize: moderateScale(16),
+          fontWeight: '600',
+        }}
+        title={'팝업 제보하기'}
+        onPress={pressReportButtonHandler}
+      />
       <CustomBottomSheet
         isVisible={isVisible}
         onClose={handleClose}

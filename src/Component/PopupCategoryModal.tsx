@@ -28,6 +28,7 @@ interface PopupCategoryModalProps {
   buttonName: string;
   onReset: () => void;
   validationMode: 'both' | 'any';
+  isPopupRequestModal?: boolean;
 }
 
 const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
@@ -36,6 +37,7 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
   onReset,
   buttonName,
   validationMode = 'any',
+  isPopupRequestModal = false,
 }) => {
   const [preferenceCategory, setPreferenceCategory] = useState(
     BlankPreference.preferenceCategory,
@@ -139,24 +141,32 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
           ))}
         </SelectionContainer>
 
-        <CategoryTitle type="type">
-          팝업 유형
-          {validationMode === 'both' && <RequiredMark> *</RequiredMark>}
-        </CategoryTitle>
-        <SelectionContainer>
-          {popupStoreKeys.map(key => (
-            <CategorySelectButton
-              key={key}
-              preferenceKey={key}
-              isSelected={
-                !!preferencePopupStore[key as keyof typeof preferencePopupStore]
-              }
-              onPress={() =>
-                togglePopupStoreType(key as keyof typeof preferencePopupStore)
-              }
-            />
-          ))}
-        </SelectionContainer>
+        {!isPopupRequestModal && (
+          <>
+            <CategoryTitle type="type">
+              팝업 유형
+              {validationMode === 'both' && <RequiredMark> *</RequiredMark>}
+            </CategoryTitle>
+            <SelectionContainer>
+              {popupStoreKeys.map(key => (
+                <CategorySelectButton
+                  key={key}
+                  preferenceKey={key}
+                  isSelected={
+                    !!preferencePopupStore[
+                      key as keyof typeof preferencePopupStore
+                    ]
+                  }
+                  onPress={() =>
+                    togglePopupStoreType(
+                      key as keyof typeof preferencePopupStore,
+                    )
+                  }
+                />
+              ))}
+            </SelectionContainer>
+          </>
+        )}
 
         <ButtonsWrapper>
           <BackMiddleButton
@@ -196,7 +206,7 @@ const ModalContent = styled.View`
 `;
 
 const CategoryTitle = styled.Text<{type: 'category' | 'type'}>`
-  font-size: 15px;
+  font-size: 16px;
   text-align: center;
   color: ${props =>
     props.type === 'category'

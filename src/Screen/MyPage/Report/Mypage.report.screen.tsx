@@ -2,10 +2,10 @@ import React from 'react';
 import {ScrollView} from 'react-native';
 import styled from 'styled-components/native';
 import {ScreenHeader} from '../../../Component/View';
-import MyPageReportUserScreen from './User/Mypage.report.user.screen';
-import MyPageReportOperatorScreen from './Operator/Mypage.report.operator.screen';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppStackProps} from '../../../Navigator/App.stack.navigator';
+import {MypageReportUserScreen} from '../Request/User/Mypage.report.user.screen';
+import {MypageReportOperatorScreen} from '../Request/Operator/Mypage.report.operator.screen';
 
 export interface ReportScreenProps {
   reportType: 'user' | 'operator';
@@ -25,9 +25,9 @@ export function ReportScreen({
         title={isUserReport ? '이용자 제보하기' : '운영자 제보하기'}
       />
       {isUserReport ? (
-        <MyPageReportUserScreen />
+        <MypageReportUserScreen />
       ) : (
-        <MyPageReportOperatorScreen />
+        <MypageReportOperatorScreen />
       )}
     </Container>
   );

@@ -3,7 +3,6 @@ import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
 import {moderateScale} from '../../../Util';
 import ArrowIcon from '../../../Resource/svg/right-arrow-gray-icon.svg';
-import {PopupDetailDividerSection} from '../../Popup/Detail/Section/Popup.detail.divider.section';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 interface MyPageReportBottomSheetContainerProps {
@@ -42,7 +41,7 @@ const MyPageReportBottomSheetContainer: React.FC<
           </OptionDescription>
         </OptionContent>
       </OptionButton>
-      <PopupDetailDividerSection />
+      <Separator />
       <OptionButton onPress={() => handleSelection('operator')}>
         <OptionContent>
           <TitleContainer>
@@ -64,7 +63,6 @@ const MyPageReportBottomSheetContainer: React.FC<
 // Styled Components
 const Container = styled.View`
   width: 100%;
-  padding: ${moderateScale(4)}px;
 `;
 
 const OptionButton = styled.TouchableOpacity<{isSelected?: boolean}>`
@@ -109,6 +107,11 @@ const OptionTitle = styled.Text`
 const OptionDescription = styled.Text`
   font-size: ${moderateScale(14)}px;
   color: ${props => props.theme.color.grey.black};
+`;
+
+const Separator = styled.View`
+  background-color: ${props => props.theme.color.grey.component};
+  height: ${moderateScale(1)}px; // Thin line
 `;
 
 export default MyPageReportBottomSheetContainer;

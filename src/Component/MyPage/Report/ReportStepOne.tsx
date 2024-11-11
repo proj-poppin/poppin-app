@@ -2,9 +2,10 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {moderateScale} from '../../../Util';
-import {useReportStore} from '../../../Screen/MyPage/Report/Operator/Mypage.report.operator.zustand';
+import {useOperatorReportStore} from '../../../Screen/MyPage/Request/Operator/Mypage.report.operator.zustand';
 import {Alert} from 'react-native';
 import {RequiredMark} from './ReportStepTwo';
+import CommonCompleteButton from '../../../Screen/Popup/Landing/common.complete.button';
 
 export interface StepProps {
   onNext: () => void;
@@ -16,7 +17,7 @@ const ReportStepOne: React.FC<StepProps> = ({onNext}) => {
   const [informerEmailLength, setInformerEmailLength] = useState(0);
 
   const {informerCompany, informerEmail, setInformerCompany, setInformerEmail} =
-    useReportStore();
+    useOperatorReportStore();
 
   const handleinformerCompanyChange = (text: string) => {
     if (text.length <= 30) {
@@ -53,6 +54,7 @@ const ReportStepOne: React.FC<StepProps> = ({onNext}) => {
   return (
     <Container>
       <InputWrapper>
+        <TitleText>POPPIN에 등록하기 위한{'\n'}정보가 필요해요</TitleText>
         <Label>
           소속(업체명)<RequiredMark>*</RequiredMark>
         </Label>
@@ -64,7 +66,6 @@ const ReportStepOne: React.FC<StepProps> = ({onNext}) => {
         />
         <CountText>{informerCompanyLength}/30</CountText>
       </InputWrapper>
-
       <InputWrapper>
         <Label>
           이메일<RequiredMark>*</RequiredMark>
@@ -79,17 +80,15 @@ const ReportStepOne: React.FC<StepProps> = ({onNext}) => {
         />
         <CountText>{informerEmailLength}/50</CountText>
       </InputWrapper>
-
       <InfoText>
         *제공해주신 이메일로 정보확인차 연락을 드릴 예정이니,{'\n'}
         이메일 정보가 정확한지 확인하여 주시기 바랍니다.
       </InfoText>
-
-      <ButtonContainer>
-        <NextButtonWrapper onPress={handleNext}>
-          <ButtonText>다음</ButtonText>
-        </NextButtonWrapper>
-      </ButtonContainer>
+      <CommonCompleteButton
+        style={[{marginTop: 250}, {width: '100%'}]}
+        title={'다음'}
+        onPress={handleNext}
+      />
     </Container>
   );
 };
@@ -129,28 +128,18 @@ const CountText = styled.Text`
 `;
 
 const InfoText = styled.Text`
-  color: ${props => props.theme.color.grey.black};
+  color: ${props => props.theme.color.grey.main};
   text-align: center;
   padding-top: ${moderateScale(20)}px;
   font-size: ${moderateScale(12)}px;
   line-height: ${moderateScale(18)}px;
 `;
 
-const ButtonContainer = styled.View`
-  padding: ${moderateScale(16)}px;
-`;
-
-const NextButtonWrapper = styled.TouchableOpacity`
-  background-color: ${props => props.theme.color.blue.main};
-  padding: ${moderateScale(16)}px;
-  border-radius: ${moderateScale(8)}px;
-  align-items: center;
-`;
-
-const ButtonText = styled.Text`
-  color: #ffffff;
-  font-size: ${moderateScale(16)}px;
+const TitleText = styled.Text`
+  font-size: ${moderateScale(20)}px;
   font-weight: 600;
+  margin-bottom: ${moderateScale(32)}px;
+  line-height: ${moderateScale(24)}px;
 `;
 
 export default ReportStepOne;

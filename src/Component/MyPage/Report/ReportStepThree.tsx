@@ -11,7 +11,7 @@ import {
 import {moderateScale} from '../../../Util';
 import {StepProps} from './ReportStepOne';
 import CustomBottomSheet from '../../BottomSheet/CustomBottomSheet';
-import {useReportStore} from '../../../Screen/MyPage/Report/Operator/Mypage.report.operator.zustand';
+import {useOperatorReportStore} from '../../../Screen/MyPage/Request/Operator/Mypage.report.operator.zustand';
 import CustomBottomSheetButton from '../../BottomSheet/CustomBottomSheetButton';
 import AgeChooseBottomSheet from '../../BottomSheet/Age/AgeChooseBottomSheet';
 import {Alert} from 'react-native';
@@ -37,7 +37,7 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
     setParkingAvailable,
     setIsEntranceFeeRequired,
     setEntranceFee,
-  } = useReportStore();
+  } = useOperatorReportStore();
 
   const {setAppModalVisible, showAppModal} = useAppStore();
   const validateStep = () => {
@@ -97,7 +97,6 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
       <SubTitleContainer>
         <SubTitle>📝 팝업의 상세 정보를 알려주세요</SubTitle>
       </SubTitleContainer>
-
       <FormSection>
         <Label>
           소개<RequiredMark>*</RequiredMark>
@@ -130,8 +129,10 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
           이용가능 연령<RequiredMark>*</RequiredMark>
         </Label>
         <CustomBottomSheetButton
-          onPress={() => setModalVisible(true)}
           text={'이용 가능 연령을 선택하세요'}
+          onPress={() => setModalVisible(true)}
+          filteringAge={availableAge} // 선택된 연령 전달
+          selected={!!availableAge} // 선택 여부
         />
 
         <Label>
@@ -192,7 +193,7 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
         height={'40%'}>
         <AgeChooseBottomSheet
           onClose={() => setModalVisible(false)}
-          selectedAges={availableAge}
+          selectedAges={availableAge} // 초기 선택값
           visible={modalVisible}
           onAgeSelected={age =>
             setAvailableAge(

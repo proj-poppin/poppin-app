@@ -33,6 +33,7 @@ const ReviewsContainer = styled.View`
   justify-content: space-around;
   align-items: center;
   padding-vertical: ${moderateScale(8)}px;
+  margin-top: ${moderateScale(16)}px;
 `;
 const ReviewIconRowContainer = styled.View`
   display: flex;
@@ -59,8 +60,8 @@ const ReviewCompleteNumber = styled.Text`
 `;
 
 const ReviewLabel = styled.Text`
-  font-size: ${moderateScale(14)}px;
-  color: #666;
+  font-size: ${moderateScale(12)}px;
+  font-weight: 400;
 `;
 
 const Divider = styled.View`

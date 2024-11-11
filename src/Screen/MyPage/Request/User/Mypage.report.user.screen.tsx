@@ -9,22 +9,53 @@ import CustomBottomSheetButton from 'src/Component/BottomSheet/CustomBottomSheet
 import {ScrollViewPage} from 'src/Component/Page';
 import {useUserReportStore} from './Mypage.report.user.zustand';
 import {axiosMyPageUserReport} from 'src/Axios/Mypage/mypage.post.axios';
+import CommonCompleteButton from '../../../Popup/Landing/common.complete.button';
+import {
+  NavigationProp,
+  StackActions,
+  useNavigation,
+} from '@react-navigation/native';
+import {AppStackProps} from '../../../../Navigator/App.stack.navigator';
+import shallow from 'zustand/shallow';
+import {Alert} from 'react-native';
 
-export const MyPageReportUserScreen: React.FC = () => {
+export type MypageReportUserScreenProps = {};
+
+export const MypageReportUserScreen: React.FC = () => {
+  const navigation =
+    useNavigation<NavigationProp<AppStackProps, 'MypageReportUserScreen'>>();
   const {
     modalVisible,
-    popupName,
-    siteUrl,
     setModalVisible,
-    setPopupName,
-    setFilteringThreeCategories,
+    requestLoading,
+    requestUserReport,
+    images,
+    storeName,
+    contactLink,
+    filteringFourteenCategories,
     setFilteringFourteenCategories,
-    setSiteUrl,
-    setImages,
+    setPopupName,
+    setContactLink,
     validate,
-  } = useUserReportStore();
-
-  const axiosParam = useUserReportStore();
+    addImages,
+  } = useUserReportStore(
+    state => ({
+      modalVisible: state.modalVisible,
+      setModalVisible: state.setModalVisible,
+      requestLoading: state.requestLoading,
+      requestUserReport: state.requestUserReport,
+      images: state.images,
+      storeName: state.storeName,
+      contactLink: state.contactLink,
+      filteringFourteenCategories: state.filteringFourteenCategories,
+      setFilteringFourteenCategories: state.setFilteringFourteenCategories,
+      validate: state.validate,
+      addImages: state.addImages,
+      setPopupName: state.setPopupName,
+      setContactLink: state.setContactLink,
+    }),
+    shallow,
+  );
 
   const {
     images: imageFileUri,
@@ -36,22 +67,38 @@ export const MyPageReportUserScreen: React.FC = () => {
     maxHeight: 512,
   });
 
-  const handleSubmit = () => {
-    setImages(imageFileUri);
+  const handleSubmit = async () => {
+    try {
+      addImages(imageFileUri);
 
-    if (validate()) {
-      axiosMyPageUserReport(axiosParam);
-      console.log('제출 성공');
+      // 유효성 검사
+      if (!validate()) {
+        return;
+      }
+
+      // 제보 요청
+      const response = await requestUserReport();
+
+      Alert.alert('알림', '제보가 성공적으로 등록되었습니다.', [
+        {
+          text: '확인',
+          onPress: () => {
+            navigation.dispatch(
+              StackActions.replace('LandingBottomTabNavigator'),
+            );
+          },
+        },
+      ]);
+    } catch (error) {
+      console.error('제보 등록 실패:', error);
     }
   };
 
   const handleCategorySelect = (selectedCategories: {
-    selectedPopupTypes: string[];
     selectedCategories: string[];
   }) => {
-    setFilteringThreeCategories(selectedCategories.selectedPopupTypes.join(''));
     setFilteringFourteenCategories(
-      selectedCategories.selectedCategories.join(''),
+      selectedCategories.selectedCategories.join(','),
     );
     setModalVisible(false);
   };
@@ -68,7 +115,7 @@ export const MyPageReportUserScreen: React.FC = () => {
             <InputContainer>
               <StyledInput
                 placeholder="팝업 이름을 입력해주세요"
-                value={popupName}
+                value={storeName}
                 onChangeText={setPopupName}
               />
               <ClearButton onPress={() => setPopupName('')}>
@@ -82,12 +129,13 @@ export const MyPageReportUserScreen: React.FC = () => {
             <CustomBottomSheetButton
               text={'카테고리 설정'}
               onPress={() => setModalVisible(true)}
+              filteringFourteenCategories={filteringFourteenCategories}
             />
             <CustomBottomSheet
               isVisible={modalVisible}
               onClose={() => setModalVisible(false)}
               title={'제보하려는 팝업의 카테고리를 설정해주세요'}
-              height={'70%'}>
+              height={'60%'}>
               <PopupCategoryModal
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}
@@ -95,17 +143,18 @@ export const MyPageReportUserScreen: React.FC = () => {
                 onReset={() => setFilteringFourteenCategories('')}
                 buttonName={'카테고리 설정'}
                 validationMode={'both'}
+                isPopupRequestModal={true}
+                initialSelectedCategories={filteringFourteenCategories} // 현재 선택된 카테고리 전달
               />
             </CustomBottomSheet>
-
             <InputLabel>정보를 접한 사이트 주소</InputLabel>
             <InputContainer>
               <StyledInput
                 placeholder="URL을 입력해주세요"
-                value={siteUrl}
-                onChangeText={setSiteUrl}
+                value={contactLink}
+                onChangeText={setContactLink}
               />
-              <ClearButton onPress={() => setSiteUrl('')}>
+              <ClearButton onPress={() => setContactLink('')}>
                 <ClearButtonText>×</ClearButtonText>
               </ClearButton>
             </InputContainer>
@@ -137,10 +186,13 @@ export const MyPageReportUserScreen: React.FC = () => {
               가능합니다.
             </HelperText>
           </InputSection>
-
-          <SubmitButton onPress={handleSubmit}>
-            <SubmitButtonText>제보하기</SubmitButtonText>
-          </SubmitButton>
+          <CommonCompleteButton
+            style={{
+              width: '100%',
+            }}
+            title={'제보하기'}
+            onPress={handleSubmit}
+          />
         </ContentContainer>
       }
     />
@@ -151,10 +203,10 @@ const ContentContainer = styled.View`
 `;
 
 const TitleText = styled.Text`
-  font-size: ${moderateScale(24)}px;
-  font-weight: bold;
+  font-size: ${moderateScale(20)}px;
+  font-weight: 600;
   margin-bottom: ${moderateScale(32)}px;
-  line-height: ${moderateScale(34)}px;
+  line-height: ${moderateScale(24)}px;
 `;
 
 const InputSection = styled.View`
@@ -268,5 +320,3 @@ const SubmitButton = styled.TouchableOpacity`
   border-radius: ${moderateScale(8)}px;
   align-items: center;
 `;
-
-export default MyPageReportUserScreen;

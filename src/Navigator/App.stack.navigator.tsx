@@ -70,6 +70,14 @@ import {
   AuthPreferenceScreen,
   AuthPreferenceScreenProps,
 } from '../Screen/Auth/Preference/Auth.preference.screen';
+import {
+  MypageReportOperatorScreen,
+  MypageReportOperatorScreenProps,
+} from '../Screen/MyPage/Request/Operator/Mypage.report.operator.screen';
+import {
+  MypageReportUserScreen,
+  MypageReportUserScreenProps,
+} from '../Screen/MyPage/Request/User/Mypage.report.user.screen';
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
@@ -110,6 +118,10 @@ export type AppStackProps = {
   ReportScreen: ReportScreenProps;
 
   AuthPreferenceScreen: AuthPreferenceScreenProps;
+
+  MypageReportUserScreen: MypageReportUserScreenProps;
+
+  MypageReportOperatorScreen: MypageReportOperatorScreenProps;
 };
 
 const AppStack = createNativeStackNavigator<AppStackProps>();
@@ -399,6 +411,17 @@ const AppStackScreen = () => {
         <AppStack.Screen
           name={'PopupDetailReviewWriteScreen'}
           component={PopupDetailReviewWriteScreen}
+        />
+      </AppStack.Group>
+      {/* 마이 페이지 Screen 그룹 */}
+      <AppStack.Group>
+        <AppStack.Screen
+          name={'MypageReportUserScreen'}
+          component={MypageReportUserScreen}
+        />
+        <AppStack.Screen
+          name={'MypageReportOperatorScreen'}
+          component={MypageReportOperatorScreen}
         />
       </AppStack.Group>
     </AppStack.Navigator>

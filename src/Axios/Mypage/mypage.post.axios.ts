@@ -1,26 +1,29 @@
-import customAxios, {MANAGER_INFORM} from '../axios.core';
+import customAxios, {MANAGER_INFORM, USER_INFORM} from '../axios.core';
 import {handleAxiosError} from '../../Util';
 import {ReportStore} from '../../Screen/MyPage/Report/Operator/Mypage.report.operator.zustand';
+import {UserReportStore} from 'src/Screen/MyPage/Report/User/Mypage.report.user.zustand';
 
 /**
  * 유저 팝업 스토어 제보 기능입니다.
  * @author 규진
  */
-export const axiosMyPageUserReport = async (param: {
-  targetReviewId: string;
-  content: string;
-}) => {
+export const axiosMyPageUserReport = async (param: UserReportStore) => {
   return await customAxios
     .request({
       method: 'POST',
-      url: `${MANAGER_INFORM}/report`,
+      url: `v1/${USER_INFORM}`,
+
       data: {
-        reviewId: param.targetReviewId,
-        content: param.content,
+        storeName: param.popupName,
+        referralSiteUrl: param.siteUrl,
+        filteringFourteenCategories: param.filteringFourteenCategories,
+        images: param.images,
       },
     })
     .then(response => {
-      return true;
+      console.log(response);
+      console.log('제출 성공');
+      return response;
     })
     .catch(error => {
       handleAxiosError({error, errorMessage: '신고에 실패했습니다'});
@@ -63,7 +66,7 @@ export const axiosMyPageOperatorReport = async (param: ReportStore) => {
     })
     .then(response => {
       console.log(response);
-      
+
       return true;
     })
     .catch(error => {

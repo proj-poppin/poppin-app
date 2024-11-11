@@ -18,11 +18,11 @@ const AgeChooseBottomSheet: React.FC<AgeGroupModalProps> = ({
   const [selected, setSelected] = React.useState<string>(selectedAges || '');
 
   const ageGroups = [
-    {id: 'G_RATED', label: '😀 전체'},
-    {id: 'PG_7', label: '🐥 7세 이상'},
-    {id: 'PG_12', label: '👧🏻 12세 이상'},
-    {id: 'PG_15', label: '🏃 15세 이상'},
-    {id: 'PG_18', label: '🍷 성인'},
+    {id: 'G_RATED', label: '전체'},
+    {id: 'PG_7', label: '7세 이상'},
+    {id: 'PG_12', label: '12세 이상'},
+    {id: 'PG_15', label: '15세 이상'},
+    {id: 'PG_18', label: '성인'},
   ];
 
   const handleSelect = (ageId: string) => {

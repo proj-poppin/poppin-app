@@ -1,7 +1,36 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json",
+  // 어떤 부분 때문인지는 모르겠지만, extend 한 tsconfig 를 사용하면 styled-components/native 인식을 못합니다.
+  // "extends": "@tsconfig/react-native/tsconfig.json" /* Recommended React Native TSConfig base */,
   "compilerOptions": {
-    "baseUrl": "src"
+    "typeRoots" : ["./@types", "./node_modules/@types"],
+    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+
+    "target": "esnext" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */,
+    "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
+    "lib": [
+      "es2017",
+      "dom"
+    ]
+    /* Specify library files to be included in the compilation. */,
+    "allowJs": true /* Allow javascript files to be compiled. */,
+    "jsx": "react-native",
+    "noEmit": true,
+    "isolatedModules": true,
+    "strict": true,
+    /* Completeness */
+    "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
+    "baseUrl": ".",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "resolveJsonModule": true
+    // "noImplicitAny": false
   },
-  "baseUrl": ["src"]
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js"
+  ]
 }

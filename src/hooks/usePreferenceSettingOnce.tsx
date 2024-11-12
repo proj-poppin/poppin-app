@@ -1,7 +1,7 @@
 import {useState, useEffect, useCallback} from 'react';
 import getPreferenceSettingOnce, {
   PreferenceSettingResponse,
-} from '../apis/preferenceSetting/preferenceSettingOnce.ts';
+} from '../Axios/preferenceSetting/preferenceSettingOnce.ts';
 
 const useGetPreferenceSettingOnce = () => {
   const [preferenceSetting, setPreferenceSetting] =

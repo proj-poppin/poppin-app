@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import socialSignUp from '../../apis/auth/socialSignUp.ts';
+import socialSignUp from '../../Axios/Auth/⭐\uFE0FsocialSignUp.ts';
 import useSetAccessTokenAndRefreshToken from '../auth/useSetAccessTokenAndRefreshToken.ts';
 
 function useSocialSignUp() {
@@ -30,7 +30,6 @@ function useSocialSignUp() {
         });
       }
     } catch (error) {
-      console.log('SignUp error with social account:', error);
       setSignUpStatus({
         loading: false,
         error: 'An unexpected error occurred',

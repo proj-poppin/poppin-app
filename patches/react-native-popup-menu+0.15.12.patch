@@ -1,0 +1,52 @@
+diff --git a/node_modules/react-native-popup-menu/src/index.d.ts b/node_modules/react-native-popup-menu/src/index.d.ts
+index 0ccea4a..91d13c9 100644
+--- a/node_modules/react-native-popup-menu/src/index.d.ts
++++ b/node_modules/react-native-popup-menu/src/index.d.ts
+@@ -20,6 +20,7 @@ declare module "react-native-popup-menu" {
+     };
+     backHandler?: boolean | Function;
+     skipInstanceCheck?: boolean;
++    children?: React.ReactElement<any, any>;
+   }
+ 
+   interface MenuProviderStatic extends React.ComponentClass<MenuProviderProps> {
+@@ -29,6 +30,7 @@ declare module "react-native-popup-menu" {
+     toggleMenu(name: string): Promise<void>;
+ 
+     close(): Promise<void>;
++
+   }
+ 
+   export const MenuProvider: MenuProviderStatic;
+@@ -43,6 +45,7 @@ declare module "react-native-popup-menu" {
+     renderer?: Function;
+     rendererProps?: any;
+     style?: StyleProp<ViewStyle>;
++    children?: JSX.Element | JSX.Element[]
+ 
+     onSelect?(optionValue: any): any;
+ 
+@@ -84,6 +87,7 @@ declare module "react-native-popup-menu" {
+     };
+     testID?: string;
+     triggerOnLongPress?: boolean;
++    children?: React.ReactElement<any, any>
+ 
+     onPress?(): void;
+     onAlternativeAction? (): void;
+@@ -100,6 +104,7 @@ declare module "react-native-popup-menu" {
+     renderOptionsContainer?: Function;
+     customStyles?: MenuOptionsCustomStyle;
+     testID?: string;
++    children?: React.ReactElement<any, any> | JSX.Element[]
+   }
+ 
+   interface MenuOptionsCustomStyle extends MenuOptionCustomStyle {
+@@ -121,6 +126,7 @@ declare module "react-native-popup-menu" {
+     customStyles?: MenuOptionCustomStyle;
+ 
+     style?: StyleProp<ViewStyle>;
++    children?: React.ReactElement<any, any>
+ 
+     onSelect?(): any;
+   }

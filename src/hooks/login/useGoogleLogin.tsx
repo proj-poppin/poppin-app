@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import Config from 'react-native-config';
-import loginSocial from '../../apis/auth/loginSocial.ts';
+import loginSocial from '../../Axios/Auth/⭐\uFE0FloginSocial.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../../redux/slices/user.ts';
 import {useAppDispatch} from '../../redux/stores';
@@ -31,7 +31,6 @@ export const useGoogleLogin = () => {
       if (loginResult.success && loginResult.data?.refreshToken) {
         const {accessToken, refreshToken} = loginResult.data;
         await setTokens({accessToken, refreshToken});
-        console.log('why not here');
         dispatch(userSlice.actions.setIsFinishedPreferenceProcess(true));
         navigation.reset({routes: [{name: 'MainTabNavigator' as never}]});
       } else {
@@ -49,9 +48,7 @@ export const useGoogleLogin = () => {
           dispatch(userSlice.actions.setAccessToken(accessToken));
         }
       }
-    } catch (err) {
-      console.log('Failed to login with Google:', err);
-    }
+    } catch (err) {}
   };
 
   return {signInWithGoogle, googleLoginStatus: googleLoginStatus};

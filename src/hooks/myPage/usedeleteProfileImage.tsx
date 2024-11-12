@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import deleteProfileImage, {
   DeleteProfileImageResponse,
-} from '../../apis/myPage/deleteProfileImage.ts';
+} from '../../Axios/myPage/⭐\uFE0FdeleteProfileImage.ts';
 
 interface DeleteProfileImageInfoState {
   loading: boolean;

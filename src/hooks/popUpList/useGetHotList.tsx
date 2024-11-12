@@ -1,5 +1,5 @@
 import {useState, useEffect, useCallback} from 'react';
-import getHotList from '../../apis/popup/hotList.ts';
+import getHotList from '../../Axios/popup/⭐\uFE0FhotList.ts';
 import {GetPopUpListResponse} from '../../types/PopUpListData.ts';
 
 interface HotListState {

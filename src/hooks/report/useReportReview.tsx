@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import reportReview from '../../apis/report/reviewReport.ts';
+import reportReview from '../../Axios/Report/⭐\uFE0FreviewReport.ts';
 
 interface ReportReviewState {
   loading: boolean;

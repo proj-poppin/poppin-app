@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {getAccessToken, login} from '@react-native-seoul/kakao-login';
-import loginSocial from '../../apis/auth/loginSocial.ts';
+import loginSocial from '../../Axios/Auth/⭐\uFE0FloginSocial.ts';
 import {useAppDispatch} from '../../redux/stores';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../../redux/slices/user.ts';
@@ -35,7 +35,6 @@ export const useKakaoLogin = () => {
           loginResult.error?.code === '40024' ||
           loginResult.error?.code === '40026'
         ) {
-          console.log('Error:', loginResult.error.message);
           Alert.alert('안내', loginResult.error.message);
         } else {
           // 신규 유저라면 닉네입 입력 화면으로 이동
@@ -46,9 +45,7 @@ export const useKakaoLogin = () => {
           dispatch(userSlice.actions.setAccessToken(accessToken));
         }
       }
-    } catch (err) {
-      console.log('Failed to login with Kakao:', err);
-    }
+    } catch (err) {}
   };
 
   return {signInWithKakao, kakaoLoginStatus: kakaoLoginStatus};

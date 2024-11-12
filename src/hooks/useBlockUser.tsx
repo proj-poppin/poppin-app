@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {blockUser} from '../apis/report/blockUser.ts';
+import {blockUser} from '../Axios/report/⭐\uFE0FblockUser.ts';
 
 interface BlockUserState {
   loading: boolean;

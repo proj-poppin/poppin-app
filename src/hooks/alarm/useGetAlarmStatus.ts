@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from 'react';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import getAlarmStatus from '../../apis/alarm/getAlarmStatus.ts';
+import getAlarmStatus from '../../Axios/alarm/getAlarmStatus.ts';
 
 interface AlarmStatusProps {
   alarmStatus: boolean;

@@ -1,7 +1,7 @@
 import {useState, useEffect, useCallback} from 'react';
 import {DetailPopUpDataNonPublic} from '../../types/DetailPopUpDataNonPublic';
-import getDetailPopUpForLoginUser from '../../apis/popup/detailPopUp';
-import getDetailPopUpForNotLoginUser from '../../apis/public/detailPopUpPublic';
+import getDetailPopUpForLoginUser from '../../Axios/popup/⭐\uFE0FdetailPopUp';
+import getDetailPopUpForNotLoginUser from '../../Axios/public/detailPopUpPublic';
 import {useDispatch} from 'react-redux';
 import {
   setPopupDetailData,

@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import resetPasswordNonPublic from '../../apis/auth/resetPasswordNonPublic.ts';
+import resetPasswordNonPublic from '../../Axios/Auth/⭐\uFE0FresetPasswordNonPublic.ts';
 
 const useResetPasswordNonPublic = () => {
   const [resetPasswordStatus, setResetPasswordStatus] = useState({

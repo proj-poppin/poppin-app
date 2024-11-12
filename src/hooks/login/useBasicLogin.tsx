@@ -1,5 +1,5 @@
 import {useState, useCallback} from 'react';
-import basicLogin from '../../apis/auth/basicLogin.ts';
+import basicLogin from '../../Axios/Auth/⭐\uFE0FbasicLogin.ts';
 import {useDispatch} from 'react-redux';
 import userSlice from '../../redux/slices/user.ts';
 import {useNavigation} from '@react-navigation/native';
@@ -53,7 +53,6 @@ const useBasicLogin = () => {
     try {
       const result = await basicLogin(email, password);
       if (result.success) {
-        console.log('Login successful', result);
         // 로그인 성공 시 accessToken을 Redux 스토어에 저장
         dispatch(
           userSlice.actions.setAccessTokenAndRefreshToken({
@@ -77,7 +76,6 @@ const useBasicLogin = () => {
       }
     } catch (error) {
       // 네트워크 에러 등 기타 에러 처리
-      console.log('Login error:', error);
     } finally {
       setLoading(false);
     }

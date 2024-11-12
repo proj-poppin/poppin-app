@@ -1,6 +1,6 @@
 import {useEffect} from 'react';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import setAlarmSettings from '../../apis/alarm/setAlarmSettings.ts';
+import setAlarmSettings from '../../Axios/alarm/setAlarmSettings.ts';
 
 interface AlarmSettingsProps {
   pushYn: string | undefined;

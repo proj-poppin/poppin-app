@@ -1,6 +1,6 @@
 import {useState, useEffect, useCallback} from 'react';
 import {GetPopUpListResponse} from '../../types/PopUpListData.ts';
-import getUserSetting from '../../apis/myPage/getUserSetting.ts';
+import getUserSetting from '../../Axios/myPage/⭐\uFE0FgetUserSetting.ts';
 import {useAppDispatch} from '../../redux/stores';
 import userSlice from '../../redux/slices/user.ts';
 import {resetInterests} from '../../redux/slices/interestSlice.ts';

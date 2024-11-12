@@ -12,10 +12,8 @@ const useIsLoggedIn = () => {
   );
   useEffect(() => {
     if (accessToken && refreshToken) {
-      console.log('📝User is logged in.');
       setIsLoggedIn(true);
     } else {
-      console.log('✅User is logged Off.');
       setIsLoggedIn(false);
     }
   }, [accessToken, refreshToken]);

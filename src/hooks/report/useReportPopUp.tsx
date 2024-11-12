@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import reportPopup from '../../apis/report/reportPopUp.ts';
+import reportPopUp from '../../Axios/report/⭐\uFE0FreportPopUp.ts';
 
 interface ReportPopupState {
   loading: boolean;
@@ -20,7 +20,7 @@ const useReportPopup = () => {
   ): Promise<CommonResponse<any>> => {
     setReportPopupState({loading: true, error: null, success: null});
     try {
-      const response: CommonResponse<any> = await reportPopup(popupId, content);
+      const response: CommonResponse<any> = await reportPopUp(popupId, content);
       if (response.success) {
         setReportPopupState({loading: false, error: null, success: true});
         return response;

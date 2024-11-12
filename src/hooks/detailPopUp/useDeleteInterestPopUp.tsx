@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import getDeletePopUp from '../../apis/popup/deleteInterestPopUp.ts';
+import getDeletePopUp from '../../Axios/popup/deleteInterestPopUp.ts';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 interface DeleteInterestState {

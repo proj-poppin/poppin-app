@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import {GetPopUpListResponse} from '../../types/PopUpListData.ts';
-import getPreferenceSetting from '../../apis/auth/getpreferenceSetting.ts';
+import getPreferenceSetting from '../../Axios/Auth/⭐\uFE0FgetpreferenceSetting.ts';
 
 interface HotListState {
   loading: boolean;
@@ -8,7 +8,7 @@ interface HotListState {
   data: GetPopUpListResponse[] | null;
 }
 
-const useGetPreferenceSetting= () => {
+const useGetPreferenceSetting = () => {
   const [preferenceList, setPreferenceList] = useState<HotListState>({
     loading: false,
     error: null,
@@ -21,7 +21,11 @@ const useGetPreferenceSetting= () => {
       try {
         const response = await getPreferenceSetting();
         if (response.success) {
-          setPreferenceList({loading: false, error: null, data: response.data!}); // API 응답에 따라 'data'나 'result'로 접근 가능
+          setPreferenceList({
+            loading: false,
+            error: null,
+            data: response.data!,
+          }); // API 응답에 따라 'data'나 'result'로 접근 가능
         } else {
           setPreferenceList({
             loading: false,

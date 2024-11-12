@@ -1,5 +1,7 @@
 import {useState, useCallback} from 'react';
-import deleteUser, {GetUserInfoResponse} from '../../apis/myPage/deleteUser.ts';
+import deleteUser, {
+  GetUserInfoResponse,
+} from '../../Axios/myPage/⭐\uFE0FdeleteUser.ts';
 import {useAppDispatch} from '../../redux/stores';
 import {resetInterests} from '../../redux/slices/interestSlice.ts';
 import userSlice from '../../redux/slices/user.ts';

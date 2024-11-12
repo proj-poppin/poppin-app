@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import randomNickName from '../../apis/auth/randomNickName.ts';
+import randomNickName from '../../Axios/Auth/⭐\uFE0FrandomNickName.ts';
 
 const useRandomNickname = () => {
   const [nickname, setNickname] = useState('');

@@ -4,7 +4,7 @@ import {useAppDispatch} from '../../redux/stores';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from '../../redux/slices/user.ts';
 import NaverLogin from '@react-native-seoul/naver-login';
-import loginSocial from '../../apis/auth/loginSocial.ts';
+import loginSocial from '../../Axios/Auth/⭐\uFE0FloginSocial.ts';
 import {useNavigation} from '@react-navigation/native';
 import useSetAccessTokenAndRefreshToken from '../auth/useSetAccessTokenAndRefreshToken.ts';
 import {Alert} from 'react-native';
@@ -51,7 +51,6 @@ export const useNaverLogin = () => {
             loginResult.error?.code === '40024' ||
             loginResult.error?.code === '40026'
           ) {
-            console.log('Error:', loginResult.error.message);
             Alert.alert('안내', loginResult.error.message);
           } else {
             // 신규 유저라면 닉네임 입력 화면으로 이동
@@ -63,9 +62,7 @@ export const useNaverLogin = () => {
           }
         }
       }
-    } catch (err) {
-      console.log('Failed to login with Naver:', err);
-    }
+    } catch (err) {}
   };
 
   return {signInWithNaver: signInWithNaver, naverLoginStatus: naverLoginStatus};

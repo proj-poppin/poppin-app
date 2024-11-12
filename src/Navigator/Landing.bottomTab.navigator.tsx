@@ -10,7 +10,10 @@ import {
   HomeLandingScreen,
   HomeLandingScreenProps,
 } from '../Screen/Home/Landing/Home.landing.screen';
-import {PopupLandingScreen} from '../Screen/Popup/Landing/Popup.landing.screen';
+import {
+  PopupLandingScreen,
+  PopupLandingScreenProps,
+} from '../Screen/Popup/Landing/Popup.landing.screen';
 import {
   PopupLikesLandingScreen,
   PopupLikesLandingScreenProps,
@@ -193,8 +196,8 @@ const styles = StyleSheet.create({
   //TODO: #SETTING(style) 그림자 설정 Android, iOS 다르게 해야함
   bottomTabBar: {
     paddingTop: moderateScale(20),
-    borderTopLeftRadius: moderateScale(20),
-    borderTopRightRadius: moderateScale(20),
+    // borderTopLeftRadius: moderateScale(20),
+    // borderTopRightRadius: moderateScale(20),
     position: 'absolute',
     borderTopColor: 'white',
     borderTopWidth: 1,

@@ -62,6 +62,8 @@ const REVIEW_ORDER_TYPES = [
   {displayName: '최신 업로드 순', value: PopupSortOrder.RECENTLY_UPLOADED},
 ];
 
+export type PopupLandingScreenProps = {};
+
 export const PopupLandingScreen = ({
   route,
   navigation,

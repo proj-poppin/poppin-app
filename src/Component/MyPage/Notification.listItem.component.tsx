@@ -74,11 +74,12 @@ export const NotificationListItem = memo(
     //* 프로젝트/투표 상세 페이지 혹은 마이페이지의 크레딧 변경내역 리스트로 이동
     //* 이외의 경우, 알림 상세 페이지로 이동
     const onPress = () => {
-      if (!notification.checked)
+      if (!notification.checked) {
         checkNotification({
           category: notification.category,
           notificationId: notification.id,
         });
+      }
       navigateInAppScreen({
         navigation,
         destination: notification.destination

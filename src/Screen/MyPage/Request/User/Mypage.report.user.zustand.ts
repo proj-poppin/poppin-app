@@ -88,7 +88,9 @@ export const useUserReportStore = create<UserReportStore>((set, get) => ({
    * @see https://github.com/facebook/react-native/blob/main/Libraries/Network/FormData.js
    */
   requestUserReport: async () => {
-    if (get().requestLoading) return;
+    if (get().requestLoading) {
+      return;
+    }
 
     try {
       set({requestLoading: true});

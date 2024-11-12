@@ -209,7 +209,9 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
         filteringFourteenCategories,
       } = get();
 
-      if (pageInfo.isLast || noMoreOlderPopupStores) return;
+      if (pageInfo.isLast || noMoreOlderPopupStores) {
+        return;
+      }
 
       const params: PopupSearchParams = {
         operationStatus,

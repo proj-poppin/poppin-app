@@ -26,7 +26,9 @@ export const useHomeLandingScreenStore = create<HomeLandingScreenStoreProps>(
 
     refreshing: false,
     refreshHomePopupStores: async () => {
-      if (get().refreshing) return;
+      if (get().refreshing) {
+        return;
+      }
       set({refreshing: true});
 
       // 홈 화면 초기 데이터를 불러옵니다.
@@ -41,7 +43,9 @@ export const useHomeLandingScreenStore = create<HomeLandingScreenStoreProps>(
 
     gettingOlder: false,
     getOlderHomePopupStores: async () => {
-      if (get().gettingOlder) return;
+      if (get().gettingOlder) {
+        return;
+      }
       set({gettingOlder: true});
 
       // 추가 데이터를 불러옵니다.

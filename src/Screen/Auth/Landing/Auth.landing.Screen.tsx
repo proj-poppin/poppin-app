@@ -20,6 +20,7 @@ import {TouchableOpacity} from 'react-native';
 import LoginBasicLetterIcon from 'src/Screen/Auth/Landing/Resource/login-basic-letter-icon.svg';
 import CommonCompleteButton from '../../Popup/Landing/common.complete.button';
 import Svg, {SvgProps} from 'react-native-svg';
+
 type BasicLoginButtonProps = {
   onPressLogin: () => void;
 };

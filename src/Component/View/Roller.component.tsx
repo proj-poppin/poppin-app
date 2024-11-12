@@ -2,7 +2,7 @@
 // import {Animated} from 'react-native';
 // import {NavigationProp} from '@react-navigation/native';
 // import {AppStackProps} from 'src/Navigator';
-// import shallow from 'zustand/shallow';
+// import { shallow } from 'zustand/shallow';
 // import {useNotificationStore} from 'src/Zustand/User';
 // import styled from 'styled-components/native';
 // import {makeFirebaseLogEvent, navigateInAppScreen} from 'src/Util';

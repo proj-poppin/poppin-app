@@ -166,6 +166,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <InputContainer>
             <StyledInput
               placeholder="팝업 이름을 입력해주세요"
+              placeholderTextColor={'#9F9F9F'}
               value={storeName}
               onChangeText={setStoreName}
             />
@@ -258,6 +259,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <InputBigContainer>
             <StyledBigInput
               placeholder={`운영 시간 외 예외사항이 있다면 작성해 주세요. \nex) 마지막 날에는 5시에 조기 마감`}
+              placeholderTextColor={'#9F9F9F'}
               multiline={true}
               value={operationException}
               onChangeText={setOperationException}
@@ -276,6 +278,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
               value={storeAddress}
               editable={false}
               placeholder="주소를 검색해주세요"
+              placeholderTextColor={'#9F9F9F'}
             />
             <SearchButton onPress={() => setPostcodeVisible(true)}>
               <SearchButtonText>우편 번호 검색</SearchButtonText>
@@ -284,6 +287,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <InputContainer>
             <StyledInput
               placeholder="상세 주소를 입력해주세요"
+              placeholderTextColor={'#9F9F9F'}
               value={storeDetailAddress}
               onChangeText={setStoreDetailAddress}
             />
@@ -295,6 +299,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <InputContainer>
             <StyledInput
               placeholder="URL을 입력해주세요"
+              placeholderTextColor={'#9F9F9F'}
               value={storeUrl}
               onChangeText={setStoreUrl}
             />

@@ -63,18 +63,24 @@ export const ReviewComponent = memo(
     const isUserBlocked = userRelation.blockedUserIds.includes(review.userId);
 
     const onPressReport = () => {
-      if (!checkLoginAndShowModal('POPUP_REPORT')) return;
+      if (!checkLoginAndShowModal('POPUP_REPORT')) {
+        return;
+      }
       setTargetReview(review);
       showPopupDetailModal('REVIEW_REPORT');
     };
 
     const onPressReportUser = async () => {
-      if (!checkLoginAndShowModal('REVIEW_REPORT')) return;
+      if (!checkLoginAndShowModal('REVIEW_REPORT')) {
+        return;
+      }
       await reportUser(review.userId.toString());
     };
 
     const onPressBlockUser = async () => {
-      if (!checkLoginAndShowModal('REVIEW_REPORT')) return;
+      if (!checkLoginAndShowModal('REVIEW_REPORT')) {
+        return;
+      }
       await blockUser(review.userId);
     };
 

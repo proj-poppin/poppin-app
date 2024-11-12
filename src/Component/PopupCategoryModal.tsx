@@ -71,18 +71,26 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
       value => value,
     );
 
-    // validationMode에 따라 다른 검증 로직 적용
-    if (validationMode === 'both') {
-      setIsValidSelection(hasCategory && hasPopupType);
-    } else {
-      setIsValidSelection(hasCategory || hasPopupType);
-    }
-  }, [preferenceCategory, preferencePopupStore, validationMode]);
+    // 하나라도 선택되어 있다면 버튼을 활성화
+    setIsValidSelection(hasCategory || hasPopupType);
+  }, [preferenceCategory, preferencePopupStore]);
 
   const toggleCategory = (
     key: keyof typeof BlankPreference.preferenceCategory,
   ) => {
-    setPreferenceCategory(prev => ({...prev, [key]: !prev[key]}));
+    if (isPopupRequestModal) {
+      // 모든 카테고리를 false로 설정하고, 현재 클릭한 카테고리만 토글 (단일 선택)
+      setPreferenceCategory(prev => ({
+        ...Object.keys(prev).reduce((acc, cur) => {
+          acc[cur as keyof typeof BlankPreference.preferenceCategory] = false;
+          return acc;
+        }, {} as typeof BlankPreference.preferenceCategory),
+        [key]: !prev[key],
+      }));
+    } else {
+      // 현재 클릭한 카테고리만 토글 (다중 선택)
+      setPreferenceCategory(prev => ({...prev, [key]: !prev[key]}));
+    }
   };
 
   const togglePopupStoreType = (

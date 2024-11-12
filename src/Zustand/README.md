@@ -22,7 +22,7 @@ _@reference : https://github.com/pmndrs/zustand_
 
   ```TypeScript
   // ~ .zustand.ts 정의 예시
-  import create from 'zustand';
+  import { create } from 'zustand'
 
   type SomeScreenProps = {
     numProperty: number;
@@ -47,7 +47,7 @@ _@reference : https://github.com/pmndrs/zustand_
 
   // 상태값 호출/사용 예시
   import React from 'react';
-  import shallow from 'zustand/shallow';
+  import { shallow } from 'zustand/shallow';
   import { useSomeScreenStore } from 'src/Zustand';
 
   export function SomeScreen() {

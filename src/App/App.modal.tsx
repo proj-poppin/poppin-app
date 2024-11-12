@@ -31,7 +31,9 @@ export const AppModal = () => {
         return (
           <SuccessModal
             mainTitle="소중한 제보 감사합니다!"
-            subTitle={`제보하신 팝업은\nPOPPIN에서 검토 후 업로드됩니다.\n다시 한 번 POPPIN을 찾아주셔서 감사합니다.`}
+            subTitle={
+              '제보하신 팝업은\nPOPPIN에서 검토 후 업로드됩니다.\n다시 한 번 POPPIN을 찾아주셔서 감사합니다.'
+            }
             showIcon={true}
             onConfirm={() => {
               // 확인 버튼 클릭 시 추가 동작

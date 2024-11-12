@@ -252,7 +252,9 @@ export const useOperatorReportStore = create<OperatorReportStore>(
     },
 
     requestOperatorReport: async () => {
-      if (get().requestLoading) return;
+      if (get().requestLoading) {
+        return;
+      }
 
       try {
         set({requestLoading: true});

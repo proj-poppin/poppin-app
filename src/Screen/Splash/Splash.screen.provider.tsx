@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useReducer} from 'react';
-import inAppMessaging from '@react-native-firebase/in-app-messaging';
+// import inAppMessaging from '@react-native-firebase/in-app-messaging';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   doesAppMeetRequiredVersion,
@@ -186,23 +186,23 @@ export function SplashScreenProvider({
     /** 현재 앱이 최신 버전인지 여부 */
     const isAppRecent = doesAppMeetRequiredVersion();
 
-    //* 1) 서비스 상태 확인 후 ServiceStatusScreen으로 이동
-    if (!useDynamicServiceConstant.getState().SERVICE_STATUS.available) {
-      screenProps.navigation.replace('ServiceStatusScreen', {});
-      return;
-    }
-
-    //* 2) 앱이 최소 요구 버전 미충족시 ForceUpdateScreen으로 이동
-    if (!isAppRecent) {
-      screenProps.navigation.replace('ForceUpdateScreen', {});
-      return;
-    }
+    // //* 1) 서비스 상태 확인 후 ServiceStatusScreen으로 이동
+    // if (!useDynamicServiceConstant.getState().SERVICE_STATUS.available) {
+    //   screenProps.navigation.replace('ServiceStatusScreen', {});
+    //   return;
+    // }
+    //
+    // //* 2) 앱이 최소 요구 버전 미충족시 ForceUpdateScreen으로 이동
+    // if (!isAppRecent) {
+    //   screenProps.navigation.replace('ForceUpdateScreen', {});
+    //   return;
+    // }
 
     //* 3) 성공적인 데이터 수신 후 홈 랜딩 화면으로 이동
     if (loadDataResult.loadInitialData) {
       screenProps.navigation.replace('LandingBottomTabNavigator', {
         HomeLandingScreen: {},
-        PopupSearchLandingScreen: {},
+        PopupLandingScreen: {},
         PopupLikesLandingScreen: {},
         MyPageLandingScreen: {},
       });
@@ -210,7 +210,7 @@ export function SplashScreenProvider({
 
     /** */
     async function setInAppMessagingVisible() {
-      await inAppMessaging().setMessagesDisplaySuppressed(false);
+      // await inAppMessaging().setMessagesDisplaySuppressed(false);
     }
   }
 

@@ -115,6 +115,7 @@ export const MypageReportUserScreen: React.FC = () => {
             <InputContainer>
               <StyledInput
                 placeholder="팝업 이름을 입력해주세요"
+                placeholderTextColor={'#9F9F9F'}
                 value={storeName}
                 onChangeText={setPopupName}
               />
@@ -151,6 +152,7 @@ export const MypageReportUserScreen: React.FC = () => {
             <InputContainer>
               <StyledInput
                 placeholder="URL을 입력해주세요"
+                placeholderTextColor={'#9F9F9F'}
                 value={contactLink}
                 onChangeText={setContactLink}
               />

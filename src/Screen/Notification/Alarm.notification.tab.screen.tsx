@@ -55,7 +55,9 @@ export const AlarmNotificationTabScreen = ({
   };
 
   const ListFooterComponent = () => {
-    if (!gettingOlder) return null;
+    if (!gettingOlder) {
+      return null;
+    }
 
     return (
       <ActivityIndicator

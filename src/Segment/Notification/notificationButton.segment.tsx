@@ -63,7 +63,9 @@ export function NotificationButtonSegment({
    * userNotificationSetting 의 lastCheck 를 업데이트하고 알림 페이지로 이동합니다.
    */
   const onPress = () => {
-    if (!checkLoginAndShowModal('ALARM')) return;
+    if (!checkLoginAndShowModal('ALARM')) {
+      return;
+    }
     setUserNotificationSetting({lastCheck: getCurrentISOTime()});
     navigateOnPress();
   };

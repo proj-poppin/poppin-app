@@ -47,7 +47,7 @@ export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
         duration: 200,
       }).start();
     }
-  }, [isVisible]);
+  }, [isVisible, translateY]);
 
   return (
     <Modal
@@ -109,7 +109,8 @@ const SheetContainer = styled.View<{$height: string | number}>`
   border-top-right-radius: ${moderateScale(20)}px;
   height: ${props =>
     typeof props.$height === 'number' ? `${props.$height}px` : props.$height};
-  padding-bottom: ${moderateScale(20)}px;
+  margin-bottom: -${moderateScale(40)}px;
+  padding-bottom: ${moderateScale(40)}px;
 `;
 
 const SheetContent = styled.View`

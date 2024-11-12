@@ -22,7 +22,7 @@
 // //   | 'REPORT_SUCCEED'
 // //   | 'ZERO_REWARD_CAUTION';
 //
-// import create from 'zustand';
+// import { create } from 'zustand'
 // import {ScrollView} from 'react-native';
 // import {RefObject} from 'react';
 // import { BlankPopup, PopupSchema } from "../../../Schema/Popup/popup.schema";

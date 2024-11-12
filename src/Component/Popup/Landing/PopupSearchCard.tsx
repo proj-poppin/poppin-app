@@ -3,11 +3,11 @@ import {Image, Pressable, Text, TouchableOpacity} from 'react-native';
 import styled from 'styled-components/native';
 import {PopupSchema} from '../../../Schema/Popup/popup.schema';
 import {moderateScale} from '../../../Util';
-import {POP_UP_TYPES} from '../../../Screen/MyPage/preferenceSetting/types';
 import StarFilledSvg from '../../../Resource/svg/star-filled-icon.svg';
 import StarOutlineSvg from '../../../Resource/svg/star-outline-icon.svg';
 import {usePopupStore} from '../../../Zustand/Popup/popup.zustand';
 import {usePopupDetailContext} from '../../../Screen/Popup/Detail/Provider/Popup.detail.provider';
+import {POP_UP_TYPES} from '../../findPopup/constants';
 
 interface PopupStoreCardProps {
   item: PopupSchema;

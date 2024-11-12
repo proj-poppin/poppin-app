@@ -16,7 +16,6 @@ import HomeLandingPopularTop5PopupSection from './Section/Home.landing.popularTo
 import HomeLandingPopupSection from './Section/Home.landing.popup.section';
 import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
 import {useHomeLandingScreenStore} from './Home.landing.zustand';
-
 export type HomeLandingScreenProps = {};
 
 export const HomeLandingScreen = ({

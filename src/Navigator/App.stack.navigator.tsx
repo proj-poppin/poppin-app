@@ -323,7 +323,7 @@ const AppStackScreen = () => {
     return () => {
       linkingListener.remove();
     };
-  }, [navigation]);
+  }, [handleUrl, navigation]);
 
   return (
     <AppStack.Navigator

@@ -60,6 +60,7 @@ const ReportStepOne: React.FC<StepProps> = ({onNext}) => {
         </Label>
         <StyledInput
           placeholder="소속(업체명)"
+          placeholderTextColor={'#9F9F9F'}
           value={informerCompany}
           onChangeText={handleinformerCompanyChange}
           maxLength={30}
@@ -72,6 +73,7 @@ const ReportStepOne: React.FC<StepProps> = ({onNext}) => {
         </Label>
         <StyledInput
           placeholder="이메일"
+          placeholderTextColor={'#9F9F9F'}
           value={informerEmail}
           onChangeText={handleEmailChange}
           maxLength={50}

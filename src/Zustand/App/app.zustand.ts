@@ -157,7 +157,9 @@ export const useAppStore = create<AppStoreProps>((set, get) => ({
   loadInitialData: async () => {
     const initialData = await axiosLoadInitialData();
     console.log('initialData', initialData);
-    if (initialData === null) return false;
+    if (initialData === null) {
+      return false;
+    }
 
     const notyetTabSearchParams: PopupSearchParams = {
       operationStatus: OperationStatus.NOTYET,

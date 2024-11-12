@@ -1,13 +1,22 @@
 $RNFirebaseAsStaticFramework = true
 $RNFirebaseAnalyticsWithoutAdIdSupport = true
-$KakaoSDKVersion="2.11.1"
-require_relative '../node_modules/react-native/scripts/react_native_pods'
-require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+# Resolve react_native_pods.rb with node to allow for hoisting
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve(
+    "react-native/scripts/react_native_pods.rb",
+    {paths: [process.argv[1]]},
+  )', __dir__]).strip
 # #SETTING react-native-permissions
 require_relative '../node_modules/react-native-permissions/scripts/setup'
 
-platform :ios, '13.0'
-#install! 'cocoapods', :deterministic_uuids => false
+platform :ios, min_ios_version_supported
+prepare_react_native_project!
+
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+  use_frameworks! :linkage => linkage.to_sym
+end
 
 # #SETTING react-native-permissions
 # prepare_react_native_project!
@@ -37,24 +46,20 @@ setup_permissions([
 
 target 'PoppinProject' do
 
-  use_frameworks!
-
   config = use_native_modules!
 
-  # Flags change depending on the env values.
-  flags = get_default_flags()
+  # #SETTING (도형) use_frameworks 삭제후 아래 기입, @reference https://www.inflearn.com/community/questions/572942/push-적용중-에러
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
 
   use_react_native!(
     :path => config[:reactNativePath],
-    # to enable hermes on iOS, change `false` to `true` and then install pods
-    :hermes_enabled => flags[:hermes_enabled],
-    :fabric_enabled => flags[:fabric_enabled],
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-#   # Add the AppsFlyer pod here
-#   pod 'react-native-appsflyer', :path => '../node_modules/react-native-appsflyer'
+  # Add the AppsFlyer pod here
+#  pod 'react-native-appsflyer', :path => '../node_modules/react-native-appsflyer'
 
   target 'PoppinProjectTests' do
     inherit! :complete
@@ -70,14 +75,24 @@ target 'PoppinProject' do
   post_install do |installer|
     # https://stackoverflow.com/questions/73014763/react-native-ios-xcode-build-failing-for-bitcode
     # XCode build setting 에서 bitcode enabled 를 No 로 설정해도 자꾸 반영이 안 됩니다. 아래 코드를 추가해줘야 합니다.
+    # #SETTING https://github.com/airbnb/lottie-ios/issues/2076#issuecomment-2019995912
+    # XCode build setting 에서 other swift flag 를 '--interface'로 설정해도 자꾸 반영이 안 됩니다. 아래 코드를 추가해줘야 합니다.
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
         config.build_settings['ENABLE_BITCODE'] = 'NO'
+        config.build_settings['OTHER_SWIFT_FLAGS'] ||= ['$(inherited)', '-no-verify-emitted-module-interface']
+        # 여기에 BUILD_LIBRARY_FOR_DISTRIBUTION 설정 추가
+        config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
       end
     end
     ###
 
-    react_native_post_install(installer)
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
+        react_native_post_install(
+          installer,
+          config[:reactNativePath],
+          :mac_catalyst_enabled => false,
+          # :ccache_enabled => true
+        )
   end
 end

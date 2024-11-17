@@ -69,19 +69,32 @@ export const PopupLandingScreen = ({
   navigation,
 }: NativeStackScreenProps<LandingBottomTabProps, 'PopupLandingScreen'>) => {
   const [isSearchMode, setIsSearchMode] = useState(false);
-  const {searchKeyword, setSearchKeyword, isSetting, setIsSetting} =
-    usePopupScreenStore();
+  const {
+    setSelectedCategories,
+    setSelectedPopupStores,
+    searchKeyword,
+    setSearchKeyword,
+    isSetting,
+    setIsSetting,
+  } = usePopupScreenStore();
   const [selectedOrder, setSelectedOrder] = useState<PopupSortOrder>(
     PopupSortOrder.RECENTLY_OPENED,
   );
   const [modalVisible, setModalVisible] = useState(false);
-  const handleFilterChange = () => {
-    setModalVisible(false); // Close the modal
+  const handleFilterChange = (selectedCategories: {
+    selectedPopupTypes: string[];
+    selectedCategories: string[];
+  }) => {
+    setSelectedCategories(selectedCategories.selectedCategories.join(','));
+    setSelectedPopupStores(selectedCategories.selectedPopupTypes.join(','));
+    setModalVisible(false);
     setIsSetting(!isSetting);
   };
 
   const handleResetFilter = () => {
-    setModalVisible(false); // Close the modal
+    setSelectedCategories('');
+    setSelectedPopupStores('');
+    setModalVisible(false);
     setIsSetting(!isSetting);
   };
 
@@ -147,6 +160,8 @@ export const PopupLandingScreen = ({
           onApply={handleFilterChange} // Apply handler
           onReset={handleResetFilter} // Reset handler
           buttonName={'필터 적용하기'}
+          validationMode={'both'}
+          initialSelectedCategories={''}
         />
       </CustomBottomSheet>
     </ScreenContainer>
@@ -210,7 +225,7 @@ const ClosedPopupScreen: React.FC = () => (
   <PopupListScreen operationStatus={OperationStatus.TERMINATED} />
 );
 
-const SearchBar: React.FC<SearchBarProps> = ({
+export const SearchBar: React.FC<SearchBarProps> = ({
   isSearchMode,
   onSearchToggle,
   onBackPress,

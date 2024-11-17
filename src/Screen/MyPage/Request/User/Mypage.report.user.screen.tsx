@@ -8,7 +8,6 @@ import {HelperText} from '../../../../Component/MyPage/Report/ReportStepTwo';
 import CustomBottomSheetButton from 'src/Component/BottomSheet/CustomBottomSheetButton';
 import {ScrollViewPage} from 'src/Component/Page';
 import {useUserReportStore} from './Mypage.report.user.zustand';
-import {axiosMyPageUserReport} from 'src/Axios/Mypage/mypage.post.axios';
 import CommonCompleteButton from '../../../Popup/Landing/common.complete.button';
 import {
   NavigationProp,
@@ -136,7 +135,7 @@ export const MypageReportUserScreen: React.FC = () => {
               isVisible={modalVisible}
               onClose={() => setModalVisible(false)}
               title={'제보하려는 팝업의 카테고리를 설정해주세요'}
-              height={'60%'}>
+              height={'65%'}>
               <PopupCategoryModal
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}

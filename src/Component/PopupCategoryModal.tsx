@@ -29,6 +29,7 @@ interface PopupCategoryModalProps {
   onReset: () => void;
   validationMode: 'both' | 'any';
   isPopupRequestModal?: boolean;
+  initialSelectedCategories: string;
 }
 
 const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({

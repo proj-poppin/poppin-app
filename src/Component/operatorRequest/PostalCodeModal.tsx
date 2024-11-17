@@ -9,12 +9,17 @@ interface PostalCodeModalProps {
   isVisible: boolean;
   onClose: () => void;
   onSelected: (data: any) => void;
+  jsOptions?: {
+    animation: boolean;
+    hideMapBtn: boolean;
+  };
 }
 
 const PostalCodeModal: React.FC<PostalCodeModalProps> = ({
   isVisible,
   onClose,
   onSelected,
+  jsOptions = {animation: false, hideMapBtn: false},
 }) => {
   return (
     <StyledModal
@@ -25,7 +30,7 @@ const PostalCodeModal: React.FC<PostalCodeModalProps> = ({
       <ModalOverlay>
         <ModalView>
           <StyledPostcode
-            jsOptions={{animation: false, hideMapBtn: false}}
+            jsOptions={jsOptions}
             onSelected={onSelected}
             onError={error => console.log(error)}
           />

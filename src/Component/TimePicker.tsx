@@ -1,5 +1,10 @@
 // TimePickerModal.tsx
 import React, {useState} from 'react';
+/**
+ * datetimepicker 관련해서 패키지 오류가 뜰 때는 다음과 같이 해결한다.
+ * see: https://github.com/react-native-datetimepicker/datetimepicker/issues/866
+ * @author 홍규진
+ * */
 import DateTimePicker from '@react-native-community/datetimepicker';
 import styled from 'styled-components/native';
 import {moderateScale} from '../Util';

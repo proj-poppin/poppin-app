@@ -3,7 +3,7 @@ import create from 'zustand';
 import {Asset} from 'react-native-image-picker';
 import {Alert} from 'react-native';
 import {UserReportStore} from '../User/Mypage.report.user.zustand';
-import {axiosMyPageOperatorReport} from '../../../../Axios/Mypage/mypage.post.axios';
+import {axiosMyPageOperatorReport} from 'src/Axios/Mypage/mypage.post.axios';
 
 export interface OperatorReportStore {
   /** 제보 중 로딩 여부 */

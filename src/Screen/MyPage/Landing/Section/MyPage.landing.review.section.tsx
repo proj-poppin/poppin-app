@@ -3,15 +3,19 @@ import styled from 'styled-components/native';
 import {moderateScale} from '../../../../Util';
 import ReviewCompleteIcon from '../../../../Resource/svg/review-write-complete-icon.svg';
 import ReviewWriteReadyIcon from '../../../../Resource/svg/review-write-ready-icon.svg';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 export const MyPageLandingReviewSection = () => {
+  const navigation = useNavigation<NavigationProp<AppStackProps>>();
   return (
     <ReviewsContainer>
-      <ReviewItem>
+      <ReviewItem
+        onPress={() => navigation.navigate('MypageReviewListScreen', {})}>
         <ReviewLabel>후기 작성하기</ReviewLabel>
         <ReviewIconRowContainer>
           <ReviewWriteReadyIcon />
           {/*//TODO - [규진] 가변 값으로 바꿔야 함.*/}
-          <ReviewReadyNumber>2</ReviewReadyNumber>
+          <ReviewReadyNumber>1</ReviewReadyNumber>
         </ReviewIconRowContainer>
       </ReviewItem>
       <Divider />
@@ -40,7 +44,7 @@ const ReviewIconRowContainer = styled.View`
   flex-direction: row;
   margin-top: ${moderateScale(12)}px;
 `;
-const ReviewItem = styled.View`
+const ReviewItem = styled.TouchableOpacity`
   align-items: center;
   flex: 1;
 `;

@@ -79,6 +79,16 @@ import {
   MypageReportUserScreenProps,
 } from '../Screen/MyPage/Request/User/Mypage.report.user.screen';
 
+import {AppModal} from 'src/App/App.modal';
+import {
+  MyPageReviewWriteScreen,
+  MyPageReviewWriteScreenProps,
+} from 'src/Screen/MyPage/Review/Mypage.review.screen';
+import {
+  MypageReviewListScreen,
+  MypageReviewListScreenProps,
+} from 'src/Screen/MyPage/Review/Mypage.review.list.screen';
+
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
  * 이 type의 key에 해당하는 값은 AppStack.Screen의 name과 일치해야 합니다.
@@ -122,6 +132,10 @@ export type AppStackProps = {
   MypageReportUserScreen: MypageReportUserScreenProps;
 
   MypageReportOperatorScreen: MypageReportOperatorScreenProps;
+
+  MypageReviewListScreen: MypageReviewListScreenProps;
+
+  MyPageReviewWriteScreen: MyPageReviewWriteScreenProps;
 };
 
 const AppStack = createNativeStackNavigator<AppStackProps>();
@@ -422,6 +436,14 @@ const AppStackScreen = () => {
         <AppStack.Screen
           name={'MypageReportOperatorScreen'}
           component={MypageReportOperatorScreen}
+        />
+        <AppStack.Screen
+          name={'MypageReviewListScreen'}
+          component={MypageReviewListScreen}
+        />
+        <AppStack.Screen
+          name={'MyPageReviewWriteScreen'}
+          component={MyPageReviewWriteScreen}
         />
       </AppStack.Group>
     </AppStack.Navigator>

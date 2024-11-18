@@ -106,20 +106,24 @@ export const NormalReviewWriteScreen: React.FC = () => {
                 />
               </ContentContainer>
             }
-          />
-          <LinearGradient
-            colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              bottom: moderateScale(60),
-              height: moderateScale(100),
-            }}
-          />
-          <CommonCompleteButton
-            title={'일반 후기 제출하기'}
-            onPress={submitReview}
+            BottomPart={
+              <>
+                <LinearGradient
+                  colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    height: moderateScale(100),
+                  }}
+                />
+                <CommonCompleteButton
+                  title={'일반 후기 제출하기'}
+                  onPress={submitReview}
+                />
+              </>
+            }
           />
         </>
       )}

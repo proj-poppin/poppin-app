@@ -81,10 +81,10 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
 
     selectedOrderType: PopupSortOrder.RECENTLY_OPENED,
     searchKeyword: '',
-    selectedCategories: '00000000000000',
+    selectedCategories: '',
     isSetting: false,
-    filteringThreeCategories: '000',
-    filteringFourteenCategories: '00000000000000',
+    filteringThreeCategories: '',
+    filteringFourteenCategories: '',
 
     preferenceCategory: BlankPreference.preferenceCategory,
     preferencePopupStore: BlankPreference.preferencePopupStore,

@@ -33,96 +33,97 @@ export const NormalReviewWriteScreen: React.FC = () => {
     handleDeleteImage,
     submitReview,
   } = useReviewWriteContext();
+  const shouldShowSearchBar =
+    !selectedPopup || (showResults && searchKeyword.length > 0);
 
   return (
-    <ScrollViewPage
-      UpperPart={
-        <ScreenHeader LeftComponents={'BACK_BUTTON'} title={'일반 후기 작성'} />
-      }
-      PageContent={
-        <ContentContainer>
-          {/* 팝업이 선택되었을 때 보여지는 화면, */}
-          {selectedPopup ? (
-            <SelectedPopupSection>
-              <ReivewTitleText>{selectedPopup.name}</ReivewTitleText>
-              <CancelText
-                onPress={() => {
-                  setSelectedPopup(undefined);
-                }}>
-                선택 취소
-              </CancelText>
-            </SelectedPopupSection>
-          ) : (
-            /* 팝업 미선택 시 보여지는 SearchBar */
-            <SearchSection>
-              <SearchTitle>후기 작성할 팝업 검색</SearchTitle>
-              <ReviewSearchBar
-                searchKeyword={searchKeyword}
-                setSearchKeyword={setSearchKeyword}
-                onFocus={() => setShowResults(true)}
-                onBlur={() => setShowResults(false)}
-              />
-            </SearchSection>
-          )}
+    <>
+      <ScreenHeader LeftComponents={'BACK_BUTTON'} title={'일반 후기 작성'} />
 
-          {/* 검색 결과가 있을 때 보여지는 리스트 */}
-          {showResults && searchKeyword.length > 0 ? (
-            <ResultsContainer>
-              <FlatList
-                data={searchedPopupStores}
-                keyExtractor={item => item.id}
-                renderItem={({item}: {item: PopupSchema}) => (
-                  <BeforeReviewPopupCard
-                    popup={item}
-                    key={item.id}
-                    showWriteButton={false}
-                    onPress={() => {
-                      setSelectedPopup(item);
-                      setShowResults(false);
-                      setSearchKeyword('');
-                    }}
-                  />
-                )}
+      {/* 검색바 영역 - 검색 중이거나 선택되지 않았을 때만 표시 */}
+      {shouldShowSearchBar && (
+        <SearchSection>
+          <SearchTitle>후기 작성할 팝업 검색</SearchTitle>
+          <ReviewSearchBar
+            searchKeyword={searchKeyword}
+            setSearchKeyword={setSearchKeyword}
+            onFocus={() => setShowResults(true)}
+            onBlur={() => {
+              // 검색어가 없을 때만 결과창 닫기
+              if (searchKeyword.length === 0) {
+                setShowResults(false);
+              }
+            }}
+          />
+        </SearchSection>
+      )}
+
+      {/* 검색 결과 또는 리뷰 작성 화면 */}
+      {showResults && searchKeyword.length > 0 ? (
+        <ResultsContainer>
+          <FlatList
+            keyboardShouldPersistTaps="handled"
+            data={searchedPopupStores}
+            keyExtractor={item => item.id}
+            renderItem={({item}: {item: PopupSchema}) => (
+              <BeforeReviewPopupCard
+                popup={item}
+                key={item.id}
+                showWriteButton={false}
+                onPress={() => {
+                  setSelectedPopup(item);
+                  setShowResults(false);
+                  setSearchKeyword('');
+                }}
               />
-            </ResultsContainer>
-          ) : (
-            /* 후기 작성 화면 */
-            <ReviewWriteSection
-              categoryGroups={categoryGroups}
-              reviewText={reviewText}
-              setReviewText={setReviewText}
-              imageFileUri={imageFileUri}
-              openGallery={openGallery}
-              handleDeleteImage={handleDeleteImage}
-              handleCategorySelect={handleCategorySelect}
-            />
-          )}
-        </ContentContainer>
-      }
-      BottomPart={
-        showResults && searchKeyword.length > 0 ? undefined : (
-          <>
-            <LinearGradient
-              colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
-              style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                bottom: 0,
-                height: moderateScale(100),
-              }}
-            />
-            <CommonCompleteButton
-              title={'일반 후기 제출하기'}
-              //TODO-[규진] 제출 기능 연결하기
-              onPress={() => {
-                submitReview();
-              }}
-            />
-          </>
-        )
-      }
-    />
+            )}
+          />
+        </ResultsContainer>
+      ) : (
+        <>
+          <ScrollViewPage
+            PageContent={
+              <ContentContainer>
+                {selectedPopup && (
+                  <SelectedPopupSection>
+                    <ReivewTitleText>{selectedPopup.name}</ReivewTitleText>
+                    <CancelText
+                      onPress={() => {
+                        setSelectedPopup(undefined);
+                      }}>
+                      선택 취소
+                    </CancelText>
+                  </SelectedPopupSection>
+                )}
+                <ReviewWriteSection
+                  categoryGroups={categoryGroups}
+                  reviewText={reviewText}
+                  setReviewText={setReviewText}
+                  imageFileUri={imageFileUri}
+                  openGallery={openGallery}
+                  handleDeleteImage={handleDeleteImage}
+                  handleCategorySelect={handleCategorySelect}
+                />
+              </ContentContainer>
+            }
+          />
+          <LinearGradient
+            colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: moderateScale(60),
+              height: moderateScale(100),
+            }}
+          />
+          <CommonCompleteButton
+            title={'일반 후기 제출하기'}
+            onPress={submitReview}
+          />
+        </>
+      )}
+    </>
   );
 };
 
@@ -140,7 +141,8 @@ const SelectedPopupSection = styled.View`
 `;
 
 const SearchSection = styled.View`
-  margin-bottom: ${moderateScale(24)}px;
+  padding: ${moderateScale(20)}px;
+  background-color: ${theme => theme.theme.color.grey.white};
 `;
 
 const SearchTitle = styled.Text`
@@ -150,6 +152,8 @@ const SearchTitle = styled.Text`
 `;
 const ResultsContainer = styled.View`
   flex: 1;
+  padding: ${moderateScale(16)}px;
+  background-color: ${theme => theme.theme.color.grey.white};
 `;
 
 const CancelText = styled.Text`

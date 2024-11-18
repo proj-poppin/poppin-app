@@ -72,6 +72,7 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+.pnp.*
 
 # Environment variables
 env/.env

@@ -2663,6 +2663,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-seoul/naver-login@npm:^4.0.4":
+  version: 4.0.4
+  resolution: "@react-native-seoul/naver-login@npm:4.0.4"
+  dependencies:
+    dooboolab-welcome: ^1.3.2
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: ec2df4faa4870d74d786a95e2d012f2121b28b53a974d98792ffa66a710a525c8788a130d4d3a61d6cd286f5962b77718b3c56502112e7ecc4d50bd3e51ea00a
+  languageName: node
+  linkType: hard
+
 "@react-native/assets-registry@npm:0.75.4":
   version: 0.75.4
   resolution: "@react-native/assets-registry@npm:0.75.4"
@@ -3741,6 +3753,7 @@ __metadata:
     "@react-native-kakao/share": ^2.2.6
     "@react-native-kakao/social": ^2.2.6
     "@react-native-kakao/user": ^2.2.6
+    "@react-native-seoul/naver-login": ^4.0.4
     "@react-native/babel-preset": 0.75.4
     "@react-native/eslint-config": 0.75.4
     "@react-native/metro-config": 0.75.4
@@ -5680,6 +5693,15 @@ __metadata:
     domelementtype: ^2.3.0
     domhandler: ^5.0.3
   checksum: e5757456ddd173caa411cfc02c2bb64133c65546d2c4081381a3bafc8a57411a41eed70494551aa58030be9e58574fcc489828bebd673863d39924fb4878f416
+  languageName: node
+  linkType: hard
+
+"dooboolab-welcome@npm:^1.3.2":
+  version: 1.3.2
+  resolution: "dooboolab-welcome@npm:1.3.2"
+  bin:
+    dooboolab-welcome: bin/hello.js
+  checksum: 9a4e5c17a16b5cf874bdc1482ee7a2a221a8f269d8bfe6ba1425f678e764d256e265e30ca6169635ce9fa77af53b2e5a0b810a5c4b48b01c13d906613f799c96
   languageName: node
   linkType: hard
 

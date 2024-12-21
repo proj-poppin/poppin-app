@@ -32,6 +32,7 @@
     "@react-native-kakao/share": "^2.2.6",
     "@react-native-kakao/social": "^2.2.6",
     "@react-native-kakao/user": "^2.2.6",
+    "@react-native-seoul/naver-login": "^4.0.4",
     "@react-navigation/bottom-tabs": "6.3.2",
     "@react-navigation/material-top-tabs": "^6.2.2",
     "@react-navigation/native": "^6.0.11",

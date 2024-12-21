@@ -2,6 +2,8 @@
 #import <RNCKakaoUser/RNCKakaoUserUtil.h> // 새로운 @react-native-kakao/user에 필요
 // #import <RNFBDynamicLinksAppDelegateInterceptor.h>
 
+#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h> // 네이버 로그인
+
 #import <RNAppsFlyer.h> // AppsFlyer Deep linking, Open URI-scheme for iOS 9 이상
 #import <Firebase.h>
 #import "AppDelegate.h"
@@ -50,6 +52,12 @@
 //
 //    return YES;
 //}
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+   return [[NaverThirdPartyLoginConnection getSharedInstance] application:app openURL:url options:options];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {

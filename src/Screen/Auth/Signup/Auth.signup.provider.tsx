@@ -395,21 +395,23 @@ import React, {
   RefObject,
   useCallback,
   useContext,
+  useEffect,
   useReducer,
   useRef,
 } from 'react';
 import {TextInput} from 'react-native';
 import {isValidEmail, isValidNickname, showBlackToast} from '../../../Util';
-import {
-  axiosSendEmailAuthCode,
-  axiosSignUp,
-} from '../../../Axios/Auth/auth.axios';
+import {axiosSendEmailAuthCode, axiosSignUp} from 'src/Axios/Auth/auth.axios';
 import {axiosGetRandomNickname} from '../../../Axios/User/user.get.axios';
 import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import messaging from '@react-native-firebase/messaging';
+import {useUserStore} from '../../../Zustand/User/user.zustand';
 
 type SignupStep = 'EMAIL' | 'AUTH_CODE' | 'NICKNAME' | 'COMPLETE';
+
+/** */
+type SignupScreenModalType = '';
 
 export const signupStepOrder: SignupStep[] = [
   'EMAIL',
@@ -424,20 +426,40 @@ type SignupInput = {
   password: string;
   authCode: string;
   nickname: string;
+  useRandomNickname: boolean;
   birthday: string;
+  appleUserId?: string;
 };
 
-export type SignupScreenState = SignupInput & {
-  step: SignupStep;
+/** */
+type SignupScreenStatus = {
+  authCodeCorrect: boolean;
+  nicknameVerifying: boolean;
+  nicknameUnique: boolean;
 };
 
+export type SignupScreenState = SignupInput &
+  SignupScreenStatus & {
+    modalVisible: boolean;
+    modalType: SignupScreenModalType;
+    step: SignupStep;
+    /** 회원가입을 유도한 유저/프로젝트 정보 */
+    referrerUserId?: string;
+    referrerResearchId?: string;
+  };
 const initialSignupScreenState: SignupScreenState = {
   step: 'EMAIL',
+  modalVisible: false,
+  modalType: '',
+  nicknameUnique: false,
+  nicknameVerifying: false,
+  authCodeCorrect: false,
   email: '',
-  accountType: 'EMAIL',
+  accountType: 'DEFAULT',
   password: '',
   authCode: '',
   nickname: '',
+  useRandomNickname: false,
   birthday: '',
 };
 
@@ -525,8 +547,14 @@ export function SignupScreenProvider({
   const nicknameValid = isValidNickname(signupState.nickname);
   const birthdayValid = /^\d{4}\.\d{2}\.\d{2}$/.test(signupState.birthday);
 
+  /** 회원가입에 사용되는 입력값을 업데이트합니다. */
   function updateInput(input: Partial<SignupInput>) {
     dispatch({type: 'UPDATE_INPUT', payload: input});
+  }
+
+  /** */
+  function updateStatus(status: Partial<SignupScreenStatus>) {
+    dispatch({type: 'UPDATE_STATUS', payload: status});
   }
 
   function goNextStep() {
@@ -589,10 +617,14 @@ export function SignupScreenProvider({
 
   /** */
   const getRandomNickname = async (param?: {makeLog: boolean}) => {
-    const nickname = await axiosGetRandomNickname();
-    if (nickname !== null) {
-      updateInput({nickname, useRandomNickname: true});
-      // updateStatus({nicknameVerifying: false, nicknameUnique: true});
+    const randomNicknameState = await axiosGetRandomNickname();
+    if (randomNicknameState !== null) {
+      console.log('randomNicknameState: ', randomNicknameState.randomNickname);
+      updateInput({
+        nickname: randomNicknameState.randomNickname,
+        useRandomNickname: true,
+      });
+      updateStatus({nicknameVerifying: false, nicknameUnique: true});
     }
   };
 
@@ -601,7 +633,7 @@ export function SignupScreenProvider({
     const refinedNickname = nickname.trim().replace(/ /g, '');
     updateInput({nickname: refinedNickname});
     if (refinedNickname.length >= 2) {
-      // updateStatus({nicknameUnique: false, nicknameVerifying: true});
+      updateStatus({nicknameUnique: false, nicknameVerifying: true});
     }
   }
 
@@ -677,8 +709,8 @@ export function SignupScreenProvider({
 
     const fcmToken = await messaging().getToken();
 
-    const result = await axiosSignUp({
-      accountType: 'EMAIL',
+    const signupSucceed = await useUserStore.getState().signup({
+      accountType: signupState.accountType,
       email: signupState.email,
       password: signupState.password,
       passwordConfirm: signupState.password,
@@ -686,9 +718,9 @@ export function SignupScreenProvider({
       fcmToken: fcmToken,
       agreedToPrivacyPolicy: true,
       agreedToServiceTerms: true,
+      appleUserId: signupState?.appleUserId,
     });
-
-    if (result) {
+    if (signupSucceed) {
       goNextStep();
     } else {
       showBlackToast({text1: '회원가입에 실패했습니다. 다시 시도해주세요.'});

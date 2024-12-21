@@ -13,7 +13,7 @@ export function SignupNicknamePage() {
     useSignupContext();
 
   // Update nickname field using context
-  function handleNicknameChange(nickname: string) {
+  function handleNicknameInputChange(nickname: string) {
     updateInput({nickname});
   }
 
@@ -44,7 +44,8 @@ export function SignupNicknamePage() {
             }}>
             <LabelText>닉네임</LabelText>
             <CommonTextFormField
-              onChangeText={handleNicknameChange}
+              value={nickname}
+              onChangeText={handleNicknameInputChange}
               placeholder="한글/영문 10자 이하 공백포함"
               errorText={
                 !isNicknameValid

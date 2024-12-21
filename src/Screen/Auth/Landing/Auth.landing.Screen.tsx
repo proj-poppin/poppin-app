@@ -6,30 +6,30 @@ import AppLogoIcon from 'src/Resource/svg/app-logo-p-icon.svg';
 import {SectionContainer} from 'src/Unit/View';
 import styled from 'styled-components/native';
 import {moderateScale} from 'src/Util';
-import BasicLoginIcon from 'src/Screen/Auth/Landing/Resource/login-basic-button-row-temp.svg';
-import {FastImageContainer} from 'src/Component/Image/FastImage.component';
+// import BasicLoginIcon from 'src/Screen/Auth/Landing/Resource/login-basic-button-row-temp.svg';
 import {DetailText} from 'src/StyledComponents/Text';
 import {themeColors} from 'src/Theme/theme';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
-import {BodyMediumText} from '../../../StyledComponents/Text/bodyMedium.component';
+import {BodyMediumText} from 'src/StyledComponents/Text/bodyMedium.component';
 import RoundRightIcon from 'src/Resource/svg/right-arrow-circle-icon.svg';
 import TermsAndPrivacyPolicyAgreement from 'src/Component/PressableUnderlineText';
 import {AppleLoginButton} from 'src/Component/Button/AppleLoginButton';
-import {KakaoLoginButton} from '../../../Component/Button/KakaoLoginButton';
+import {KakaoLoginButton} from 'src/Component/Button/KakaoLoginButton';
 import {TouchableOpacity} from 'react-native';
 import LoginBasicLetterIcon from 'src/Screen/Auth/Landing/Resource/login-basic-letter-icon.svg';
-import CommonCompleteButton from '../../Popup/Landing/common.complete.button';
-import Svg, {SvgProps} from 'react-native-svg';
+import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
+import {NaverLoginButton} from 'src/Component/Button/NaverLoginButton';
+import {GoogleLoginButton} from 'src/Component/Button/GoogleLoginButton';
 
-type BasicLoginButtonProps = {
-  onPressLogin: () => void;
-};
-
-const BasicLoginButton = ({onPressLogin}: BasicLoginButtonProps) => (
-  <TouchableOpacity onPress={onPressLogin}>
-    <BasicLoginIcon style={{marginTop: moderateScale(20)}} />
-  </TouchableOpacity>
-);
+// type BasicLoginButtonProps = {
+//   onPressLogin: () => void;
+// };
+//
+// const BasicLoginButton = ({onPressLogin}: BasicLoginButtonProps) => (
+//   <TouchableOpacity onPress={onPressLogin}>
+//     <BasicLoginIcon style={{marginTop: moderateScale(20)}} />
+//   </TouchableOpacity>
+// );
 
 export type AuthLandingScreenProps = {
   popWhenCanceled?: number;
@@ -41,6 +41,8 @@ export function AuthLandingScreen({
   navigation,
 }: NativeStackScreenProps<AppStackProps, 'AuthLandingScreen'>) {
   const [kakaoLoggingIn, setKakaoLoggingIn] = useState<boolean>(false);
+  const [naverLoggingIn, setNaverLoggingIn] = useState<boolean>(false);
+  const [googleLoggingIn, setGoogleLoggingIn] = useState<boolean>(false);
 
   function onLoginSucceed() {
     navigation.replace('LandingBottomTabNavigator', {
@@ -69,20 +71,49 @@ export function AuthLandingScreen({
       initialSignupState: {
         step: 'EMAIL',
       },
-      // popWhenCanceled: route.params.popWhenCanceled
-      //   ? route.params.popWhenCanceled + 1
-      //   : 2,
-      // popWhenSucceed: route.params.popWhenSucceed
-      //   ? route.params.popWhenSucceed + 1
-      //   : 2,
+    });
+  }
+
+  function onNaverSignupRequired(param: {email: string}) {
+    console.log('Naver signup required:', param);
+    navigation.navigate('SignupScreen', {
+      initialSignupState: {
+        step: 'NICKNAME',
+        accountType: 'NAVER',
+        email: param.email,
+      },
+      popWhenCanceled: route.params.popWhenCanceled
+        ? route.params.popWhenCanceled + 1
+        : 2,
+      popWhenSucceed: route.params.popWhenSucceed
+        ? route.params.popWhenSucceed + 1
+        : 2,
     });
   }
 
   function onKakaoSignupRequired(param: {email: string}) {
+    console.log('Kakao signup required:', param);
     navigation.navigate('SignupScreen', {
       initialSignupState: {
         step: 'NICKNAME',
         accountType: 'KAKAO',
+        email: param.email,
+      },
+      popWhenCanceled: route.params.popWhenCanceled
+        ? route.params.popWhenCanceled + 1
+        : 2,
+      popWhenSucceed: route.params.popWhenSucceed
+        ? route.params.popWhenSucceed + 1
+        : 2,
+    });
+  }
+
+  function onGoogleSignupRequired(param: {email: string}) {
+    console.log('Google signup required:', param);
+    navigation.navigate('SignupScreen', {
+      initialSignupState: {
+        step: 'NICKNAME',
+        accountType: 'GOOGLE',
         email: param.email,
       },
       popWhenCanceled: route.params.popWhenCanceled
@@ -163,37 +194,24 @@ export function AuthLandingScreen({
               다른 방법으로 로그인하기
             </BottomText>
             <RowIconsContainer style={{paddingBottom: moderateScale(24)}}>
-              <TouchableIconContainer
-                onPress={() => console.log('Naver login pressed')}>
-                <FastImageContainer
-                  style={{
-                    width: moderateScale(40),
-                    height: moderateScale(40),
-                    marginHorizontal: moderateScale(5),
-                  }}
-                  source={require('./Resource/login-naver-button-circle.png')}
-                />
-              </TouchableIconContainer>
-              <TouchableIconContainer
-                onPress={() => console.log('Google login pressed')}>
-                <FastImageContainer
-                  style={{
-                    width: moderateScale(40),
-                    height: moderateScale(40),
-                    marginHorizontal: moderateScale(5),
-                  }}
-                  source={require('./Resource/login-google-button-circle.png')}
-                />
-              </TouchableIconContainer>
-              <TouchableIconContainer
-                onPress={() => console.log('kakao login pressed')}>
-                <KakaoLoginButton
-                  loggingIn={kakaoLoggingIn}
-                  setLoggingIn={setKakaoLoggingIn}
-                  onLoginSucceed={onLoginSucceed}
-                  onSignupRequired={onKakaoSignupRequired}
-                />
-              </TouchableIconContainer>
+              <NaverLoginButton
+                loggingIn={naverLoggingIn}
+                setLoggingIn={setNaverLoggingIn}
+                onLoginSucceed={onLoginSucceed}
+                onSignupRequired={onNaverSignupRequired}
+              />
+              <GoogleLoginButton
+                loggingIn={googleLoggingIn}
+                setLoggingIn={setGoogleLoggingIn}
+                onLoginSucceed={onLoginSucceed}
+                onSignupRequired={onGoogleSignupRequired}
+              />
+              <KakaoLoginButton
+                loggingIn={kakaoLoggingIn}
+                setLoggingIn={setKakaoLoggingIn}
+                onLoginSucceed={onLoginSucceed}
+                onSignupRequired={onKakaoSignupRequired}
+              />
             </RowIconsContainer>
             <TermsAndPrivacyPolicyAgreement
               onPrivacyPolicyPress={() => {}}
@@ -240,12 +258,5 @@ const SignupMotivateText = styled(BodyMediumText)`
 
 const LoginButtonsContainer = styled.View`
   margin-top: ${moderateScale(54)}px;
-  align-items: center;
-`;
-const TouchableIconContainer = styled(TouchableOpacity)`
-  width: ${moderateScale(40)}px;
-  height: ${moderateScale(40)}px;
-  margin-horizontal: ${moderateScale(5)}px;
-  justify-content: center;
   align-items: center;
 `;

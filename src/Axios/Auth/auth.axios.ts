@@ -188,7 +188,7 @@ export const axiosAppleLogin = async (param: {appleUserId: string}) => {
   return await customAxios
     .request<LoginResponse>({
       method: 'POST',
-      url: `${AUTH}/apple-login`,
+      url: `v1/${AUTH}/login/apple`,
       data: {...param, OS, version, fcmToken},
     })
     .then(response => {
@@ -213,16 +213,18 @@ export const axiosSocialLogin = async (param: {
   return await customAxios
     .request<StateWrapper<UserInfo>>({
       method: 'POST',
-      url: `v1/${AUTH}/login/${param.type}`,
+      url: `v1/${AUTH}/login/${param.type.toLowerCase()}`,
       headers: {
         Authorization: `Bearer ${param.token}`,
       },
       data: {fcmToken},
     })
     .then(response => {
+      console.log('response: ', response.data);
       return response.data;
     })
     .catch(error => {
+      console.log('Sibal error: ', error);
       handleAxiosError({
         error,
         errorMessage: '로그인에 실패했습니다\n잠시 후 다시 시도해주세요',
@@ -316,6 +318,7 @@ export const axiosSignUp = async (param: {
   fcmToken: string;
   agreedToPrivacyPolicy: boolean;
   agreedToServiceTerms: boolean;
+  appleUserId?: string;
 }) => {
   return await customAxios
     .request<StateWrapper<UserInfo>>({
@@ -325,6 +328,7 @@ export const axiosSignUp = async (param: {
     })
     .then(response => response.data)
     .catch(error => {
+      console.log('error: ', error);
       handleAxiosError({error, errorMessage: '회원가입에 실패했습니다'});
       return null;
     });

@@ -349,7 +349,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}
           title={'제보하려는 팝업의 카테고리를 설정해주세요'}
-          height={'60%'}>
+          height={'65%'}>
           <PopupCategoryModal
             visible={modalVisible}
             onClose={() => setModalVisible(false)}

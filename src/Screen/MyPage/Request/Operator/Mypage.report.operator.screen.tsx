@@ -5,7 +5,6 @@ import StepTwo from '../../../../Component/MyPage/Report/ReportStepTwo';
 import StepHeader from '../../../../Component/MyPage/Report/StepHeader';
 import StepThree from '../../../../Component/MyPage/Report/ReportStepThree';
 import {StyleProp, ViewStyle, Platform, Alert} from 'react-native';
-import {axiosMyPageOperatorReport} from '../../../../Axios/Mypage/mypage.post.axios';
 import {useOperatorReportStore} from './Mypage.report.operator.zustand';
 import {
   NavigationProp,

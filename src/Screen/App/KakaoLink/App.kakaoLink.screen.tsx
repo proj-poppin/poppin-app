@@ -9,6 +9,7 @@ import {
 } from 'src/Util';
 import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 import {useAppStore} from '../../../Zustand/App/app.zustand';
+import Config from 'react-native-config';
 // import {APP_LOGS} from 'src/Constant';
 
 export type KakaoLinkScreenProps = {
@@ -27,7 +28,7 @@ export type KakaoLinkScreenProps = {
  * @reference https://millo-l.github.io/ReactNative-kakao-deep-link/
  */
 export const kakaoLinkingOption: LinkingOptions<any> = {
-  prefixes: ['kakaob3da3a535b2de034b324fbc77be89bc5://'],
+  prefixes: [`${Config.KAKAO_API_KEY_WITH_KAKAO}://`],
   config: {screens: {KakaoLinkScreen: 'kakaolink'}},
 };
 

@@ -52,6 +52,9 @@ target 'PoppinProject' do
   pod 'GoogleUtilities', :modular_headers => true
   pod 'FirebaseCore', :modular_headers => true
 
+  # DateTimePicker SETTING
+  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
+
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.

@@ -164,27 +164,27 @@ export const useAppStore = create<AppStoreProps>((set, get) => ({
     const notyetTabSearchParams: PopupSearchParams = {
       operationStatus: OperationStatus.NOTYET,
       searchName: '',
-      filteringThreeCategories: '000',
+      filteringThreeCategories: '',
       order: PopupSortOrder.RECENTLY_OPENED,
-      filteringFourteenCategories: '00000000000000',
+      filteringFourteenCategories: '',
       page: 0,
       size: 10,
     };
     const operatingTabSearchParams: PopupSearchParams = {
       operationStatus: OperationStatus.OPERATING,
       searchName: '',
-      filteringThreeCategories: '000',
+      filteringThreeCategories: '',
       order: PopupSortOrder.RECENTLY_OPENED,
-      filteringFourteenCategories: '00000000000000',
+      filteringFourteenCategories: '',
       page: 0,
       size: 10,
     };
     const terminatedTabSearchParams: PopupSearchParams = {
       operationStatus: OperationStatus.TERMINATED,
       searchName: '',
-      filteringThreeCategories: '000',
+      filteringThreeCategories: '',
       order: PopupSortOrder.RECENTLY_OPENED,
-      filteringFourteenCategories: '00000000000000',
+      filteringFourteenCategories: '',
       page: 0,
       size: 10,
     };

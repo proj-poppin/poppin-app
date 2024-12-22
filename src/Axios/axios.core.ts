@@ -2,10 +2,10 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useUserStore} from '../Zustand/User/user.zustand';
-import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
 import {StateWrapper} from './wrapper/state_wrapper';
-import {axiosLogout, testFcmToken, UserInfo} from './Auth/auth.axios';
-import {handleAxiosError} from '../Util';
+import {testFcmToken, UserInfo} from './Auth/auth.axios';
+import {handleAxiosError} from 'src/Util';
 
 /**
  * axios 요청에 공통적으로 사용되는 설정들을 지정해둔 axios 요청 인스턴스입니다.
@@ -18,9 +18,8 @@ export interface CommonResponse<T> {
     message: string;
   };
 }
-
 const customAxios = axios.create({
-  baseURL: `http://3.36.136.115/api/`,
+  baseURL: `${Config.TEST_URL}`,
   timeout: 5000,
 });
 
@@ -52,7 +51,7 @@ export const axiosAutoLogin = async (
   try {
     const response = await customAxios.request<StateWrapper<UserInfo>>({
       method: 'POST',
-      url: `v1/auth/refresh`,
+      url: 'v1/auth/refresh',
       headers: {
         Authorization: `Bearer ${originalRefreshToken}`,
       },

@@ -7,6 +7,7 @@ import {themeColors} from '../Theme/theme';
 import {moderateScale} from 'src/Util';
 
 interface CommonTextFormFieldProps {
+  value?: string;
   onChangeText: (text: string) => void;
   placeholder: string;
   keyboardType?: KeyboardTypeOptions;
@@ -19,6 +20,7 @@ interface CommonTextFormFieldProps {
 }
 
 const CommonTextFormField: React.FC<CommonTextFormFieldProps> = ({
+  value,
   onChangeText,
   placeholder,
   keyboardType = 'default',
@@ -57,6 +59,7 @@ const CommonTextFormField: React.FC<CommonTextFormFieldProps> = ({
         </TimerContainer>
       )}
       <StyledTextInput
+        value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={themeColors().grey.main}

@@ -6,9 +6,9 @@ import {FastImageContainer} from '../Image/FastImage.component';
 import {useUserStore} from '../../Zustand/User/user.zustand';
 import {axiosGetSocialAccountStatus} from '../../Axios/User/user.get.axios';
 import styled from 'styled-components/native';
-import {login, me, KakaoUser, KakaoLoginToken} from '@react-native-kakao/user';
-
-export function KakaoLoginButton({
+import {GoogleSignin, User} from '@react-native-google-signin/google-signin';
+import {GetTokensResponse} from '@react-native-google-signin/google-signin/src/types';
+export function GoogleLoginButton({
   loggingIn,
   setLoggingIn,
   onLoginSucceed,
@@ -21,28 +21,28 @@ export function KakaoLoginButton({
   style?: StyleProp<ViewStyle>;
 }) {
   /** Handle Kakao Login */
-  async function handleKakaoLogin() {
-    let profile: KakaoUser | undefined;
-    let kakaoResponse: KakaoLoginToken | undefined;
+  async function handleGoogleLogin() {
+    let profile: User | null;
+    let googleResponse: GetTokensResponse | undefined;
     try {
-      kakaoResponse = await login();
-      profile = await me();
+      googleResponse = await GoogleSignin.signIn();
+      profile = await GoogleSignin.getCurrentUser();
     } catch (error) {
       console.log('Kakao Login Error!:', error);
       return showBlackToast({
         text1:
-          '카카오톡 계정 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.\n문제가 지속되는 경우, 고객센터로 문의해 주세요.',
+          '구글 계정 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.\n문제가 지속되는 경우, 고객센터로 문의해 주세요.',
       });
     }
     if (!profile) {
       return showBlackToast({
         text1:
-          '카카오톡 계정 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.\n문제가 지속되는 경우, 고객센터로 문의해 주세요.',
+          '구글 계정 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.\n문제가 지속되는 경우, 고객센터로 문의해 주세요.',
       });
     }
 
     const kakaoAccountStatus = await axiosGetSocialAccountStatus({
-      email: profile.email,
+      email: profile.user.email,
     });
 
     console.log('debug kakaoAccountStatus: ', kakaoAccountStatus);
@@ -50,10 +50,10 @@ export function KakaoLoginButton({
     if (kakaoAccountStatus === null) {
       return showBlackToast({text1: '카카오톡 계정 조회에 실패했습니다.'});
     } else if (kakaoAccountStatus.accountStatus === 'LOGIN') {
-      console.log(`kakaoaccessToken: ${kakaoResponse.accessToken}`);
+      console.log(`kakaoaccessToken: ${googleResponse?.accessToken}`);
       //* 1) 카카오톡 간편 로그인을 진행했던 경우
       const loginResult = await useUserStore.getState().kakaoLogin({
-        token: kakaoResponse.accessToken,
+        token: googleResponse?.accessToken!,
       });
       if (loginResult.success) {
         showBlackToast({text1: '카카오 간편 로그인 되었습니다.'});
@@ -65,7 +65,7 @@ export function KakaoLoginButton({
       }
     } else if (kakaoAccountStatus.accountStatus === 'SIGNUP') {
       //* 2) 카카오톡 간편 회원가입을 진행했던 경우
-      onSignupRequired({email: profile.email});
+      onSignupRequired({email: profile.user.email});
     } else if (kakaoAccountStatus.accountStatus === 'UNAVAILABLE') {
       //* 3) 카카오톡 계정 이메일로 이미 이메일 회원가입을 진행했던 경우
       return showBlackToast({text1: kakaoAccountStatus.errorMessage});
@@ -73,22 +73,22 @@ export function KakaoLoginButton({
   }
 
   /** Attempt to Login */
-  async function tryKakaoLogin() {
+  async function tryGoogleLogin() {
     setLoggingIn(true);
-    const result = await handleKakaoLogin();
+    const result = await handleGoogleLogin();
     setLoggingIn(false);
     return result;
   }
 
   return (
-    <TouchableContainer onPress={tryKakaoLogin}>
+    <TouchableContainer onPress={tryGoogleLogin}>
       <FastImageContainer
         style={{
           width: moderateScale(40),
           height: moderateScale(40),
           marginHorizontal: moderateScale(5),
         }}
-        source={require('src/Screen/Auth/Landing/Resource/login-kakao-button-circle.png')}
+        source={require('src/Screen/Auth/Landing/Resource/login-google-button-circle.png')}
       />
     </TouchableContainer>
   );

@@ -89,6 +89,7 @@ type UserStoreProps = {
     fcmToken: string;
     agreedToPrivacyPolicy: boolean;
     agreedToServiceTerms: boolean;
+    appleUserId?: string;
   }) => Promise<boolean>;
 
   /**
@@ -100,7 +101,9 @@ type UserStoreProps = {
     password: string;
   }) => Promise<{success: boolean}>;
 
-  kakaoLogin: (kakaoLoginParam: {email: string}) => Promise<{success: boolean}>;
+  naverLogin: (naverLoginParam: {token: string}) => Promise<{success: boolean}>;
+
+  kakaoLogin: (kakaoLoginParam: {token: string}) => Promise<{success: boolean}>;
 
   appleLogin: (appleLoginParam: {appleUserId: string}) => Promise<{
     success: boolean;
@@ -251,6 +254,8 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
       result.data.jwtToken.refreshToken,
     );
 
+    console.log('result.data: ', result.data);
+
     set({
       accessToken: result.data.jwtToken.accessToken,
       refreshToken: result.data.jwtToken.refreshToken,
@@ -277,8 +282,35 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
     return {success: true};
   },
 
-  kakaoLogin: async (kakaoLoginParam: {email: string}) => {
-    const loginResponse = await axiosKakaoLogin(kakaoLoginParam);
+  naverLogin: async (naverLoginParam: {token: string}) => {
+    const loginResponse = await axiosSocialLogin({
+      type: 'NAVER',
+      token: naverLoginParam.token,
+    });
+    if (loginResponse === null) {
+      return {success: false};
+    } else if (loginResponse.error?.code === '40024') {
+      showBlackToast({text1: '탈퇴한 계정입니다. 다시 가입해주세요.'});
+      return {success: false};
+    } else if (loginResponse.error?.code === '40005') {
+      showBlackToast({text1: '해당 이메일로 가입된 계정이 존재합니다.'});
+      return {success: false};
+    } else if (loginResponse.error?.code === '40026') {
+      showBlackToast({
+        text1: '해당 이메일로 가입된 소셜 계정이 존재합니다.',
+      });
+      return {success: false};
+    }
+    console.log('loginResponse@@@@@@@@@@@@@: ', loginResponse);
+    await useUserStore.getState().setLoggedInUserInfo(loginResponse);
+    return {success: true};
+  },
+
+  kakaoLogin: async (kakaoLoginParam: {token: string}) => {
+    const loginResponse = await axiosSocialLogin({
+      type: 'KAKAO',
+      token: kakaoLoginParam.token,
+    });
     if (loginResponse === null) {
       return {success: false};
     }

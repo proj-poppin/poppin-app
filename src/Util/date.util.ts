@@ -10,6 +10,25 @@ export function getCurrentISOTime() {
 }
 
 /**
+ * 현재 한국 시간을 Date 타입으로 반환합니다.
+ */
+const getToday = (): Date => {
+  return new Date();
+};
+
+/**
+ * 날짜를 계산하여 반환합니다.
+ */
+
+export const calculateDaysRemaining = (date: string): number => {
+  const today = getToday();
+  const targetDate = new Date(date);
+  const timeDiff = targetDate.getTime() - today.getTime();
+  const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+  return daysDiff;
+};
+
+/**
  * 인자로 받은 시간만큼 미래의 시간을 ISO 타입으로 반환합니다.
  * 기준 시간이 주어지지 않으면 현재 시간을 기준으로 합니다.
  * @author 도형
@@ -184,7 +203,9 @@ export function convertTimeToYYYYMMDDHHMM(time: string | Date) {
  *  */
 
 export const YYYYHHMMFormatDate = (dateString?: string) => {
-  if (!dateString) return '날짜 선택';
+  if (!dateString) {
+    return '날짜 선택';
+  }
   const date = new Date(dateString);
   return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(
     2,
@@ -198,7 +219,9 @@ export const YYYYHHMMFormatDate = (dateString?: string) => {
  *  */
 
 export const HHMMFormatTime = (timeString: string) => {
-  if (!timeString) return '시간 선택';
+  if (!timeString) {
+    return '시간 선택';
+  }
   const [hours, minutes] = timeString.split(':');
   const hour = parseInt(hours);
   const period = hour >= 12 ? 'PM' : 'AM';

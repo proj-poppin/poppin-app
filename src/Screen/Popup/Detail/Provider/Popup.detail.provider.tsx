@@ -5,6 +5,7 @@ import {axiosGetPopupById} from '../../../../Axios/Popup/popup.get.axios';
 import {usePopupStore} from '../../../../Zustand/Popup/popup.zustand';
 import {useAppStore} from '../../../../Zustand/App/app.zustand';
 import {axiosVisitPopupStore} from '../../../../Axios/Popup/popup.post.axios';
+import {useRecentPopups} from 'src/Util/local.util';
 
 export type VisitButtonType =
   | 'VISIT_NOW'
@@ -115,14 +116,15 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
 
   const [visiting, setVisiting] = useState<boolean>(false);
   const [randomizeOffset, setRandomizeOffset] = useState(Math.random());
+  const {saveRecentPopup} = useRecentPopups();
 
   const getRecentPopupDetail = async (popupId: string) => {
-    // 팝업 상세 정보 가져오기
     const popup = await axiosGetPopupById(popupId);
 
     if (popup === null) return;
     setPopupDetail(popup);
     usePopupStore.getState().spreadPopupUpdated(popup);
+    saveRecentPopup(popup); // 여기서 저장
   };
 
   const showPopupDetailModal = (type: PopupDetailModalType) => {

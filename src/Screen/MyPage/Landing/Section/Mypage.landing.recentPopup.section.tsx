@@ -1,72 +1,54 @@
 // Section/RecentPopupSection.tsx
-import React from 'react';
+import React, {useCallback} from 'react';
 import styled from 'styled-components/native';
 import {FlatList, Platform} from 'react-native';
 import {moderateScale} from '../../../../Util';
-
-interface PopupItem {
-  id: string;
-  title: string;
-  date: string;
-  imageUrl: string;
-}
+import {PopupSchema} from 'src/Schema/Popup/popup.schema';
+import {useRecentPopups} from 'src/Util/local.util';
+import {AppStackProps} from 'src/Navigator/App.stack.navigator';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 
 export const MyPageLandingRecentPopupSection = () => {
-  const recentMockPopups: PopupItem[] = [
-    {
-      id: '1',
-      title: '팝업 스토어 제빵왕 김탁구 힝구리 퐁퐁ㅍ옾옾오퐁...',
-      date: '01.01-02.02',
-      imageUrl:
-        'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/2/images.jpg',
-    },
-    {
-      id: '2',
-      title: '팝업 스토어 제빵왕 김탁구 힝구리 퐁퐁ㅍ옾옾오퐁...',
-      date: '01.01-02.02',
-      imageUrl:
-        'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/2/images.jpg',
-    },
-    {
-      id: '3',
-      title: '팝업 스토어 제빵왕 김탁구 힝구리 퐁퐁ㅍ옾옾오퐁...',
-      date: '01.01-02.02',
-      imageUrl:
-        'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/2/images.jpg',
-    },
-    {
-      id: '4',
-      title: '팝업 스토어 제빵왕 김탁구 힝구리 퐁퐁ㅍ옾옾오퐁...',
-      date: '01.01-02.02',
-      imageUrl:
-        'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/2/images.jpg',
-    },
-    {
-      id: '5',
-      title: '팝업 스토어 제빵왕 김탁구 힝구리 퐁퐁ㅍ옾옾오퐁...',
-      date: '01.01-02.02',
-      imageUrl:
-        'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/2/images.jpg',
-    },
-    {
-      id: '6',
-      title: '팝업 스토어 제빵왕 김탁구 힝구리 퐁퐁ㅍ옾옾오퐁...',
-      date: '01.01-02.02',
-      imageUrl:
-        'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/2/images.jpg',
-    },
-    // ... more items
-  ];
+  const {recentPopups, getRecentPopups} = useRecentPopups(); // getRecentPopups 함수 추가
+  const navigation = useNavigation<NavigationProp<AppStackProps>>();
 
-  const renderItem = ({item}: {item: PopupItem}) => (
-    <PopupItemContainer>
-      <PopupImage source={{uri: item.imageUrl}} />
+  // 화면이 포커스될 때마다 최근 팝업 목록을 새로 불러옴
+  useFocusEffect(
+    useCallback(() => {
+      getRecentPopups();
+    }, []),
+  );
+
+  // 날짜 포맷팅 함수
+  const formatDate = (openDate: string, closeDate: string) => {
+    const start = new Date(openDate);
+    const end = new Date(closeDate);
+    return `${start.getMonth() + 1}.${start.getDate()}-${
+      end.getMonth() + 1
+    }.${end.getDate()}`;
+  };
+
+  const renderItem = ({item}: {item: PopupSchema}) => (
+    <PopupItemContainer
+      onPress={() =>
+        navigation.navigate('PopupDetailScreen', {popupId: item.id})
+      }>
+      <PopupImage source={{uri: item.mainImageUrl}} />
       <PopupTextContainer>
-        <PopupTitle numberOfLines={1}>{item.title}</PopupTitle>
-        <PopupDate>{item.date}</PopupDate>
+        <PopupTitle numberOfLines={1}>{item.name}</PopupTitle>
+        <PopupDate>{formatDate(item.openDate, item.closeDate)}</PopupDate>
       </PopupTextContainer>
     </PopupItemContainer>
   );
+
+  // 최근 본 팝업이 없으면 섹션을 숨김
+  if (!recentPopups || recentPopups.length === 0) {
+    return null;
+  }
 
   return (
     <Container>
@@ -74,7 +56,7 @@ export const MyPageLandingRecentPopupSection = () => {
         <HeaderTitle>최근 본 팝업</HeaderTitle>
       </SectionHeader>
       <FlatList
-        data={recentMockPopups.slice(0, 10)} // 최대 10개로 제한
+        data={recentPopups}
         renderItem={renderItem}
         horizontal
         showsHorizontalScrollIndicator={false}

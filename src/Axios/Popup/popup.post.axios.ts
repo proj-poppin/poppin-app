@@ -91,7 +91,6 @@ export const axiosVisitPopupStore = async (popupId: string) => {
       data: {popupId},
     })
     .then(response => {
-      console.log('response@@@@@@@: ', response.data);
       return response.data;
     })
     .catch(error => {

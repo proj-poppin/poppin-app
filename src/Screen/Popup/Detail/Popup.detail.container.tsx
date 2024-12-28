@@ -127,7 +127,7 @@ export const PopupDetailContainer = ({
       <FlatList
         data={reviews}
         renderItem={RenderItem}
-        style={{flex: 1, backgroundColor: '#fff'}}
+        style={{flex: 1, backgroundColor: '#FFFFFF'}}
         contentContainerStyle={{paddingBottom: moderateScale(120)}}
         ListHeaderComponent={
           loading ? (
@@ -155,7 +155,8 @@ export const PopupDetailContainer = ({
       />
       <PopupDetailBottomButtonRowSection
         onRealTimePress={() => {}}
-        onVisitPress={onVisitPress}></PopupDetailBottomButtonRowSection>
+        onVisitPress={onVisitPress}
+      />
     </>
   );
 };

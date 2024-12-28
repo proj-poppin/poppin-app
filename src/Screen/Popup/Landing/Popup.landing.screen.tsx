@@ -29,7 +29,7 @@ import {EdgeInsets} from 'react-native-safe-area-context';
 import PopupLandingFilterModalContent from '../../../Component/PopupCategoryModal';
 import GradientButton from '../../../Component/Button/FilterSettingButton';
 import {BlackBackgroundModal} from '../../../Component/Modal';
-import PopupStoreCard from '../../../Component/Popup/Landing/PopupSearchCard';
+import PopupStoreCard from '../../../Component/Popup/Landing/PopupStoreCard';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 import CustomBottomSheet from '../../../Component/BottomSheet/CustomBottomSheet';

@@ -117,8 +117,6 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
   const [popupDetailModalProps, setPopupDetailModalProps] = useState<any>({});
   const [scrapping, setScrapping] = useState<boolean>(false);
 
-  console.log('scrapping@@@@@@@@@@@@@@@@@@@@@@:', scrapping);
-
   const [visiting, setVisiting] = useState<boolean>(false);
   const [randomizeOffset, setRandomizeOffset] = useState(Math.random());
 

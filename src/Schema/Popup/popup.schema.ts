@@ -87,6 +87,9 @@ export type PopupSchema = {
   /** 팝업스토어 운영 상태 */
   operationStatus: string;
 
+  // /** 팝업스토어 관심등록(스크랩) 생성일 */
+  interestCreatedAt?: string;
+
   /** 팝업스토어 대표 이미지 URL */
   mainImageUrl: string;
 

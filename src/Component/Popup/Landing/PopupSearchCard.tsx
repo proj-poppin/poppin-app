@@ -1,13 +1,13 @@
-import React from 'react';
-import {Image, Pressable, Text, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {Image, Text, TouchableOpacity} from 'react-native';
 import styled from 'styled-components/native';
-import {PopupSchema} from '../../../Schema/Popup/popup.schema';
-import {moderateScale} from '../../../Util';
-import StarFilledSvg from '../../../Resource/svg/star-filled-icon.svg';
-import StarOutlineSvg from '../../../Resource/svg/star-outline-icon.svg';
-import {usePopupStore} from '../../../Zustand/Popup/popup.zustand';
-import {usePopupDetailContext} from '../../../Screen/Popup/Detail/Provider/Popup.detail.provider';
-import {POP_UP_TYPES} from '../../findPopup/constants';
+import {PopupSchema} from 'src/Schema/Popup/popup.schema';
+import {moderateScale} from 'src/Util';
+import StarFilledSvg from 'src/Resource/svg/star-filled-icon.svg';
+import StarOutlineSvg from 'src/Resource/svg/star-outline-icon.svg';
+import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
+import {usePopupDetailContext} from 'src/Screen/Popup/Detail/Provider/Popup.detail.provider';
+import {POP_UP_TYPES} from 'src/Component/findPopup/constants';
 
 interface PopupStoreCardProps {
   item: PopupSchema;
@@ -50,6 +50,7 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
   item,
   onPress,
 }) => {
+  console.log('PopupStoreCard item:', item);
   const activeCategories = Object.entries(item.preferences.preferenceCategory)
     .filter(([key, value]) => value === true && key !== 'id')
     .map(([key]) => getFilterLabel(key));
@@ -62,10 +63,32 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
   const interestedPopupStores = usePopupStore(
     state => state.interestedPopupStores,
   );
-  const {scrapPopup, unScrapPopup, scrapping} = usePopupDetailContext();
+  const {scrapping, scrapPopup, unScrapPopup} = usePopupDetailContext();
+  const togglePopupScrap = usePopupStore(state => state.togglePopupScrap);
+
+  console.log('scrapping!!!!!: ', scrapping);
 
   const scrapped =
     interestedPopupStores?.some(popup => popup.id === item.id) ?? false;
+
+  const handleFavoritePress = async (e: any) => {
+    e.stopPropagation();
+    console.log('Scrapping state:', scrapping);
+
+    // if (isLoading) {
+    //   // scrapping 대신 isLoading 체크
+    //   return;
+    // }
+
+    try {
+      console.log('Calling togglePopupScrap with ID:', item.id);
+      const {updatedPopup} = await togglePopupScrap(item.id);
+      console.log('Updated popup:', updatedPopup);
+    } catch (error) {
+      console.error('Error toggling popup scrap:', error);
+    } finally {
+    }
+  };
 
   return (
     <CardContainer onPress={onPress}>
@@ -73,12 +96,8 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
       <DdayBadge>
         <DdayText>종료 D-{dday}</DdayText>
       </DdayBadge>
-      <FavoriteButton>
-        <Pressable
-          onPress={scrapped ? unScrapPopup : scrapPopup}
-          disabled={scrapping}>
-          {scrapped ? <StarFilledSvg /> : <StarOutlineSvg />}
-        </Pressable>
+      <FavoriteButton onPress={handleFavoritePress} disabled={scrapping}>
+        {scrapped ? <StarFilledSvg /> : <StarOutlineSvg />}
         {scrapping && <LoadingText>로딩중...</LoadingText>}
       </FavoriteButton>
       <CardContent>
@@ -137,12 +156,13 @@ const DdayText = styled.Text`
   color: white;
   font-size: ${moderateScale(10)}px;
 `;
-const FavoriteButton = styled.View`
+const FavoriteButton = styled(TouchableOpacity)`
   position: absolute;
   right: ${moderateScale(6)}px;
   background-color: ${({theme}) => theme.color.grey.white};
   border-radius: ${moderateScale(20)}px;
   padding: ${moderateScale(6)}px;
+  z-index: 1;
 `;
 const LoadingText = styled(Text)`
   font-size: ${moderateScale(10)}px;

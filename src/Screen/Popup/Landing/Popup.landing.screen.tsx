@@ -34,6 +34,7 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 import CustomBottomSheet from '../../../Component/BottomSheet/CustomBottomSheet';
 import PopupCategoryModal from '../../../Component/PopupCategoryModal';
+import {PopupDetailProvider} from '../Detail/Provider/Popup.detail.provider';
 
 interface SearchBarProps {
   isSearchMode: boolean;
@@ -183,13 +184,15 @@ const PopupListScreen: React.FC<PopupListScreenProps> = ({operationStatus}) => {
 
   const renderPopupItem = ({item}: {item: PopupSchema}) => (
     <View style={popupItemStyles.popupItemContainer}>
-      <PopupStoreCard
-        item={item}
-        key={item.id}
-        onPress={() => {
-          handlePressCard(item.id);
-        }}
-      />
+      <PopupDetailProvider>
+        <PopupStoreCard
+          item={item}
+          key={item.id}
+          onPress={() => {
+            handlePressCard(item.id);
+          }}
+        />
+      </PopupDetailProvider>
     </View>
   );
 

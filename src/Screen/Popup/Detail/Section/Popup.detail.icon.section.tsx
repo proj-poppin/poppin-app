@@ -21,6 +21,7 @@ const PopupDetailIconSection = () => {
     unScrapPopup,
     showPopupDetailModal,
   } = usePopupDetailContext();
+
   const interestedPopupStores = usePopupStore(
     state => state.interestedPopupStores,
   );

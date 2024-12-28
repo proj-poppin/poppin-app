@@ -1,10 +1,10 @@
 import React from 'react';
-import {BlankPopup, PopupSchema} from '../../../../Schema/Popup/popup.schema';
+import {BlankPopup, PopupSchema} from 'src/Schema/Popup/popup.schema';
 import {createContext, useContext, useState} from 'react';
-import {axiosGetPopupById} from '../../../../Axios/Popup/popup.get.axios';
-import {usePopupStore} from '../../../../Zustand/Popup/popup.zustand';
-import {useAppStore} from '../../../../Zustand/App/app.zustand';
-import {axiosVisitPopupStore} from '../../../../Axios/Popup/popup.post.axios';
+import {axiosGetPopupById} from 'src/Axios/Popup/popup.get.axios';
+import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
+import {useAppStore} from 'src/Zustand/App/app.zustand';
+import {axiosVisitPopupStore} from 'src/Axios/Popup/popup.post.axios';
 
 export type VisitButtonType =
   | 'VISIT_NOW'
@@ -19,6 +19,10 @@ export type PopupDetailModalType =
   | 'CLOSE' // 팝업 마감
   | 'ERROR_TRY_AGAIN' // 오류 발생, 재시도 요청
   | 'UNSCRAP'; // 스크랩 취소
+
+/**
+ * 팝업 상세 페이지에서 사용되는 상태값을 제공하는 Context Provider 입니다.
+ */
 
 type PopupDetailContextProp = {
   randomizeOffset: number;
@@ -113,6 +117,8 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
   const [popupDetailModalProps, setPopupDetailModalProps] = useState<any>({});
   const [scrapping, setScrapping] = useState<boolean>(false);
 
+  console.log('scrapping@@@@@@@@@@@@@@@@@@@@@@:', scrapping);
+
   const [visiting, setVisiting] = useState<boolean>(false);
   const [randomizeOffset, setRandomizeOffset] = useState(Math.random());
 
@@ -120,7 +126,9 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
     // 팝업 상세 정보 가져오기
     const popup = await axiosGetPopupById(popupId);
 
-    if (popup === null) return;
+    if (popup === null) {
+      return;
+    }
     setPopupDetail(popup);
     usePopupStore.getState().spreadPopupUpdated(popup);
   };
@@ -131,9 +139,19 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
   };
 
   const scrapPopup = async () => {
-    if (!useAppStore.getState().checkLoginAndShowModal('POPUP_SCRAP')) return;
+    console.log('현재 scrapping 상태:', scrapping);
+    console.log('scrapPopup called, popupDetail.id:', popupDetail.id);
+    console.log('scrapPopup called, scrapping:', scrapping);
+    if (!useAppStore.getState().checkLoginAndShowModal('POPUP_SCRAP')) {
+      return;
+    }
 
-    if (scrapping) return;
+    if (scrapping) {
+      return;
+    }
+
+    console.log('scrapPopup called, scrapping:', scrapping);
+
     setScrapping(true);
     const {updatedPopup} = await usePopupStore
       .getState()
@@ -145,7 +163,9 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
   };
   const unScrapPopup = async () => {
     console.log('unScrapPopup');
-    if (scrapping) return false;
+    if (scrapping) {
+      return false;
+    }
 
     setScrapping(true);
     const {updatedPopup} = await usePopupStore

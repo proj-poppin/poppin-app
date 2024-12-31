@@ -80,18 +80,25 @@ export const PopupLikesLandingScreen = () => {
   }
 
   // Filter and Sort Logic
-  const filteredAndSortedPopups =
-    interestedPopupStores ??
-    []
-      .filter((popup: PopupSchema) => popup.operationStatus === selectedStatus)
-      .sort((a: PopupSchema, b: PopupSchema) => {
+  const filteredAndSortedPopups = (interestedPopupStores || [])
+    .filter((popup: PopupSchema) => popup.operationStatus === selectedStatus)
+    .sort((a: PopupSchema, b: PopupSchema) => {
+      if (sortingOption === SortingOptions.INTEREST_DATE) {
+        // 저장순은 내림차순
+        return (
+          new Date(b[sortingOption]).getTime() -
+          new Date(a[sortingOption]).getTime()
+        );
+      } else {
+        // 오픈일순 또는 마감일순은 오름차순
         const isAscending = sortingOption === SortingOptions.OPEN_DATE;
         return isAscending
           ? new Date(a[sortingOption]).getTime() -
               new Date(b[sortingOption]).getTime()
           : new Date(b[sortingOption]).getTime() -
               new Date(a[sortingOption]).getTime();
-      });
+      }
+    });
 
   return (
     <ScreenContainer>

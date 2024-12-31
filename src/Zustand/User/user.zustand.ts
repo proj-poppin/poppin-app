@@ -46,6 +46,7 @@ import {usePopupStore} from '../Popup/popup.zustand';
 import {PreferencePopupStore} from '../../Schema/Preference/preferencePopupStore';
 import {PreferenceCategory} from '../../Schema/Preference/preferenceCategory.schema';
 import {PreferenceCompanion} from '../../Schema/Preference/preferenceCompanion.schema';
+import {useAppStore} from '../App/app.zustand';
 
 type UserStoreProps = {
   accessToken: string;
@@ -56,6 +57,7 @@ type UserStoreProps = {
   userNotificationSetting: UserNotificationSettingSchema;
   userPreferenceSetting: PreferenceSchema;
   userRelation: UserRelationSchema;
+  userActivities: UserActivities;
 
   // Preference 설정 상태
   preferencePopupStore: PreferencePopupStore;
@@ -190,6 +192,16 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
   userNotificationSetting: BlankUserNotificationSetting,
   userPreferenceSetting: BlankPreference,
   userRelation: BlankUserRelation,
+  userActivities: {
+    popupActivities: {
+      scrappedPopups: [],
+      visitedPopups: [],
+    },
+    notifications: {
+      POPUP: [],
+      NOTICE: [],
+    },
+  },
 
   // 각 페이지별 Preference 상태 초기화
   preferencePopupStore: BlankPreference.preferencePopupStore,
@@ -439,9 +451,16 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
       userNotice: loginResponse.data.userNotice,
       userNotificationSetting: loginResponse.data.userNotificationSetting,
       userPreferenceSetting: loginResponse.data.userPreferenceSetting,
+      userActivities: loginResponse.data.userActivities,
       accessToken: loginResponse.data.jwtToken.accessToken,
       refreshToken: loginResponse.data.jwtToken.refreshToken,
     });
+
+    // 관심 팝업 정보가 종속되어 있으므로 로그인 시점에 부트스트랩 재호출(로그아웃 상태에서, 로그인 시 관심 팝업 정보를 불러오기 위함)
+    const loadSuccess = await useAppStore.getState().loadInitialData();
+    if (!loadSuccess) {
+      console.error('Failed to reload initial data after login.');
+    }
   },
 
   setNonMemberUserInfo: async () => {
@@ -449,6 +468,9 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
   },
 
   setUserActivities: (userActivities: UserActivities) => {
+    usePopupStore
+      .getState()
+      .setPopupStoreActivities(userActivities.popupActivities);
     useNotificationStore
       .getState()
       .setNotifications(userActivities.notifications);

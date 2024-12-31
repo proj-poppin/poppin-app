@@ -1,5 +1,10 @@
 import React, {useState} from 'react';
-import {Image, Text, TouchableOpacity} from 'react-native';
+import {
+  GestureResponderEvent,
+  Image,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import styled from 'styled-components/native';
 import {PopupSchema} from 'src/Schema/Popup/popup.schema';
 import {calculateDaysRemaining, moderateScale} from 'src/Util';
@@ -55,8 +60,10 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
 }) => {
   const remainingDays = calculateDaysRemaining(item.closeDate);
   const status = item.operationStatus;
-  console.log('PopupStoreCard item:', item);
-  const [isLoading, setIsLoading] = useState(false);
+  const loadingStates = usePopupStore(state => state.loadingStates);
+
+  // 전체 로딩 중인지 확인(A 팝업 관심팝업 추가/삭제 로딩중일때 B 팝업 관심팝업 추가/삭제 버튼 적용 막기 위함. 병렬 요청 방지)
+  const isAnyLoading = Object.values(loadingStates).some(loading => loading);
 
   const activeCategories = Object.entries(item.preferences.preferenceCategory)
     .filter(([key, value]) => value === true && key !== 'id')
@@ -71,27 +78,24 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
     state => state.interestedPopupStores,
   );
   const {scrapping, scrapPopup, unScrapPopup} = usePopupDetailContext();
-  const togglePopupScrap = usePopupStore(state => state.togglePopupScrap);
-
-  console.log('scrapping!!!!!: ', scrapping);
 
   const scrapped =
     interestedPopupStores?.some(popup => popup.id === item.id) ?? false;
 
-  const handleFavoritePress = async (e: any) => {
-    e.stopPropagation();
-    console.log('Scrapping state:', scrapping);
+  const handleFavoritePress = async (
+    event: GestureResponderEvent,
+    popupId: string,
+  ) => {
+    event.persist(); // Synthetic Event를 유지
+    const {setLoadingState, togglePopupScrap} = usePopupStore.getState();
 
-    setIsLoading(true); // Set loading to true
-
+    setLoadingState(popupId, true);
     try {
-      console.log('Calling togglePopupScrap with ID:', item.id);
-      const {updatedPopup} = await togglePopupScrap(item.id);
-      console.log('Updated popup:', updatedPopup);
+      await togglePopupScrap(popupId);
     } catch (error) {
-      console.error('Error toggling popup scrap:', error);
+      console.error(`Error toggling scrap for popup ${popupId}:`, error);
     } finally {
-      setIsLoading(false); // Set loading to false
+      setLoadingState(popupId, false);
     }
   };
 
@@ -106,11 +110,11 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
       )}
 
       <FavoriteButton
-        onPress={handleFavoritePress}
-        disabled={scrapping || isLoading}>
+        onPress={event => handleFavoritePress(event, item.id)}
+        disabled={scrapping || isAnyLoading}>
         {scrapped ? <StarFilledSvg /> : <StarOutlineSvg />}
       </FavoriteButton>
-      {isLoading && <LoadingText>로딩중...</LoadingText>}
+      {loadingStates[item.id] && <LoadingText>로딩중...</LoadingText>}
 
       <CardContent>
         {isInterestPopupCard && (

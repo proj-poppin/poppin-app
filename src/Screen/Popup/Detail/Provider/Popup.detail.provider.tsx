@@ -119,9 +119,9 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
 
   const [visiting, setVisiting] = useState<boolean>(false);
   const [randomizeOffset, setRandomizeOffset] = useState(Math.random());
+  const {saveRecentPopup} = useRecentPopups();
 
   const getRecentPopupDetail = async (popupId: string) => {
-    // 팝업 상세 정보 가져오기
     const popup = await axiosGetPopupById(popupId);
 
     if (popup === null) {
@@ -129,6 +129,7 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
     }
     setPopupDetail(popup);
     usePopupStore.getState().spreadPopupUpdated(popup);
+    saveRecentPopup(popup); // 여기서 저장
   };
 
   const showPopupDetailModal = (type: PopupDetailModalType) => {

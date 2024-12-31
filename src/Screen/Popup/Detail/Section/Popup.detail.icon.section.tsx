@@ -13,23 +13,31 @@ import {useUserStore} from '../../../../Zustand/User/user.zustand';
 import {usePopupStore} from '../../../../Zustand/Popup/popup.zustand';
 
 const PopupDetailIconSection = () => {
-  const user = useUserStore(state => state.user);
-  const {
-    popupDetail,
-    scrapping,
-    scrapPopup,
-    unScrapPopup,
-    showPopupDetailModal,
-  } = usePopupDetailContext();
+  const {popupDetail, scrapping, scrapPopup, unScrapPopup} =
+    usePopupDetailContext();
+
   const interestedPopupStores = usePopupStore(
     state => state.interestedPopupStores,
   );
+  const loadingStates = usePopupStore(state => state.loadingStates);
+  const setLoadingState = usePopupStore(state => state.setLoadingState);
 
   const scrapped =
     interestedPopupStores?.some(popup => popup.id === popupDetail.id) ?? false;
 
-  const onPressUnScrap = () => {
-    unScrapPopup();
+  const handleFavoritePress = async () => {
+    setLoadingState(popupDetail.id, true); // 로딩 상태 시작
+    try {
+      if (scrapped) {
+        await unScrapPopup();
+      } else {
+        await scrapPopup();
+      }
+    } catch (error) {
+      console.error(`Error toggling scrap for popup ${popupDetail.id}:`, error);
+    } finally {
+      setLoadingState(popupDetail.id, false); // 로딩 상태 종료
+    }
   };
 
   const handleOpenLink = (link: string) => {
@@ -37,8 +45,13 @@ const PopupDetailIconSection = () => {
   };
 
   const handleShare = () => {
-    // Sharing logic can be implemented here
+    // 공유 로직 추가
+    console.log('Sharing popup details');
   };
+
+  const isLoading = loadingStates[popupDetail.id] ?? false;
+
+  console.log('fucking loading Id:', loadingStates[popupDetail.id]);
 
   return (
     <IconSectionContainer>
@@ -65,11 +78,11 @@ const PopupDetailIconSection = () => {
         <RightIconsContainer>
           <FavoriteButton>
             <Pressable
-              onPress={scrapped ? onPressUnScrap : scrapPopup}
-              disabled={scrapping}>
+              onPress={handleFavoritePress}
+              disabled={scrapping || isLoading}>
               {scrapped ? <StarFilledSvg /> : <StarOutlineSvg />}
             </Pressable>
-            {scrapping && <LoadingText>로딩중...</LoadingText>}
+            {(isLoading || scrapping) && <LoadingText>로딩중...</LoadingText>}
           </FavoriteButton>
           <Pressable onPress={handleShare}>
             <ShareSvg style={{marginLeft: 20}} />

@@ -6,6 +6,9 @@ import {useUserStore} from '../Zustand/User/user.zustand';
 import {StateWrapper} from './wrapper/state_wrapper';
 import {testFcmToken, UserInfo} from './Auth/auth.axios';
 import {handleAxiosError} from 'src/Util';
+import {logger} from 'react-native-logs';
+
+const log = logger.createLogger();
 
 /**
  * axios 요청에 공통적으로 사용되는 설정들을 지정해둔 axios 요청 인스턴스입니다.
@@ -29,15 +32,15 @@ customAxios.interceptors.request.use(config => {
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
-  console.log('Request Details:');
-  console.log(`Endpoint: ${config.baseURL}${config.url}`);
-  console.log(`Method: ${config.method?.toUpperCase()}`);
-  console.log('Headers:', config.headers);
-  if (config.method === 'get') {
-    console.log('Params:', config.params);
-  } else {
-    console.log('Body:', config.data);
-  }
+  // console.log('Request Details:');
+  // console.log(`Endpoint: ${config.baseURL}${config.url}`);
+  // console.log(`Method: ${config.method?.toUpperCase()}`);
+  // console.log('Headers:', config.headers);
+  // if (config.method === 'get') {
+  //   console.log('Params:', config.params);
+  // } else {
+  //   console.log('Body:', config.data);
+  // }
 
   return config;
 });
@@ -74,7 +77,17 @@ export const axiosAutoLogin = async (
 };
 // 응답 인터셉터: 오류 발생 시 처리 로직
 customAxios.interceptors.response.use(
-  response => response,
+  response => {
+    // 성공 응답 로그 출력
+    log.info('Response Details:', {
+      url: `${response.config.baseURL}${response.config.url}`,
+      method: response.config.method?.toUpperCase(),
+      status: response.status,
+      data: response.data,
+    });
+    return response;
+  },
+
   async error => {
     const originalRequest = error.config;
 

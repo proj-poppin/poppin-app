@@ -1,17 +1,24 @@
-import React from 'react';
-import {Image, Pressable, Text, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {
+  GestureResponderEvent,
+  Image,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import styled from 'styled-components/native';
-import {PopupSchema} from '../../../Schema/Popup/popup.schema';
-import {moderateScale} from '../../../Util';
-import StarFilledSvg from '../../../Resource/svg/star-filled-icon.svg';
-import StarOutlineSvg from '../../../Resource/svg/star-outline-icon.svg';
-import {usePopupStore} from '../../../Zustand/Popup/popup.zustand';
-import {usePopupDetailContext} from '../../../Screen/Popup/Detail/Provider/Popup.detail.provider';
-import {POP_UP_TYPES} from '../../findPopup/constants';
+import {PopupSchema} from 'src/Schema/Popup/popup.schema';
+import {calculateDaysRemaining, moderateScale} from 'src/Util';
+import StarFilledSvg from 'src/Resource/svg/star-filled-icon.svg';
+import StarOutlineSvg from 'src/Resource/svg/star-outline-icon.svg';
+import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
+import {usePopupDetailContext} from 'src/Screen/Popup/Detail/Provider/Popup.detail.provider';
+import {POP_UP_TYPES} from 'src/Component/findPopup/constants';
+import {themeColors} from '../../../Theme/theme';
 
 interface PopupStoreCardProps {
   item: PopupSchema;
   onPress?: () => void;
+  isInterestPopupCard?: boolean;
 }
 
 export type TFilter = {
@@ -49,7 +56,15 @@ const calculateDday = (dateString: string): string => {
 export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
   item,
   onPress,
+  isInterestPopupCard = false,
 }) => {
+  const remainingDays = calculateDaysRemaining(item.closeDate);
+  const status = item.operationStatus;
+  const loadingStates = usePopupStore(state => state.loadingStates);
+
+  // 전체 로딩 중인지 확인(A 팝업 관심팝업 추가/삭제 로딩중일때 B 팝업 관심팝업 추가/삭제 버튼 적용 막기 위함. 병렬 요청 방지)
+  const isAnyLoading = Object.values(loadingStates).some(loading => loading);
+
   const activeCategories = Object.entries(item.preferences.preferenceCategory)
     .filter(([key, value]) => value === true && key !== 'id')
     .map(([key]) => getFilterLabel(key));
@@ -62,26 +77,59 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
   const interestedPopupStores = usePopupStore(
     state => state.interestedPopupStores,
   );
-  const {scrapPopup, unScrapPopup, scrapping} = usePopupDetailContext();
+  const {scrapping, scrapPopup, unScrapPopup} = usePopupDetailContext();
 
   const scrapped =
     interestedPopupStores?.some(popup => popup.id === item.id) ?? false;
 
+  const handleFavoritePress = async (
+    event: GestureResponderEvent,
+    popupId: string,
+  ) => {
+    event.persist(); // Synthetic Event를 유지
+    const {setLoadingState, togglePopupScrap} = usePopupStore.getState();
+
+    setLoadingState(popupId, true);
+    try {
+      await togglePopupScrap(popupId);
+    } catch (error) {
+      console.error(`Error toggling scrap for popup ${popupId}:`, error);
+    } finally {
+      setLoadingState(popupId, false);
+    }
+  };
+
   return (
     <CardContainer onPress={onPress}>
       <CardImage source={{uri: item.mainImageUrl}} resizeMode="cover" />
-      <DdayBadge>
-        <DdayText>종료 D-{dday}</DdayText>
-      </DdayBadge>
-      <FavoriteButton>
-        <Pressable
-          onPress={scrapped ? unScrapPopup : scrapPopup}
-          disabled={scrapping}>
-          {scrapped ? <StarFilledSvg /> : <StarOutlineSvg />}
-        </Pressable>
-        {scrapping && <LoadingText>로딩중...</LoadingText>}
+
+      {!isInterestPopupCard && (
+        <DdayBadge>
+          <DdayText>종료 D-{dday}</DdayText>
+        </DdayBadge>
+      )}
+
+      <FavoriteButton
+        onPress={event => handleFavoritePress(event, item.id)}
+        disabled={scrapping || isAnyLoading}>
+        {scrapped ? <StarFilledSvg /> : <StarOutlineSvg />}
       </FavoriteButton>
+      {loadingStates[item.id] && <LoadingText>로딩중...</LoadingText>}
+
       <CardContent>
+        {isInterestPopupCard && (
+          <StatusContainer>
+            <StatusText>
+              {status === 'OPERATING'
+                ? '운영 중'
+                : status === 'TERMINATED'
+                ? '팝업 종료'
+                : status === 'NOTYET' && remainingDays !== undefined
+                ? `오픈 D-${remainingDays}`
+                : ''}
+            </StatusText>
+          </StatusContainer>
+        )}
         <InfoContainer>
           <StoreName>{item.name}</StoreName>
           <StoreLocation>{item.address}</StoreLocation>
@@ -89,19 +137,20 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
             {formatDate(item.openDate)} ~ {formatDate(item.closeDate)}
           </StoreDate>
         </InfoContainer>
-
-        <TagsContainer>
-          {activeCategories.map(label => (
-            <CategoryItem key={label}>
-              <TagText>{label}</TagText>
-            </CategoryItem>
-          ))}
-          {activeTypes.map(label => (
-            <TagItem key={label}>
-              <TagText>{label}</TagText>
-            </TagItem>
-          ))}
-        </TagsContainer>
+        {!isInterestPopupCard && (
+          <TagsContainer>
+            {activeCategories.map(label => (
+              <CategoryItem key={label}>
+                <TagText>{label}</TagText>
+              </CategoryItem>
+            ))}
+            {activeTypes.map(label => (
+              <TagItem key={label}>
+                <TagText>{label}</TagText>
+              </TagItem>
+            ))}
+          </TagsContainer>
+        )}
       </CardContent>
     </CardContainer>
   );
@@ -137,20 +186,22 @@ const DdayText = styled.Text`
   color: white;
   font-size: ${moderateScale(10)}px;
 `;
-const FavoriteButton = styled.View`
+const FavoriteButton = styled(TouchableOpacity)`
   position: absolute;
   right: ${moderateScale(6)}px;
   background-color: ${({theme}) => theme.color.grey.white};
   border-radius: ${moderateScale(20)}px;
-  padding: ${moderateScale(6)}px;
+  padding: ${moderateScale(2)}px;
+  z-index: 1;
 `;
+
 const LoadingText = styled(Text)`
   font-size: ${moderateScale(10)}px;
   position: absolute;
   color: ${({theme}) => theme.color.blue.main};
-  margin-left: ${moderateScale(55)}px;
-  width: ${moderateScale(35)}px;
-  top: ${moderateScale(30)}px;
+  margin-left: ${moderateScale(310)}px;
+  width: ${moderateScale(40)}px;
+  top: ${moderateScale(35)}px;
 `;
 const CardContent = styled.View`
   padding: ${moderateScale(4)}px ${moderateScale(16)}px;
@@ -201,6 +252,23 @@ const TagItem = styled.View`
 const TagText = styled.Text`
   font-size: ${moderateScale(10)}px;
   color: ${({theme}) => theme.color.grey.black};
+`;
+
+const StatusContainer = styled.View`
+  background-color: ${themeColors().purple.mild};
+  width: ${moderateScale(60)}px;
+  height: ${moderateScale(24)}px;
+  border-radius: ${moderateScale(10)}px;
+  padding: ${moderateScale(6)}px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: ${moderateScale(12)}px;
+`;
+
+const StatusText = styled.Text`
+  color: #000;
+  font-size: ${moderateScale(12)}px;
+  font-weight: bold;
 `;
 
 export default PopupStoreCard;

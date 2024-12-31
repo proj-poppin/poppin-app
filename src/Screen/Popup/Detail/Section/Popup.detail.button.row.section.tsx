@@ -1,7 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Pressable, GestureResponderEvent} from 'react-native';
 import SvgWithNameBoxLabel from 'src/Component/SvgWithNameBoxLabel';
-import RealTimeToolTip from 'src/Resource/png/real-time-visitors-alert-tooltip.png';
 import QuestionIcon from 'src/Resource/svg/question.svg';
 import {moderateScale} from 'src/Util';
 import styled from 'styled-components/native';
@@ -21,21 +19,22 @@ const PopupDetailBottomButtonRowSection: React.FC<
   const toggleTooltip = () => setTooltipVisible(prev => !prev);
 
   return (
-    <View style={styles.bottomBar}>
+    <BottomBar>
       <RowSection>
         {/* 실시간 방문자 수 버튼 */}
-        <Pressable
+        <VisitorButton
           onPress={() => {
             toggleTooltip();
             onRealTimePress();
-          }}
-          style={styles.visitorButton}>
+          }}>
           <RowContainer>
-            <QuestionIcon style={styles.icon} />
+            <QuestionIcon
+              style={{marginRight: moderateScale(5), transform: [{scale: 0.7}]}}
+            />
             <LabelText>실시간 방문자 수</LabelText>
             <CountText>12명</CountText>
           </RowContainer>
-        </Pressable>
+        </VisitorButton>
 
         {isTooltipVisible && (
           <TooltipContainer>
@@ -47,9 +46,8 @@ const PopupDetailBottomButtonRowSection: React.FC<
           </TooltipContainer>
         )}
 
-        <View style={{width: moderateScale(10)}} />
-
         {/* 방문하기 버튼 */}
+        <Spacer />
         <SvgWithNameBoxLabel
           height={moderateScale(50)}
           width={moderateScale(175)}
@@ -59,17 +57,42 @@ const PopupDetailBottomButtonRowSection: React.FC<
           isWithoutBorder={false}
         />
       </RowSection>
-    </View>
+    </BottomBar>
   );
 };
 
 export default PopupDetailBottomButtonRowSection;
 
 // Styled Components
+const BottomBar = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  background-color: white;
+  border-radius: ${moderateScale(25)}px;
+  border-top-width: 1px;
+  border-top-color: white;
+  padding: 0;
+  position: absolute;
+  bottom: 0;
+`;
+
 const RowSection = styled.View`
   flex-direction: row;
   align-items: center;
   margin-top: ${moderateScale(10)}px;
+`;
+
+const VisitorButton = styled.Pressable`
+  width: ${moderateScale(175)}px;
+  height: ${moderateScale(50)}px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px;
+  border-width: 1px;
+  border-color: ${themeColors().grey.mild};
+  background-color: white;
 `;
 
 const RowContainer = styled.View`
@@ -97,35 +120,6 @@ const TooltipContainer = styled.View`
   z-index: 10;
 `;
 
-const styles = StyleSheet.create({
-  bottomBar: {
-    position: 'absolute',
-    bottom: 0,
-    flexDirection: 'row',
-    borderTopLeftRadius: moderateScale(20),
-    borderTopRightRadius: moderateScale(20),
-    width: '100%',
-    height: moderateScale(70),
-    backgroundColor: 'white',
-    borderTopWidth: 1,
-    borderTopColor: 'white',
-    padding: 10,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: -2},
-    shadowOpacity: 0.1,
-  },
-  visitorButton: {
-    width: moderateScale(175),
-    height: moderateScale(50),
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 30,
-    borderWidth: 1,
-    borderColor: themeColors().grey.mild,
-    backgroundColor: 'white',
-  },
-  icon: {
-    marginRight: moderateScale(5),
-    transform: [{scale: 0.7}],
-  },
-});
+const Spacer = styled.View`
+  width: ${moderateScale(10)}px;
+`;

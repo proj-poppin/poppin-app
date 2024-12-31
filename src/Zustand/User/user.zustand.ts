@@ -46,6 +46,7 @@ import {usePopupStore} from '../Popup/popup.zustand';
 import {PreferencePopupStore} from '../../Schema/Preference/preferencePopupStore';
 import {PreferenceCategory} from '../../Schema/Preference/preferenceCategory.schema';
 import {PreferenceCompanion} from '../../Schema/Preference/preferenceCompanion.schema';
+import {useAppStore} from '../App/app.zustand';
 
 type UserStoreProps = {
   accessToken: string;
@@ -56,6 +57,7 @@ type UserStoreProps = {
   userNotificationSetting: UserNotificationSettingSchema;
   userPreferenceSetting: PreferenceSchema;
   userRelation: UserRelationSchema;
+  userActivities: UserActivities;
 
   // Preference 설정 상태
   preferencePopupStore: PreferencePopupStore;
@@ -99,6 +101,10 @@ type UserStoreProps = {
   emailLogin: (emailLoginParam: {
     email: string;
     password: string;
+  }) => Promise<{success: boolean}>;
+
+  googleLogin: (googleLoginParam: {
+    token: string;
   }) => Promise<{success: boolean}>;
 
   naverLogin: (naverLoginParam: {token: string}) => Promise<{success: boolean}>;
@@ -186,6 +192,16 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
   userNotificationSetting: BlankUserNotificationSetting,
   userPreferenceSetting: BlankPreference,
   userRelation: BlankUserRelation,
+  userActivities: {
+    popupActivities: {
+      scrappedPopups: [],
+      visitedPopups: [],
+    },
+    notifications: {
+      POPUP: [],
+      NOTICE: [],
+    },
+  },
 
   // 각 페이지별 Preference 상태 초기화
   preferencePopupStore: BlankPreference.preferencePopupStore,
@@ -242,19 +258,40 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
     const result = await axiosSignUp(param);
 
     if (result === null) {
+      console.log('result: ', result);
+      showBlackToast({text1: '회원가입에 실패했습니다. 다시 시도해주세요.'});
+      return false;
+    }
+
+    if (result.error?.code === '40005') {
+      showBlackToast({text1: '해당 이메일로 가입된 계정이 존재합니다.'});
+      return false;
+    }
+
+    if (result.error?.code === '40026') {
+      showBlackToast({text1: '해당 이메일로 가입된 소셜 계정이 존재합니다.'});
+      return false;
+    }
+
+    if (result.error?.code === '40024') {
+      showBlackToast({text1: '탈퇴한 유저는 30일 동안 재가입할 수 없습니다.'});
+      return false;
+    }
+
+    if (result.error?.code === '40031') {
+      showBlackToast({text1: '중복된 FCM 토큰입니다.'});
       return false;
     }
 
     if (param.accountType === 'DEFAULT') {
       await setStorage('EMAIL', result.data.user.email);
     }
+
     await setEncryptedStorage('ACCESS_TOKEN', result.data.jwtToken.accessToken);
     await setEncryptedStorage(
       'REFRESH_TOKEN',
       result.data.jwtToken.refreshToken,
     );
-
-    console.log('result.data: ', result.data);
 
     set({
       accessToken: result.data.jwtToken.accessToken,
@@ -269,9 +306,9 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
     get().setUserActivities(result.data.userActivities);
     get().setFirebaseTopicSubscription(result.data.userNotificationSetting);
 
+    showBlackToast({text1: '회원가입이 완료되었습니다!'});
     return true;
   },
-
   emailLogin: async (emailLoginParam: {email: string; password: string}) => {
     const loginResponse = await axiosLoginWithEmailPassword(emailLoginParam);
     if (loginResponse === null) {
@@ -279,6 +316,32 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
     }
     await useUserStore.getState().setLoggedInUserInfo(loginResponse);
 
+    return {success: true};
+  },
+
+  googleLogin: async (googleLoginParam: {token: string}) => {
+    const loginResponse = await axiosSocialLogin({
+      type: 'GOOGLE',
+      token: googleLoginParam.token,
+    });
+    if (loginResponse === null) {
+      return {success: false};
+    } else if (loginResponse.error?.code === '40024') {
+      showBlackToast({text1: '탈퇴한 계정입니다. 다시 가입해주세요.'});
+      return {success: false};
+    } else if (loginResponse.error?.code === '40005') {
+      showBlackToast({text1: '해당 이메일로 가입된 계정이 존재합니다.'});
+      return {success: false};
+    } else if (loginResponse.error?.code === '40031') {
+      showBlackToast({text1: '중복된 FCM 토큰입니다.'});
+      return {success: false};
+    } else if (loginResponse.error?.code === '40026') {
+      showBlackToast({
+        text1: '해당 이메일로 가입된 소셜 계정이 존재합니다.',
+      });
+      return {success: false};
+    }
+    await useUserStore.getState().setLoggedInUserInfo(loginResponse);
     return {success: true};
   },
 
@@ -295,13 +358,15 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
     } else if (loginResponse.error?.code === '40005') {
       showBlackToast({text1: '해당 이메일로 가입된 계정이 존재합니다.'});
       return {success: false};
+    } else if (loginResponse.error?.code === '40031') {
+      showBlackToast({text1: '중복된 FCM 토큰입니다.'});
+      return {success: false};
     } else if (loginResponse.error?.code === '40026') {
       showBlackToast({
         text1: '해당 이메일로 가입된 소셜 계정이 존재합니다.',
       });
       return {success: false};
     }
-    console.log('loginResponse@@@@@@@@@@@@@: ', loginResponse);
     await useUserStore.getState().setLoggedInUserInfo(loginResponse);
     return {success: true};
   },
@@ -313,6 +378,20 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
     });
     if (loginResponse === null) {
       return {success: false};
+    } else if (loginResponse.error?.code === '40024') {
+      showBlackToast({text1: '탈퇴한 계정입니다. 다시 가입해주세요.'});
+      return {success: false};
+    } else if (loginResponse.error?.code === '40005') {
+      showBlackToast({text1: '해당 이메일로 가입된 계정이 존재합니다.'});
+      return {success: false};
+    } else if (loginResponse.error?.code === '40031') {
+      showBlackToast({text1: '중복된 FCM 토큰입니다.'});
+      return {success: false};
+    } else if (loginResponse.error?.code === '40026') {
+      showBlackToast({
+        text1: '해당 이메일로 가입된 소셜 계정이 존재합니다.',
+      });
+      return {success: false};
     }
     await useUserStore.getState().setLoggedInUserInfo(loginResponse);
     return {success: true};
@@ -321,6 +400,20 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
   appleLogin: async (appleLoginParam: {appleUserId: string}) => {
     const loginResponse = await axiosAppleLogin(appleLoginParam);
     if (loginResponse === null) {
+      return {success: false};
+    } else if (loginResponse.error?.code === '40024') {
+      showBlackToast({text1: '탈퇴한 계정입니다. 다시 가입해주세요.'});
+      return {success: false};
+    } else if (loginResponse.error?.code === '40005') {
+      showBlackToast({text1: '해당 이메일로 가입된 계정이 존재합니다.'});
+      return {success: false};
+    } else if (loginResponse.error?.code === '40031') {
+      showBlackToast({text1: '중복된 FCM 토큰입니다.'});
+      return {success: false};
+    } else if (loginResponse.error?.code === '40026') {
+      showBlackToast({
+        text1: '해당 이메일로 가입된 소셜 계정이 존재합니다.',
+      });
       return {success: false};
     }
     await useUserStore.getState().setLoggedInUserInfo(loginResponse);
@@ -358,9 +451,16 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
       userNotice: loginResponse.data.userNotice,
       userNotificationSetting: loginResponse.data.userNotificationSetting,
       userPreferenceSetting: loginResponse.data.userPreferenceSetting,
+      userActivities: loginResponse.data.userActivities,
       accessToken: loginResponse.data.jwtToken.accessToken,
       refreshToken: loginResponse.data.jwtToken.refreshToken,
     });
+
+    // 관심 팝업 정보가 종속되어 있으므로 로그인 시점에 부트스트랩 재호출(로그아웃 상태에서, 로그인 시 관심 팝업 정보를 불러오기 위함)
+    const loadSuccess = await useAppStore.getState().loadInitialData();
+    if (!loadSuccess) {
+      console.error('Failed to reload initial data after login.');
+    }
   },
 
   setNonMemberUserInfo: async () => {
@@ -368,6 +468,9 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
   },
 
   setUserActivities: (userActivities: UserActivities) => {
+    usePopupStore
+      .getState()
+      .setPopupStoreActivities(userActivities.popupActivities);
     useNotificationStore
       .getState()
       .setNotifications(userActivities.notifications);

@@ -28,7 +28,6 @@ export const axiosGetPopupsBySearchFiltering = async (
       params: param,
     })
     .then(response => {
-      console.log('debugging: ', response.data);
       return response.data.data; // response.data.data로 반환
     })
     .catch(error => {
@@ -40,6 +39,18 @@ export const axiosGetPopupsBySearchFiltering = async (
       return null;
     });
 };
+
+// export const axiosGetInterestedPopupStores = async () => {
+//   return await customAxios
+//     .request<{
+//       data: PopupSchema[];
+//     }>({
+//       method: 'GET',
+//       url: 'v1/popup/interested-list',
+//       params: param
+//     })
+//   }
+// };
 
 export type TempResponse = StateWrapper<TempPopupSchema>;
 

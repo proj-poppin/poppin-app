@@ -19,6 +19,8 @@ import {PageInfoType} from '../../Object/Type/pageInfo.type';
 import {Alert} from 'react-native';
 
 type PopupStoreProps = {
+  loadingStates: Record<string, boolean>; // 팝업 ID별 로딩 상태
+  setLoadingState: (popupId: string, status: boolean) => void;
   recommendedPopupStores: PopupSchema[];
   popularTop5PopupStores: PopupSchema[];
   newlyOpenedPopupStores: PopupSchema[];
@@ -27,8 +29,8 @@ type PopupStoreProps = {
   pageInfo: PageInfoType; // Add pageInfo here
   interestedPopupStores: PopupSchema[];
 
-  popupScraps: PopupScrapSchema[];
-  popupVisits: PopupVisitSchema[];
+  scrappedPopups: PopupScrapSchema[];
+  visitedPopups: PopupVisitSchema[];
   previousSearchParams: PopupSearchParams;
   setPopupVisits: (visitations: PopupVisitSchema[]) => void;
 
@@ -49,13 +51,13 @@ type PopupStoreProps = {
   }) => void;
 
   setPopupStoreActivities: (popupActivities: {
-    popupScraps: PopupScrapSchema[];
-    popupVisits: PopupVisitSchema[];
+    scrappedPopups: PopupScrapSchema[];
+    visitedPopups: PopupVisitSchema[];
   }) => void;
 
   // /** 관심 팝업(스크랩한 팝업) 목록을
   //  *  상태값에 저장합니다. */
-  // setScrappedPopupStore: (popupScraps: PopupScrapSchema[]) => void;
+  // setScrappedPopupStore: (scrappedPopups: PopupScrapSchema[]) => void;
 
   togglePopupScrap: (
     popupId: string,
@@ -103,6 +105,12 @@ type PopupStoreProps = {
 };
 
 export const usePopupStore = create<PopupStoreProps>((set, get) => ({
+  loadingStates: {}, // 초기 상태
+  setLoadingState: (popupId, status) => {
+    set(state => ({
+      loadingStates: {...state.loadingStates, [popupId]: status},
+    }));
+  },
   popularTop5PopupStores: [],
   newlyOpenedPopupStores: [],
   closingSoonPopupStores: [],
@@ -110,11 +118,11 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
   interestedPopupStores: [],
   searchedPopupStores: [] as PopupSchema[],
   pageInfo: {} as PageInfoType,
-  popupScraps: [] as PopupScrapSchema[],
-  popupVisits: [] as PopupVisitSchema[],
+  scrappedPopups: [] as PopupScrapSchema[],
+  visitedPopups: [] as PopupVisitSchema[],
   previousSearchParams: {} as PopupSearchParams,
   setPopupVisits: (visitations: PopupVisitSchema[]) => {
-    set({popupVisits: visitations});
+    set({visitedPopups: visitations});
   },
   scrappedPopupStores: [] as PopupSchema[],
   visitedPopupStores: [] as PopupSchema[],
@@ -128,9 +136,7 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
           pageInfo: response.pageInfo,
         });
       }
-    } catch (error) {
-      console.error('Error fetching popup stores:', error);
-    }
+    } catch (error) {}
   },
   loadMorePopupStores: async () => {
     const {pageInfo, searchedPopupStores} = get();
@@ -156,9 +162,7 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
           pageInfo: response.pageInfo,
         });
       }
-    } catch (error) {
-      console.error('Error loading more popup stores:', error);
-    }
+    } catch (error) {}
   },
   setInitialPopupStores: (param: {
     searchedPopupStores: PopupSchema[];
@@ -178,73 +182,73 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
   },
 
   setPopupStoreActivities: (popupActivities: {
-    popupScraps: PopupScrapSchema[];
-    popupVisits: PopupVisitSchema[];
+    scrappedPopups: PopupScrapSchema[];
+    visitedPopups: PopupVisitSchema[];
   }) => {
     set({
-      popupScraps: popupActivities.popupScraps,
-      popupVisits: popupActivities.popupVisits,
+      scrappedPopups: popupActivities.scrappedPopups,
+      visitedPopups: popupActivities.visitedPopups,
     });
   },
 
   // setScrappedPopupStore: scrappedPopupStore => {
   //   set({interestedPopupStores: [scrappedPopupStore]});
   // },
-  setScrappedPopupStore: (popupScraps: PopupScrapSchema[]) => {
-    set({popupScraps});
+  setScrappedPopupStore: (scrappedPopups: PopupScrapSchema[]) => {
+    set({scrappedPopups});
   },
   togglePopupScrap: async (popupId: string) => {
-    let updatedPopup: PopupSchema | null = null;
-
     const interestedPopupStores = get().interestedPopupStores || [];
 
-    // isAlreadyScrapped 계산 전에 각 팝업의 id와 비교하는 popupId를 출력하여 확인
-    interestedPopupStores.forEach(popup => {});
-
+    // `isAlreadyScrapped` 확인
     const isAlreadyScrapped = interestedPopupStores.some(
       popup => popup?.id.toString() === popupId.toString(),
     );
 
-    if (!isAlreadyScrapped) {
-      // If not scrapped, proceed to scrap
+    // 이미 처리된 상태라면 해당 함수 바로 종료
+    if (isAlreadyScrapped) {
       try {
-        const result = await axiosScrapInterestPopup(popupId);
-
-        if (result) {
-          const updatedPopupSchema = result.data.updatedPopup as PopupSchema;
-          set({
-            popupScraps: [result.data.newPopupScrap, ...get().popupScraps],
-            interestedPopupStores: [
-              updatedPopupSchema,
-              ...interestedPopupStores,
-            ],
-          });
-          updatedPopup = updatedPopupSchema;
-        } else {
-        }
-      } catch (error) {}
-    } else {
-      // If already scrapped, proceed to unscrap
-      try {
+        // Unscrap 처리
         const result = await axiosUnscrapInterestPopup(popupId);
 
         if (result) {
           set({
-            popupScraps: get().popupScraps.filter(
+            scrappedPopups: get().scrappedPopups.filter(
               popup => popup?.popupId !== popupId,
             ),
             interestedPopupStores: interestedPopupStores.filter(
               popup => popup?.id.toString() !== popupId.toString(),
             ),
           });
-          updatedPopup = result.data.updatedPopup;
-        } else {
+          return {updatedPopup: result.data.updatedPopup};
+        }
+      } catch (error) {}
+    } else {
+      try {
+        // Scrap 처리
+        const result = await axiosScrapInterestPopup(popupId);
+
+        if (result) {
+          const updatedPopupSchema = result.data.updatedPopup as PopupSchema;
+          set({
+            scrappedPopups: [
+              result.data.newPopupScrap,
+              ...get().scrappedPopups,
+            ],
+            interestedPopupStores: [
+              updatedPopupSchema,
+              ...interestedPopupStores,
+            ],
+          });
+          return {updatedPopup: updatedPopupSchema};
         }
       } catch (error) {}
     }
 
-    return {updatedPopup};
+    // 실패한 경우 null 반환
+    return {updatedPopup: null};
   },
+
   refreshPopupStores: async () => {},
 
   noMoreOlderPopupStores: false,
@@ -282,9 +286,7 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
           pageInfo: response.pageInfo,
         });
       }
-    } catch (error) {
-      console.error('Error fetching older popup stores:', error);
-    }
+    } catch (error) {}
   },
   // * Spread
   // * 업데이트된 팝업 정보 전파
@@ -390,7 +392,7 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
 
   appendPopupVisited: (newPopupVisited: PopupVisitSchema) => {
     set({
-      popupVisits: [newPopupVisited, ...get().popupVisits],
+      visitedPopups: [newPopupVisited, ...get().visitedPopups],
     });
   },
 
@@ -400,8 +402,8 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
     );
 
     set({
-      popupScraps: [],
-      popupVisits:
+      scrappedPopups: [],
+      visitedPopups:
         nonMemberParticipations !== null
           ? (nonMemberParticipations as PopupVisitSchema[])
           : [],

@@ -14,11 +14,22 @@ import {
 } from 'src/Object/Enum/account.type';
 import {NotificationSchema} from 'src/Schema/User/notification.schema';
 import {UserNoticeSchema} from 'src/Schema/User/userNotice.schema';
+import {PopupVisitSchema} from '../../Schema/Popup/popupVisit.schema';
 // import {btoa, atob} from 'react-native-quick-base64';
 export type LoginResponse = StateWrapper<UserInfo>;
 
+// setPopupStoreActivities: (popupActivities: {
+//   scrappedPopups: PopupScrapSchema[];
+//   visitedPopups: PopupVisitSchema[];
+// }) => void;
+
 export type UserActivities = {
-  scrappedPopups: PopupScrapSchema[];
+  // scrappedPopups: PopupScrapSchema[];
+  popupActivities: {
+    scrappedPopups: PopupScrapSchema[];
+    visitedPopups: PopupVisitSchema[];
+  };
+
   notifications: {
     POPUP: NotificationSchema[];
     NOTICE: NotificationSchema[];

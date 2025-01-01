@@ -19,7 +19,10 @@ export const MyPageLandingReviewSection = () => {
         </ReviewIconRowContainer>
       </ReviewItem>
       <Divider />
-      <ReviewItem>
+      <ReviewItem
+        onPress={() =>
+          navigation.navigate('MyPageCompleteReviewListScreen', {})
+        }>
         <ReviewLabel>작성 완료한 후기</ReviewLabel>
         <ReviewIconRowContainer>
           <ReviewCompleteIcon />

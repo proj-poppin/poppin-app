@@ -4,6 +4,8 @@ import {moderateScale} from '../../../../Util';
 import {useUserStore} from '../../../../Zustand/User/user.zustand';
 import RightArrowGrayIcon from 'src/Resource/svg/right-arrow-gray-icon.svg';
 import shallow from 'zustand/shallow';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 
 export const MyPageLandingProfileSection = () => {
   const {user, isLoggedIn} = useUserStore(
@@ -11,6 +13,8 @@ export const MyPageLandingProfileSection = () => {
     shallow,
   );
   const loggedIn = isLoggedIn();
+  const navigation = useNavigation<NavigationProp<AppStackProps>>();
+
   return (
     <ProfileContainer>
       <ProfileIcon source={require('src/Resource/png/app-logo.png')} />
@@ -20,7 +24,12 @@ export const MyPageLandingProfileSection = () => {
         </ProfileTitle>
         <ManageButton onPress={() => {}}>
           <Row>
-            <ManageText>내 정보 및 취향 관리</ManageText>
+            <ManageText
+              onPress={() =>
+                navigation.navigate('MypageProfileEditScreen', '')
+              }>
+              내 정보 및 취향 관리
+            </ManageText>
             <RightArrowGrayIcon style={{marginLeft: moderateScale(4)}} />
           </Row>
         </ManageButton>

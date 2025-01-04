@@ -13,7 +13,7 @@ import Filter from 'src/Resource/svg/filter.svg';
 import {CompleteReviewCard} from 'src/Component/MyPage/Review/Mypage.complete.review.poupupCard';
 import {mockPopupData} from './Mypage.complete.review.list.context';
 interface CompleteReviewContainerProps {
-  navigation: NavigationProp<AppStackProps, 'MyPageCompleteReviewListScreen'>;
+  navigation: NavigationProp<AppStackProps, 'MypageCompleteReviewListScreen'>;
 }
 
 export const CompleteReviewContainer: React.FC<

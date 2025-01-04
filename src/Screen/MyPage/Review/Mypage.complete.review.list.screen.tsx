@@ -11,7 +11,7 @@ export interface MyPageCompleteReviewListScreenProps {}
 export function MyPageCompleteReviewListScreen({
   route,
   navigation,
-}: NativeStackScreenProps<AppStackProps, 'MyPageCompleteReviewListScreen'>) {
+}: NativeStackScreenProps<AppStackProps, 'MypageCompleteReviewListScreen'>) {
   return (
     <CompleteReviewProvider>
       <CompleteReviewContainer navigation={navigation} />

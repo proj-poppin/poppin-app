@@ -92,6 +92,10 @@ import {
   MyPageCompleteReviewListScreen,
   MyPageCompleteReviewListScreenProps,
 } from 'src/Screen/MyPage/Review/Mypage.complete.review.list.screen';
+import {
+  MypageProfileEditScreen,
+  MypageProfileEditScreenProps,
+} from 'src/Screen/MyPage/Profile/Mypage.profile.edit.screen';
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
@@ -139,9 +143,11 @@ export type AppStackProps = {
 
   MypageReviewListScreen: MypageReviewListScreenProps;
 
-  MyPageReviewWriteScreen: MyPageReviewWriteScreenProps;
+  MypageReviewWriteScreen: MyPageReviewWriteScreenProps;
 
-  MyPageCompleteReviewListScreen: MyPageCompleteReviewListScreenProps;
+  MypageCompleteReviewListScreen: MyPageCompleteReviewListScreenProps;
+
+  MypageProfileEditScreen: MypageProfileEditScreenProps;
 };
 
 const AppStack = createNativeStackNavigator<AppStackProps>();
@@ -448,12 +454,16 @@ const AppStackScreen = () => {
           component={MypageReviewListScreen}
         />
         <AppStack.Screen
-          name={'MyPageReviewWriteScreen'}
+          name={'MypageReviewWriteScreen'}
           component={MyPageReviewWriteScreen}
         />
         <AppStack.Screen
-          name={'MyPageCompleteReviewListScreen'}
+          name={'MypageCompleteReviewListScreen'}
           component={MyPageCompleteReviewListScreen}
+        />
+        <AppStack.Screen
+          name={'MypageProfileEditScreen'}
+          component={MypageProfileEditScreen}
         />
       </AppStack.Group>
     </AppStack.Navigator>

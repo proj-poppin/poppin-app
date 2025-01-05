@@ -50,8 +50,9 @@ export const CompleteReviewContainer: React.FC<
                   date={popup.closeDate}
                   imageUrl={popup.mainImageUrl}
                   onPress={() =>
-                    // navigation.navigate('ReviewDetailScreen', {id: popup.id})
-                    console.log('카드 클릭')
+                    navigation.navigate('MypageReviewDetailScreen', {
+                      id: popup.id,
+                    })
                   }
                 />
               ))

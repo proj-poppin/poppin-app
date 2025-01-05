@@ -68,26 +68,28 @@ const ReviewContent = styled.View`
   height: ${moderateScale(96)}px;
 `;
 const ReviewTypeContainer = styled.View``;
-const VerifiedBadge = styled.View`
+
+export const VerifiedBadge = styled.View`
   background-color: ${props => props.theme.color.blue.mild};
   padding: ${moderateScale(4)}px ${moderateScale(8)}px;
   border-radius: ${moderateScale(16)}px;
+  margin-top: ${moderateScale(5)}px;
   align-self: flex-start;
   margin-bottom: ${moderateScale(20)}px;
   flex-direction: row;
   align-items: center;
   gap: ${moderateScale(4)}px;
 `;
-const NormalBadge = styled(VerifiedBadge)`
+export const NormalBadge = styled(VerifiedBadge)`
   background-color: ${props => props.theme.color.grey.main};
 `;
 
-const VerifiedText = styled.Text`
+export const VerifiedText = styled.Text`
   color: ${props => props.theme.color.grey.black};
   font-size: ${moderateScale(12)}px;
 `;
 
-const NormalText = styled(VerifiedText)`
+export const NormalText = styled(VerifiedText)`
   color: ${props => props.theme.color.grey.black};
 `;
 

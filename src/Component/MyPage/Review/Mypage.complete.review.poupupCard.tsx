@@ -81,7 +81,7 @@ export const VerifiedBadge = styled.View`
   gap: ${moderateScale(4)}px;
 `;
 export const NormalBadge = styled(VerifiedBadge)`
-  background-color: ${props => props.theme.color.grey.main};
+  background-color: ${props => props.theme.color.purple.mild};
 `;
 
 export const VerifiedText = styled.Text`

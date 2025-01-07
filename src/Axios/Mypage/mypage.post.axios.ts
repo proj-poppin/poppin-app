@@ -14,7 +14,6 @@ export const axiosMyPageUserReport = async (formData: FormData) => {
       data: formData,
     })
     .then(response => {
-      console.log('real response', response);
       return response.data;
     })
     .catch(error => {
@@ -35,7 +34,6 @@ export const axiosMyPageOperatorReport = async (formData: FormData) => {
       data: formData,
     })
     .then(response => {
-      console.log('real response', response);
       return response.data;
     })
     .catch(error => {
@@ -52,7 +50,6 @@ export const axiosMypageReviewReport = async (formData: FormData) => {
       data: formData,
     })
     .then(response => {
-      console.log('real response', response);
       return response.data;
     })
     .catch(error => {

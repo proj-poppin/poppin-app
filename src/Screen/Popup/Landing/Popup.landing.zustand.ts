@@ -161,7 +161,6 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
         [operationStatus]: {...state[operationStatus], isLoading: true},
       }));
       try {
-        console.log('Fetching popups with params:', params);
         const response = await axiosGetPopupsBySearchFiltering(params);
         if (response !== null) {
           set(state => ({

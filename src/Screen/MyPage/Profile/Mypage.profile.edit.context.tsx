@@ -1,21 +1,21 @@
-// src/contexts/ProfileEdit/ProfileEditContext.tsx
 import React, {createContext, useContext, useState} from 'react';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {Platform} from 'react-native';
+import {getGalleryImages} from 'src/Util';
+import {useUserStore} from 'src/Zustand/User/user.zustand';
 
 interface ProfileEditContextType {
-  profileImage: any;
+  profileImage: string | null;
   nickname: string;
-  emailIcon: any;
-  isNicknameFocused: boolean;
+  socialMediaType: string;
   isModalVisible: boolean;
-  completeModalVisible: boolean;
+  isImagePickerModalVisible: boolean;
   modalMessage: string;
-  setProfileImage: (image: any) => void;
+  setProfileImage: (image: string | null) => void;
   setNickname: (name: string) => void;
-  handleNicknameChange: () => void;
-  handleNicknameFocus: () => void;
-  handleNicknameBlur: () => void;
-  openGallery: () => void;
-  showActionSheet: () => void;
+  openGallery: () => Promise<void>;
+  handleModalClose: () => void;
+  handleImagePickerModalClose: () => void;
   handleClearNickname: () => void;
 }
 
@@ -28,28 +28,39 @@ export function MypageProfileEditProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [profileImage, setProfileImage] = useState<any>(null);
-  const [nickname, setNickname] = useState('');
-  const [emailIcon, setEmailIcon] = useState<any>(null);
-  const [isNicknameFocused, setIsNicknameFocused] = useState(false);
+  const user = useUserStore(state => state.user);
+  const [profileImage, setProfileImage] = useState<string | null>(
+    user.userImageUrl,
+  );
+  const [nickname, setNickname] = useState(user.nickname);
+  const [socialMediaType, serSocialMediaType] = useState(user.accountType);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [completeModalVisible, setCompleteModalVisible] = useState(false);
+  const [isImagePickerModalVisible, setIsImagePickerModalVisible] =
+    useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
-  // Business Logic
-  const handleNicknameChange = async () => {
-    // Your existing nickname change logic
-  };
-
-  const handleNicknameFocus = () => setIsNicknameFocused(true);
-  const handleNicknameBlur = () => setIsNicknameFocused(false);
-
   const openGallery = async () => {
-    // Your existing gallery logic
+    try {
+      const result = await getGalleryImages({sectionLimit: 1});
+
+      if (result) {
+        const selectedImage = result[0];
+        setProfileImage(selectedImage.uri ? selectedImage.uri : null);
+        setModalMessage('프로필 이미지가 변경되었습니다.');
+        setIsModalVisible(true);
+      }
+    } catch (error) {
+      setModalMessage('이미지 선택 중 오류가 발생했습니다.');
+      setIsModalVisible(true);
+    }
   };
 
-  const showActionSheet = () => {
-    // Your existing action sheet logic
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleImagePickerModalClose = () => {
+    setIsImagePickerModalVisible(false);
   };
 
   const handleClearNickname = () => {
@@ -59,18 +70,15 @@ export function MypageProfileEditProvider({
   const value = {
     profileImage,
     nickname,
-    emailIcon,
-    isNicknameFocused,
+    socialMediaType,
     isModalVisible,
-    completeModalVisible,
+    isImagePickerModalVisible,
     modalMessage,
     setProfileImage,
     setNickname,
-    handleNicknameChange,
-    handleNicknameFocus,
-    handleNicknameBlur,
     openGallery,
-    showActionSheet,
+    handleModalClose,
+    handleImagePickerModalClose,
     handleClearNickname,
   };
 

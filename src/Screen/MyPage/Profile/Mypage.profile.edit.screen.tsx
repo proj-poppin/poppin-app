@@ -16,7 +16,6 @@ export function MypageProfileEditScreen({
 }: NativeStackScreenProps<AppStackProps, 'MypageProfileEditScreen'>) {
   return (
     <MypageProfileEditProvider>
-      
       <ScreenHeader
         LeftComponents={'BACK_BUTTON'}
         title={'프로필 설정'}

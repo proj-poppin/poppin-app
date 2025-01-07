@@ -96,8 +96,10 @@ import {
   MypageProfileEditScreen,
   MypageProfileEditScreenProps,
 } from 'src/Screen/MyPage/Profile/Mypage.profile.edit.screen';
-import {MypageReviewDetailScreenProps} from 'src/Screen/MyPage/Review/Mypage.review.detail.container';
-import {MypageReviewDetailScreen} from 'src/Screen/MyPage/Review/Mypage.review.detail.screen';
+import {
+  MypageReviewDetailScreen,
+  MypageReviewDetailScreenProps,
+} from 'src/Screen/MyPage/Review/Mypage.review.detail.screen';
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.

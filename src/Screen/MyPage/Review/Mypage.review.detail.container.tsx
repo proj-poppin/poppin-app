@@ -1,12 +1,17 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import {ScrollViewPage} from 'src/Component/Page';
-import {moderateScale} from 'src/Util';
+import {
+  moderateScale,
+  parseCongestionToKorean,
+  parseSatisfactionToKorean,
+  parseVisitDateToKorean,
+} from 'src/Util';
 import {NavigationProp} from '@react-navigation/native';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 import {ScreenHeader} from 'src/Component/View';
 import {Image, View} from 'react-native';
-import CheckIcon from 'src/Resource/svg/check_circle.svg'; // 체크무늬 아이콘 추가 필요
+import CheckIcon from 'src/Resource/svg/check_circle.svg';
 import ChevronRight from 'src/Resource/svg/right-arrow-gray-icon.svg';
 import {
   NormalBadge,
@@ -14,55 +19,20 @@ import {
   VerifiedBadge,
   VerifiedText,
 } from 'src/Component/MyPage/Review/Mypage.complete.review.poupupCard';
+import PoppinCirclePng from 'src/Resource/png/app-logo.png';
 
-export interface MypageReviewDetailScreenProps {}
-const mockData = {
-  introduce: '팝업스토어이름 이름 이름...',
-  posterUrl:
-    'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/13/images.jpg',
-  isCertificated: true,
-  nickname: '본인 닉네임 이름',
-  visitedAt: '2023.05.03',
-  createdAt: '2023.05.03',
-  visitorData: {
-    visitDate: '평일 오전',
-    satisfaction: '보통',
-    congestion: '보통',
-  },
-  text: '리뷰 글입니다. 본문입니다. 리뷰 글입니다. 본문입니다. 리뷰 글입니다. 본문입니다. 리뷰 글입니다. 본문입니다.리뷰 글입니다. 본문입니다. 리뷰 글입니다. 본문입니다. 리뷰 글입니다. 본문입니다. 리뷰 글입니다. 본문입니다.리뷰 글입니다. 본문입니다. 리뷰 글입니다. 본문입니다. 리뷰 글입니다. 본문입니다. 리뷰 글입니다. 본문입니다.리뷰 글입니다. ',
-  images: [
-    'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/13/images.jpg',
-    'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/13/images.jpg',
-    'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/13/images.jpg',
-    'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/13/images.jpg',
+import {useReviewContext} from './Mypage.review.detail.context';
 
-    'https://v1-popup-poster.s3.ap-northeast-2.amazonaws.com/13/images.jpg',
-  ],
-};
+const MypageReviewDetailContainer: React.FC = () => {
+  const {review, isLoading, error} = useReviewContext();
 
-const MypageReviewDetailContainer: React.FC<
-  MypageReviewDetailScreenProps
-> = () => {
-  const renderVisitInfo = () => {
-    if (!mockData.isCertificated) return null;
+  if (isLoading) {
+    return <InfoLabel> 로딩중... </InfoLabel>;
+  }
 
-    return (
-      <InfoSection>
-        <InfoRow>
-          <InfoLabel>방문 일시</InfoLabel>
-          <InfoValue>{mockData.visitorData.visitDate}</InfoValue>
-        </InfoRow>
-        <InfoRow>
-          <InfoLabel>팝업 만족도</InfoLabel>
-          <InfoValue>{mockData.visitorData.satisfaction}</InfoValue>
-        </InfoRow>
-        <InfoRow>
-          <InfoLabel>혼잡도</InfoLabel>
-          <InfoValue>{mockData.visitorData.congestion}</InfoValue>
-        </InfoRow>
-      </InfoSection>
-    );
-  };
+  if (error || !review) {
+    return <InfoLabel> 에러입니다. </InfoLabel>;
+  }
 
   return (
     <ScrollViewPage
@@ -72,11 +42,11 @@ const MypageReviewDetailContainer: React.FC<
       PageContent={
         <Container>
           <StoreCard>
-            <StoreImage source={{uri: mockData.posterUrl}} />
+            <StoreImage source={{uri: review.posterUrl}} />
             <StoreInfo>
-              <StoreName>{mockData.introduce}</StoreName>
+              <StoreName>{review.introduce}</StoreName>
               <VerificationBadge>
-                {mockData.isCertificated ? (
+                {review.isCertified ? (
                   <VerifiedBadge>
                     <CheckIcon
                       width={moderateScale(16)}
@@ -94,25 +64,51 @@ const MypageReviewDetailContainer: React.FC<
             <ChevronRight />
           </StoreCard>
           <UserInfoContainer>
-            <UserImageInfo source={{uri: mockData.posterUrl}} />
+            {review.profile ? (
+              <UserImageInfo source={{uri: review.profile}} />
+            ) : (
+              <UserImageInfo source={PoppinCirclePng} />
+            )}
             <UserTextInfo>
-              <Nickname>{mockData.nickname}</Nickname>
+              <Nickname>{review.nickname}</Nickname>
               <DateText>
-                방문일 : {mockData.visitedAt}
-                {`\t`}작성일: {mockData.createdAt}
+                {review.visitedAt ? `방문일 : ${review.visitedAt}\t` : null}
+                작성일: {review.createdAt}
               </DateText>
             </UserTextInfo>
           </UserInfoContainer>
-          {renderVisitInfo()}
+          <InfoSection>
+            <InfoRow>
+              <InfoLabel>방문 일시</InfoLabel>
+              {/*평일 오전/ 평일 오후/ 주말 오전/ 주말 오후 */}
+              <InfoValue>
+                {parseVisitDateToKorean(review.visitorData.visitDate)}
+              </InfoValue>
+            </InfoRow>
+            <InfoRow>
+              <InfoLabel>팝업 만족도</InfoLabel>
+              {/*만족/ 보통/ 불만족 */}
+              <InfoValue>
+                {parseSatisfactionToKorean(review.visitorData.satisfaction)}
+              </InfoValue>
+            </InfoRow>
+            <InfoRow>
+              <InfoLabel>혼잡도</InfoLabel>
+              {/*여유/ 보통/ 혼잡*/}
+              <InfoValue>
+                {parseCongestionToKorean(review.visitorData.congestion)}
+              </InfoValue>
+            </InfoRow>
+          </InfoSection>
           <ReviewTextContainer>
-            <ReviewText>{mockData.text}</ReviewText>
+            <ReviewText>{review.text}</ReviewText>
           </ReviewTextContainer>
 
-          <ImageGrid>
-            {mockData.images.map((image, index) => (
+          <ImageScrollView>
+            {review.images.map((image, index) => (
               <ReviewImage key={index} source={{uri: image}} />
             ))}
-          </ImageGrid>
+          </ImageScrollView>
         </Container>
       }
     />
@@ -202,6 +198,8 @@ const InfoLabel = styled.Text`
 `;
 
 const InfoValue = styled.Text`
+  margin-left: ${moderateScale(20)}px;
+
   font-size: ${moderateScale(14)}px;
   color: ${props => props.theme.color.grey.black};
   background-color: rgb(255, 255, 255);
@@ -221,16 +219,22 @@ const ReviewText = styled.Text`
   line-height: ${moderateScale(20)}px;
 `;
 
-const ImageGrid = styled.View`
+export const ImageScrollView = styled.ScrollView.attrs({
+  horizontal: true,
+  showsHorizontalScrollIndicator: false,
+  contentContainerStyle: {
+    gap: moderateScale(8),
+    paddingRight: moderateScale(16),
+  },
+})`
   flex-direction: row;
-  flex-wrap: wrap;
-  gap: ${moderateScale(8)}px;
 `;
 
-const ReviewImage = styled.Image`
-  width: ${moderateScale(100)}px;
-  height: ${moderateScale(100)}px;
+export const ReviewImage = styled.Image`
+  width: ${moderateScale(124)}px;
+  height: ${moderateScale(124)}px;
   border-radius: ${moderateScale(20)}px;
+  margin-right: ${moderateScale(8)}px;
 `;
 
 export default MypageReviewDetailContainer;

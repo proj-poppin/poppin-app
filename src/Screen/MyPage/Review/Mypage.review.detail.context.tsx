@@ -1,68 +1,80 @@
-// src/Screen/Review/Review.detail.context.tsx
-import React, {createContext, useContext, useState} from 'react';
+import {createContext, useContext, useEffect, useState} from 'react';
+import {axiosGetCompleteReviewDetail} from 'src/Axios/Mypage/mypage.get.axios';
+interface ReviewProviderProps {
+  children: React.ReactNode;
+  reviewId: string;
+}
 
-interface MypageReviewDetailType {
+interface VisitorData {
+  visitDate: 'WEEKDAY_AM' | 'WEEKDAY_PM' | 'WEEKEND_AM' | 'WEEKEND_PM';
+  satisfaction: 'SATISFIED' | 'NORMAL' | 'UNSATISFIED';
+  congestion: 'CROWDED' | 'NORMAL' | 'RELAXED';
+}
+
+export interface ReviewResponse {
   introduce: string;
   posterUrl: string;
-  isCertificated: boolean;
+  isCertified: boolean;
   nickname: string;
   visitedAt: string | null;
   createdAt: string;
-  visitorData: {
-    visitDate: string;
-    satisfaction: string;
-    congestion: string;
-  };
+  visitorData: VisitorData;
+  profile: string | null;
   text: string;
   images: string[];
 }
 
-interface MypageReviewDetailContextType {
-  reviewDetail: MypageReviewDetailType | null;
+// Context 정의
+interface ReviewContextType {
+  review: ReviewResponse | null;
   isLoading: boolean;
   error: string | null;
-  setReviewDetail: (review: MypageReviewDetailType) => void;
+  refetchReview: () => Promise<void>;
 }
 
-const initialReviewDetailContext: MypageReviewDetailContextType = {
-  reviewDetail: null,
+const initialReviewContext: ReviewContextType = {
+  review: null,
   isLoading: false,
   error: null,
-  setReviewDetail: () => {},
+  refetchReview: async () => {},
 };
 
-export const mockReviewData = {
-  introduce: '팝업스토어이름 이름 이름...',
-  posterUrl: '이미지URL',
-  isCertificated: true,
-  nickname: '본인 닉네임 이름',
-  visitedAt: '2023.05.03',
-  visitorData: {
-    visitDate: '평일 오전',
-    satisfaction: '보통',
-    congestion: '보통',
-  },
-  text: '리뷰 글입니다...',
-  images: ['이미지URL1', '이미지URL2', '이미지URL3'],
-};
+const MypageReviewDetailContext =
+  createContext<ReviewContextType>(initialReviewContext);
 
-const MypageReviewDetailContext = createContext<MypageReviewDetailContextType>(
-  initialReviewDetailContext,
-);
-
-export const MypageReviewDetailProvider: React.FC<{
-  children: React.ReactNode;
-}> = ({children}) => {
-  const [reviewDetail, setReviewDetail] =
-    useState<MypageReviewDetailType | null>(null);
+// Provider 컴포넌트 수정
+export const MypageReviewDetailProvider: React.FC<ReviewProviderProps> = ({
+  children,
+  reviewId,
+}) => {
+  const [review, setReview] = useState<ReviewResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const contextValue: MypageReviewDetailContextType = {
-    reviewDetail,
+  const fetchReview = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await axiosGetCompleteReviewDetail(reviewId);
+      console.debug(response);
+      setReview(response);
+    } catch (err) {
+      setError('리뷰를 불러오는데 실패했습니다.');
+      setReview(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void fetchReview();
+  }, [reviewId]); // reviewId가 변경될 때마다 리뷰를 다시 불러옴
+
+  const contextValue: ReviewContextType = {
+    review,
     isLoading,
     error,
-    setReviewDetail,
+    refetchReview: fetchReview,
   };
 
   return (
@@ -72,10 +84,10 @@ export const MypageReviewDetailProvider: React.FC<{
   );
 };
 
-export const useReviewDetail = () => {
+export const useReviewContext = () => {
   const context = useContext(MypageReviewDetailContext);
   if (!context) {
-    throw new Error('useReviewDetail must be used within ReviewDetailProvider');
+    throw new Error('useReview must be used within ReviewProvider');
   }
   return context;
 };

@@ -1,17 +1,14 @@
 // src/Screen/Review/ReviewListContainer.tsx
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import styled from 'styled-components/native';
 import {ScrollViewPage} from 'src/Component/Page';
 import {moderateScale} from 'src/Util';
 import {NavigationProp} from '@react-navigation/native';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 import {ScreenHeader} from 'src/Component/View';
-
-import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
-
 import Filter from 'src/Resource/svg/filter.svg';
 import {CompleteReviewCard} from 'src/Component/MyPage/Review/Mypage.complete.review.poupupCard';
-import {mockPopupData} from './Mypage.complete.review.list.context';
+import {useReviewListContext} from './Mypage.complete.review.list.context';
 interface CompleteReviewContainerProps {
   navigation: NavigationProp<AppStackProps, 'MypageCompleteReviewListScreen'>;
 }
@@ -20,9 +17,21 @@ export const CompleteReviewContainer: React.FC<
   CompleteReviewContainerProps
 > = ({navigation}) => {
   //TODO-[규진] 산아형 다 끝나면 할
-  // const {completeReviews, isLoading, error} = useComplete();
   const [isLastest, setIsLastest] = useState(true);
-  const {} = usePopupStore();
+  const context = useReviewListContext();
+
+  // 정렬된 리뷰 목록 계산
+  const sortedReviews = useMemo(() => {
+    if (!context.completeReviews) return [];
+
+    return [...context.completeReviews].sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return isLastest ? dateB - dateA : dateA - dateB;
+    });
+  }, [context.completeReviews, isLastest]);
+
+  const totalReviews = context.completeReviews?.length || 0;
 
   return (
     <ScrollViewPage
@@ -33,7 +42,7 @@ export const CompleteReviewContainer: React.FC<
         <ContentContainer>
           <InfoSection>
             <InfoContainer>
-              <TotalReviewText>총 n개</TotalReviewText>
+              <TotalReviewText>총 {totalReviews}개</TotalReviewText>
               <ToggleFilter onPress={() => setIsLastest(prev => !prev)}>
                 <FilterText>{isLastest ? '최신순' : '오래된 순'}</FilterText>
                 <Filter width={13} height={13} />
@@ -41,17 +50,17 @@ export const CompleteReviewContainer: React.FC<
             </InfoContainer>
           </InfoSection>
           <ReviewListSection>
-            {mockPopupData && mockPopupData.length > 0 ? (
-              mockPopupData.map((popup, index) => (
+            {sortedReviews.length > 0 ? (
+              sortedReviews.map((popup, index) => (
                 <CompleteReviewCard
-                  key={index}
-                  isVerified={true}
+                  key={popup.reviewId} // index 대신 고유 ID 사용
+                  isVerified={popup.isCertified}
                   storeName={popup.name}
-                  date={popup.closeDate}
-                  imageUrl={popup.mainImageUrl}
+                  date={popup.createdAt}
+                  imageUrl={popup.imageUrl}
                   onPress={() =>
                     navigation.navigate('MypageReviewDetailScreen', {
-                      id: popup.id,
+                      reviewId: popup.reviewId,
                     })
                   }
                 />
@@ -69,12 +78,13 @@ export const CompleteReviewContainer: React.FC<
 const ContentContainer = styled.View`
   flex: 1;
   background-color: white;
-  padding: ${moderateScale(20)}px;
+  padding: ${moderateScale(12)}px;
 `;
 
 const InfoSection = styled.View`
   margin-bottom: ${moderateScale(24)}px;
 `;
+
 const InfoContainer = styled.View`
   display: flex;
   flex-direction: row;

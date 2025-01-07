@@ -5,14 +5,16 @@ import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 import {MypageReviewDetailProvider} from './Mypage.review.detail.context';
 import MypageReviewDetailContainer from './Mypage.review.detail.container';
 
-export interface ReviewDetailScreenProps {}
+export interface MypageReviewDetailScreenProps {
+  reviewId: string;
+}
 
 export function MypageReviewDetailScreen({
   route,
   navigation,
 }: NativeStackScreenProps<AppStackProps, 'MypageReviewDetailScreen'>) {
   return (
-    <MypageReviewDetailProvider>
+    <MypageReviewDetailProvider reviewId={route.params.reviewId}>
       <MypageReviewDetailContainer />
     </MypageReviewDetailProvider>
   );

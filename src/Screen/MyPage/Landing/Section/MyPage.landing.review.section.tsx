@@ -5,8 +5,10 @@ import ReviewCompleteIcon from '../../../../Resource/svg/review-write-complete-i
 import ReviewWriteReadyIcon from '../../../../Resource/svg/review-write-ready-icon.svg';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
+import {useUserStore} from 'src/Zustand/User/user.zustand';
 export const MyPageLandingReviewSection = () => {
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
+  const user = useUserStore(state => state.user);
   return (
     <ReviewsContainer>
       <ReviewItem
@@ -14,8 +16,7 @@ export const MyPageLandingReviewSection = () => {
         <ReviewLabel>후기 작성하기</ReviewLabel>
         <ReviewIconRowContainer>
           <ReviewWriteReadyIcon />
-          {/*//TODO - [규진] 가변 값으로 바꿔야 함.*/}
-          <ReviewReadyNumber>1</ReviewReadyNumber>
+          <ReviewReadyNumber>{user.visitedPopupCnt}</ReviewReadyNumber>
         </ReviewIconRowContainer>
       </ReviewItem>
       <Divider />
@@ -26,9 +27,7 @@ export const MyPageLandingReviewSection = () => {
         <ReviewLabel>작성 완료한 후기</ReviewLabel>
         <ReviewIconRowContainer>
           <ReviewCompleteIcon />
-          {/*//TODO - [규진] 가변 값으로 바꿔야 함.*/}
-
-          <ReviewCompleteNumber>12</ReviewCompleteNumber>
+          <ReviewCompleteNumber>{user.writtenReview}</ReviewCompleteNumber>
         </ReviewIconRowContainer>
       </ReviewItem>
     </ReviewsContainer>

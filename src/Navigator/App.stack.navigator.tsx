@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from 'react';
+import React, {useRef, useEffect, Component} from 'react';
 import {AppState, Linking} from 'react-native';
 import {
   NavigationProp,
@@ -100,6 +100,10 @@ import {
   MypageReviewDetailScreen,
   MypageReviewDetailScreenProps,
 } from 'src/Screen/MyPage/Review/Mypage.review.detail.screen';
+import {
+  MypagePasswordChangeScreen,
+  MypagePasswordChangeScreenProps,
+} from 'src/Screen/MyPage/Profile/Mypage.password.change.screen';
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
@@ -154,6 +158,8 @@ export type AppStackProps = {
   MypageCompleteReviewListScreen: MyPageCompleteReviewListScreenProps;
 
   MypageProfileEditScreen: MypageProfileEditScreenProps;
+
+  MypagePasswordChangeScreen: MypagePasswordChangeScreenProps;
 };
 
 const AppStack = createNativeStackNavigator<AppStackProps>();
@@ -474,6 +480,10 @@ const AppStackScreen = () => {
         <AppStack.Screen
           name={'MypageProfileEditScreen'}
           component={MypageProfileEditScreen}
+        />
+        <AppStack.Screen
+          name={'MypagePasswordChangeScreen'}
+          component={MypagePasswordChangeScreen}
         />
       </AppStack.Group>
     </AppStack.Navigator>

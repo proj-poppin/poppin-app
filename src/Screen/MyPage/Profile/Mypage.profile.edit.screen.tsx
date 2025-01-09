@@ -2,20 +2,25 @@
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
-import {MypageProfileEditProvider} from './Mypage.profile.edit.context';
+import {
+  MypageProfileEditProvider,
+  useProfileEdit,
+} from './Mypage.profile.edit.context';
 import {MyProfileEditContainer} from './Mypage.profile.edit.container';
 import {ScreenHeader} from 'src/Component/View';
 import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 export interface MypageProfileEditScreenProps {}
 
-export function MypageProfileEditScreen({
-  route,
-  navigation,
-}: NativeStackScreenProps<AppStackProps, 'MypageProfileEditScreen'>) {
+function ProfileEditContent() {
+  const {onCompleteProfileEdit} = useProfileEdit();
+  const handlePress = () => {
+    console.log('Button pressed');
+    onCompleteProfileEdit();
+  };
+
   return (
-    <MypageProfileEditProvider>
+    <>
       <ScreenHeader
         LeftComponents={'BACK_BUTTON'}
         title={'프로필 설정'}
@@ -28,11 +33,22 @@ export function MypageProfileEditScreen({
               fontSize: 18,
               fontWeight: 'bold',
             }}
+            onPress={handlePress}
           />
         }
-        onPressRightComponent={() => console.log('나가긴')}
       />
       <MyProfileEditContainer />
+    </>
+  );
+}
+
+export function MypageProfileEditScreen({
+  route,
+  navigation,
+}: NativeStackScreenProps<AppStackProps, 'MypageProfileEditScreen'>) {
+  return (
+    <MypageProfileEditProvider>
+      <ProfileEditContent />
     </MypageProfileEditProvider>
   );
 }

@@ -1,13 +1,6 @@
 // src/screens/MyProfileEdit/MyProfileEditContainer.tsx
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  ImageSourcePropType,
-} from 'react-native';
+import {ImageSourcePropType} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import GallerySvg from 'src/Resource/svg/gallery-icon.svg';
 import CloseIcon from 'src/Resource/svg/closeGray.svg';
@@ -19,6 +12,9 @@ import RequiredTextLabel from 'src/Component/RequiredTextLabel';
 import {useProfileEdit} from './Mypage.profile.edit.context';
 import {useUserStore} from 'src/Zustand/User/user.zustand';
 import {Asset} from 'react-native-image-picker';
+import {MypageProfileEditModal} from './Mypage.profile.edit.modal';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 
 // 통합 이미지 소스 타입 정의
 export type UnifiedImageSource = ImageSourcePropType | string | {uri: string};
@@ -26,88 +22,90 @@ export type UnifiedImageSource = ImageSourcePropType | string | {uri: string};
 
 export function MyProfileEditContainer() {
   const context = useProfileEdit();
-  const [nickName, setNickname] = useState<string>(context.nickname);
-  const [profileImage, setProfileImage] = useState<string | null | undefined>(
-    context.profileImage,
-  );
-  //TODO-[규진] 프로필 수정 로직 구현
-  const handleGalleryImage = async () => {
-    try {
-      const images = await getGalleryImages({sectionLimit: 1});
-      if (images && images.length > 0) {
-        console.log(images[0].uri);
-        setProfileImage(images[0].uri);
-      }
-    } catch (error) {
-      console.error('Gallery image selection failed:', error);
-    }
-  };
+  const navigation = useNavigation<NavigationProp<AppStackProps>>();
+
   return (
-    <ProfileContainer>
-      <ImageContainer>
-        {profileImage ? (
-          <ProfileImage source={{uri: profileImage}} />
-        ) : (
-          <ProfileImage source={PoppinCirclePng} />
-        )}
-        <GalleryButton onPress={handleGalleryImage}>
-          <GallerySvg />
-        </GalleryButton>
-      </ImageContainer>
+    <>
+      <ProfileContainer>
+        <ImageContainer>
+          {typeof context.profileImage === 'string' ? (
+            <ProfileImage source={{uri: context.profileImage}} />
+          ) : context.profileImage ? (
+            <ProfileImage source={{uri: context.profileImage.uri}} />
+          ) : (
+            <ProfileImage source={PoppinCirclePng} />
+          )}
 
-      <PreferenceButton onPress={() => console.log('g')}>
-        <PreferenceText>취향 설정</PreferenceText>
-      </PreferenceButton>
+          <GalleryButton onPress={context.openGallery}>
+            <GallerySvg />
+          </GalleryButton>
+        </ImageContainer>
 
-      <EmailContainer>
-        <LabelText>
-          {['KAKAO', 'NAVER', 'GOOGLE', 'APPLE'].includes(
-            context.socialMediaType,
-          )
-            ? '이메일'
-            : '아이디'}
-        </LabelText>
-        <EmailTextInputWrapper>
-          {/* {emailIcon && <SocialIcon source={emailIcon} />} */}
-          <EmailTextInput value={'test@poppin.com'} editable={false} />
-        </EmailTextInputWrapper>
+        <PreferenceButton onPress={() => console.log('취향 설정으로 라우팅')}>
+          <PreferenceText>취향 설정</PreferenceText>
+        </PreferenceButton>
 
-        <Spacer height={30} />
-        <RequiredTextLabel label={'닉네임'} />
-        <NicknameRow>
-          {/* onFocused 추가하면 좋을 듯 */}
-          <TextInputContainer>
-            <StyledTextTextInput value={nickName} onChangeText={setNickname} />
-            <ClearButton
-              onPress={() => {
-                console.log('클릭 시 nickName 삭제');
-              }}>
-              <CloseIcon />
-            </ClearButton>
-          </TextInputContainer>
-        </NicknameRow>
-        <Spacer height={30} />
+        <EmailContainer>
+          <LabelText>
+            {['KAKAO', 'NAVER', 'GOOGLE', 'APPLE'].includes(
+              context.socialMediaType,
+            )
+              ? '이메일'
+              : '아이디'}
+          </LabelText>
+          <EmailTextInputWrapper>
+            {/* {emailIcon && <SocialIcon source={emailIcon} />} */}
+            <EmailTextInput value={context.userEmail} editable={false} />
+          </EmailTextInputWrapper>
 
-        {/* TODO-[규진] 생년 월일 백엔드 되면 추가 개발 */}
-        {/* <RequiredTextLabel label={'생년 월일'} /> */}
-        {/* <BirthDayRow>
+          <Spacer height={30} />
+          <RequiredTextLabel label={'닉네임'} />
+          <NicknameRow>
+            {/* onFocused 추가하면 좋을 듯 */}
+            <TextInputContainer>
+              <StyledTextTextInput
+                value={context.nickname}
+                onChangeText={context.setNickname}
+              />
+              <ClearButton
+                onPress={() => {
+                  context.setNickname('');
+                }}>
+                <CloseIcon />
+              </ClearButton>
+            </TextInputContainer>
+          </NicknameRow>
+          <Spacer height={30} />
+
+          {/* TODO-[규진] 생년 월일 백엔드 되면 추가 개발 */}
+          {/* <RequiredTextLabel label={'생년 월일'} /> */}
+          {/* <BirthDayRow>
           <TextInputContainer >
             <StyledTextTextInput
               value={user}
-            />ㄱr
+            />
           </TextInputContainer>
         </BirthDayRow> */}
-        {!['KAKAO', 'NAVER', 'GOOGLE', 'APPLE'].includes(
-          context.socialMediaType,
-        ) && (
-          <PasswordChangeView>
-            <PasswordText>비밀번호 변경</PasswordText>
-            <RightSvg width={20} height={20} />
-          </PasswordChangeView>
-        )}
-        <WithdrawalText>회원 탈퇴</WithdrawalText>
-      </EmailContainer>
-    </ProfileContainer>
+          {!['KAKAO', 'NAVER', 'GOOGLE', 'APPLE'].includes(
+            context.socialMediaType,
+          ) && (
+            <PasswordChangeView
+              onPress={() =>
+                navigation.navigate('MypagePasswordChangeScreen', {})
+              }>
+              <PasswordText>비밀번호 변경</PasswordText>
+              <RightSvg width={20} height={20} />
+            </PasswordChangeView>
+          )}
+          <WithdrawalText>회원 탈퇴</WithdrawalText>
+        </EmailContainer>
+      </ProfileContainer>
+      <MypageProfileEditModal
+        isVisible={context.isModalVisible}
+        message={context.modalMessage}
+        onClose={context.handleModalClose}
+      />
+    </>
   );
 }
 
@@ -213,7 +211,7 @@ const StyledTextTextInput = styled.TextInput`
 const ClearButton = styled.TouchableOpacity`
   padding-horizontal: ${moderateScale(15)}px;
 `;
-const PasswordChangeView = styled.View`
+const PasswordChangeView = styled.TouchableOpacity`
   margin-top: ${moderateScale(15)};
   flex-direction: row;
   justify-content: space-between;

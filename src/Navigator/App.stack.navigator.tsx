@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from 'react';
+import React, {useRef, useEffect, Component} from 'react';
 import {AppState, Linking} from 'react-native';
 import {
   NavigationProp,
@@ -88,6 +88,22 @@ import {
   MypageReviewListScreen,
   MypageReviewListScreenProps,
 } from 'src/Screen/MyPage/Review/Mypage.review.list.screen';
+import {
+  MyPageCompleteReviewListScreen,
+  MyPageCompleteReviewListScreenProps,
+} from 'src/Screen/MyPage/Review/Mypage.complete.review.list.screen';
+import {
+  MypageProfileEditScreen,
+  MypageProfileEditScreenProps,
+} from 'src/Screen/MyPage/Profile/Mypage.profile.edit.screen';
+import {
+  MypageReviewDetailScreen,
+  MypageReviewDetailScreenProps,
+} from 'src/Screen/MyPage/Review/Mypage.review.detail.screen';
+import {
+  MypagePasswordChangeScreen,
+  MypagePasswordChangeScreenProps,
+} from 'src/Screen/MyPage/Profile/Mypage.password.change.screen';
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
@@ -135,7 +151,15 @@ export type AppStackProps = {
 
   MypageReviewListScreen: MypageReviewListScreenProps;
 
-  MyPageReviewWriteScreen: MyPageReviewWriteScreenProps;
+  MypageReviewWriteScreen: MyPageReviewWriteScreenProps;
+
+  MypageReviewDetailScreen: MypageReviewDetailScreenProps;
+
+  MypageCompleteReviewListScreen: MyPageCompleteReviewListScreenProps;
+
+  MypageProfileEditScreen: MypageProfileEditScreenProps;
+
+  MypagePasswordChangeScreen: MypagePasswordChangeScreenProps;
 };
 
 const AppStack = createNativeStackNavigator<AppStackProps>();
@@ -442,8 +466,24 @@ const AppStackScreen = () => {
           component={MypageReviewListScreen}
         />
         <AppStack.Screen
-          name={'MyPageReviewWriteScreen'}
+          name={'MypageReviewDetailScreen'}
+          component={MypageReviewDetailScreen}
+        />
+        <AppStack.Screen
+          name={'MypageReviewWriteScreen'}
           component={MyPageReviewWriteScreen}
+        />
+        <AppStack.Screen
+          name={'MypageCompleteReviewListScreen'}
+          component={MyPageCompleteReviewListScreen}
+        />
+        <AppStack.Screen
+          name={'MypageProfileEditScreen'}
+          component={MypageProfileEditScreen}
+        />
+        <AppStack.Screen
+          name={'MypagePasswordChangeScreen'}
+          component={MypagePasswordChangeScreen}
         />
       </AppStack.Group>
     </AppStack.Navigator>

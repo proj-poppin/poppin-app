@@ -22,7 +22,7 @@ export interface CommonResponse<T> {
   };
 }
 const customAxios = axios.create({
-  baseURL: `${Config.TEST_URL}`,
+  baseURL: `${Config.API_URL}/api/`,
   timeout: 5000,
 });
 
@@ -79,12 +79,6 @@ export const axiosAutoLogin = async (
 customAxios.interceptors.response.use(
   response => {
     // 성공 응답 로그 출력
-    log.info('Response Details:', {
-      url: `${response.config.baseURL}${response.config.url}`,
-      method: response.config.method?.toUpperCase(),
-      status: response.status,
-      data: response.data,
-    });
     return response;
   },
 

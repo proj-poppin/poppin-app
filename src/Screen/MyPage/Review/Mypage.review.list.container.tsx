@@ -54,7 +54,7 @@ export const ReviewListContainer: React.FC<ReviewListContainerProps> = ({
                   popup={popup}
                   showWriteButton={true}
                   onPress={() => {
-                    navigation.navigate('MyPageReviewWriteScreen', {
+                    navigation.navigate('MypageReviewWriteScreen', {
                       isVisited: true,
                       selectedPopup: popup,
                     });
@@ -82,7 +82,7 @@ export const ReviewListContainer: React.FC<ReviewListContainerProps> = ({
           <CommonCompleteButton
             title={'일반 후기 작성하기'}
             onPress={() => {
-              navigation.navigate('MyPageReviewWriteScreen', {
+              navigation.navigate('MypageReviewWriteScreen', {
                 isVisited: false,
               });
             }}

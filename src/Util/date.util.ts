@@ -402,6 +402,35 @@ export function getAge(birthday: string | Date, useKoreanAge: boolean = false) {
   return age;
 }
 
+// 파싱 유틸리티 함수들
+export const parseVisitDateToKorean = (value: string): string => {
+  const mapping: Record<string, string> = {
+    'WEEKDAY_AM': '평일 오전',
+    'WEEKDAY_PM': '평일 오후',
+    'WEEKEND_AM': '주말 오전',
+    'WEEKEND_PM': '주말 오후'
+  };
+  return mapping[value] || '평일 오전';
+};
+
+export const parseSatisfactionToKorean = (value: string): string => {
+  const mapping: Record<string, string> = {
+    'SATISFIED': '만족',
+    'NORMAL': '보통',
+    'UNSATISFIED': '불만족'
+  };
+  return mapping[value] || '보통';
+};
+
+export const parseCongestionToKorean = (value: string): string => {
+  const mapping: Record<string, string> = {
+    'CROWDED': '혼잡',
+    'NORMAL': '보통',
+    'RELAXED': '여유'
+  };
+  return mapping[value] || '보통';
+};
+
 // /**
 //  * @ServerSync
 //  * 첫번째 인자로 받은 날에 태어난 사람의 나이대를 반환합니다.

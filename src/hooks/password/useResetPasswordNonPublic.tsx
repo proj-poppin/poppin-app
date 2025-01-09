@@ -28,7 +28,6 @@ const useResetPasswordNonPublic = () => {
         });
       }
     } catch (error) {
-      console.log('Password reset error:', error);
       setResetPasswordStatus({
         ...resetPasswordStatus,
         success: false,

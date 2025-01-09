@@ -17,10 +17,12 @@ type VisitTime = '평일 오전' | '평일 오후' | '주말 오전' | '주말 �
 type Satisfaction = '만족' | '보통' | '불만족';
 type Congestion = '여유' | '보통' | '혼잡';
 
+export interface PopupDetailReviewWriteScreenProps {}
+
 export const PopupDetailReviewWriteScreen = ({
   route,
   navigation,
-}: NativeStackScreenProps<AppStackProps, 'PopupDetailEditScreen'>) => {
+}: NativeStackScreenProps<AppStackProps, 'PopupDetailReviewWriteScreen'>) => {
   const [selectedVisitTime, setSelectedVisitTime] = useState<VisitTime | null>(
     null,
   );

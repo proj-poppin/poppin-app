@@ -14,10 +14,15 @@ export const MyPageLandingProfileSection = () => {
   );
   const loggedIn = isLoggedIn();
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
-
   return (
     <ProfileContainer>
-      <ProfileIcon source={require('src/Resource/png/app-logo.png')} />
+      <ProfileIcon
+        source={
+          user.userImageUrl
+            ? {uri: user.userImageUrl}
+            : require('src/Resource/png/app-logo.png')
+        }
+      />
       <ProfileInfoContainer>
         <ProfileTitle>
           {loggedIn ? user.nickname : '로그인 후 이용해주세요'}

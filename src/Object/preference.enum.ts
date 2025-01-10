@@ -3,6 +3,24 @@
  * @author 도형
  */
 
+export const popupStoreKeys = ['market', 'display', 'experience'];
+export const categoryKeys = [
+  'fashionBeauty',
+  'characters',
+  'foodBeverage',
+  'webtoonAni',
+  'interiorThings',
+  'movie',
+  'musical',
+  'sports',
+  'game',
+  'itTech',
+  'kpop',
+  'alcohol',
+  'animalPlant',
+  'guitar',
+];
+
 export function getPreferenceTitle(key: string): string {
   switch (key) {
     // PREFERENCE options

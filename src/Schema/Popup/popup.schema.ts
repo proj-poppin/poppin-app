@@ -106,13 +106,14 @@ export type PopupSchema = {
   realTimeVisit: number;
 
   // /** 팝업스토어 방문 여부 */ -> 삭제시킴!, popupInterestScrap 으로 분리
-  // isVisited: boolean;
+  isVisited: boolean;
 
   /** 팝업스토어에 속한 취향(선호도) 카테고리들 */
   preferences: PreferenceSchema;
 };
 
 export const BlankPopup: PopupSchema = {
+  isVisited: false,
   preferences: BlankPreference,
   realTimeVisit: 0,
   id: '',

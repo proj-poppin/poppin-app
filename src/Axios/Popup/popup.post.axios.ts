@@ -1,6 +1,8 @@
 import customAxios, {POPUP} from 'src/Axios/axios.core';
 import {PopupSchema} from 'src/Schema/Popup/popup.schema';
 import {handleAxiosError} from 'src/Util/axios.util';
+import {ResultWrapper} from '../wrapper/result.wrapper';
+import {StateWrapper} from '../wrapper/state_wrapper';
 
 /**
  * 팝업 정보 수정 요청을 합니다.
@@ -85,7 +87,7 @@ export const axiosBlockPopup = async (popupId: string) => {
  */
 export const axiosVisitPopupStore = async (popupId: string) => {
   return await customAxios
-    .request<{updatedPopup: PopupSchema}>({
+    .request<StateWrapper<PopupSchema>>({
       method: 'PATCH',
       url: `v1/${POPUP}/visit`,
       data: {popupId},
@@ -94,9 +96,34 @@ export const axiosVisitPopupStore = async (popupId: string) => {
       return response.data;
     })
     .catch(error => {
+      console.error('팝업 방문 처리에 실패했습니다:', error);
       handleAxiosError({
         error,
         errorMessage: '팝업 방문 처리에 실패했습니다',
+      });
+      return null;
+    });
+};
+
+/**
+ * (운영종료 팝업 한정) 팝업 재오픈을 요청합니다.
+ * @author 도형
+ *
+ * @param popupId
+ */
+export const axiosRequestReopenPopup = async (popupId: string) => {
+  return await customAxios
+    .request<ResultWrapper>({
+      method: 'POST',
+      url: `v1/${POPUP}/reopen?popupId=${popupId}`,
+    })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      handleAxiosError({
+        error,
+        errorMessage: '팝업 재개점 요청에 실패했습니다',
       });
       return null;
     });

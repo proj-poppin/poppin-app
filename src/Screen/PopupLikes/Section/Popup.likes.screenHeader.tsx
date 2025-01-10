@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import {DetailText} from '../../../StyledComponents/Text';
+import React from 'react';
 import {LandingScreenHeader} from 'src/Component/View';
 import styled from 'styled-components/native';
 import CalendarSvg from 'src/Resource/svg/show-calendar-blue-icon.svg';
@@ -8,15 +7,17 @@ import {moderateScale} from 'src/Util';
 import {themeColors} from 'src/Theme/theme';
 import {useUserStore} from 'src/Zustand/User/user.zustand';
 
-export const PopupLikesLandingScreenHeader = () => {
+interface PopupLikesLandingScreenHeaderProps {
+  isCalendarView: boolean;
+  toggleView: () => void;
+}
+
+export const PopupLikesLandingScreenHeader: React.FC<
+  PopupLikesLandingScreenHeaderProps
+> = ({isCalendarView, toggleView}) => {
   const {isLoggedIn} = useUserStore(state => ({isLoggedIn: state.isLoggedIn}));
 
   const loggedIn = isLoggedIn();
-  const [isCalendarView, setIsCalendarView] = useState(false);
-
-  const toggleView = () => {
-    setIsCalendarView(prev => !prev);
-  };
 
   return (
     <LandingScreenHeader
@@ -36,22 +37,11 @@ export const PopupLikesLandingScreenHeader = () => {
               </>
             )}
           </ToggleViewButton>
-        ) : (
-          <></>
-        )
+        ) : null
       }
     />
   );
 };
-
-const CalendarView = () => <DetailText>캘린더 뷰</DetailText>;
-const ListView = () => <DetailText>리스트 뷰</DetailText>;
-
-const HeaderTitle = styled.Text`
-  color: black;
-  font-size: 20px;
-  font-weight: bold;
-`;
 
 const IconSmallBlueText = styled.Text`
   font-size: ${moderateScale(12)}px;
@@ -62,10 +52,4 @@ const ToggleViewButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   gap: 8px;
-`;
-
-const ToggleText = styled.Text`
-  font-size: 16px;
-  color: blue;
-  margin-right: 5px;
 `;

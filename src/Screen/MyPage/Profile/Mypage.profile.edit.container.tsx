@@ -97,7 +97,10 @@ export function MyProfileEditContainer() {
               <RightSvg width={20} height={20} />
             </PasswordChangeView>
           )}
-          <WithdrawalText>회원 탈퇴</WithdrawalText>
+          <WithdrawalTextButton
+            onPress={() => navigation.navigate('MypageWithdrawScreen', {})}>
+            <WithdrawText>회원 탈퇴</WithdrawText>
+          </WithdrawalTextButton>
         </EmailContainer>
       </ProfileContainer>
       <MypageProfileEditModal
@@ -222,9 +225,12 @@ const PasswordText = styled.Text`
   flex: 1;
 `;
 
-const WithdrawalText = styled.Text`
-  color: ${props => props.theme.color.red.warning};
+const WithdrawalTextButton = styled.TouchableOpacity`
   margin-top: ${moderateScale(20)}px;
+`;
+
+const WithdrawText = styled.Text`
+  color: ${props => props.theme.color.red.warning};
 `;
 
 const Spacer = styled.View<{height: number}>`

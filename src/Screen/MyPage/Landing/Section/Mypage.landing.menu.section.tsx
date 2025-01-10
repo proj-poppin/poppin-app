@@ -27,12 +27,17 @@ export const MyPageLandingMenuSection = () => {
     {title: '키워드 알림 설정', onPress: () => {}},
     {title: '문의하기 / FAQ', onPress: () => {}},
     {title: '앱 버전', rightText: '1.16.0', onPress: () => {}},
-    {title: '이용 약관 및 정책', onPress: () => {}},
+    {
+      title: '이용 약관 및 정책',
+      onPress: () => {
+        navigation.navigate('MypagePolicyScreen', {});
+      },
+    },
     {
       title: isLoggedIn() ? '로그아웃' : '로그인 하러 가기',
       onPress: () => {
         if (isLoggedIn()) {
-          setLogoutModalVisible();
+          setLogoutModalVisible(true);
         } else {
           navigation.navigate('AuthLandingScreen', {});
         }

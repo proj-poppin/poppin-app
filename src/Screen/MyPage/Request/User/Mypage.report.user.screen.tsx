@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import {moderateScale} from '../../../../Util';
 import React, {useState} from 'react';
 import {useImagePicker} from '../../../../hooks/useImagePicker';
-import PopupCategoryModal from '../../../../Component/PopupCategoryModal';
+import PopupCategoryModal from '../../../../Component/Modal/Popup.category.modal';
 import {HelperText} from '../../../../Component/MyPage/Report/ReportStepTwo';
 import CustomBottomSheetButton from 'src/Component/BottomSheet/CustomBottomSheetButton';
 import {ScrollViewPage} from 'src/Component/Page';
@@ -135,7 +135,7 @@ export const MypageReportUserScreen: React.FC = () => {
               isVisible={modalVisible}
               onClose={() => setModalVisible(false)}
               title={'제보하려는 팝업의 카테고리를 설정해주세요'}
-              height={'65%'}>
+              height={'60%'}>
               <PopupCategoryModal
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}

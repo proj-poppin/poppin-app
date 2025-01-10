@@ -1,5 +1,5 @@
 import {ScrollView} from 'react-native';
-import React from 'react';
+import React, {useCallback} from 'react';
 import styled from 'styled-components/native';
 import {Screen} from '../../../Component/Screen/Screen.component';
 import {SectionContainer} from '../../../Unit/View';
@@ -20,30 +20,38 @@ export const MyPageLandingScreen = () => {
    * @author 도형
    */
 
+  const [isVisible, setIsVisible] = React.useState(false);
+
+  const pressReportButtonHandler = useCallback(() => {
+    setIsVisible(true);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setIsVisible(false);
+  }, []);
+
   return (
-    <Container>
-      <Screen
-        contentContainerStyle={{
-          paddingTop: moderateScale(16),
-          paddingBottom: moderateScale(50),
-        }}
-        ScreenHeader={<MyPageLandingScreenHeader />}
-        ScreenContent={
-          <>
-            <MyPagePaddingSection>
-              <MyPageLandingProfileSection />
-              <MyPageLandingReportSection />
-              <MyPageLandingReviewSection />
-            </MyPagePaddingSection>
-            <MyPagePaddingSection>
-              <MyPageLandingRecentPopupSection />
-              <MyPageLandingMenuSection />
-            </MyPagePaddingSection>
-            <MypageLandingLogoutModal />
-          </>
-        }
-      />
-    </Container>
+    <Screen
+      fullScreen={true}
+      contentContainerStyle={{
+        paddingTop: moderateScale(16),
+      }}
+      ScreenHeader={<MyPageLandingScreenHeader />}
+      ScreenContent={
+        <>
+          <MyPagePaddingSection>
+            <MyPageLandingProfileSection />
+            <MyPageLandingReportSection />
+            <MyPageLandingReviewSection />
+          </MyPagePaddingSection>
+          <MyPagePaddingSection>
+            <MyPageLandingRecentPopupSection />
+            <MyPageLandingMenuSection />
+          </MyPagePaddingSection>
+          <MypageLandingLogoutModal />
+        </>
+      }
+    />
   );
 
   // return (

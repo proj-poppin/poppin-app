@@ -146,6 +146,7 @@ const LeftText = styled.Text`
 
 const SectionContainer = styled.View`
   flex-direction: row;
+  min-width: ${moderateScale(60)}px; // 최소 너비 지정
 `;
 
 /**

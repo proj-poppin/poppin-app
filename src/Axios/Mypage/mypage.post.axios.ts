@@ -1,4 +1,9 @@
-import customAxios, {MANAGER_INFORM, REVIEWS, USER_INFORM} from '../axios.core';
+import customAxios, {
+  AUTH,
+  MANAGER_INFORM,
+  REVIEWS,
+  USER_INFORM,
+} from '../axios.core';
 import {handleAxiosError} from '../../Util';
 
 /**
@@ -14,7 +19,6 @@ export const axiosMyPageUserReport = async (formData: FormData) => {
       data: formData,
     })
     .then(response => {
-      console.log('real response', response);
       return response.data;
     })
     .catch(error => {
@@ -35,7 +39,6 @@ export const axiosMyPageOperatorReport = async (formData: FormData) => {
       data: formData,
     })
     .then(response => {
-      console.log('real response', response);
       return response.data;
     })
     .catch(error => {
@@ -43,6 +46,10 @@ export const axiosMyPageOperatorReport = async (formData: FormData) => {
     });
 };
 
+/**
+ * 팝업 스토어 리뷰 작성 기능입니다.
+ * @author 규진
+ */
 export const axiosMypageReviewReport = async (formData: FormData) => {
   return await customAxios
     .request({
@@ -52,10 +59,28 @@ export const axiosMypageReviewReport = async (formData: FormData) => {
       data: formData,
     })
     .then(response => {
-      console.log('real response', response);
       return response.data;
     })
     .catch(error => {
       handleAxiosError({error, errorMessage: '리뷰 작성하기 실패했습니다'});
+    });
+};
+
+/**
+ * 마이 페이지 비밀번호 검증 기능입니다.
+ * @author 규진
+ */
+export const axiosMypagePasswordCheck = async (password: string) => {
+  return await customAxios
+    .request({
+      method: 'POST',
+      url: `v1/${AUTH}/verification/password`,
+      data: {password: password},
+    })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      handleAxiosError({error, errorMessage: '패스워드 검증에 실패했습니다.'});
     });
 };

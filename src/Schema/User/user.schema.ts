@@ -20,7 +20,7 @@ export type UserSchema = {
   accountType: string;
 
   /** 작성 완료한 후기 아래 숫자 */
-  writtenReviewCnt: number;
+  writtenReview: number;
 
   /** 후기 작성하기 아래 숫자 */
   visitedPopupCnt: number;
@@ -34,7 +34,7 @@ export const BlankUser: UserSchema = {
   email: '',
   nickname: '',
   accountType: '',
-  writtenReviewCnt: 0,
+  writtenReview: 0,
   visitedPopupCnt: 0,
   isPreferenceSetting: false,
 };

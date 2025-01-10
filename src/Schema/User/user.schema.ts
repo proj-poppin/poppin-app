@@ -8,7 +8,7 @@ export type UserSchema = {
   id: string;
 
   /** 유저 이미지 URL */
-  userImageUrl: string;
+  userImageUrl: string | null;
 
   /** 이메일 */
   email: string;
@@ -30,7 +30,7 @@ export type UserSchema = {
 
 export const BlankUser: UserSchema = {
   id: '',
-  userImageUrl: '',
+  userImageUrl: null,
   email: '',
   nickname: '',
   accountType: '',

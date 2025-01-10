@@ -104,6 +104,14 @@ import {
   MypagePasswordChangeScreen,
   MypagePasswordChangeScreenProps,
 } from 'src/Screen/MyPage/Profile/Mypage.password.change.screen';
+import {
+  MypageWithdrawScreen,
+  MypageWithdrawScreenProps,
+} from 'src/Screen/MyPage/Withdraw/Mypage.withdraw.screen';
+import {
+  MypagePolicyScreen,
+  MypagePolicyScreenProps,
+} from 'src/Screen/MyPage/Policy/Mypage.policy.screen';
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
@@ -157,9 +165,13 @@ export type AppStackProps = {
 
   MypageCompleteReviewListScreen: MyPageCompleteReviewListScreenProps;
 
+  MypagePolicyScreen: MypagePolicyScreenProps;
+
   MypageProfileEditScreen: MypageProfileEditScreenProps;
 
   MypagePasswordChangeScreen: MypagePasswordChangeScreenProps;
+
+  MypageWithdrawScreen: MypageWithdrawScreenProps;
 };
 
 const AppStack = createNativeStackNavigator<AppStackProps>();
@@ -484,6 +496,14 @@ const AppStackScreen = () => {
         <AppStack.Screen
           name={'MypagePasswordChangeScreen'}
           component={MypagePasswordChangeScreen}
+        />
+        <AppStack.Screen
+          name={'MypageWithdrawScreen'}
+          component={MypageWithdrawScreen}
+        />
+        <AppStack.Screen
+          name={'MypagePolicyScreen'}
+          component={MypagePolicyScreen}
         />
       </AppStack.Group>
     </AppStack.Navigator>

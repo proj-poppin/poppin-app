@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import {ScreenHeader__Container} from 'src/StyledComponents/View';
 import {ScreenHeader__TitleText} from 'src/StyledComponents/Text';
 import {H3} from 'src/StyledComponents/Text';
-import CaretLeftIcon from 'src/Resource/svg/left-arrow-grey-icon.svg';
+import CaretLeftIcon from 'src/Resource/svg/left-arrow-black-icon.svg';
 import CloseIcon from 'src/Resource/svg/close-icon.svg';
 import {AppStackProps} from '../../Navigator/App.stack.navigator';
 
@@ -32,7 +32,9 @@ export const StepScreenHeader = ({
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
 
   const close = () => {
-    if (navigation.canGoBack()) navigation.goBack();
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
   };
 
   return (

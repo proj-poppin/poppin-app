@@ -26,15 +26,13 @@ import styled from 'styled-components/native';
 import {SectionContainer} from '../../../Unit/View';
 import {PopupSchema} from '../../../Schema/Popup/popup.schema';
 import {EdgeInsets} from 'react-native-safe-area-context';
-import PopupLandingFilterModalContent from '../../../Component/PopupCategoryModal';
 import GradientButton from '../../../Component/Button/FilterSettingButton';
-import {BlackBackgroundModal} from '../../../Component/Modal';
 import PopupStoreCard from '../../../Component/Popup/Landing/PopupStoreCard';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 import CustomBottomSheet from '../../../Component/BottomSheet/CustomBottomSheet';
-import PopupCategoryModal from '../../../Component/PopupCategoryModal';
 import {PopupDetailProvider} from '../Detail/Provider/Popup.detail.provider';
+import {PopupLandingCategoryModal} from './Popup.landing.category.modal';
 
 interface SearchBarProps {
   isSearchMode: boolean;
@@ -154,15 +152,11 @@ export const PopupLandingScreen = ({
         isVisible={modalVisible}
         onClose={() => setModalVisible(false)}
         title={'찾고싶은 팝업의 카테고리를 설정해주세요'}
-        height={'75%'}>
-        <PopupCategoryModal
+        height={'68%'}>
+        <PopupLandingCategoryModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
-          onApply={handleFilterChange} // Apply handler
-          onReset={handleResetFilter} // Reset handler
           buttonName={'필터 적용하기'}
-          validationMode={'both'}
-          initialSelectedCategories={''}
         />
       </CustomBottomSheet>
     </ScreenContainer>

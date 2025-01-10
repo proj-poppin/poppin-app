@@ -1,29 +1,27 @@
 import React, {useEffect} from 'react';
 import {View} from 'react-native';
 import {CalendarList, DateData} from 'react-native-calendars';
-import globalColors from '../../../styles/color/globalColors.ts';
-import HeaderTitle from './HeaderTitle.tsx';
-import {normalCalendarTheme} from './calendarUtils.ts';
 import XDate from 'xdate';
-import {subtractMonthFromString} from '../../../Util/function/subtractMonthFromString.ts';
-import {NormalCalendarComponentProps} from '../../../types/NormalCalendarComponentProps.ts';
+import {NormalCalendarComponentProps} from '../../../Object/Type/calendar.type';
+import {normalCalendarTheme} from '../../PopupLikes/Landing/calendarUtils';
+import HeaderTitle from './HeaderTitle';
+import {themeColors} from '../../../Theme/theme';
+
 export const NormalCalendarComponent: React.FC<
   NormalCalendarComponentProps
 > = ({
-  handlePresentModalPress,
+  onModalOpen,
   markedDates,
   setMarkedDates,
-  selDate,
-  onClickHeaderTitle,
+  selectedDate,
+  setSelectedDate,
   dateTimePickerYearMonthRef,
-  setSelDate,
+  onHeaderTitleClick,
 }) => {
-  useEffect(() => {}, []);
-
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <CalendarList
-        current={selDate.dateString}
+        current={selectedDate.dateString}
         hideArrows={false}
         horizontal={true}
         pagingEnabled={true}
@@ -43,48 +41,39 @@ export const NormalCalendarComponent: React.FC<
           return (
             <HeaderTitle
               selDate={date!.toString('yyyy-MM-dd')}
-              onClickHeaderTitle={onClickHeaderTitle}
+              onClickHeaderTitle={onHeaderTitleClick}
             />
           );
         }}
         onDayPress={(date: DateData) => {
-          setSelDate(date);
+          setSelectedDate(date);
+
           const updatedMarkedDates = {...markedDates};
 
-          // 모든 select 초기화
+          // 모든 날짜 선택 초기화
           Object.keys(updatedMarkedDates).forEach(day => {
-            if (!markedDates[day].today) {
-              updatedMarkedDates[day].selected = false;
-            } else {
-              updatedMarkedDates[day].selectedTextColor = globalColors.black;
-              updatedMarkedDates[day].selectedColor = globalColors.purpleLight;
-            }
+            updatedMarkedDates[day].selected = false;
           });
 
-          // 선택된 날로 select
-          if (updatedMarkedDates[date.dateString]) {
-            if (!updatedMarkedDates[date.dateString].today) {
-              updatedMarkedDates[date.dateString].selected =
-                !updatedMarkedDates[date.dateString].selected;
-            } else {
-              updatedMarkedDates[date.dateString] = {
-                selected: true,
-                selectedColor: globalColors.purple,
-                selectedTextColor: globalColors.white,
-              };
-            }
-          } else {
-            updatedMarkedDates[date.dateString] = {
-              selected: true,
-              selectedColor: globalColors.purple,
-              selectedTextColor: globalColors.white,
-            };
-          }
+          // 선택된 날짜 강조 표시
+          updatedMarkedDates[date.dateString] = {
+            selected: true,
+            selectedColor: themeColors().purple.main,
+            selectedTextColor: themeColors().grey.white,
+          };
 
           setMarkedDates(updatedMarkedDates);
-          handlePresentModalPress();
+          onModalOpen(); // 바텀시트를 열기 위한 트리거
         }}
       />
     </View>
   );
+};
+
+const subtractMonthFromString = (date: string) => {
+  const dateArr = date.split('.');
+  const year = dateArr[0];
+  const month = dateArr[1];
+  const newMonth = parseInt(month) - 1;
+  return `${year}.${newMonth}`;
 };

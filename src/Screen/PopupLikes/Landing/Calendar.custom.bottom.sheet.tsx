@@ -1,33 +1,21 @@
 import React, {useEffect, useRef} from 'react';
 import {Modal, Animated, Dimensions, PanResponder} from 'react-native';
 import styled from 'styled-components/native';
-import {moderateScale} from '../../Util';
+import {moderateScale} from '../../../Util';
 
-/**
- * CustomBottomSheet를 제작해두어 이를 참고하여 쓸 수 있게 합니다,
- * height는 화면 기준 몇 퍼센트를 차지하게끔 할 건지에 대해서 작성하고, 이는 타입 여부에 관계없이 사용할 수 있습니다.
- * title은 Sheet 최상단에 들어가는 title입니다.
- * 내부의 children이라는 prop을 통해서 Container을 집어넣으면 됩니다!
- * ex) MypageLandingReportSection 을 참고하시면 됩니다!
- * @author 규진, 도형
- */
-interface CustomBottomSheetProps {
+interface CalendarCustomBottomSheetProps {
   isVisible: boolean;
   onClose: () => void;
-  title: string;
   children: React.ReactNode;
-  height?: string | number; // height prop 추가
+  height?: string | number;
+  showHandleBar?: boolean; // HandleBar 표시 여부
 }
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 
-export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
-  isVisible,
-  onClose,
-  title,
-  children,
-  height = '40%', // 기본값 설정
-}) => {
+export const CalendarCustomBottomSheet: React.FC<
+  CalendarCustomBottomSheetProps
+> = ({isVisible, onClose, children, height = '50%', showHandleBar = true}) => {
   const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
 
   useEffect(() => {
@@ -52,12 +40,12 @@ export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: (evt, gestureState) => {
+      onPanResponderMove: (_, gestureState) => {
         if (gestureState.dy > 0) {
           translateY.setValue(gestureState.dy);
         }
       },
-      onPanResponderRelease: (evt, gestureState) => {
+      onPanResponderRelease: (_, gestureState) => {
         if (gestureState.dy > SCREEN_HEIGHT * 0.2) {
           Animated.timing(translateY, {
             toValue: SCREEN_HEIGHT,
@@ -91,14 +79,8 @@ export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
             transform: [{translateY}],
           }}
           {...panResponder.panHandlers}>
-          <HandleBar />
-          <SheetContent>
-            <HeaderContainer>
-              <HeaderText>{title}</HeaderText>
-              <HeaderDivider />
-            </HeaderContainer>
-            <BodyContainer>{children}</BodyContainer>
-          </SheetContent>
+          {showHandleBar && <HandleBar />}
+          <SheetContent>{children}</SheetContent>
         </SheetContainer>
       </Container>
     </Modal>
@@ -140,25 +122,8 @@ const SheetContainer = styled.View<{$height: string | number}>`
 
 const SheetContent = styled.View`
   flex: 1;
-`;
-
-const HeaderContainer = styled.View``;
-
-const HeaderText = styled.Text`
-  text-align: center;
-  margin-top: ${moderateScale(18)}px;
-  font-size: ${moderateScale(18)}px;
-  font-weight: 600;
-`;
-
-const HeaderDivider = styled.View`
-  width: ${moderateScale(40)}px;
-  border-radius: ${moderateScale(2)}px;
-`;
-
-const BodyContainer = styled.View`
-  flex: 1;
+  padding: ${moderateScale(16)}px;
   background-color: white;
 `;
 
-export default CustomBottomSheet;
+export default CalendarCustomBottomSheet;

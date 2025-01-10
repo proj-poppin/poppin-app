@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import CaretLeftIcon from 'src/Resource/svg/left-arrow-grey-icon.svg';
+import CaretLeftIcon from 'src/Resource/svg/left-arrow-black-icon.svg';
 import {moderateScale} from 'src/Util';
 
 /**

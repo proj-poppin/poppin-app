@@ -1,5 +1,4 @@
-// Mypage.report.bottomsheet.container.tsx
-import React, {useCallback, useState} from 'react';
+import React, {useCallback} from 'react';
 import styled from 'styled-components/native';
 import {moderateScale} from '../../../Util';
 import ArrowIcon from '../../../Resource/svg/right-arrow-gray-icon.svg';
@@ -61,9 +60,7 @@ const MyPageReportBottomSheetContainer: React.FC<
 };
 
 // Styled Components
-const Container = styled.View`
-  width: 100%;
-`;
+const Container = styled.View``;
 
 const OptionButton = styled.TouchableOpacity<{isSelected?: boolean}>`
   width: 100%;

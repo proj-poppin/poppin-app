@@ -12,6 +12,11 @@ import {PreferenceCompanion} from '../../../Schema/Preference/preferenceCompanio
 import {PreferenceCategory} from '../../../Schema/Preference/preferenceCategory.schema';
 import {PreferencePopupStore} from '../../../Schema/Preference/preferencePopupStore';
 
+/**
+ * 팝업 찾기 화면에 필요한 상태값들을 관리합니다.
+ * @author 도형
+ */
+
 type PopupStatusProps = {
   searchedPopupStores: PopupSchema[];
   pageInfo: PageInfoType;
@@ -90,10 +95,37 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
     preferencePopupStore: BlankPreference.preferencePopupStore,
     preferenceCompanion: BlankPreference.preferenceCompanion,
 
-    setFilteringFourteenCategories: categoryState =>
-      set({preferenceCategory: categoryState}),
-    setFilteringThreeCategories: popupStoreState =>
-      set({preferencePopupStore: popupStoreState}),
+    // 필터 설정, 필터 적용 버튼 여부는 선택된 카테고리의 개수에 따라 결정합니다.
+
+    setIsSetting: (isSetting: boolean) => set({isSetting}),
+
+    setFilteringFourteenCategories: categoryState => {
+      set(state => {
+        const hasCategorySelected = Object.values(categoryState).some(Boolean);
+        const hasPopupSelected = Object.values(state.preferencePopupStore).some(
+          Boolean,
+        );
+
+        return {
+          preferenceCategory: categoryState,
+          isSetting: hasCategorySelected || hasPopupSelected,
+        };
+      });
+    },
+
+    setFilteringThreeCategories: popupStoreState => {
+      set(state => {
+        const hasCategorySelected = Object.values(
+          state.preferenceCategory,
+        ).some(Boolean);
+        const hasPopupSelected = Object.values(popupStoreState).some(Boolean);
+
+        return {
+          preferencePopupStore: popupStoreState,
+          isSetting: hasCategorySelected || hasPopupSelected,
+        };
+      });
+    },
 
     setSearchKeyword: (keyword: string) => {
       set({searchKeyword: keyword});
@@ -114,8 +146,6 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
       set({selectedOrderType: orderType});
       get().refreshAllTabs();
     },
-
-    setIsSetting: (isSetting: boolean) => set({isSetting}),
 
     refreshAllTabs: () => {
       const {
@@ -162,7 +192,7 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
       }));
       try {
         const response = await axiosGetPopupsBySearchFiltering(params);
-        if (response !== null) {
+        if (response) {
           set(state => ({
             ...state,
             [operationStatus]: {
@@ -181,7 +211,6 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
         }));
       }
     },
-
     setPopupStoreByOperationStatus: (
       operationStatus,
       popupStores,
@@ -254,3 +283,11 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
     },
   }),
 );
+
+export const convertToBinaryString = (
+  state: Record<string, boolean>,
+): string => {
+  return Object.values(state)
+    .map(value => (value ? '1' : '0'))
+    .join('');
+};

@@ -4,6 +4,7 @@ import SelectDropdown, {
   SelectDropdownProps,
 } from 'react-native-select-dropdown';
 import SortingIcon from 'src/Resource/svg/sorting-icon.svg';
+import VButton from 'src/Resource/svg/down-arrow-black-icon.svg';
 import {moderateScale} from 'src/Util';
 import {EnumValueWithName} from '../../Object/Type/enum.type';
 import {themeColors} from '../../Theme/theme';

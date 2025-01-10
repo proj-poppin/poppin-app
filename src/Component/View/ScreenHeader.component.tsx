@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleProp, ViewStyle} from 'react-native';
 import styled from 'styled-components/native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import CaretLeftIcon from 'src/Resource/svg/left-arrow-grey-icon.svg';
+import CaretLeftIcon from 'src/Resource/svg/left-arrow-black-icon.svg';
 import CloseIcon from 'src/Resource/svg/close-bold-icon.svg';
 import SearchIcon from 'src/Resource/svg/search-icon.svg';
 import {moderateScale} from 'src/Util';
@@ -36,11 +36,15 @@ export const ScreenHeader = ({
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
 
   const goBack = () => {
-    if (navigation.canGoBack()) navigation.goBack();
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
   };
 
   const LeftPart = () => {
-    if (!LeftComponents) return null;
+    if (!LeftComponents) {
+      return null;
+    }
 
     const LeftButton = () => {
       switch (LeftComponents) {

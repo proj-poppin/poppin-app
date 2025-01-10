@@ -1,12 +1,12 @@
 import React from 'react';
 import {TouchableOpacity, View} from 'react-native';
-import InterestPopUpCard from '../../../components/molecules/card/InterestPopUpCard.tsx';
-import {GetInterestPopUpListResponse} from '../../../types/PopUpListData.ts';
 import {NavigationProp} from '@react-navigation/native';
-import DividerLine from '../../../components/DividerLine.tsx';
+import {PopupSchema} from '../../../Schema/Popup/popup.schema';
+import PopupStoreCard from '../../../Component/Popup/Landing/PopupStoreCard';
+import DividerLine from '../../../Component/DividerLine/DividerLine';
 
 type ItemData = {
-  item: GetInterestPopUpListResponse;
+  item: PopupSchema;
   navigation: NavigationProp<any>;
   showToast: (message: string) => void;
   isLoggedIn: boolean;
@@ -34,15 +34,7 @@ const BottomSheetItem: React.FC<ItemData> = ({
             isLoggedIn: isLoggedIn,
           })
         }>
-        <InterestPopUpCard
-          image_url={item.image_url}
-          name={item.name}
-          close_date={item.close_date}
-          open_date={item.open_date}
-          status={item.status}
-          id={item.id}
-          showToast={showToast}
-        />
+        <PopupStoreCard item={item} />
       </TouchableOpacity>
       <DividerLine height={2} />
     </View>

@@ -1,16 +1,21 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {BlankPopup, PopupSchema} from 'src/Schema/Popup/popup.schema';
 import {createContext, useContext, useState} from 'react';
 import {axiosGetPopupById} from 'src/Axios/Popup/popup.get.axios';
 import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
 import {useAppStore} from 'src/Zustand/App/app.zustand';
-import {axiosVisitPopupStore} from 'src/Axios/Popup/popup.post.axios';
+import {
+  axiosRequestReopenPopup,
+  axiosVisitPopupStore,
+} from 'src/Axios/Popup/popup.post.axios';
 import {useRecentPopups} from 'src/Util/local.util';
+import {showBlackToast} from '../../../../Util';
 
 export type VisitButtonType =
   | 'VISIT_NOW'
   | 'VISIT_COMPLETE'
-  | 'RECEIVE_REOPEN_ALERT';
+  | 'RECEIVE_REOPEN_ALERT'
+  | 'RECEIVE_REOPEN_ALERT_COMPLETE';
 
 export type PopupDetailModalType =
   | undefined
@@ -31,6 +36,7 @@ type PopupDetailContextProp = {
   /** 팝업 상세 정보 */
   popupDetail: PopupSchema;
   setPopupDetail: (popupDetail: PopupSchema) => void;
+  updateVisitButtonType: () => void;
   /**
    * 최신 팝업 정보를 가져옵니다. 팝업이 삭제되거나 블락된 경우,
    * 팝업 삭제됨 모달을 띄우고 해당 내용을 전파합니다.
@@ -60,12 +66,15 @@ type PopupDetailContextProp = {
   /** 방문 참여 버튼 타입 */
   visitPopup: () => Promise<void>;
   visitButtonType: VisitButtonType;
+
+  requestReopenPopup: () => Promise<void>;
 };
 
 const PopupDetailContext = createContext<PopupDetailContextProp>({
   randomizeOffset: 0,
   popupDetail: BlankPopup,
   setPopupDetail: () => {},
+  updateVisitButtonType: () => {},
   getRecentPopupDetail: async () => {},
   popupDetailModalVisible: false,
   setPopupDetailModalVisible: () => {},
@@ -79,6 +88,7 @@ const PopupDetailContext = createContext<PopupDetailContextProp>({
   setVisiting: () => {},
   visitPopup: async () => {},
   visitButtonType: 'VISIT_NOW',
+  requestReopenPopup: async () => {},
 });
 
 /**
@@ -99,15 +109,44 @@ export const usePopupDetailContext = () => useContext(PopupDetailContext);
  */
 
 export const PopupDetailProvider = ({children}: {children: any}) => {
+  const [popupReopenAlert, setPopupReopenAlert] = useState<boolean>(false);
   const [popupDetail, setPopupDetail] = useState<PopupSchema>(BlankPopup);
   const [visitButtonType, setVisitButtonType] =
     useState<VisitButtonType>('VISIT_NOW');
 
-  const visitPopup = async () => {
-    const response = await axiosVisitPopupStore(popupDetail.id);
-    if (response?.updatedPopup) {
-      setPopupDetail(response.updatedPopup);
+  // VisitButtonType 업데이트 로직
+  const updateVisitButtonType = () => {
+    if (popupDetail.operationStatus === 'TERMINATED') {
+      setVisitButtonType('RECEIVE_REOPEN_ALERT');
+    } else if (popupDetail.isVisited) {
       setVisitButtonType('VISIT_COMPLETE');
+    } else {
+      setVisitButtonType('VISIT_NOW');
+    }
+  };
+
+  useEffect(() => {
+    updateVisitButtonType();
+  }, [popupDetail]);
+
+  const visitPopup = async () => {
+    console.log('visitPopup called');
+    const response = await axiosVisitPopupStore(popupDetail.id);
+    // if (response?.updatedPopup) {
+    //   setPopupDetail(response.updatedPopup);
+    //   setVisitButtonType('VISIT_COMPLETE');
+    // }
+    if (response?.success) {
+      setPopupDetail(response.data);
+      setVisitButtonType('VISIT_COMPLETE');
+    }
+  };
+
+  const requestReopenPopup = async () => {
+    const response = await axiosRequestReopenPopup(popupDetail.id);
+    if (response?.success) {
+      showBlackToast({text1: '재오픈 알림이 등록되었습니다.'});
+      setVisitButtonType('RECEIVE_REOPEN_ALERT_COMPLETE');
     }
   };
 
@@ -194,6 +233,7 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
     visiting,
     setVisiting,
     visitPopup,
+    requestReopenPopup,
     visitButtonType,
   };
 

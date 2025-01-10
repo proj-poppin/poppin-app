@@ -31,12 +31,11 @@ export const MyPageLandingReportSection: React.FC = () => {
         onPress={pressReportButtonHandler}
       />
       <CustomBottomSheet
-        isVisible={isVisible}
+        height={'34%'}
         onClose={handleClose}
+        isVisible={isVisible}
         title="제보하는 사람이 누구인가요?">
-        <SheetContent>
-          <MypageReportBottomSheetContainer handleClose={handleClose} />
-        </SheetContent>
+        <MypageReportBottomSheetContainer handleClose={handleClose} />
       </CustomBottomSheet>
     </>
   );
@@ -54,8 +53,4 @@ const ReportButtonText = styled.Text`
   color: white;
   font-size: ${moderateScale(16)}px;
   font-weight: 600;
-`;
-
-const SheetContent = styled.View`
-  align-items: center;
 `;

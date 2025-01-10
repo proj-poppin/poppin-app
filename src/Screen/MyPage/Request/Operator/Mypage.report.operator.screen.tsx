@@ -1,9 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {ScrollViewPage} from '../../../../Component/Page';
-import StepOne from '../../../../Component/MyPage/Report/ReportStepOne';
-import StepTwo from '../../../../Component/MyPage/Report/ReportStepTwo';
+import OperatorReportStepOnePage from '../../../../Component/MyPage/Report/ReportStepOne';
+import OperatorReportStepTwoPage from '../../../../Component/MyPage/Report/ReportStepTwo';
 import StepHeader from '../../../../Component/MyPage/Report/StepHeader';
-import StepThree from '../../../../Component/MyPage/Report/ReportStepThree';
+import OperatorReportStepThreePage from '../../../../Component/MyPage/Report/ReportStepThree';
 import {StyleProp, ViewStyle, Platform, Alert} from 'react-native';
 import {useOperatorReportStore} from './Mypage.report.operator.zustand';
 import {
@@ -32,10 +32,10 @@ export const MypageReportOperatorScreen: React.FC = () => {
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
-        return <StepOne onNext={() => setCurrentStep(2)} />;
+        return <OperatorReportStepOnePage onNext={() => setCurrentStep(2)} />;
       case 2:
         return (
-          <StepTwo
+          <OperatorReportStepTwoPage
             onNext={() => setCurrentStep(3)}
             onBackPress={handleBackPress}
           />
@@ -43,7 +43,7 @@ export const MypageReportOperatorScreen: React.FC = () => {
       case 3:
         return (
           //TODO- [규진]- 제보하기 API 연동 기능 추가
-          <StepThree
+          <OperatorReportStepThreePage
             onNext={() => handleSubmit()}
             onBackPress={handleBackPress}
           />

@@ -18,6 +18,7 @@ interface SvgWithNameBoxLabelProps {
   isWithoutBorder?: boolean;
   isSwitchComponentOrder?: boolean;
   isPressedEnabled?: boolean;
+  isCompleted?: boolean; // New prop for completed state
   onPress?: (event: GestureResponderEvent) => void;
   containerStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
@@ -34,6 +35,7 @@ const SvgWithNameBoxLabel: React.FC<SvgWithNameBoxLabelProps> = ({
   isWithoutBorder = false,
   isSwitchComponentOrder,
   isPressedEnabled = true,
+  isCompleted = false, // Default is not completed
   onPress,
   containerStyle,
   textStyle,
@@ -61,11 +63,14 @@ const SvgWithNameBoxLabel: React.FC<SvgWithNameBoxLabelProps> = ({
       isWithoutBorder={isWithoutBorder}
       isPressed={isPressed}
       isPressedEnabled={isPressedEnabled}
+      isCompleted={isCompleted} // Pass isCompleted prop
       borderRadius={borderRadius}
       style={[{width, height}, containerStyle]}>
       {isSwitchComponentOrder ? (
         <RowContainer>
-          <LabelText style={[{fontWeight: isBold ? '600' : '400'}, textStyle]}>
+          <LabelText
+            isCompleted={isCompleted} // Pass isCompleted prop
+            style={[{fontWeight: isBold ? '600' : '400'}, textStyle]}>
             {label}
           </LabelText>
           {Icon && <Icon style={[{marginLeft: moderateScale(4)}, iconStyle]} />}
@@ -75,7 +80,9 @@ const SvgWithNameBoxLabel: React.FC<SvgWithNameBoxLabelProps> = ({
           {Icon && (
             <Icon style={[{marginRight: moderateScale(4)}, iconStyle]} />
           )}
-          <LabelText style={[{fontWeight: isBold ? '600' : '400'}, textStyle]}>
+          <LabelText
+            isCompleted={isCompleted} // Pass isCompleted prop
+            style={[{fontWeight: isBold ? '600' : '400'}, textStyle]}>
             {label}
           </LabelText>
         </RowContainer>
@@ -91,19 +98,26 @@ const PressableContainer = styled.Pressable<{
   isWithoutBorder: boolean;
   isPressed: boolean;
   isPressedEnabled: boolean;
+  isCompleted: boolean; // New prop for completed state
   borderRadius: number;
 }>`
   flex-direction: row;
   align-items: center;
   justify-content: center;
   border-radius: ${({borderRadius}) => borderRadius}px;
-  background-color: ${({isPressed, isPressedEnabled}) =>
-    isPressed && isPressedEnabled ? `${themeColors().blue.main}1A` : 'white'};
-  ${({isWithoutBorder}) =>
+  background-color: ${({isCompleted, isPressed, isPressedEnabled}) =>
+    isCompleted
+      ? themeColors().blue.main // Blue background for completed state
+      : isPressed && isPressedEnabled
+      ? `${themeColors().blue.main}1A`
+      : 'white'};
+  ${({isWithoutBorder, isCompleted}) =>
     !isWithoutBorder &&
     `
     border-width: 1px;
-    border-color: ${themeColors().blue.main};
+    border-color: ${
+      isCompleted ? 'transparent' : themeColors().blue.main
+    }; // No border when completed
   `}
 `;
 
@@ -114,7 +128,10 @@ const RowContainer = styled.View`
   padding-horizontal: ${moderateScale(8)}px;
 `;
 
-const LabelText = styled.Text`
+const LabelText = styled.Text<{isCompleted: boolean}>`
   font-size: ${moderateScale(14)}px;
-  color: ${themeColors().blue.main};
+  color: ${({isCompleted}) =>
+    isCompleted
+      ? 'white'
+      : themeColors().blue.main}; // White text for completed state
 `;

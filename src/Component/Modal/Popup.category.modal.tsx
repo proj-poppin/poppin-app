@@ -6,17 +6,15 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native';
-import CategorySelectButton from '../Screen/Popup/Landing/category.select.button';
+import CategorySelectButton from '../../Screen/Popup/Landing/category.select.button';
 import {
   BackMiddleButton,
   NextMiddleButton,
-} from '../Screen/Popup/Landing/back.middle.button';
-import {usePopupScreenStore} from '../Screen/Popup/Landing/Popup.landing.zustand';
+} from '../../Screen/Popup/Landing/back.middle.button';
 import {BlankPreference} from 'src/Schema/Preference/preference.schema';
-import {themeColors} from 'src/Theme/theme';
-import CommonCompleteButton from '../Screen/Popup/Landing/common.complete.button';
-import ImagePicker from 'react-native-image-crop-picker';
 import styled from 'styled-components/native';
+import {moderateScale} from '../../Util';
+import {categoryKeys, popupStoreKeys} from '../../Object/preference.enum';
 
 interface PopupCategoryModalProps {
   visible: boolean;
@@ -29,7 +27,8 @@ interface PopupCategoryModalProps {
   onReset: () => void;
   validationMode: 'both' | 'any';
   isPopupRequestModal?: boolean;
-  initialSelectedCategories: string;
+  initialPreferenceCategory: typeof BlankPreference.preferenceCategory;
+  initialPreferencePopupStore: typeof BlankPreference.preferencePopupStore;
 }
 
 const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
@@ -39,32 +38,21 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
   buttonName,
   validationMode = 'any',
   isPopupRequestModal = false,
+  initialPreferenceCategory,
+  initialPreferencePopupStore,
 }) => {
   const [preferenceCategory, setPreferenceCategory] = useState(
-    BlankPreference.preferenceCategory,
+    initialPreferenceCategory || BlankPreference.preferenceCategory,
   );
   const [preferencePopupStore, setPreferencePopupStore] = useState(
-    BlankPreference.preferencePopupStore,
+    initialPreferencePopupStore || BlankPreference.preferencePopupStore,
   );
   const [isValidSelection, setIsValidSelection] = useState(false);
 
-  const popupStoreKeys = ['market', 'display', 'experience'];
-  const categoryKeys = [
-    'fashionBeauty',
-    'characters',
-    'foodBeverage',
-    'webtoonAni',
-    'interiorThings',
-    'movie',
-    'musical',
-    'sports',
-    'game',
-    'itTech',
-    'kpop',
-    'alcohol',
-    'animalPlant',
-    'guitar',
-  ];
+  useEffect(() => {
+    setPreferenceCategory(initialPreferenceCategory);
+    setPreferencePopupStore(initialPreferencePopupStore);
+  }, [initialPreferenceCategory, initialPreferencePopupStore]);
 
   useEffect(() => {
     const hasCategory = Object.values(preferenceCategory).some(value => value);
@@ -210,7 +198,6 @@ const BackgroundTouchable = styled.View`
 
 const ModalContent = styled.View`
   background-color: white;
-  padding: 20px 16px;
   max-height: 100%;
 `;
 
@@ -239,4 +226,5 @@ const ButtonsWrapper = styled.View`
   justify-content: center;
   gap: 10px;
   margin-top: 20px;
+  margin-bottom: ${moderateScale(20)}px;
 `;

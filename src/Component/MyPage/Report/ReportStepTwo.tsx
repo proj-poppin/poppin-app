@@ -6,7 +6,7 @@ import {HHMMFormatTime, moderateScale, YYYYHHMMFormatDate} from '../../../Util';
 import CustomBottomSheet from '../../BottomSheet/CustomBottomSheet';
 import CalendarPicker from '../../CalendarPicker';
 import TimePicker from '../../TimePicker';
-import PopupCategoryModal from '../../PopupCategoryModal';
+import PopupCategoryModal from '../../Modal/Popup.category.modal';
 import {useImagePicker} from '../../../hooks/useImagePicker';
 import {useOperatorReportStore} from '../../../Screen/MyPage/Request/Operator/Mypage.report.operator.zustand';
 import {StepProps} from './ReportStepOne';
@@ -258,7 +258,9 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <InputLabel>운영 시간외 예외 사항</InputLabel>
           <InputBigContainer>
             <StyledBigInput
-              placeholder={`운영 시간 외 예외사항이 있다면 작성해 주세요. \nex) 마지막 날에는 5시에 조기 마감`}
+              placeholder={
+                '운영 시간 외 예외사항이 있다면 작성해 주세요. \nex) 마지막 날에는 5시에 조기 마감'
+              }
               placeholderTextColor={'#9F9F9F'}
               multiline={true}
               value={operationException}

@@ -25,7 +25,6 @@ export const PopupDetailContainer = ({
 }: {
   params: PopupDetailScreenProps;
 }) => {
-  console.log('PopupDetailContainer', params);
   const navigation =
     useNavigation<NavigationProp<AppStackProps, 'PopupDetailScreen'>>();
 
@@ -36,6 +35,7 @@ export const PopupDetailContainer = ({
     getRecentPopupDetail,
     showPopupDetailModal,
     visitPopup,
+    requestReopenPopup,
     visitButtonType,
   } = usePopupDetailContext();
 
@@ -67,6 +67,8 @@ export const PopupDetailContainer = ({
   const onVisitPress = () => {
     if (visitButtonType === 'VISIT_NOW') {
       visitPopup();
+    } else if (visitButtonType === 'RECEIVE_REOPEN_ALERT') {
+      requestReopenPopup();
     }
   };
 

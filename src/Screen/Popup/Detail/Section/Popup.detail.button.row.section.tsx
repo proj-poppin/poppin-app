@@ -5,6 +5,8 @@ import {moderateScale} from 'src/Util';
 import styled from 'styled-components/native';
 import {FastImageContainer} from 'src/Component/Image/FastImage.component';
 import {themeColors} from 'src/Theme/theme';
+import PopupDetailVisitButton from './Popup.detail.visit.button';
+import {usePopupDetailContext} from '../Provider/Popup.detail.provider';
 
 interface PopupDetailBottomButtonRowSectionProps {
   onRealTimePress: () => void;
@@ -15,6 +17,7 @@ const PopupDetailBottomButtonRowSection: React.FC<
   PopupDetailBottomButtonRowSectionProps
 > = ({onRealTimePress, onVisitPress}) => {
   const [isTooltipVisible, setTooltipVisible] = useState(false);
+  const {popupDetail, visitButtonType} = usePopupDetailContext();
 
   const toggleTooltip = () => setTooltipVisible(prev => !prev);
 
@@ -32,7 +35,7 @@ const PopupDetailBottomButtonRowSection: React.FC<
               style={{marginRight: moderateScale(5), transform: [{scale: 0.7}]}}
             />
             <LabelText>실시간 방문자 수</LabelText>
-            <CountText>12명</CountText>
+            <CountText />
           </RowContainer>
         </VisitorButton>
 
@@ -48,13 +51,9 @@ const PopupDetailBottomButtonRowSection: React.FC<
 
         {/* 방문하기 버튼 */}
         <Spacer />
-        <SvgWithNameBoxLabel
-          height={moderateScale(50)}
-          width={moderateScale(175)}
-          label="방문하기"
-          textStyle={{fontSize: moderateScale(17)}}
+        <PopupDetailVisitButton
           onPress={onVisitPress}
-          isWithoutBorder={false}
+          visitButtonType={visitButtonType}
         />
       </RowSection>
     </BottomBar>

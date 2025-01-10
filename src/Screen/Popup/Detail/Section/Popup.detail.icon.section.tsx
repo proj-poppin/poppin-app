@@ -44,14 +44,9 @@ const PopupDetailIconSection = () => {
     Linking.openURL(link).catch(e => console.log(e));
   };
 
-  const handleShare = () => {
-    // 공유 로직 추가
-    console.log('Sharing popup details');
-  };
+  const handleShare = () => {};
 
   const isLoading = loadingStates[popupDetail.id] ?? false;
-
-  console.log('fucking loading Id:', loadingStates[popupDetail.id]);
 
   return (
     <IconSectionContainer>

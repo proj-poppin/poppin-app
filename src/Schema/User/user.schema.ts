@@ -25,7 +25,7 @@ export type UserSchema = {
   /** 후기 작성하기 아래 숫자 */
   visitedPopupCnt: number;
 
-  isPreferenceSetting: boolean;
+  isPreferenceSettingCreated: boolean;
 };
 
 export const BlankUser: UserSchema = {
@@ -36,5 +36,5 @@ export const BlankUser: UserSchema = {
   accountType: '',
   writtenReview: 0,
   visitedPopupCnt: 0,
-  isPreferenceSetting: false,
+  isPreferenceSettingCreated: false,
 };

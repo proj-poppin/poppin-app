@@ -12,6 +12,23 @@ import {
 import {StyleProp, ViewStyle} from 'react-native';
 import {themeColors} from 'src/Theme/theme';
 
+/**
+ * @deprecated
+ * ScrollViewPage.component 혹은 FullViewPage.component 를 사용해주세요
+ *
+ * 스크린 헤더, 화면 콘텐츠, 하단 버튼, 모달을 인자로 받아
+ * 좌우 padding 이나 배경색 등이 규격화된 Screen 을 반환합니다.
+ *
+ * TODO: BottomButton 인자 이름을 바꿉니다. BottomPart?
+ *
+ * @param ScreenHeader
+ * @param ScreenContent
+ * @param BottomButton
+ * @param Modal
+ * @param fullScreen ScreenContent 가 전체 화면을 차지하여 스크롤 할 수 없도록 설정하고 싶은 경우 true 로 설정합니다.
+ * @author 도형
+ */
+
 interface ScreenProps {
   scrollViewRef?: React.RefObject<ScrollView | FlatList<any>>;
   ScreenHeader?: JSX.Element;

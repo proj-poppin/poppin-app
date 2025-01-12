@@ -22,16 +22,20 @@ interface CommonCompleteButtonProps {
   loading?: boolean;
   extraIcon?: React.FunctionComponent<SvgProps>;
   textStyle?: StyleProp<TextStyle>;
+  isPreviousButton?: boolean; // New prop with default value
 }
 
-const CommonCompleteButton: React.FC<CommonCompleteButtonProps> = ({
+const CommonCompleteButton: React.FC<
+  CommonCompleteButtonProps & {isPreviousButton?: boolean}
+> = ({
   onPress,
   style,
   title,
   isDisabled = false,
   loading = false,
   extraIcon: ExtraIcon,
-  textStyle, // Destructure textStyle
+  textStyle,
+  isPreviousButton = false, // New prop with default value
 }) => {
   const throttledOnPress = useMemo(
     () =>
@@ -47,18 +51,26 @@ const CommonCompleteButton: React.FC<CommonCompleteButtonProps> = ({
     <StyledPressable
       onPress={throttledOnPress}
       disabled={isDisabled}
+      isPreviousButton={isPreviousButton} // Pass the prop to styled component
       style={({pressed}) => [
         {
-          backgroundColor: isDisabled
+          backgroundColor: isPreviousButton
+            ? pressed
+              ? themeColors().blue.mild // Pressed state for previous button
+              : 'white'
+            : isDisabled
             ? themeColors().grey.component
             : pressed
             ? themeColors().blue.focused
             : themeColors().blue.main,
-          borderColor: isDisabled
+          borderColor: isPreviousButton
+            ? themeColors().blue.main // Border color for previous button
+            : isDisabled
             ? themeColors().grey.component
             : pressed
             ? themeColors().blue.focused
             : themeColors().blue.main,
+          borderWidth: isPreviousButton ? 1 : 0, // Border width for previous button
         },
         style,
       ]}>
@@ -71,7 +83,10 @@ const CommonCompleteButton: React.FC<CommonCompleteButtonProps> = ({
               <ExtraIcon width={moderateScale(20)} height={moderateScale(20)} />
             </IconContainer>
           )}
-          <StyledText isDisabled={isDisabled} style={textStyle}>
+          <StyledText
+            isDisabled={isDisabled}
+            isPreviousButton={isPreviousButton}
+            style={textStyle}>
             {title}
           </StyledText>
         </ButtonContent>
@@ -82,10 +97,10 @@ const CommonCompleteButton: React.FC<CommonCompleteButtonProps> = ({
 
 export default CommonCompleteButton;
 
-const StyledPressable = styled(Pressable)`
-  height: ${moderateScale(50)}px;
+const StyledPressable = styled(Pressable)<{isPreviousButton: boolean}>`
+  height: ${moderateScale(55)}px;
   width: 90%;
-  border-radius: ${moderateScale(25)}px;
+  border-radius: ${moderateScale(30)}px;
   align-self: center;
   justify-content: center;
   align-items: center;
@@ -102,7 +117,16 @@ const IconContainer = styled.View`
   margin-right: ${moderateScale(8)}px;
 `;
 
-const StyledText = styled(Text)<{isDisabled: boolean}>`
-  font-size: ${moderateScale(17)}px;
-  color: ${({isDisabled}) => (isDisabled ? themeColors().grey.main : 'white')};
+const StyledText = styled(Text)<{
+  isDisabled: boolean;
+  isPreviousButton: boolean;
+}>`
+  font-size: ${moderateScale(18)}px;
+  font-weight: 700;
+  color: ${({isDisabled, isPreviousButton}) =>
+    isPreviousButton
+      ? themeColors().grey.main
+      : isDisabled
+      ? themeColors().grey.main
+      : 'white'};
 `;

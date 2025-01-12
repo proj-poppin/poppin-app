@@ -4,6 +4,34 @@
  */
 
 export const popupStoreKeys = ['market', 'display', 'experience'];
+export const preferenceKeysForPopupCategory = [
+  'market',
+  'display',
+  'experience',
+  'wantFree',
+];
+export const preferenceKeysForPopupMate = [
+  'solo',
+  'withFriend',
+  'withFamily',
+  'withLover',
+];
+export const preferenceKeysForPopupInterest = [
+  'fashionBeauty',
+  'characters',
+  'foodBeverage',
+  'webtoonAni',
+  'interiorThings',
+  'movie',
+  'musical',
+  'sports',
+  'game',
+  'itTech',
+  'kpop',
+  'alcohol',
+  'animalPlant',
+  'guitar',
+];
 export const categoryKeys = [
   'fashionBeauty',
   'characters',
@@ -23,7 +51,10 @@ export const categoryKeys = [
 
 export function getPreferenceTitle(key: string): string {
   switch (key) {
-    // PREFERENCE options
+    /**
+     * 3개 카테고리
+     * 카테고리중 '팝업 유형' 섹션에 해당
+     */
     case 'market':
       return '🛍️ 소비형';
     case 'display':
@@ -31,9 +62,12 @@ export function getPreferenceTitle(key: string): string {
     case 'experience':
       return '🏃 체험형';
     case 'wantFree':
-      return '무료 체험이었으면 좋겠어요';
+      return '💸 무료였으면 좋겠어요';
 
-    // TASTE options
+    /**
+     * 14개 카테고리
+     * 카테고리중 '관심사' 섹션에 해당
+     */
     case 'fashionBeauty':
       return '💄 패션/뷰티';
     case 'characters':
@@ -63,7 +97,10 @@ export function getPreferenceTitle(key: string): string {
     case 'guitar':
       return '🎸 기타';
 
-    // WHO_WITH options
+    /**
+     * 4개 카테고리
+     * 카테고리중 '팝업 MATE' 섹션에 해당
+     */
     case 'solo':
       return '나 혼자 방문해요';
     case 'withFriend':

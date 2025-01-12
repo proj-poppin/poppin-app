@@ -63,12 +63,11 @@ export const HomeLandingScreen = ({
   );
 
   const {user, isLoggedIn} = useUserStore(
-    state => ({user: state.user, isLoggedIn: state.isLoggedIn}),
-    shallow,
-  );
-
-  const interestedPopupStores = usePopupStore(
-    state => state.interestedPopupStores,
+    state => ({
+      user: state.user,
+      isLoggedIn: state.isLoggedIn,
+      userPreferenceSetting: state.userPreferenceSetting,
+    }),
     shallow,
   );
 
@@ -81,15 +80,15 @@ export const HomeLandingScreen = ({
           <TitleText style={{marginLeft: 12}}>
             어서오세요, {user.nickname}님{'\n'}취향저격 팝업 알려드릴게요
           </TitleText>
-          {user.isPreferenceSetting ? (
-            <DetailText>취향 설정 완료</DetailText>
-          ) : (
-            <ActionPromptBox
-              boxType="PREFERENCE"
-              onPress={() => {
-                // 취향 설정 화면으로 이동하는 로직 추가
-              }}
+          {user.isPreferenceSettingCreated ? (
+            // HomeLandingRecommendedPopupSection 표시
+            <HomeLandingPopupSection
+              popups={recommendedPopupStores}
+              sectionType={'PREFERENCE_TARGETED'}
             />
+          ) : (
+            // 취향 설정 안내 박스 표시
+            <ActionPromptBox boxType="PREFERENCE" />
           )}
         </>
       ) : (

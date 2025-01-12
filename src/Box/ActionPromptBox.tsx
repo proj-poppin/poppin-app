@@ -4,21 +4,35 @@ import {moderateScale} from 'src/Util';
 import {RadiusButtonV2} from 'src/Component/Button/RadiusButton.v2';
 import {themeColors} from '../Theme/theme';
 import {BodyMediumText} from '../StyledComponents/Text/bodyMedium.component';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useNavigation} from '@react-navigation/native';
+import {AppStackProps} from '../Navigator/App.stack.navigator';
 
 type ActionPromptBoxProps = {
   boxType: 'LOGIN' | 'PREFERENCE';
-  onPress: () => void;
 };
 
-const ActionPromptBox = ({boxType, onPress}: ActionPromptBoxProps) => {
+const ActionPromptBox = ({boxType}: ActionPromptBoxProps) => {
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackProps>>();
+
   const isLogin = boxType === 'LOGIN';
+
+  const handlePress = () => {
+    if (isLogin) {
+      // 로그인 화면으로 이동
+      navigation.navigate('AuthLandingScreen', {});
+    } else {
+      // 취향 설정 화면으로 이동
+      navigation.navigate('MypagePreferenceSettingScreen');
+    }
+  };
 
   return (
     <Container>
       <StyledText>
         {isLogin
-          ? `로그인하고\n팝업 추천을 받아보세요!`
-          : `취향 설정하고\n팝업 추천을 받아보세요!`}
+          ? '로그인하고\n팝업 추천을 받아보세요!'
+          : '취향 설정하고\n팝업 추천을 받아보세요!'}
       </StyledText>
       <RadiusButtonV2
         style={{
@@ -32,7 +46,7 @@ const ActionPromptBox = ({boxType, onPress}: ActionPromptBoxProps) => {
         priority={'PRIMARY'}
         text={isLogin ? '로그인 하러 가기' : '취향 설정하러 가기'}
         textStyle={{fontSize: moderateScale(14)}}
-        onPress={onPress}
+        onPress={handlePress}
       />
     </Container>
   );

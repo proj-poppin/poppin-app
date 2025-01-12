@@ -41,7 +41,10 @@ export function MyProfileEditContainer() {
           </GalleryButton>
         </ImageContainer>
 
-        <PreferenceButton onPress={() => console.log('취향 설정으로 라우팅')}>
+        <PreferenceButton
+          onPress={() =>
+            navigation.navigate('MypagePreferenceSettingScreen', {})
+          }>
           <PreferenceText>취향 설정</PreferenceText>
         </PreferenceButton>
 

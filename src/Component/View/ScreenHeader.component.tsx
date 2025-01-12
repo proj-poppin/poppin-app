@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleProp, ViewStyle} from 'react-native';
+import {StyleProp, View, ViewStyle} from 'react-native';
 import styled from 'styled-components/native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import CaretLeftIcon from 'src/Resource/svg/left-arrow-black-icon.svg';
@@ -23,6 +23,7 @@ export const ScreenHeader = ({
   onPressRightComponent,
   RelativePositionComponent,
   style,
+  RightStyle,
 }: {
   title?: string;
   LeftComponents?: 'CLOSE_BUTTON' | 'BACK_BUTTON' | JSX.Element;
@@ -32,6 +33,7 @@ export const ScreenHeader = ({
   onPressRightComponent?: () => void;
   RelativePositionComponent?: JSX.Element;
   style?: StyleProp<ViewStyle>;
+  RightStyle?: StyleProp<ViewStyle>;
 }) => {
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
 
@@ -94,7 +96,7 @@ export const ScreenHeader = ({
           </FunctionButton__Container>
         );
       default:
-        return RightComponents;
+        return <View style={RightStyle}>{RightComponents}</View>;
     }
   };
 

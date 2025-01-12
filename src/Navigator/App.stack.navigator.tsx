@@ -78,7 +78,6 @@ import {
   MypageReportUserScreen,
   MypageReportUserScreenProps,
 } from '../Screen/MyPage/Request/User/Mypage.report.user.screen';
-
 import {AppModal} from 'src/App/App.modal';
 import {
   MyPageReviewWriteScreen,
@@ -112,6 +111,10 @@ import {
   MypagePolicyScreen,
   MypagePolicyScreenProps,
 } from 'src/Screen/MyPage/Policy/Mypage.policy.screen';
+import {
+  MypagePreferenceSettingScreen,
+  MypagePreferenceSettingScreenProps,
+} from '../Screen/MyPage/PreferenceSetting/Mypage.preferenceSetting.screen';
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
@@ -152,6 +155,8 @@ export type AppStackProps = {
   ReportScreen: ReportScreenProps;
 
   AuthPreferenceScreen: AuthPreferenceScreenProps;
+
+  MypagePreferenceSettingScreen: MypagePreferenceSettingScreenProps;
 
   MypageReportUserScreen: MypageReportUserScreenProps;
 
@@ -250,6 +255,15 @@ const AppStackScreen = () => {
     //   makeFirebaseLogEvent(APP_LOGS.goto_background);
     // }
   };
+
+  // get fcmToken
+  useEffect(() => {
+    const getToken = async () => {
+      const fcmToken = await messaging().getToken();
+      console.log('fcmToken', fcmToken);
+    };
+    getToken();
+  }, []);
 
   useEffect(() => {
     const eventListener = AppState.addEventListener(
@@ -468,6 +482,10 @@ const AppStackScreen = () => {
         <AppStack.Screen
           name={'MypageReportUserScreen'}
           component={MypageReportUserScreen}
+        />
+        <AppStack.Screen
+          name={'MypagePreferenceSettingScreen'}
+          component={MypagePreferenceSettingScreen}
         />
         <AppStack.Screen
           name={'MypageReportOperatorScreen'}

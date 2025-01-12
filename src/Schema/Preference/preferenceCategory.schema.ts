@@ -3,7 +3,6 @@
  * @author 도형
  */
 export type PreferenceCategory = {
-  id: number;
   fashionBeauty: boolean; // 패션/뷰티 선호 여부
   characters: boolean; // 캐릭터 선호 여부
   foodBeverage: boolean; // 음식/음료 선호 여부

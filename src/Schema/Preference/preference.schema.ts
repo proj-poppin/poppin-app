@@ -14,14 +14,12 @@ export type PreferenceSchema = {
 
 export const BlankPreference: PreferenceSchema = {
   preferencePopupStore: {
-    id: 0,
     market: false,
     display: false,
     experience: false,
     wantFree: false,
   },
   preferenceCategory: {
-    id: 0,
     fashionBeauty: false,
     characters: false,
     foodBeverage: false,
@@ -38,7 +36,6 @@ export const BlankPreference: PreferenceSchema = {
     guitar: false,
   },
   preferenceCompanion: {
-    id: 0,
     solo: false,
     withFriend: false,
     withFamily: false,

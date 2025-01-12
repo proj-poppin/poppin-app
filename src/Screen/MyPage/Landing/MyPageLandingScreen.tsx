@@ -32,7 +32,6 @@ export const MyPageLandingScreen = () => {
 
   return (
     <Screen
-      fullScreen={true}
       contentContainerStyle={{
         paddingTop: moderateScale(16),
       }}

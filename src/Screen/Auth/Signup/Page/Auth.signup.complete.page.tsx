@@ -13,6 +13,12 @@ import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 export function SignupCompletePage() {
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
   const nickname = useUserStore.getState().user.nickname;
+
+  const navigateToPreferenceSetting = () => {
+    // console.log('navigateToPreferenceSetting');
+    navigation.navigate('AuthPreferenceScreen', {});
+  };
+
   return (
     <FullViewPage
       PageContent={
@@ -31,7 +37,7 @@ export function SignupCompletePage() {
               style={[{marginTop: moderateScale(50)}, {width: '100%'}]}
               title="취향 설정하러 가기"
               textStyle={{fontWeight: '600'}}
-              onPress={() => {}}
+              onPress={navigateToPreferenceSetting}
             />
             <ManualContainer>
               <ManualBlueDot />

@@ -22,8 +22,8 @@ export interface CommonResponse<T> {
   };
 }
 const customAxios = axios.create({
-  // baseURL: `${Config.API_URL}/api/`,
-  baseURL: 'http://43.202.82.111:8080/api/',
+  baseURL: `${Config.API_URL}/api/`,
+  // baseURL: 'http://43.202.82.111:8080/api/',
   timeout: 5000,
 });
 

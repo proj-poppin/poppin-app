@@ -83,9 +83,9 @@ const CommonCompleteButton: React.FC<CommonCompleteButtonProps> = ({
 export default CommonCompleteButton;
 
 const StyledPressable = styled(Pressable)`
-  height: ${moderateScale(50)}px;
+  height: ${moderateScale(55)}px;
   width: 90%;
-  border-radius: ${moderateScale(25)}px;
+  border-radius: ${moderateScale(30)}px;
   align-self: center;
   justify-content: center;
   align-items: center;
@@ -103,6 +103,7 @@ const IconContainer = styled.View`
 `;
 
 const StyledText = styled(Text)<{isDisabled: boolean}>`
-  font-size: ${moderateScale(17)}px;
+  font-size: ${moderateScale(18)}px;
+  font-weight: 700;
   color: ${({isDisabled}) => (isDisabled ? themeColors().grey.main : 'white')};
 `;

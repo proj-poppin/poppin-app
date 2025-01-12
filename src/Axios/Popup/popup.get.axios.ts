@@ -74,7 +74,7 @@ export const axiosPopupTest = async () => {
 };
 
 /**
- * 투표 id 로 특정 투표를 찾고 가져옵니다
+ * 팝업 id로 특정 팝업 정보를 가져옵니다.
  * @author 도형
  */
 export const axiosGetPopupById = async (popupId: string) => {
@@ -84,6 +84,7 @@ export const axiosGetPopupById = async (popupId: string) => {
       url: `v1/${POPUP}/${DETAIL}/${popupId}`,
     })
     .then(response => {
+      console.log(response.data.data);
       return response.data.data;
     })
     .catch(error => {

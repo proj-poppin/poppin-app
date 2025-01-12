@@ -22,7 +22,8 @@ export interface CommonResponse<T> {
   };
 }
 const customAxios = axios.create({
-  baseURL: `${Config.API_URL}/api/`,
+  // baseURL: `${Config.API_URL}/api/`,
+  baseURL: 'http://43.202.82.111:8080/api/',
   timeout: 5000,
 });
 
@@ -45,36 +46,6 @@ customAxios.interceptors.request.use(config => {
   return config;
 });
 
-/**
- * refreshToken을 사용해 accessToken과 refreshToken을 재발급하며, 사용자 정보를 반환합니다.
- */
-export const axiosAutoLogin = async (
-  originalRefreshToken: string,
-): Promise<StateWrapper<UserInfo> | null> => {
-  try {
-    const response = await customAxios.request<StateWrapper<UserInfo>>({
-      method: 'POST',
-      url: 'v1/auth/refresh',
-      headers: {
-        Authorization: `Bearer ${originalRefreshToken}`,
-      },
-      data: {
-        fcmToken: testFcmToken,
-      },
-    });
-
-    const {accessToken, refreshToken} = response.data.data.jwtToken;
-    await EncryptedStorage.setItem('accessToken', accessToken);
-    await EncryptedStorage.setItem('refreshToken', refreshToken);
-    return response.data;
-  } catch (error) {
-    handleAxiosError({
-      error,
-      errorMessage: '자동 로그인에 실패하였습니다\n다시 로그인 해 주세요',
-    });
-    return null;
-  }
-};
 // 응답 인터셉터: 오류 발생 시 처리 로직
 customAxios.interceptors.response.use(
   response => {

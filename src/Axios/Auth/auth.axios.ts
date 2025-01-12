@@ -15,7 +15,9 @@ import {
 import {NotificationSchema} from 'src/Schema/User/notification.schema';
 import {UserNoticeSchema} from 'src/Schema/User/userNotice.schema';
 import {PopupVisitSchema} from '../../Schema/Popup/popupVisit.schema';
+import EncryptedStorage from 'react-native-encrypted-storage';
 // import {btoa, atob} from 'react-native-quick-base64';
+
 export type LoginResponse = StateWrapper<UserInfo>;
 
 // setPopupStoreActivities: (popupActivities: {
@@ -24,7 +26,6 @@ export type LoginResponse = StateWrapper<UserInfo>;
 // }) => void;
 
 export type UserActivities = {
-  // scrappedPopups: PopupScrapSchema[];
   popupActivities: {
     scrappedPopups: PopupScrapSchema[];
     visitedPopups: PopupVisitSchema[];
@@ -260,7 +261,7 @@ export const axiosLoginWithEmailPassword = async (auth: {
   email: string;
   password: string;
 }) => {
-  // const fcmToken = await messaging().getToken();
+  const fcmToken = await messaging().getToken();
   console.log('emailDebug: ', auth.email);
   console.log('passwordDebug: ', auth.password);
   console.log('fcmTokenDebug: ', tempFcmToken);
@@ -272,7 +273,7 @@ export const axiosLoginWithEmailPassword = async (auth: {
       data: {
         email: auth.email,
         password: auth.password,
-        fcmToken: tempFcmToken,
+        fcmToken: fcmToken,
       },
     })
     .then(response => {
@@ -283,6 +284,37 @@ export const axiosLoginWithEmailPassword = async (auth: {
       handleAxiosError({error, errorMessage: '로그인에 실패했습니다'});
       return null;
     });
+};
+
+/**
+ * refreshToken을 사용해 accessToken과 refreshToken을 재발급하며, 사용자 정보를 반환합니다.
+ */
+export const axiosAutoLogin = async (
+  originalRefreshToken: string,
+): Promise<StateWrapper<UserInfo> | null> => {
+  try {
+    const response = await customAxios.request<StateWrapper<UserInfo>>({
+      method: 'POST',
+      url: `v1/${AUTH}/refresh`,
+      headers: {
+        Authorization: `Bearer ${originalRefreshToken}`,
+      },
+      data: {
+        fcmToken: testFcmToken,
+      },
+    });
+
+    const {accessToken, refreshToken} = response.data.data.jwtToken;
+    await EncryptedStorage.setItem('accessToken', accessToken);
+    await EncryptedStorage.setItem('refreshToken', refreshToken);
+    return response.data;
+  } catch (error) {
+    handleAxiosError({
+      error,
+      errorMessage: '자동 로그인에 실패하였습니다\n다시 로그인 해 주세요',
+    });
+    return null;
+  }
 };
 
 /**
@@ -303,6 +335,7 @@ export const axiosLoginWithAccessToken = async (jwt: string) => {
       data: {OS, version, testFcmToken},
     })
     .then(response => {
+      console.log('user response: ', response.data);
       return response.data;
     })
     .catch(error => {

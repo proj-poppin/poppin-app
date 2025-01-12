@@ -13,9 +13,8 @@ import {AppStackProps} from '../../Navigator/App.stack.navigator';
 import {useAppStore} from '../../Zustand/App/app.zustand';
 import {useDynamicServiceConstant} from '../../Zustand/App/service.dynamic.constant.zustand';
 import {useUserStore} from '../../Zustand/User/user.zustand';
-import {axiosLoginWithAccessToken} from '../../Axios/Auth/auth.axios';
+import {axiosAutoLogin} from '../../Axios/Auth/auth.axios';
 import {Alert} from 'react-native';
-import {axiosAutoLogin} from '../../Axios/axios.core';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 /** */
@@ -207,6 +206,15 @@ export function SplashScreenProvider({
         MyPageLandingScreen: {},
       });
     }
+
+    /**
+     * UI/UX 를 우선 개발해야 될때 replace()에 해당 스크린을 기입하여 우선 개발합니다.
+     * 귀찮게 하나하나 클릭해서 해당 페이지까지 접근하는 일이 없도록 하기 위함
+     * @author 도형
+     */
+    // if (loadDataResult.loadInitialData) {
+    //   screenProps.navigation.replace('AuthPreferenceScreen', {});
+    // }
 
     /** */
     async function setInAppMessagingVisible() {

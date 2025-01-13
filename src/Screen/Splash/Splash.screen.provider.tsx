@@ -156,7 +156,7 @@ export function SplashScreenProvider({
       useUserStore.getState().setNonMemberUserInfo();
     }
     /** 먼저 자동 로그인부터 처리합니다 */
-    const userStatus = await handleAutoLogin();
+    // const userStatus = await handleAutoLogin();
 
     // // Check if userStatus is valid; exit early if it fails
     // if (!userStatus) {
@@ -169,8 +169,9 @@ export function SplashScreenProvider({
       setInAppMessagingVisible(),
       useAppStore.getState().getDynamicConstants(),
       useAppStore.getState().loadInitialData(),
+      handleAutoLogin(),
     ]).then(([_, dynamicConstants, loadInitialData]) => {
-      return {loadInitialData, userStatus};
+      return {loadInitialData};
     });
 
     //* Check if initial data fetch was successful

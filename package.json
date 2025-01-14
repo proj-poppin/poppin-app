@@ -27,6 +27,7 @@
     "@react-native-firebase/analytics": "^16.5.0",
     "@react-native-firebase/app": "^16.5.0",
     "@react-native-firebase/dynamic-links": "^16.5.0",
+    "@react-native-firebase/in-app-messaging": "^21.6.2",
     "@react-native-firebase/messaging": "^16.5.0",
     "@react-native-google-signin/google-signin": "^13.0.1",
     "@react-native-kakao/core": "^2.2.6",

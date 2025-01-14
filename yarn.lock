@@ -2567,6 +2567,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-firebase/in-app-messaging@npm:^21.6.2":
+  version: 21.6.2
+  resolution: "@react-native-firebase/in-app-messaging@npm:21.6.2"
+  peerDependencies:
+    "@react-native-firebase/analytics": 21.6.2
+    "@react-native-firebase/app": 21.6.2
+  checksum: fb22df4c7c1aaed731d517effd02532fce7f187509f5b9b02dfa607583743aa5a26fdaf433a1dc363553b28a5280935a449cd2b4cb65763166fa9ac3a3b5c756
+  languageName: node
+  linkType: hard
+
 "@react-native-firebase/messaging@npm:^16.5.0":
   version: 16.7.0
   resolution: "@react-native-firebase/messaging@npm:16.7.0"
@@ -3734,6 +3744,7 @@ __metadata:
     "@react-native-firebase/analytics": ^16.5.0
     "@react-native-firebase/app": ^16.5.0
     "@react-native-firebase/dynamic-links": ^16.5.0
+    "@react-native-firebase/in-app-messaging": ^21.6.2
     "@react-native-firebase/messaging": ^16.5.0
     "@react-native-google-signin/google-signin": ^13.0.1
     "@react-native-kakao/core": ^2.2.6

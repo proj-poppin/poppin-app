@@ -32,6 +32,10 @@ GoogleSignin.configure({
   forceConsentPrompt: true,
 });
 
-messaging().setBackgroundMessageHandler(async remoteMessage => {});
+// messaging().setBackgroundMessageHandler(async remoteMessage => {});
+// 앱이 background/quit(종료) 상태인 경우 메시지를 받기 위함.
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('Message handled in the background!', remoteMessage);
+});
 
 AppRegistry.registerComponent(appName, () => App);

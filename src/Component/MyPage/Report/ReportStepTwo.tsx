@@ -7,7 +7,6 @@ import CustomBottomSheet from '../../BottomSheet/CustomBottomSheet';
 import CalendarPicker from '../../CalendarPicker';
 import TimePicker from '../../TimePicker';
 import PopupCategoryModal from '../../Modal/Popup.category.modal';
-import {useImagePicker} from '../../../hooks/useImagePicker';
 import {useOperatorReportStore} from '../../../Screen/MyPage/Request/Operator/Mypage.report.operator.zustand';
 import {StepProps} from './ReportStepOne';
 import CustomBottomSheetButton from '../../BottomSheet/CustomBottomSheetButton';
@@ -19,6 +18,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
     modalVisible,
     postcodeVisible,
     storeName,
+    images,
 
     filteringThreeCategories,
     filteringFourteenCategories,
@@ -35,7 +35,8 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
     setModalVisible,
     setPostcodeVisible,
     setStoreName,
-
+    handleAddImages,
+    handleDeleteImage,
     setFilteringThreeCategories,
     setFilteringFourteenCategories,
     setStoreAddress,
@@ -48,16 +49,6 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
     setOperationException,
     addImages,
   } = useOperatorReportStore();
-
-  const {
-    images,
-    handleAddImages: openGallery,
-    handleDeleteImage,
-  } = useImagePicker({
-    maxImages: 5,
-    maxWidth: 512,
-    maxHeight: 512,
-  });
 
   const validateStep = () => {
     if (!storeName.trim()) {
@@ -323,7 +314,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
               </ImageContainer>
             ))}
             {(!images || images.length < 5) && (
-              <ImageUploadButton onPress={openGallery}>
+              <ImageUploadButton onPress={handleAddImages}>
                 <PlusIcon>+</PlusIcon>
                 <UploadText>
                   사진 추가하기{'\n'}
@@ -362,7 +353,28 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
             buttonName={'카테고리 설정'}
             validationMode={'both'}
             isPopupRequestModal={true}
-            initialSelectedCategories={filteringFourteenCategories} // 초기값 전달
+            initialPreferenceCategory={{
+              fashionBeauty: false,
+              characters: false,
+              foodBeverage: false,
+              webtoonAni: false,
+              interiorThings: false,
+              movie: false,
+              musical: false,
+              sports: false,
+              game: false,
+              itTech: false,
+              kpop: false,
+              alcohol: false,
+              animalPlant: false,
+              guitar: false,
+            }}
+            initialPreferencePopupStore={{
+              market: false,
+              display: false,
+              experience: false,
+              wantFree: false,
+            }}
           />
         </CustomBottomSheet>
 

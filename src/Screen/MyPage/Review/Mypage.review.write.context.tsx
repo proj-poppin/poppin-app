@@ -1,7 +1,6 @@
 // src/contexts/ReviewWriteContext.tsx
 import React, {createContext, useContext, useState} from 'react';
 import {Asset} from 'react-native-image-picker';
-import {useImagePicker} from 'src/hooks/useImagePicker';
 import {PopupSchema} from 'src/Schema/Popup/popup.schema';
 import {usePopupScreenStore} from 'src/Screen/Popup/Landing/Popup.landing.zustand';
 import {Alert} from 'react-native';
@@ -12,6 +11,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
+import {getGalleryImages} from 'src/Util';
 
 export interface CategoryType {
   id: number;
@@ -139,13 +139,32 @@ export const ReviewWriteProvider = ({
   const [showResults, setShowResults] = useState<boolean>(false);
   const [selectedPopup, setSelectedPopup] = useState<PopupSchema>();
   const [submitting, setSubmitting] = useState<boolean>(false);
+  const [images, setImages] = useState<Asset[]>([]);
 
   // 이미지 피커 설정
-  const {images, handleAddImages, handleDeleteImage} = useImagePicker({
-    maxImages: 5,
-    maxWidth: 512,
-    maxHeight: 512,
-  });
+  const handleAddImages = async () => {
+    try {
+      const selectedImages = await getGalleryImages({
+        sectionLimit: 5,
+        requestRationale: {
+          title: '카메라 권한 필요',
+          message: '리뷰 작성을 위해 카메라 권한이 필요합니다.',
+          buttonPositive: '확인',
+        },
+      });
+
+      if (selectedImages) {
+        setImages(prev => [...prev, ...selectedImages]);
+      }
+    } catch (error) {
+      console.error('이미지 선택 오류:', error);
+      Alert.alert('알림', '이미지를 선택하는 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleDeleteImage = (index: number) => {
+    setImages(prev => prev.filter((_, idx) => idx !== index));
+  };
 
   const navigation =
     useNavigation<NavigationProp<AppStackProps, 'MypageReviewListScreen'>>();

@@ -77,6 +77,15 @@ export function getDateFromInput(param: {
   }
   return null;
 }
+/**
+ * 주 중 요일을 얻어냅니다.
+ * @author 규진
+ */
+export const getDayOfWeek = (dateString: string) => {
+  const days = ['일', '월', '화', '수', '목', '금', '토'];
+  const date = new Date(dateString);
+  return days[date.getDay()];
+};
 
 /**
  * 인자로 받은 시간을 '1분이내 / N분 전 / N시간 전' 형태로 반환합니다.
@@ -405,28 +414,28 @@ export function getAge(birthday: string | Date, useKoreanAge: boolean = false) {
 // 파싱 유틸리티 함수들
 export const parseVisitDateToKorean = (value: string): string => {
   const mapping: Record<string, string> = {
-    'WEEKDAY_AM': '평일 오전',
-    'WEEKDAY_PM': '평일 오후',
-    'WEEKEND_AM': '주말 오전',
-    'WEEKEND_PM': '주말 오후'
+    WEEKDAY_AM: '평일 오전',
+    WEEKDAY_PM: '평일 오후',
+    WEEKEND_AM: '주말 오전',
+    WEEKEND_PM: '주말 오후',
   };
   return mapping[value] || '평일 오전';
 };
 
 export const parseSatisfactionToKorean = (value: string): string => {
   const mapping: Record<string, string> = {
-    'SATISFIED': '만족',
-    'NORMAL': '보통',
-    'UNSATISFIED': '불만족'
+    SATISFIED: '만족',
+    NORMAL: '보통',
+    UNSATISFIED: '불만족',
   };
   return mapping[value] || '보통';
 };
 
 export const parseCongestionToKorean = (value: string): string => {
   const mapping: Record<string, string> = {
-    'CROWDED': '혼잡',
-    'NORMAL': '보통',
-    'RELAXED': '여유'
+    CROWDED: '혼잡',
+    NORMAL: '보통',
+    RELAXED: '여유',
   };
   return mapping[value] || '보통';
 };

@@ -35,7 +35,9 @@ export const MypageReportUserScreen: React.FC = () => {
     setPopupName,
     setContactLink,
     validate,
+    removeImage,
     addImages,
+    handleAddImages,
   } = useUserReportStore(
     state => ({
       modalVisible: state.modalVisible,
@@ -46,28 +48,21 @@ export const MypageReportUserScreen: React.FC = () => {
       storeName: state.storeName,
       contactLink: state.contactLink,
       filteringFourteenCategories: state.filteringFourteenCategories,
+
       setFilteringFourteenCategories: state.setFilteringFourteenCategories,
       validate: state.validate,
       addImages: state.addImages,
+      handleAddImages: state.handleAddImages,
+      removeImage: state.removeImage,
       setPopupName: state.setPopupName,
       setContactLink: state.setContactLink,
     }),
     shallow,
   );
 
-  const {
-    images: imageFileUri,
-    handleAddImages: openGallery,
-    handleDeleteImage,
-  } = useImagePicker({
-    maxImages: 5,
-    maxWidth: 512,
-    maxHeight: 512,
-  });
-
   const handleSubmit = async () => {
     try {
-      addImages(imageFileUri);
+      addImages(images);
 
       // 유효성 검사
       if (!validate()) {
@@ -143,7 +138,28 @@ export const MypageReportUserScreen: React.FC = () => {
                 buttonName={'카테고리 설정'}
                 validationMode={'both'}
                 isPopupRequestModal={true}
-                initialSelectedCategories={filteringFourteenCategories} // 현재 선택된 카테고리 전달
+                initialPreferenceCategory={{
+                  fashionBeauty: false,
+                  characters: false,
+                  foodBeverage: false,
+                  webtoonAni: false,
+                  interiorThings: false,
+                  movie: false,
+                  musical: false,
+                  sports: false,
+                  game: false,
+                  itTech: false,
+                  kpop: false,
+                  alcohol: false,
+                  animalPlant: false,
+                  guitar: false,
+                }}
+                initialPreferencePopupStore={{
+                  market: false,
+                  display: false,
+                  experience: false,
+                  wantFree: false,
+                }}
               />
             </CustomBottomSheet>
             <InputLabel>정보를 접한 사이트 주소</InputLabel>
@@ -163,16 +179,16 @@ export const MypageReportUserScreen: React.FC = () => {
               관련사진<RequiredMark>*</RequiredMark>
             </InputLabel>
             <ImageUploadSection>
-              {imageFileUri?.map((image, index) => (
+              {images?.map((image, index) => (
                 <ImageContainer key={image.uri}>
                   <UploadedImage source={{uri: image.uri}} />
-                  <DeleteButton onPress={() => handleDeleteImage(index)}>
+                  <DeleteButton onPress={() => removeImage(index)}>
                     <DeleteButtonText>×</DeleteButtonText>
                   </DeleteButton>
                 </ImageContainer>
               ))}
-              {(!imageFileUri || imageFileUri.length < 5) && (
-                <ImageUploadButton onPress={openGallery}>
+              {(!images || images.length < 5) && (
+                <ImageUploadButton onPress={handleAddImages}>
                   <PlusIcon>+</PlusIcon>
                   <UploadText>
                     사진 추가하기{'\n'}

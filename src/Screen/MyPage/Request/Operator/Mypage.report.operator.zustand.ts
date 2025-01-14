@@ -4,6 +4,7 @@ import {Asset} from 'react-native-image-picker';
 import {Alert} from 'react-native';
 import {UserReportStore} from '../User/Mypage.report.user.zustand';
 import {axiosMyPageOperatorReport} from 'src/Axios/Mypage/mypage.post.axios';
+import {getGalleryImages} from 'src/Util';
 
 export interface OperatorReportStore {
   /** 제보 중 로딩 여부 */
@@ -66,9 +67,10 @@ export interface OperatorReportStore {
   setOpenTime: (time: string) => void;
   setCloseTime: (time: string) => void;
   setOperationException: (text: string) => void;
-  handleDeleteImage: (index: number) => void;
   setFilteringThreeCategories: (categories: string) => void;
   setFilteringFourteenCategories: (categories: string) => void;
+  handleAddImages: () => Promise<void>;
+  handleDeleteImage: (index: number) => void;
 
   // StepThree actions
   setIsReservationRequired: (required: boolean) => void;
@@ -146,12 +148,33 @@ export const useOperatorReportStore = create<OperatorReportStore>(
       set({filteringThreeCategories: filteringThreeCategories}),
     setFilteringFourteenCategories: filteringFourteenCategories =>
       set({filteringFourteenCategories: filteringFourteenCategories}),
-    handleDeleteImage: (index: number) =>
+    handleAddImages: async () => {
+      try {
+        const selectedImages = await getGalleryImages({
+          sectionLimit: 5,
+          requestRationale: {
+            title: '카메라 권한 필요',
+            message: '제보하기를 위해 카메라 권한이 필요합니다.',
+            buttonPositive: '확인',
+          },
+        });
+
+        if (selectedImages) {
+          set(state => ({
+            images: [...state.images, ...selectedImages],
+          }));
+        }
+      } catch (error) {
+        console.error('이미지 선택 오류:', error);
+        Alert.alert('알림', '이미지를 선택하는 중 오류가 발생했습니다.');
+      }
+    },
+
+    handleDeleteImage: (index: number) => {
       set(state => ({
-        images: state.images
-          ? state.images.filter((_, i) => i !== index)
-          : undefined,
-      })),
+        images: state.images.filter((_, idx) => idx !== index),
+      }));
+    },
     addImages: images => set({images}),
     removeImage: index => {
       set({

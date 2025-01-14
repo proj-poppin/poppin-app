@@ -28,9 +28,14 @@ PODS:
   - Firebase/DynamicLinks (10.3.0):
     - Firebase/CoreOnly
     - FirebaseDynamicLinks (~> 10.3.0)
+  - Firebase/InAppMessaging (10.3.0):
+    - Firebase/CoreOnly
+    - FirebaseInAppMessaging (~> 10.3.0-beta)
   - Firebase/Messaging (10.3.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 10.3.0)
+  - FirebaseABTesting (10.29.0):
+    - FirebaseCore (~> 10.0)
   - FirebaseAnalytics/WithoutAdIdSupport (10.3.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
@@ -50,6 +55,12 @@ PODS:
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
   - FirebaseDynamicLinks (10.3.0):
     - FirebaseCore (~> 10.0)
+  - FirebaseInAppMessaging (10.3.0-beta):
+    - FirebaseABTesting (~> 10.0)
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleUtilities/Environment (~> 7.8)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
   - FirebaseInstallations (10.29.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
@@ -1445,9 +1456,9 @@ PODS:
     - React-Core
   - react-native-pager-view (5.4.25):
     - React-Core
-  - react-native-safe-area-context (4.14.0):
+  - react-native-safe-area-context (4.14.1):
     - React-Core
-  - react-native-webview (13.12.3):
+  - react-native-webview (13.12.5):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1848,6 +1859,10 @@ PODS:
     - GoogleUtilities/AppDelegateSwizzler
     - React-Core
     - RNFBApp
+  - RNFBInAppMessaging (21.6.2):
+    - Firebase/InAppMessaging (= 10.3.0)
+    - React-Core
+    - RNFBApp
   - RNFBMessaging (16.7.0):
     - Firebase/Messaging (= 10.3.0)
     - FirebaseCoreExtension (= 10.3.0)
@@ -1894,7 +1909,7 @@ PODS:
   - RNScreens (3.15.0):
     - React-Core
     - React-RCTImage
-  - RNSVG (15.9.0):
+  - RNSVG (15.10.1):
     - React-Core
   - RNVectorIcons (10.0.3):
     - DoubleConversion
@@ -2022,6 +2037,7 @@ DEPENDENCIES:
   - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBDynamicLinks (from `../node_modules/@react-native-firebase/dynamic-links`)"
+  - "RNFBInAppMessaging (from `../node_modules/@react-native-firebase/in-app-messaging`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
@@ -2041,11 +2057,13 @@ SPEC REPOS:
     - AppsFlyerFramework
     - Base64
     - Firebase
+    - FirebaseABTesting
     - FirebaseAnalytics
     - FirebaseCore
     - FirebaseCoreExtension
     - FirebaseCoreInternal
     - FirebaseDynamicLinks
+    - FirebaseInAppMessaging
     - FirebaseInstallations
     - FirebaseMessaging
     - GoogleAppMeasurement
@@ -2249,6 +2267,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBDynamicLinks:
     :path: "../node_modules/@react-native-firebase/dynamic-links"
+  RNFBInAppMessaging:
+    :path: "../node_modules/@react-native-firebase/in-app-messaging"
   RNFBMessaging:
     :path: "../node_modules/@react-native-firebase/messaging"
   RNGoogleSignin:
@@ -2283,11 +2303,13 @@ SPEC CHECKSUMS:
   DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
   FBLazyVector: 430e10366de01d1e3d57374500b1b150fe482e6d
   Firebase: f92fc551ead69c94168d36c2b26188263860acd9
+  FirebaseABTesting: d87f56707159bae64e269757a6e963d490f2eebe
   FirebaseAnalytics: 036232b6a1e2918e5f67572417be1173576245f3
   FirebaseCore: 988754646ab3bd4bdcb740f1bfe26b9f6c0d5f2a
   FirebaseCoreExtension: 93d252fabdc9696bf14a73b04d84877ab9b3a832
   FirebaseCoreInternal: df84dd300b561c27d5571684f389bf60b0a5c934
   FirebaseDynamicLinks: 51c81d07bd63155bb56d76b0abdda79c8a3d8d02
+  FirebaseInAppMessaging: cd50ea5f6883a9b371976d8a9b41133dbdc8c776
   FirebaseInstallations: 913cf60d0400ebd5d6b63a28b290372ab44590dd
   FirebaseMessaging: e345b219fd15d325f0cf2fef28cb8ce00d851b3f
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
@@ -2350,8 +2372,8 @@ SPEC CHECKSUMS:
   react-native-image-picker: cffb727cf2f59bd5c0408e30b3dbe0b935f88835
   react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-pager-view: da490aa1f902c9a5aeecf0909cc975ad0e92e53e
-  react-native-safe-area-context: 4532f1a0c5d34a46b9324ccaaedcb5582a302b7d
-  react-native-webview: 926d2665cf3196e39c4449a72d136d0a53b9df8a
+  react-native-safe-area-context: 141eca0fd4e4191288dfc8b96a7c7e1c2983447a
+  react-native-webview: b034adbe6dc6cc783c3270b6e47298bc1dfdb632
   React-nativeconfig: 8c83d992b9cc7d75b5abe262069eaeea4349f794
   React-NativeModulesApple: 9f7920224a3b0c7d04d77990067ded14cee3c614
   React-perflogger: 59e1a3182dca2cee7b9f1f7aab204018d46d1914
@@ -2391,6 +2413,7 @@ SPEC CHECKSUMS:
   RNFBAnalytics: e322910ad15c7cccabbac4c92071b8a4b4c55898
   RNFBApp: 1ee535dcb7773ca612d3a2e53a1f78f8f2fb6abf
   RNFBDynamicLinks: 7c409b3d7f0fdad7aaf96837db627a6c554e58aa
+  RNFBInAppMessaging: b77f9fd03c541713643c0fc7ed91be76b268c3ce
   RNFBMessaging: 04ecf12bae7543cd8df145f1b26d89d867594be7
   RNGoogleSignin: 9e68b9bcc3888219357924e32ee563624745647d
   RNImageCropPicker: 771e2ca319d2cf92e04ebf334ece892ee9a6728f
@@ -2398,7 +2421,7 @@ SPEC CHECKSUMS:
   RNOpenAppSettings: 1169b90a275e9e18c5973e1608949f97d426e7f3
   RNPermissions: 823a796649f4938762a6a2a211d9f3e0a4028dc3
   RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
-  RNSVG: 3d2bdcaef51c8071880a9c0072fe324f4423a3ba
+  RNSVG: 7ff26379b2d1871b8571e6f9bc9630de6baf9bdf
   RNVectorIcons: 2f598cd7d540ba02572867eda117665912d0de0b
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d

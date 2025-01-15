@@ -7,7 +7,7 @@ import {PopupSearchParams} from '../../Object/Type/filtering.type';
 import {PopupSortOrder} from '../../Object/Type/popupSortOrder.type';
 import {usePopupScreenStore} from '../../Screen/Popup/Landing/Popup.landing.zustand';
 import {OperationStatus} from '../../Object/Type/operationStatus.type';
-
+import {logger} from 'react-native-logs';
 export type HomeLandingSectionType =
   | 'NEWLY_OPENED'
   | 'CLOSING_SOON'
@@ -156,11 +156,11 @@ export const useAppStore = create<AppStoreProps>((set, get) => ({
   },
   loadInitialData: async () => {
     const initialData = await axiosLoadInitialData();
-    console.log('initialData', initialData);
+    // logger.createLogger().info('initialData', initialData);
     if (initialData === null) {
       return false;
     }
-
+    // logger.createLogger().info('initialData@@', initialData);
     const notyetTabSearchParams: PopupSearchParams = {
       operationStatus: OperationStatus.NOTYET,
       searchName: '',
@@ -192,7 +192,7 @@ export const useAppStore = create<AppStoreProps>((set, get) => ({
     // Load for each operation status
     await usePopupScreenStore
       .getState()
-      .getFilteredPopupStores(OperationStatus.NOTYET, operatingTabSearchParams);
+      .getFilteredPopupStores(OperationStatus.NOTYET, notyetTabSearchParams);
     await usePopupScreenStore
       .getState()
       .getFilteredPopupStores(

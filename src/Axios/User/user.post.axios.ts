@@ -1,17 +1,21 @@
 import customAxios, {POPUP_TASTE, USERS} from '../axios.core';
-import {UserSchema} from '../../Schema/User/user.schema';
 import {PreferenceSchema} from '../../Schema/Preference/preference.schema';
 import {handleAxiosError} from 'src/Util';
+import {PopupSchema} from '../../Schema/Popup/popup.schema';
+import {usePopupStore} from '../../Zustand/Popup/popup.zustand';
 
 /**
  * 유저의 팝업 취향 정보를 설정합니다.
  * @author 도형
  */
 
+export interface SettingPreferenceResponseData {
+  updatedRecommendedPopup: PopupSchema[];
+}
+
 export const axiosSettingPreference = async (param: {
   data: PreferenceSchema;
 }) => {
-  // API에서 요구하는 requestBody 형태로 변환
   const requestBody = {
     preference: {
       market: param.data.preferencePopupStore.market,
@@ -23,7 +27,7 @@ export const axiosSettingPreference = async (param: {
       fashionBeauty: param.data.preferenceCategory.fashionBeauty,
       characters: param.data.preferenceCategory.characters,
       foodBeverage: param.data.preferenceCategory.foodBeverage,
-      webtoonAni: param.data.preferenceCategory.webtoonAni,
+      webtoonAni: param.data.preferenceCategory.webtoonAnimation,
       interiorThings: param.data.preferenceCategory.interiorThings,
       movie: param.data.preferenceCategory.movie,
       musical: param.data.preferenceCategory.musical,
@@ -33,7 +37,7 @@ export const axiosSettingPreference = async (param: {
       kpop: param.data.preferenceCategory.kpop,
       alcohol: param.data.preferenceCategory.alcohol,
       animalPlant: param.data.preferenceCategory.animalPlant,
-      guitar: param.data.preferenceCategory.guitar,
+      etc: param.data.preferenceCategory.etc,
     },
     whoWith: {
       solo: param.data.preferenceCompanion.solo,
@@ -44,21 +48,35 @@ export const axiosSettingPreference = async (param: {
   };
 
   try {
+    // Axios 요청
     const response = await customAxios.request<{
-      user: UserSchema;
       userPreferenceSetting: PreferenceSchema;
+      updatedRecommendedPopupStores: PopupSchema[];
     }>({
       method: 'PUT',
       url: `v1/${USERS}/${POPUP_TASTE}`,
-      data: requestBody, // 변환된 requestBody 전달
+      data: requestBody,
     });
 
-    console.log('preference response', response);
+    // 응답 데이터 구조 확인
+    const {userPreferenceSetting, updatedRecommendedPopupStores} =
+      response.data;
 
-    console.log('preference response.data', response.data);
+    // // Zustand 상태 업데이트
+    // usePopupStore
+    //   .getState()
+    //   .setRecommendedPopupStores(updatedRecommendedPopupStores);
+
+    // // 콘솔 로깅 (디버깅 용도)
+    // console.log('Updated User Preference:', userPreferenceSetting);
+    // console.log(
+    //   'Updated Recommended Popup Stores:',
+    //   updatedRecommendedPopupStores,
+    // );
 
     return response.data;
   } catch (error) {
+    // 오류 처리
     handleAxiosError({
       error,
       errorMessage: '취향 설정에 실패했습니다',

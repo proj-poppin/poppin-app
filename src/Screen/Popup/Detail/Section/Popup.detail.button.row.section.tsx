@@ -1,80 +1,170 @@
 import React, {useState} from 'react';
-import SvgWithNameBoxLabel from 'src/Component/SvgWithNameBoxLabel';
-import QuestionIcon from 'src/Resource/svg/question.svg';
-import {moderateScale} from 'src/Util';
 import styled from 'styled-components/native';
-import {FastImageContainer} from 'src/Component/Image/FastImage.component';
+import {moderateScale} from 'src/Util';
+import QuestionIcon from 'src/Resource/svg/question.svg';
 import {themeColors} from 'src/Theme/theme';
-import PopupDetailVisitButton from './Popup.detail.visit.button';
 import {usePopupDetailContext} from '../Provider/Popup.detail.provider';
+import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
+import shallow from 'zustand/shallow';
+import CommonCompleteButton from '../../Landing/common.complete.button';
+import {FastImageContainer} from '../../../../Component/Image/FastImage.component';
+import {RadiusBlueButton} from '../../../../Component/Button/RadiusBlueButton';
+const PopupDetailBottomButtonRowSection: React.FC = () => {
+  const [inProgress, setInProgress] = useState(false);
+  const {popupDetail, visitPopup} = usePopupDetailContext();
+  const {isVisitedPopup, isWaitingPopup, waitingPopups, startWaitingPopup} =
+    usePopupStore(
+      state => ({
+        isVisitedPopup: state.isVisitedPopup,
+        isWaitingPopup: state.isWaitingPopup,
+        waitingPopups: state.waitingPopups,
+        startWaitingPopup: state.startWaitingPopup,
+      }),
+      shallow,
+    );
 
-interface PopupDetailBottomButtonRowSectionProps {
-  onRealTimePress: () => void;
-  onVisitPress: () => void;
-}
+  const waiting = isWaitingPopup(popupDetail.id);
 
-const PopupDetailBottomButtonRowSection: React.FC<
-  PopupDetailBottomButtonRowSectionProps
-> = ({onRealTimePress, onVisitPress}) => {
-  const [isTooltipVisible, setTooltipVisible] = useState(false);
-  const {popupDetail, visitButtonType} = usePopupDetailContext();
+  const requestWaitingPopup = async () => {
+    if (waiting) {
+      return;
+    }
+    setInProgress(true);
+    await startWaitingPopup(popupDetail.id);
+    setInProgress(false);
+  };
 
-  const toggleTooltip = () => setTooltipVisible(prev => !prev);
+  const requestVisitPopup = async () => {
+    if (isVisitedPopup(popupDetail.id)) {
+      return;
+    }
+    setInProgress(true);
+    await visitPopup();
+    setInProgress(false);
+  };
 
-  return (
-    <BottomBar>
-      <RowSection>
-        {/* 실시간 방문자 수 버튼 */}
-        <VisitorButton
-          onPress={() => {
-            toggleTooltip();
-            onRealTimePress();
-          }}>
-          <RowContainer>
-            <QuestionIcon
-              style={{marginRight: moderateScale(5), transform: [{scale: 0.7}]}}
-            />
-            <LabelText>실시간 방문자 수</LabelText>
-            <CountText />
-          </RowContainer>
-        </VisitorButton>
+  const popupId = popupDetail.id;
 
-        {isTooltipVisible && (
-          <TooltipContainer>
-            <FastImageContainer
-              fitOnHeight
-              style={{height: moderateScale(37)}}
-              source={require('src/Resource/png/real-time-visitors-alert-tooltip.png')}
-            />
-          </TooltipContainer>
-        )}
-
-        {/* 방문하기 버튼 */}
-        <Spacer />
-        <PopupDetailVisitButton
-          onPress={onVisitPress}
-          visitButtonType={visitButtonType}
+  if (popupDetail.operationStatus === 'NOTYET') {
+    return (
+      <PopupDetailBottomButtonBar>
+        <CommonCompleteButton
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'white',
+            borderWidth: 0.8,
+            borderColor: themeColors().grey.main,
+            width: moderateScale(380),
+          }}
+          textStyle={{
+            fontWeight: '800',
+          }}
+          title={'오픈예정 팝업이에요'}
+          isDisabled={true}
         />
-      </RowSection>
-    </BottomBar>
-  );
+      </PopupDetailBottomButtonBar>
+    );
+  }
+
+  if (popupDetail.operationStatus === 'OPERATING') {
+    const visited = isVisitedPopup(popupId);
+
+    return (
+      <PopupDetailBottomButtonBar>
+        <RowSection>
+          <VisitorButton onPress={() => {}}>
+            <RowContainer>
+              <QuestionIcon
+                style={{
+                  marginRight: moderateScale(3),
+                  transform: [{scale: 0.7}],
+                }}
+              />
+              <LabelText>실시간 방문자 수</LabelText>
+              <CountText>{popupDetail.viewCnt}명</CountText>
+            </RowContainer>
+          </VisitorButton>
+          {
+            <TooltipContainer>
+              <FastImageContainer
+                fitOnHeight
+                style={{height: moderateScale(37)}}
+                source={require('src/Resource/png/real-time-visitors-alert-tooltip.png')}
+              />
+            </TooltipContainer>
+          }
+          <Spacer />
+          <RadiusBlueButton
+            text={visited ? '방문완료' : '방문하기'}
+            onPress={requestVisitPopup}
+            disable={visited}
+            style={{
+              width: moderateScale(175),
+              height: moderateScale(50),
+              borderRadius: 30,
+            }}
+            textStyle={{fontSize: moderateScale(18)}}
+          />
+        </RowSection>
+      </PopupDetailBottomButtonBar>
+    );
+  }
+
+  if (popupDetail.operationStatus === 'TERMINATED') {
+    return (
+      <PopupDetailBottomButtonBar>
+        <RowSection>
+          <VisitorButton onPress={() => {}}>
+            <RowContainer>
+              <LabelText>재오픈 알림 신청</LabelText>
+              <CountText>{popupDetail.viewCnt}명</CountText>
+            </RowContainer>
+          </VisitorButton>
+          {
+            <TooltipContainer>
+              <FastImageContainer
+                fitOnHeight
+                style={{height: moderateScale(37)}}
+                source={require('src/Resource/png/real-time-visitors-alert-tooltip.png')}
+              />
+            </TooltipContainer>
+          }
+          <Spacer />
+          <RadiusBlueButton
+            text={waiting ? '알림 신청 완료' : '재오픈 알림 받기'}
+            onPress={requestWaitingPopup}
+            disable={waiting}
+            style={{
+              width: moderateScale(175),
+              height: moderateScale(50),
+              borderRadius: 30,
+            }}
+            textStyle={{fontSize: moderateScale(18)}}
+          />
+        </RowSection>
+      </PopupDetailBottomButtonBar>
+    );
+  }
+
+  return null;
 };
 
 export default PopupDetailBottomButtonRowSection;
 
-// Styled Components
-const BottomBar = styled.View`
+const PopupDetailBottomButtonBar = styled.View`
   flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-  width: 100%;
   background-color: white;
-  border-radius: ${moderateScale(25)}px;
-  border-top-width: 1px;
-  border-top-color: white;
-  padding: 0;
-  position: absolute;
-  bottom: 0;
+  height: ${moderateScale(70)}px;
+  border-top-left-radius: ${moderateScale(25)}px;
+  border-top-right-radius: ${moderateScale(25)}px;
+`;
+
+const LabelText = styled.Text`
+  font-size: ${moderateScale(14)}px;
+  font-weight: 500;
+  color: ${themeColors().grey.main};
+  margin-right: ${moderateScale(5)}px;
 `;
 
 const RowSection = styled.View`
@@ -88,7 +178,7 @@ const VisitorButton = styled.Pressable`
   height: ${moderateScale(50)}px;
   justify-content: center;
   align-items: center;
-  border-radius: 30px;
+  border-radius: ${moderateScale(30)}px;
   border-width: 1px;
   border-color: ${themeColors().grey.mild};
   background-color: white;
@@ -98,14 +188,6 @@ const RowContainer = styled.View`
   flex-direction: row;
   align-items: center;
 `;
-
-const LabelText = styled.Text`
-  font-size: ${moderateScale(12)}px;
-  font-weight: 500;
-  color: ${themeColors().grey.main};
-  margin-right: ${moderateScale(5)}px;
-`;
-
 const CountText = styled.Text`
   font-size: ${moderateScale(17)}px;
   font-weight: 700;

@@ -50,6 +50,9 @@ export const PopupDetailReviewSection = () => {
     [key: string]: boolean;
   }>({});
 
+  // 인증된 사용자 후기만 보기 상태
+  const [isOnlyVerifiedReview, setIsOnlyVerifiedReview] = useState(false);
+
   const navigateToReviewWriteScreen = () => {
     navigation.navigate('PopupDetailReviewWriteScreen', {
       popupId: popupDetail?.id,
@@ -66,6 +69,15 @@ export const PopupDetailReviewSection = () => {
 
   const getDisplayedText = (text: string, isExpanded: boolean) =>
     isExpanded ? text : `${text.substring(0, 80)}...`;
+
+  const handleIsOnlyVerifiedReview = () => {
+    setIsOnlyVerifiedReview(prev => !prev); // 인증된 리뷰만 보기 토글
+  };
+
+  // 인증된 사용자 후기만 보기 상태에 따라 리뷰 필터링
+  const filteredReviews = isOnlyVerifiedReview
+    ? reviews.filter(review => review.isCertificated)
+    : reviews;
 
   return (
     <SectionContainer>
@@ -86,9 +98,9 @@ export const PopupDetailReviewSection = () => {
 
       <SectionRow style={{marginTop: moderateScale(10)}}>
         <PurpleCheckSelectionRow
-          isSelected={false}
+          isSelected={isOnlyVerifiedReview}
           label="인증된 방문자 후기만 보기"
-          onClicked={() => {}}
+          onClicked={handleIsOnlyVerifiedReview}
         />
         <BlankDropdown
           buttonStyle={{width: moderateScale(120)}}
@@ -97,8 +109,8 @@ export const PopupDetailReviewSection = () => {
         />
       </SectionRow>
 
-      {reviews.length > 0 ? (
-        reviews.map(review => {
+      {filteredReviews.length > 0 ? (
+        filteredReviews.map(review => {
           const isExpanded = expandedReviews[review.reviewId] || false; // Fixed variable name
           const shouldShowMoreButton = review.text.length > 20;
 

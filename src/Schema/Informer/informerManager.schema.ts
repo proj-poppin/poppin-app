@@ -87,7 +87,7 @@ export type InformerManagerSchema = {
   foodBeverage: boolean;
 
   /** 웹툰/애니메이션 */
-  webtoonAni: boolean;
+  webtoonAnimation: boolean;
 
   /** 인테리어/소품 */
   interiorThings: boolean;

@@ -17,6 +17,9 @@ import {PopupVisitSchema} from 'src/Schema/Popup/popupVisit.schema';
 import {axiosGetPopupsBySearchFiltering} from '../../Axios/Popup/popup.get.axios';
 import {PageInfoType} from '../../Object/Type/pageInfo.type';
 import {Alert} from 'react-native';
+import {PopupWaitingSchema} from '../../Schema/Popup/popupWaiting.schema';
+import {axiosRequestReopenPopup} from '../../Axios/Popup/popup.post.axios';
+import {NotificationSchema} from '../../Schema/User/notification.schema';
 
 type PopupStoreProps = {
   loadingStates: Record<string, boolean>; // 팝업 ID별 로딩 상태
@@ -30,6 +33,7 @@ type PopupStoreProps = {
   interestedPopupStores: PopupSchema[];
 
   scrappedPopups: PopupScrapSchema[];
+  waitingPopups: PopupWaitingSchema[];
   visitedPopups: PopupVisitSchema[];
   previousSearchParams: PopupSearchParams;
   setPopupVisits: (visitations: PopupVisitSchema[]) => void;
@@ -52,8 +56,16 @@ type PopupStoreProps = {
 
   setPopupStoreActivities: (popupActivities: {
     scrappedPopups: PopupScrapSchema[];
+    waitingPopups: PopupWaitingSchema[];
     visitedPopups: PopupVisitSchema[];
   }) => void;
+
+  // * 취향 설정후 업데이트된 취향에 맞는 새로운 팝업을 불러오기위해 사용(홈랜딩화면에서 취향팝업만 예외적으로 SETTER 허용)
+  setRecommendedPopupStores: (recommendedPopupStores: PopupSchema[]) => void;
+
+  isVisitedPopup: (popupId: string) => boolean;
+
+  isWaitingPopup: (popupId: string) => boolean;
 
   // /** 관심 팝업(스크랩한 팝업) 목록을
   //  *  상태값에 저장합니다. */
@@ -77,7 +89,7 @@ type PopupStoreProps = {
 
   /** 스크랩/방문한 팝업을 더 받아온 후 추가합니다. */
   appendScrappedOrVisitedPopupStores: (param: {
-    popupStores: PopupSchema[];
+    popupStores: NotificationSchema[];
     type: 'SCRAPPED' | 'VISITED';
   }) => void;
 
@@ -93,8 +105,12 @@ type PopupStoreProps = {
 
   spreadPopupVisited: (param: {
     popup: PopupSchema;
-    newPopupParticipation: PopupVisitSchema;
+    newPopupVisit: PopupVisitSchema;
   }) => void;
+
+  /** 팝업 재오픈 알림 받기를 구독/구독 취소합니다. */
+  startWaitingPopup: (popupId: string) => Promise<void>;
+  // cancelWaitingPopup: (popupId: string) => Promise<void>;
 
   /**
    * 사용자가 로그아웃/탈퇴하면
@@ -119,6 +135,7 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
   searchedPopupStores: [] as PopupSchema[],
   pageInfo: {} as PageInfoType,
   scrappedPopups: [] as PopupScrapSchema[],
+  waitingPopups: [] as PopupScrapSchema[],
   visitedPopups: [] as PopupVisitSchema[],
   previousSearchParams: {} as PopupSearchParams,
   setPopupVisits: (visitations: PopupVisitSchema[]) => {
@@ -183,20 +200,36 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
 
   setPopupStoreActivities: (popupActivities: {
     scrappedPopups: PopupScrapSchema[];
+    waitingPopups: PopupWaitingSchema[];
     visitedPopups: PopupVisitSchema[];
   }) => {
     set({
       scrappedPopups: popupActivities.scrappedPopups,
+      waitingPopups: popupActivities.waitingPopups,
       visitedPopups: popupActivities.visitedPopups,
     });
   },
 
-  // setScrappedPopupStore: scrappedPopupStore => {
-  //   set({interestedPopupStores: [scrappedPopupStore]});
-  // },
+  setRecommendedPopupStores: (recommendedPopupStores: PopupSchema[]) => {
+    set({recommendedPopupStores});
+  },
+
+  isVisitedPopup: (popupId: string) => {
+    return get().visitedPopups.some(
+      visitedPopup => visitedPopup.popupId.toString() === popupId.toString(),
+    );
+  },
+
+  isWaitingPopup: (popupId: string) => {
+    return get().waitingPopups.some(
+      waitingPopup => waitingPopup?.popupId.toString() === popupId.toString(),
+    );
+  },
+
   setScrappedPopupStore: (scrappedPopups: PopupScrapSchema[]) => {
     set({scrappedPopups});
   },
+
   togglePopupScrap: async (popupId: string) => {
     const interestedPopupStores = get().interestedPopupStores || [];
 
@@ -321,9 +354,9 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
 
   spreadPopupVisited: (param: {
     popup: PopupSchema;
-    newPopupParticipation: PopupVisitSchema;
+    newPopupVisit: PopupVisitSchema;
   }) => {
-    get().appendPopupVisited(param.newPopupParticipation);
+    get().appendPopupVisited(param.newPopupVisit);
     set({
       visitedPopupStores: addPopupListItem(
         param.popup,
@@ -390,6 +423,28 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
     return;
   },
 
+  startWaitingPopup: async (popupId: string) => {
+    const result = await axiosRequestReopenPopup(popupId);
+    if (result === null) {
+      return;
+    }
+    set({
+      waitingPopups: [result.newPopupWaiting, ...get().waitingPopups],
+    });
+  },
+
+  // TODO 기획에 따른 보류
+  // cancelWaitingPopup: async (popupId: string) => {
+  //   const result = await axiosRequestReopenPopup(popupId);
+  //   if (result === null) {
+  //     return;
+  //   }
+  //   set({
+  //     waitingPopups: get().waitingPopups.filter(
+  //       waitingPopup => waitingPopup?.popupId !== popupId,
+  //     ),
+  //   });
+  // },
   appendPopupVisited: (newPopupVisited: PopupVisitSchema) => {
     set({
       visitedPopups: [newPopupVisited, ...get().visitedPopups],

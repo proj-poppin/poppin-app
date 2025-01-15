@@ -3,6 +3,8 @@ import {PopupSchema} from 'src/Schema/Popup/popup.schema';
 import {handleAxiosError} from 'src/Util/axios.util';
 import {ResultWrapper} from '../wrapper/result.wrapper';
 import {StateWrapper} from '../wrapper/state_wrapper';
+import {PopupVisitSchema} from '../../Schema/Popup/popupVisit.schema';
+import {PopupWaitingSchema} from '../../Schema/Popup/popupWaiting.schema';
 
 /**
  * 팝업 정보 수정 요청을 합니다.
@@ -85,9 +87,15 @@ export const axiosBlockPopup = async (popupId: string) => {
  * @param popupId
  * @author 도형
  */
+
+export interface PopupVisitResponseData {
+  updatedPopupStore: PopupSchema;
+  newPopupVisit: PopupVisitSchema;
+}
+
 export const axiosVisitPopupStore = async (popupId: string) => {
   return await customAxios
-    .request<StateWrapper<PopupSchema>>({
+    .request<StateWrapper<PopupVisitResponseData>>({
       method: 'PATCH',
       url: `v1/${POPUP}/visit`,
       data: {popupId},
@@ -111,14 +119,20 @@ export const axiosVisitPopupStore = async (popupId: string) => {
  *
  * @param popupId
  */
+
+export interface PopupWaitingResponseData {
+  updatedPopup: PopupSchema;
+  newPopupWaiting: PopupWaitingSchema;
+}
+
 export const axiosRequestReopenPopup = async (popupId: string) => {
   return await customAxios
-    .request<ResultWrapper>({
+    .request<StateWrapper<PopupWaitingResponseData>>({
       method: 'POST',
-      url: `v1/${POPUP}/reopen?popupId=${popupId}`,
+      url: `v1/${POPUP}/waiting?popupId=${popupId}`,
     })
     .then(response => {
-      return response.data;
+      return response.data.data;
     })
     .catch(error => {
       handleAxiosError({

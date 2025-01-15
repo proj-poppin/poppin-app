@@ -2533,6 +2533,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-community/push-notification-ios@npm:^1.11.0":
+  version: 1.11.0
+  resolution: "@react-native-community/push-notification-ios@npm:1.11.0"
+  dependencies:
+    invariant: ^2.2.4
+  peerDependencies:
+    react: ">=16.6.3"
+    react-native: ">=0.58.4"
+  checksum: d8c8cdd0d4e8112752a13bf2c426618ec8edd91eacadf03f05375648b5f12ffa761e8676e9d6ac9e5bc5ded73c991ab2219c67fe02e110dfaf38f4cb59695868
+  languageName: node
+  linkType: hard
+
 "@react-native-firebase/analytics@npm:^16.5.0":
   version: 16.7.0
   resolution: "@react-native-firebase/analytics@npm:16.7.0"
@@ -2564,6 +2576,16 @@ __metadata:
   peerDependencies:
     "@react-native-firebase/app": 16.7.0
   checksum: 9f11291b784e580428f1bf153dbb6f87578a3e3df90c5cee3db3acd60ff8e942ecd5a37cbe7bad2e3a4e09d12991170275f03af6652a92878403e28423f145fa
+  languageName: node
+  linkType: hard
+
+"@react-native-firebase/in-app-messaging@npm:^21.6.2":
+  version: 21.6.2
+  resolution: "@react-native-firebase/in-app-messaging@npm:21.6.2"
+  peerDependencies:
+    "@react-native-firebase/analytics": 21.6.2
+    "@react-native-firebase/app": 21.6.2
+  checksum: fb22df4c7c1aaed731d517effd02532fce7f187509f5b9b02dfa607583743aa5a26fdaf433a1dc363553b28a5280935a449cd2b4cb65763166fa9ac3a3b5c756
   languageName: node
   linkType: hard
 
@@ -3731,9 +3753,11 @@ __metadata:
     "@react-native-clipboard/clipboard": ^1.11.2
     "@react-native-community/datetimepicker": ^6.3.2
     "@react-native-community/geolocation": ^3.2.1
+    "@react-native-community/push-notification-ios": ^1.11.0
     "@react-native-firebase/analytics": ^16.5.0
     "@react-native-firebase/app": ^16.5.0
     "@react-native-firebase/dynamic-links": ^16.5.0
+    "@react-native-firebase/in-app-messaging": ^21.6.2
     "@react-native-firebase/messaging": ^16.5.0
     "@react-native-google-signin/google-signin": ^13.0.1
     "@react-native-kakao/core": ^2.2.6
@@ -3801,7 +3825,6 @@ __metadata:
     react-native-permissions: 4.1.5
     react-native-popup-menu: 0.15.12
     react-native-pure-chart: 0.0.24
-    react-native-push-notification: 8.1.1
     react-native-safe-area-context: ^4.11.1
     react-native-screens: 3.15.0
     react-native-select-dropdown: 2.0.4
@@ -10877,16 +10900,6 @@ __metadata:
     lodash: ^4.17.4
     prop-types: ^15.6.0
   checksum: d8e97af931f3475dbe8f9de084c89d0c8449055ff91abff38aa11a1ce032cf84ebf27ae3a5bb791debc5fe174a19ca2c237ac32b939f9932f6cd01dda6ddf447
-  languageName: node
-  linkType: hard
-
-"react-native-push-notification@npm:8.1.1":
-  version: 8.1.1
-  resolution: "react-native-push-notification@npm:8.1.1"
-  peerDependencies:
-    "@react-native-community/push-notification-ios": ^1.10.1
-    react-native: ">=0.33"
-  checksum: 64d500c1163eaa4eee549e6e2f8204cac643f91ae918a227e9d93f8261afdebbdaa7ba5d12da0039155cbf6a599032dd15be4ebe53737cbeeadec4469893f00d
   languageName: node
   linkType: hard
 

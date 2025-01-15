@@ -51,6 +51,8 @@ import {useAppStore} from '../App/app.zustand';
 type UserStoreProps = {
   accessToken: string;
   refreshToken: string;
+  // 취향 설정 왼료시 true로 변경(서버에서 요청받은 값으로만 반환됨)
+  isPreferenceSettingCreated: boolean;
 
   user: UserSchema;
   userNotice: UserNoticeSchema;
@@ -64,11 +66,9 @@ type UserStoreProps = {
   preferenceCategory: PreferenceCategory;
   preferenceCompanion: PreferenceCompanion;
 
-  // Preference 설정 함수
   setPreferencePopupStore: (preferencePopupStore: PreferencePopupStore) => void;
   setPreferenceCategory: (preferenceCategory: PreferenceCategory) => void;
   setPreferenceCompanion: (preferenceCompanion: PreferenceCompanion) => void;
-  saveUserPreferenceSetting: () => void;
 
   setUser: (user: UserSchema) => void;
   setUserPreferenceSetting: (userPreferenceSetting: PreferenceSchema) => void;
@@ -187,6 +187,7 @@ type UserStoreProps = {
 export const useUserStore = create<UserStoreProps>((set, get) => ({
   accessToken: '',
   refreshToken: '',
+  isPreferenceSettingCreated: false,
   user: BlankUser,
   userNotice: BlankUserNotice,
   userNotificationSetting: BlankUserNotificationSetting,
@@ -196,10 +197,11 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
     popupActivities: {
       scrappedPopups: [],
       visitedPopups: [],
+      waitingPopups: [],
     },
     notifications: {
-      POPUP: [],
-      NOTICE: [],
+      popups: [],
+      notices: [],
     },
   },
 
@@ -216,18 +218,6 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
   setPreferenceCompanion: (preferenceCompanion: PreferenceCompanion) =>
     set({preferenceCompanion}),
 
-  // Preference 전체 저장 함수
-  saveUserPreferenceSetting: () => {
-    const {preferencePopupStore, preferenceCategory, preferenceCompanion} =
-      get();
-    const newPreference: PreferenceSchema = {
-      preferencePopupStore,
-      preferenceCategory,
-      preferenceCompanion,
-    };
-    set({userPreferenceSetting: newPreference});
-  },
-
   setUser: (user: UserSchema) => set({user}),
   setUserPreferenceSetting: (userPreferenceSetting: PreferenceSchema) =>
     set({userPreferenceSetting}),
@@ -237,7 +227,6 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
     if (userInfo !== null) {
       set({
         user: userInfo.user,
-        userPreferenceSetting: userInfo.userPreferenceSetting,
       });
       return;
     }
@@ -300,6 +289,7 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
       userNotice: result.data.userNotice,
       userNotificationSetting: result.data.userNotificationSetting,
       userPreferenceSetting: result.data.userPreferenceSetting,
+      isPreferenceSettingCreated: result.data.isPreferenceSettingCreated,
       // userRelation: result.data.userRelation,
     });
 
@@ -446,6 +436,7 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
       loginResponse.data.jwtToken.refreshToken,
     );
 
+    //* JWT 와 소속된 파트너 정보, 유저 정보를 상태값에 설정합니다.
     set({
       user: loginResponse.data.user,
       userNotice: loginResponse.data.userNotice,
@@ -454,7 +445,23 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
       userActivities: loginResponse.data.userActivities,
       accessToken: loginResponse.data.jwtToken.accessToken,
       refreshToken: loginResponse.data.jwtToken.refreshToken,
+      isPreferenceSettingCreated: loginResponse.data.isPreferenceSettingCreated,
     });
+
+    get().setUserActivities(loginResponse.data.userActivities);
+    get().setFirebaseTopicSubscription(
+      loginResponse.data.userNotificationSetting,
+    );
+
+    console.log(
+      'userActivities from user state: ',
+      loginResponse.data.userActivities,
+    );
+
+    console.log(
+      'userprefeenceSetting from user state: ',
+      loginResponse.data.userPreferenceSetting,
+    );
 
     // 관심 팝업 정보가 종속되어 있으므로 로그인 시점에 부트스트랩 재호출(로그아웃 상태에서, 로그인 시 관심 팝업 정보를 불러오기 위함)
     const loadSuccess = await useAppStore.getState().loadInitialData();

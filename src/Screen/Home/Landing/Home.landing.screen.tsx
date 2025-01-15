@@ -62,11 +62,12 @@ export const HomeLandingScreen = ({
     shallow,
   );
 
-  const {user, isLoggedIn} = useUserStore(
+  const {user, isLoggedIn, isPreferenceSettingCreated} = useUserStore(
     state => ({
       user: state.user,
       isLoggedIn: state.isLoggedIn,
       userPreferenceSetting: state.userPreferenceSetting,
+      isPreferenceSettingCreated: state.isPreferenceSettingCreated,
     }),
     shallow,
   );
@@ -80,7 +81,7 @@ export const HomeLandingScreen = ({
           <TitleText style={{marginLeft: 12}}>
             어서오세요, {user.nickname}님{'\n'}취향저격 팝업 알려드릴게요
           </TitleText>
-          {user.isPreferenceSettingCreated ? (
+          {isPreferenceSettingCreated ? (
             // HomeLandingRecommendedPopupSection 표시
             <HomeLandingPopupSection
               popups={recommendedPopupStores}

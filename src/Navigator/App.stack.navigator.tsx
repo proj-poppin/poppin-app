@@ -1,5 +1,5 @@
 import React, {useRef, useEffect, Component} from 'react';
-import {AppState, Linking} from 'react-native';
+import {AppState, Linking, Platform} from 'react-native';
 import {
   NavigationProp,
   NavigationContainer,
@@ -256,13 +256,22 @@ const AppStackScreen = () => {
     // }
   };
 
-  // get fcmToken
+  async function requestPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
+  }
+
   useEffect(() => {
-    const getToken = async () => {
-      const fcmToken = await messaging().getToken();
-      console.log('fcmToken', fcmToken);
-    };
-    getToken();
+    if (Platform.OS === 'ios') {
+      console.log('requestPermission');
+      requestPermission();
+    }
   }, []);
 
   useEffect(() => {
@@ -286,7 +295,7 @@ const AppStackScreen = () => {
       const pushNotification = remoteMessage as unknown as PushNotification;
       axiosCheckNotification(pushNotification.data.notificationId);
       // makeFirebaseLogEvent(APP_LOGS.goto_app_by_push(pushNotification.data));
-      // navigateInAppScreen({navigation, destination: pushNotification.data});
+      navigateInAppScreen({navigation, destination: pushNotification.data});
     });
 
     //* 앱이 완전히 종료되었던 상태에서 알림으로 진입한 경우:
@@ -310,6 +319,12 @@ const AppStackScreen = () => {
       if (message.notification) {
         const {title, body} = message.notification;
         const data = message.data;
+
+        console.log('message: ', message);
+        console.log('title: ', title);
+        console.log('body: ', body);
+        console.log('data: ', data);
+
         showNotificationToast({
           text1: title,
           text2: body,

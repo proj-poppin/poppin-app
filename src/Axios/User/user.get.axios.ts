@@ -35,8 +35,8 @@ export const axiosGetSelfInfo = async () => {
 export const axiosGetRecentNotifications = async () => {
   return await customAxios
     .request<{
-      POPUP: NotificationSchema[];
-      NOTICE: NotificationSchema[];
+      popups: NotificationSchema[];
+      notices: NotificationSchema[];
     }>({
       method: 'GET',
       url: `v1/${USERS}/notifications`,

@@ -1839,6 +1839,8 @@ PODS:
     - ReactCommon/turbomodule/core
     - RNCKakaoCore
     - Yoga
+  - RNCPushNotificationIOS (1.11.0):
+    - React-Core
   - RNDateTimePicker (6.3.2):
     - React-Core
   - RNDeviceInfo (11.1.0):
@@ -2031,6 +2033,7 @@ DEPENDENCIES:
   - "RNCKakaoShare (from `../node_modules/@react-native-kakao/share`)"
   - "RNCKakaoSocial (from `../node_modules/@react-native-kakao/social`)"
   - "RNCKakaoUser (from `../node_modules/@react-native-kakao/user`)"
+  - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
@@ -2255,6 +2258,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-kakao/social"
   RNCKakaoUser:
     :path: "../node_modules/@react-native-kakao/user"
+  RNCPushNotificationIOS:
+    :path: "../node_modules/@react-native-community/push-notification-ios"
   RNDateTimePicker:
     :path: "../node_modules/@react-native-community/datetimepicker"
   RNDeviceInfo:
@@ -2407,6 +2412,7 @@ SPEC CHECKSUMS:
   RNCKakaoShare: ba64cb66108601cc94006c5d0fb1d758af71ab0c
   RNCKakaoSocial: 6758e8eb543eda7cd495216b735f40a64a4df154
   RNCKakaoUser: 5140e32e7bfa8360983f18c670102cf857292ff9
+  RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
   RNDateTimePicker: 4f1fc917f5af9d9ae4c5fc0c63a4474d61338693
   RNDeviceInfo: b899ce37a403a4dea52b7cb85e16e49c04a5b88e
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8

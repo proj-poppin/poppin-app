@@ -73,12 +73,26 @@ const SvgWithNameBoxLabel: React.FC<SvgWithNameBoxLabelProps> = ({
             style={[{fontWeight: isBold ? '600' : '400'}, textStyle]}>
             {label}
           </LabelText>
-          {Icon && <Icon style={[{marginLeft: moderateScale(4)}, iconStyle]} />}
+          {Icon && (
+            <Icon
+              style={[
+                {marginLeft: moderateScale(4)},
+                {color: isCompleted ? 'white' : themeColors().blue.main},
+                iconStyle,
+              ]}
+            />
+          )}
         </RowContainer>
       ) : (
         <RowContainer>
           {Icon && (
-            <Icon style={[{marginRight: moderateScale(4)}, iconStyle]} />
+            <Icon
+              style={[
+                {marginRight: moderateScale(4)},
+                {color: isCompleted ? 'white' : themeColors().blue.main},
+                iconStyle,
+              ]}
+            />
           )}
           <LabelText
             isCompleted={isCompleted} // Pass isCompleted prop

@@ -13,6 +13,7 @@ import {AppStackProps} from '../../Navigator/App.stack.navigator';
 import {useAppStore} from '../../Zustand/App/app.zustand';
 import {useUserStore} from '../../Zustand/User/user.zustand';
 import {axiosAutoLogin} from '../../Axios/Auth/auth.axios';
+import {logger} from 'react-native-logs';
 
 /** */
 type SplashScreenState = {
@@ -243,6 +244,7 @@ export function SplashScreenProvider({
     if (loginData !== null) {
       await setStorage('EMAIL', loginData.data.user.email);
       await useUserStore.getState().setLoggedInUserInfo(loginData);
+      logger.createLogger().info('loginData', loginData);
       // useUserStore.getState().setUserActivities(loginData.data.userActivities);
       // useUserStore.getState().setFirebaseTopicSubscription(loginData.data.userNotificationSetting);
       // useUserStore.

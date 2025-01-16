@@ -8,7 +8,12 @@ export const POP_UP_TYPES: TFilter[] = [
   {id: 1, name: 'fashionBeauty', label: '💄 패션/뷰티', selected: false},
   {id: 2, name: 'characters', label: '🥰 캐릭터', selected: false},
   {id: 3, name: 'foodBeverage', label: '🍽️ 식품/음료', selected: false},
-  {id: 4, name: 'webtoonAni', label: '📚 웹툰/애니메이션', selected: false},
+  {
+    id: 4,
+    name: 'webtoonAnimation',
+    label: '📚 웹툰/애니메이션',
+    selected: false,
+  },
   {id: 5, name: 'interiorThings', label: '🛋️ 인테리어/소품', selected: false},
   {id: 6, name: 'movie', label: '🎬 영화/드라마/예능', selected: false},
   {id: 7, name: 'musical', label: '🎼 뮤지컬/연극', selected: false},

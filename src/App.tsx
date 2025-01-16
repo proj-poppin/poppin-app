@@ -5,6 +5,12 @@ import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {AppStackNavigator} from './Navigator/App.stack.navigator';
 import {themeColors} from 'src/Theme/theme';
 import {themeSizes} from 'src/Theme/size.theme';
+import {
+  openSettings,
+  checkNotifications,
+  requestNotifications,
+} from 'react-native-permissions';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 const queryClient = new QueryClient();
 
@@ -15,7 +21,19 @@ const queryClient = new QueryClient();
  *   - iOS 푸시알림 권한 요청
  * @author 도형
  */
+
+const checkNotificationPermission = async () => {
+  const notificationPermission = await checkNotifications();
+  if (notificationPermission.status === 'denied') {
+    await requestNotifications(['alert', 'badge', 'sound']);
+  }
+
+  // 앱 아이콘 뱃지 설정 (초기 값: 5)
+  PushNotificationIOS.setApplicationIconBadgeNumber(4);
+};
+
 export const App = () => {
+  checkNotificationPermission();
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider

@@ -16,24 +16,21 @@ import {NotificationSchema} from 'src/Schema/User/notification.schema';
 import {UserNoticeSchema} from 'src/Schema/User/userNotice.schema';
 import {PopupVisitSchema} from '../../Schema/Popup/popupVisit.schema';
 import EncryptedStorage from 'react-native-encrypted-storage';
-// import {btoa, atob} from 'react-native-quick-base64';
+import {logger} from 'react-native-logs';
+import {PopupWaitingSchema} from '../../Schema/Popup/popupWaiting.schema';
 
 export type LoginResponse = StateWrapper<UserInfo>;
-
-// setPopupStoreActivities: (popupActivities: {
-//   scrappedPopups: PopupScrapSchema[];
-//   visitedPopups: PopupVisitSchema[];
-// }) => void;
 
 export type UserActivities = {
   popupActivities: {
     scrappedPopups: PopupScrapSchema[];
     visitedPopups: PopupVisitSchema[];
+    waitingPopups: PopupWaitingSchema[];
   };
 
   notifications: {
-    POPUP: NotificationSchema[];
-    NOTICE: NotificationSchema[];
+    popups: NotificationSchema[];
+    notices: NotificationSchema[];
   };
 };
 
@@ -47,6 +44,7 @@ export type UserInfo = {
     accessToken: string;
     refreshToken: string;
   };
+  isPreferenceSettingCreated: boolean;
 };
 
 /**
@@ -293,6 +291,7 @@ export const axiosAutoLogin = async (
   originalRefreshToken: string,
 ): Promise<StateWrapper<UserInfo> | null> => {
   try {
+    const fcmToken = await messaging().getToken();
     const response = await customAxios.request<StateWrapper<UserInfo>>({
       method: 'POST',
       url: `v1/${AUTH}/refresh`,
@@ -300,13 +299,16 @@ export const axiosAutoLogin = async (
         Authorization: `Bearer ${originalRefreshToken}`,
       },
       data: {
-        fcmToken: testFcmToken,
+        fcmToken: fcmToken,
       },
     });
 
     const {accessToken, refreshToken} = response.data.data.jwtToken;
     await EncryptedStorage.setItem('accessToken', accessToken);
     await EncryptedStorage.setItem('refreshToken', refreshToken);
+    console.log('present fcmToken: ', fcmToken);
+    logger.createLogger().info('loginData!: ', response.data);
+
     return response.data;
   } catch (error) {
     handleAxiosError({

@@ -20,7 +20,7 @@ export const preferenceKeysForPopupInterest = [
   'fashionBeauty',
   'characters',
   'foodBeverage',
-  'webtoonAni',
+  'webtoonAnimation',
   'interiorThings',
   'movie',
   'musical',
@@ -30,13 +30,13 @@ export const preferenceKeysForPopupInterest = [
   'kpop',
   'alcohol',
   'animalPlant',
-  'guitar',
+  'etc',
 ];
 export const categoryKeys = [
   'fashionBeauty',
   'characters',
   'foodBeverage',
-  'webtoonAni',
+  'webtoonAnimation',
   'interiorThings',
   'movie',
   'musical',
@@ -46,7 +46,7 @@ export const categoryKeys = [
   'kpop',
   'alcohol',
   'animalPlant',
-  'guitar',
+  'etc',
 ];
 
 export function getPreferenceTitle(key: string): string {
@@ -74,7 +74,7 @@ export function getPreferenceTitle(key: string): string {
       return '🥰 캐릭터';
     case 'foodBeverage':
       return '🍽️ 식품/음료';
-    case 'webtoonAni':
+    case 'webtoonAnimation':
       return '📚 웹툰/애니메이션';
     case 'interiorThings':
       return '🛋️ 인테리어/소품';
@@ -94,7 +94,7 @@ export function getPreferenceTitle(key: string): string {
       return '🍷 주류';
     case 'animalPlant':
       return '🪴 동물/식물';
-    case 'guitar':
+    case 'etc':
       return '🎸 기타';
 
     /**

@@ -67,7 +67,7 @@ export const axiosPostCreateManagerPopup = async (
     formData.append('fashionBeauty', String(data.fashionBeauty));
     formData.append('characters', String(data.characters));
     formData.append('foodBeverage', String(data.foodBeverage));
-    formData.append('webtoonAni', String(data.webtoonAni));
+    formData.append('webtoonAnimation', String(data.webtoonAnimation));
     formData.append('interiorThings', String(data.interiorThings));
     formData.append('movie', String(data.movie));
     formData.append('musical', String(data.musical));

@@ -11,7 +11,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
-import {getGalleryImages} from 'src/Util';
+import {useImagePicker} from '../../../Util';
 
 export interface CategoryType {
   id: number;
@@ -199,7 +199,9 @@ export const ReviewWriteProvider = ({
   };
 
   const submitReview = async () => {
-    if (submitting || !validateReview()) return;
+    if (submitting || !validateReview()) {
+      return;
+    }
 
     try {
       setSubmitting(true);

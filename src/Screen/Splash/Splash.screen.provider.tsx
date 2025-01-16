@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useReducer} from 'react';
-// import inAppMessaging from '@react-native-firebase/in-app-messaging';
+import inAppMessaging from '@react-native-firebase/in-app-messaging';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   doesAppMeetRequiredVersion,
@@ -11,11 +11,8 @@ import {
 } from 'src/Util';
 import {AppStackProps} from '../../Navigator/App.stack.navigator';
 import {useAppStore} from '../../Zustand/App/app.zustand';
-import {useDynamicServiceConstant} from '../../Zustand/App/service.dynamic.constant.zustand';
 import {useUserStore} from '../../Zustand/User/user.zustand';
 import {axiosAutoLogin} from '../../Axios/Auth/auth.axios';
-import {Alert} from 'react-native';
-import EncryptedStorage from 'react-native-encrypted-storage';
 
 /** */
 type SplashScreenState = {
@@ -156,7 +153,7 @@ export function SplashScreenProvider({
       useUserStore.getState().setNonMemberUserInfo();
     }
     /** 먼저 자동 로그인부터 처리합니다 */
-    const userStatus = await handleAutoLogin();
+    // const userStatus = await handleAutoLogin();
 
     // // Check if userStatus is valid; exit early if it fails
     // if (!userStatus) {
@@ -169,8 +166,9 @@ export function SplashScreenProvider({
       setInAppMessagingVisible(),
       useAppStore.getState().getDynamicConstants(),
       useAppStore.getState().loadInitialData(),
+      handleAutoLogin(),
     ]).then(([_, dynamicConstants, loadInitialData]) => {
-      return {loadInitialData, userStatus};
+      return {loadInitialData};
     });
 
     //* Check if initial data fetch was successful
@@ -218,6 +216,7 @@ export function SplashScreenProvider({
 
     /** */
     async function setInAppMessagingVisible() {
+      //* #SETTING #Firebase #InAppMessaging Firebase 인앱 메세지가 보이도록 설정합니다.
       // await inAppMessaging().setMessagesDisplaySuppressed(false);
     }
   }
@@ -244,11 +243,14 @@ export function SplashScreenProvider({
     if (loginData !== null) {
       await setStorage('EMAIL', loginData.data.user.email);
       await useUserStore.getState().setLoggedInUserInfo(loginData);
+      // useUserStore.getState().setUserActivities(loginData.data.userActivities);
+      // useUserStore.getState().setFirebaseTopicSubscription(loginData.data.userNotificationSetting);
+      // useUserStore.
+
       return {success: true};
     }
     return;
   }
-
   const value: SplashScreenContextType = {
     ...splashScreenState,
     bootstrap,

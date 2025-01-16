@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import {ScrollViewPage} from 'src/Component/Page';
 import {moderateScale} from 'src/Util';
 import {ScreenHeader} from 'src/Component/View';
-import {useImagePicker} from 'src/hooks/useImagePicker';
+import {useImagePicker} from '../../../Util';
 import LinearGradient from 'react-native-linear-gradient';
 import {ReviewSearchBar} from 'src/Component/MyPage/Review/Mypage.review.searchBar';
 import {BeforeReviewPopupCard} from 'src/Component/MyPage/Review/Mypage.before.review.popupCard';

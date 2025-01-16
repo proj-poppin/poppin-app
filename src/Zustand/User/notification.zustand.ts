@@ -11,12 +11,12 @@ export type NotificationCategory = 'POPUP' | 'NOTICE';
 
 type NotificationStoreProps = {
   notifications: {
-    POPUP: NotificationSchema[];
-    NOTICE: NotificationSchema[];
+    popups: NotificationSchema[];
+    notices: NotificationSchema[];
   };
   setNotifications: (notifications: {
-    POPUP: NotificationSchema[];
-    NOTICE: NotificationSchema[];
+    popups: NotificationSchema[];
+    notices: NotificationSchema[];
   }) => void;
 
   refreshNotifications: () => Promise<void>;
@@ -55,12 +55,12 @@ type NotificationStoreProps = {
 export const useNotificationStore = create<NotificationStoreProps>(
   (set, get) => ({
     notifications: {
-      POPUP: [],
-      NOTICE: [],
+      popups: [],
+      notices: [],
     },
     setNotifications: (notifications: {
-      POPUP: NotificationSchema[];
-      NOTICE: NotificationSchema[];
+      popups: NotificationSchema[];
+      notices: NotificationSchema[];
     }) => {
       set({notifications});
     },
@@ -188,8 +188,8 @@ export const useNotificationStore = create<NotificationStoreProps>(
     clearNotificationStates: () => {
       set({
         notifications: {
-          POPUP: [],
-          NOTICE: [],
+          popups: [],
+          notices: [],
         },
         gettingNewer: false,
         gettingOlder: false,

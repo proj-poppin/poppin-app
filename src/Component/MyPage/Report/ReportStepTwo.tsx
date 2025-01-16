@@ -2,7 +2,12 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {Alert, ScrollView} from 'react-native';
-import {HHMMFormatTime, moderateScale, YYYYHHMMFormatDate} from '../../../Util';
+import {
+  HHMMFormatTime,
+  moderateScale,
+  useImagePicker,
+  YYYYHHMMFormatDate,
+} from '../../../Util';
 import CustomBottomSheet from '../../BottomSheet/CustomBottomSheet';
 import CalendarPicker from '../../CalendarPicker';
 import TimePicker from '../../TimePicker';

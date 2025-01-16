@@ -1,6 +1,6 @@
 import CustomBottomSheet from '../../../../Component/BottomSheet/CustomBottomSheet';
 import styled from 'styled-components/native';
-import {moderateScale} from '../../../../Util';
+import {moderateScale, useImagePicker} from '../../../../Util';
 import React, {useState} from 'react';
 import PopupCategoryModal from '../../../../Component/Modal/Popup.category.modal';
 import {HelperText} from '../../../../Component/MyPage/Report/ReportStepTwo';

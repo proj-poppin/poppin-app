@@ -15,6 +15,7 @@ export const PopupDetailScreenHeader = () => {
     <ScreenHeader
       LeftComponents={'BACK_BUTTON'}
       title="팝업 상세"
+      RightStyle={{marginLeft: 80}}
       RightComponents={<RightComponents />}
     />
   );

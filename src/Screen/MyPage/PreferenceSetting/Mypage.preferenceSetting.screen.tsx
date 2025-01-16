@@ -16,6 +16,7 @@ import {
   preferenceKeysForPopupMate,
 } from 'src/Object/preference.enum';
 
+// MypagePreferenceSettingScreen
 export const MypagePreferenceSettingScreen = ({
   route,
   navigation,
@@ -33,6 +34,11 @@ export const MypagePreferenceSettingScreen = ({
 
   const {user} = useUserStore(state => ({user: state.user}), shallow);
 
+  // 버튼 활성화 여부 업데이트
+  useEffect(() => {
+    setIsButtonDisabled(!isAllCategoriesSelected());
+  }, [selectedTags, isAllCategoriesSelected]);
+
   const handleSubmit = async () => {
     const success = await savePreferences();
     if (success) {
@@ -42,10 +48,6 @@ export const MypagePreferenceSettingScreen = ({
       alert('설정 저장에 실패했습니다. 다시 시도해주세요.');
     }
   };
-
-  useEffect(() => {
-    setIsButtonDisabled(!isAllCategoriesSelected());
-  }, [selectedTags, isAllCategoriesSelected]);
 
   const categories = [
     {

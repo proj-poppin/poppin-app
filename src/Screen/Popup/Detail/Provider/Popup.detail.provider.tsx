@@ -10,6 +10,7 @@ import {
 } from 'src/Axios/Popup/popup.post.axios';
 import {useRecentPopups} from 'src/Util/local.util';
 import {showBlackToast} from '../../../../Util';
+import {set} from 'lodash';
 
 export type VisitButtonType =
   | 'VISIT_NOW'
@@ -111,43 +112,23 @@ export const usePopupDetailContext = () => useContext(PopupDetailContext);
 export const PopupDetailProvider = ({children}: {children: any}) => {
   const [popupReopenAlert, setPopupReopenAlert] = useState<boolean>(false);
   const [popupDetail, setPopupDetail] = useState<PopupSchema>(BlankPopup);
-  const [visitButtonType, setVisitButtonType] =
-    useState<VisitButtonType>('VISIT_NOW');
 
-  // VisitButtonType 업데이트 로직
-  const updateVisitButtonType = () => {
-    if (popupDetail.operationStatus === 'TERMINATED') {
-      setVisitButtonType('RECEIVE_REOPEN_ALERT');
-    } else if (popupDetail.isVisited) {
-      setVisitButtonType('VISIT_COMPLETE');
-    } else {
-      setVisitButtonType('VISIT_NOW');
-    }
-  };
-
-  useEffect(() => {
-    updateVisitButtonType();
-  }, [popupDetail]);
+  useEffect(() => {}, [popupDetail]);
 
   const visitPopup = async () => {
-    console.log('visitPopup called');
-    const response = await axiosVisitPopupStore(popupDetail.id);
-    // if (response?.updatedPopup) {
-    //   setPopupDetail(response.updatedPopup);
-    //   setVisitButtonType('VISIT_COMPLETE');
-    // }
-    if (response?.success) {
-      setPopupDetail(response.data);
-      setVisitButtonType('VISIT_COMPLETE');
-    }
+    try {
+      const result = await axiosVisitPopupStore(popupDetail.id);
+      if (result !== null) {
+        usePopupStore.getState().spreadPopupVisited({
+          popup: result.data.updatedPopupStore,
+          newPopupVisit: result.data.newPopupVisit,
+        });
+      }
+    } catch (error) {}
   };
 
   const requestReopenPopup = async () => {
-    const response = await axiosRequestReopenPopup(popupDetail.id);
-    if (response?.success) {
-      showBlackToast({text1: '재오픈 알림이 등록되었습니다.'});
-      setVisitButtonType('RECEIVE_REOPEN_ALERT_COMPLETE');
-    }
+    const result = await axiosRequestReopenPopup(popupDetail.id);
   };
 
   const [popupDetailModalVisible, setPopupDetailModalVisible] =
@@ -234,7 +215,6 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
     setVisiting,
     visitPopup,
     requestReopenPopup,
-    visitButtonType,
   };
 
   return (

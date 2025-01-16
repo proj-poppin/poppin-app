@@ -1,5 +1,5 @@
 export type NoticeSchema = {
-  _id: string;
+  id: string;
 
   /** 공지 제목 */
   title: string;
@@ -18,7 +18,7 @@ export type NoticeSchema = {
 };
 
 export const BlankNotice: NoticeSchema = {
-  _id: '',
+  id: '',
   title: '',
   createdAt: '',
   imageUrls: [],

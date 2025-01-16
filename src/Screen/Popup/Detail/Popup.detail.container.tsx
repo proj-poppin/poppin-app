@@ -45,6 +45,8 @@ export const PopupDetailContainer = ({
     setTargetReview,
   } = usePopupDetailReviewContext();
 
+  console.log('params: ', params);
+
   /**
    * 팝업 상세 정보 상태값을 설정합니다.
    */

@@ -230,11 +230,11 @@ export const axiosSocialLogin = async (param: {
       data: {fcmToken},
     })
     .then(response => {
-      console.log('response: ', response.data);
+      // console.log('response: ', response.data);
+      // logger.createLogger().info('loginData!: ', response.data);
       return response.data;
     })
     .catch(error => {
-      console.log('Sibal error: ', error);
       handleAxiosError({
         error,
         errorMessage: '로그인에 실패했습니다\n잠시 후 다시 시도해주세요',

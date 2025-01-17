@@ -1,6 +1,9 @@
 import React from 'react';
 import shallow from 'zustand/shallow';
-import {usePopupScreenStore} from './Popup.landing.zustand';
+import {
+  convertToBinaryString,
+  usePopupScreenStore,
+} from './Popup.landing.zustand';
 import PopupCategoryModal from '../../../Component/Modal/Popup.category.modal';
 import {BlankPreference} from '../../../Schema/Preference/preference.schema';
 import {PreferenceCategory} from '../../../Schema/Preference/preferenceCategory.schema';
@@ -52,8 +55,16 @@ export const PopupLandingCategoryModal: React.FC<
       return acc;
     }, {} as PreferencePopupStore);
 
+    // 이진 문자열 변환 후 상태 업데이트
+    const binaryCategories = convertToBinaryString(updatedCategories);
+    const binaryPopupStores = convertToBinaryString(updatedPopupStores);
+
     setFilteringFourteenCategories(updatedCategories);
     setFilteringThreeCategories(updatedPopupStores);
+
+    // 필터링된 이진 문자열 값 저장
+    usePopupScreenStore.getState().setSelectedCategories(binaryCategories);
+    usePopupScreenStore.getState().setSelectedPopupStores(binaryPopupStores);
 
     // API 요청 트리거
     usePopupScreenStore.getState().refreshAllTabs();

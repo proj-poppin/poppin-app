@@ -138,22 +138,7 @@ export const MypageReportUserScreen: React.FC = () => {
                 buttonName={'카테고리 설정'}
                 validationMode={'both'}
                 isPopupRequestModal={true}
-                initialPreferenceCategory={{
-                  fashionBeauty: false,
-                  characters: false,
-                  foodBeverage: false,
-                  webtoonAni: false,
-                  interiorThings: false,
-                  movie: false,
-                  musical: false,
-                  sports: false,
-                  game: false,
-                  itTech: false,
-                  kpop: false,
-                  alcohol: false,
-                  animalPlant: false,
-                  guitar: false,
-                }}
+                initialSelectedCategories={filteringFourteenCategories}
                 initialPreferencePopupStore={{
                   market: false,
                   display: false,

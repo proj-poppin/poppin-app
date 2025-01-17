@@ -62,9 +62,7 @@ export const axiosSettingPreference = async (param: {
 
     // console.log('axios에서는 ', response.data);
 
-    // userPreferenceSetting이 undefined인 경우 원본 데이터 사용
-    const userPreferenceSetting =
-      response.data.userPreferenceSetting || param.data;
+    const userPreferenceSetting = response.data.userPreferenceSetting;
 
     // 객체 형태의 recommendedPopupStores를 배열로 변환
     const updatedRecommendedPopupStores = Object.values(

@@ -145,18 +145,8 @@ export const ReviewWriteProvider = ({
   // 이미지 피커 설정
   const handleAddImages = async () => {
     try {
-      const selectedImages = await getGalleryImages({
-        sectionLimit: 5,
-        requestRationale: {
-          title: '카메라 권한 필요',
-          message: '리뷰 작성을 위해 카메라 권한이 필요합니다.',
-          buttonPositive: '확인',
-        },
-      });
-
-      if (selectedImages) {
-        setImages(prev => [...prev, ...selectedImages]);
-      }
+      const images = await getGalleryImages();
+      if (!images || !Boolean(images.length)) return;
     } catch (error) {
       console.error('이미지 선택 오류:', error);
       Alert.alert('알림', '이미지를 선택하는 중 오류가 발생했습니다.');

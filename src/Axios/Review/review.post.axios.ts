@@ -9,14 +9,12 @@ import {StateWrapper} from '../wrapper/state_wrapper';
  * @author 희진
  */
 
-export type TempReviewResponse = StateWrapper<PopupReviewSchema>;
-
 export const axiosAddRecommendReview = async (
   popupId: number,
   reviewId: number,
 ) => {
   return await customAxios
-    .request<TempReviewResponse>({
+    .request<StateWrapper<PopupReviewSchema>>({
       method: 'POST',
       url: `v1/${REVIEWS}/recommend?popupId=${popupId}&reviewId=${reviewId}`,
     })

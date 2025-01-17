@@ -6,7 +6,7 @@ interface HorizontalScrollContainerProps {
 }
 
 const HorizontalScrollContainer: React.FC<HorizontalScrollContainerProps> = ({
-  images,
+  images = [], // 이미지 기본 값 설정
 }) => {
   return (
     <ScrollView

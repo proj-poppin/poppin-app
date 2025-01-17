@@ -13,9 +13,11 @@ import {useUserStore} from 'src/Zustand/User/user.zustand';
 
 import {logger} from 'react-native-logs';
 import {usePopupStore} from '../../../Zustand/Popup/popup.zustand';
+import {useHomeLandingScreenStore} from 'src/Screen/Home/Landing/Home.landing.zustand';
 
 type MypagePreferenceSettingScreenProps = {
-  selectedTags: Record<string, boolean>;
+  selectedTags: Record<string, boolean>; // 실제로 저장된 취향 태그
+  draftSelectedTags: Record<string, boolean>; // 화면에서 누르기만 하고 설정 저장하지 않은 태그 (UI용)
   toggleTag: (tag: string) => void;
   resetTags: () => void;
   isAllCategoriesSelected: () => boolean;
@@ -37,21 +39,22 @@ export const useMypagePreferenceSettingScreenStore =
 
     return {
       selectedTags: initialTags,
+      draftSelectedTags: initialTags,
 
-      // 태그 토글
+      // 태그 토글 (임시 상태 수정)
       toggleTag: tag =>
         set(state => ({
-          selectedTags: {
-            ...state.selectedTags,
-            [tag]: !state.selectedTags[tag],
+          draftSelectedTags: {
+            ...state.draftSelectedTags,
+            [tag]: !state.draftSelectedTags[tag],
           },
         })),
 
       // 태그 초기화
       resetTags: () => {
-        set({
-          selectedTags: initialTags,
-        });
+        set(state => ({
+          draftSelectedTags: state.selectedTags, // 저장된 태그로 초기화
+        }));
       },
 
       // 모든 카테고리가 선택되었는지 확인
@@ -76,7 +79,7 @@ export const useMypagePreferenceSettingScreenStore =
 
       // Preference 저장
       savePreferences: async () => {
-        const {selectedTags} = get();
+        const {draftSelectedTags} = get();
 
         // 현재 선택된 태그를 기반으로 PreferenceSchema 생성
         const preferenceSchema: PreferenceSchema = {
@@ -86,7 +89,7 @@ export const useMypagePreferenceSettingScreenStore =
             ...Object.fromEntries(
               preferenceKeysForPopupCategory.map(key => [
                 key,
-                selectedTags[key] ?? false,
+                draftSelectedTags[key] ?? false,
               ]),
             ),
           },
@@ -95,7 +98,7 @@ export const useMypagePreferenceSettingScreenStore =
             ...Object.fromEntries(
               preferenceKeysForPopupInterest.map(key => [
                 key,
-                selectedTags[key] ?? false,
+                draftSelectedTags[key] ?? false,
               ]),
             ),
           },
@@ -104,7 +107,7 @@ export const useMypagePreferenceSettingScreenStore =
             ...Object.fromEntries(
               preferenceKeysForPopupMate.map(key => [
                 key,
-                selectedTags[key] ?? false,
+                draftSelectedTags[key] ?? false,
               ]),
             ),
           },
@@ -113,32 +116,8 @@ export const useMypagePreferenceSettingScreenStore =
         // API 호출
         try {
           const result = await axiosSettingPreference({data: preferenceSchema});
-          console.log('result: ', result);
           if (result) {
-            console.log('result22: ', result); // 전체 result 출력
-            console.log('userPreferenceSetting: ', userPreferenceSetting); // userPreferenceSetting 출력
-            console.log(
-              'preferencePopupStore: ',
-              userPreferenceSetting?.preferencePopupStore,
-            );
-            console.log(
-              'preferenceCategory: ',
-              userPreferenceSetting?.preferenceCategory,
-            );
-            console.log(
-              'preferenceCompanion: ',
-              userPreferenceSetting?.preferenceCompanion,
-            );
-            // 새롭게 설정한 추천(취향설정된) 팝업스토어로 새롭게 업데이트
-            usePopupStore
-              .getState()
-              .setRecommendedPopupStores(result.updatedRecommendedPopupStores);
-
             const updatedPreferenceSetting = result.userPreferenceSetting; // 변수명 변경
-
-            logger
-              .createLogger()
-              .info('updatedPreferenceSetting: ', updatedPreferenceSetting); // 로그 추가
 
             // 반환된 상태값으로 selectedTags 업데이트
             const updatedTags = {
@@ -147,9 +126,22 @@ export const useMypagePreferenceSettingScreenStore =
               ...updatedPreferenceSetting.preferenceCompanion,
             };
 
-            console.log('updatedTags: ', updatedTags); // 로그 추가
+            // 태그 상태 업데이트
+            set({
+              selectedTags: updatedTags, // 저장된 상태 업데이트
+              draftSelectedTags: updatedTags, // 임시 상태도 동기화
+            });
 
-            set({selectedTags: updatedTags}); // Zustand 상태 업데이트
+            // 새롭게 설정한 추천(취향설정된) 팝업스토어로 새롭게 업데이트
+            usePopupStore
+              .getState()
+              .setRecommendedPopupStores(result.updatedRecommendedPopupStores);
+
+            // 홈 화면에 반영
+            const {refreshHomePopupStores} =
+              useHomeLandingScreenStore.getState();
+            refreshHomePopupStores();
+
             return true; // 성공 여부 반환
           }
           return false; // 실패 시 false 반환

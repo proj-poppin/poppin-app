@@ -5,9 +5,7 @@ import {NotificationSchema} from '../../Schema/User/notification.schema';
 import {getUrlQueryString} from '../../Util';
 import {PreferenceSchema} from '../../Schema/Preference/preference.schema';
 import {StateWrapper} from '../wrapper/state_wrapper';
-import {ScrapResponseData} from '../Popup/popup.patch.axios';
-import {PopupSchema} from '../../Schema/Popup/popup.schema';
-import {PopupScrapSchema} from '../../Schema/Popup/popupScrap.schema';
+import messaging from '@react-native-firebase/messaging';
 
 /**
  * 유저 기본 정보와 특성 정보를 가져옵니다.
@@ -106,15 +104,19 @@ export async function axiosGetAppleAccountStatus(param: {
   email?: string;
   appleUserId?: string;
 }) {
+  const fcmToken = await messaging().getToken();
   return await customAxios
     .request<StateWrapper<AccountStatusResponseData>>({
       method: 'POST',
       url: `v1/${AUTH}/account/status/apple`,
-      data: param,
+      data: {...param, fcmToken: fcmToken},
     })
-    .then(({data}) => data.data)
+    .then(({data}) => {
+      console.log('Response data:', data); // 응답 데이터 로그 출력
+      return data.data;
+    })
     .catch(error => {
-      console.log('error', error);
+      console.log('Error:', error); // 에러 로그 출력
       return null;
     });
 }

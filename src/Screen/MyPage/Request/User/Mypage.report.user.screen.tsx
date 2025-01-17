@@ -129,7 +129,7 @@ export const MypageReportUserScreen: React.FC = () => {
               isVisible={modalVisible}
               onClose={() => setModalVisible(false)}
               title={'제보하려는 팝업의 카테고리를 설정해주세요'}
-              height={'60%'}>
+              >
               <PopupCategoryModal
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}
@@ -138,28 +138,6 @@ export const MypageReportUserScreen: React.FC = () => {
                 buttonName={'카테고리 설정'}
                 validationMode={'both'}
                 isPopupRequestModal={true}
-                initialPreferenceCategory={{
-                  fashionBeauty: false,
-                  characters: false,
-                  foodBeverage: false,
-                  webtoonAni: false,
-                  interiorThings: false,
-                  movie: false,
-                  musical: false,
-                  sports: false,
-                  game: false,
-                  itTech: false,
-                  kpop: false,
-                  alcohol: false,
-                  animalPlant: false,
-                  guitar: false,
-                }}
-                initialPreferencePopupStore={{
-                  market: false,
-                  display: false,
-                  experience: false,
-                  wantFree: false,
-                }}
               />
             </CustomBottomSheet>
             <InputLabel>정보를 접한 사이트 주소</InputLabel>

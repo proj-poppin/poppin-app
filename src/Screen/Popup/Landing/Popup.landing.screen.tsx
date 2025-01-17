@@ -152,7 +152,7 @@ export const PopupLandingScreen = ({
         isVisible={modalVisible}
         onClose={() => setModalVisible(false)}
         title={'찾고싶은 팝업의 카테고리를 설정해주세요'}
-        height={'68%'}>
+      >
         <PopupLandingCategoryModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}

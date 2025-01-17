@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {ScrollViewPage} from 'src/Component/Page';
 import {moderateScale} from 'src/Util';
@@ -35,6 +35,15 @@ export const NormalReviewWriteScreen: React.FC = () => {
   } = useReviewWriteContext();
   const shouldShowSearchBar =
     !selectedPopup || (showResults && searchKeyword.length > 0);
+
+  // 제출 버튼 활성화 상태
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  // 버튼 활성화 상태 업데이트
+  useEffect(() => {
+    const isFormValid = selectedPopup && reviewText.trim().length >= 10;
+    setIsButtonDisabled(!isFormValid);
+  }, [selectedPopup, reviewText]);
 
   return (
     <>
@@ -121,6 +130,7 @@ export const NormalReviewWriteScreen: React.FC = () => {
                 <CommonCompleteButton
                   title={'일반 후기 제출하기'}
                   onPress={submitReview}
+                  isDisabled={isButtonDisabled} // 버튼 활성화 상태
                 />
               </>
             }

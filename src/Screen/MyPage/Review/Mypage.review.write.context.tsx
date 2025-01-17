@@ -12,6 +12,7 @@ import {
 } from '@react-navigation/native';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 import {useImagePicker} from '../../../Util';
+import {getGalleryImages} from '../../../Util';
 
 export interface CategoryType {
   id: number;
@@ -280,10 +281,6 @@ export const ReviewWriteProvider = ({
     }
     if (reviewText.length < 10) {
       Alert.alert('알림', '후기는 10자 이상 작성해주세요.');
-      return false;
-    }
-    if (images?.length === 0) {
-      Alert.alert('알림', '이미지를 추가해주세요.');
       return false;
     }
 

@@ -39,11 +39,19 @@ export const NormalReviewWriteScreen: React.FC = () => {
   // 제출 버튼 활성화 상태
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
+  // 모든 카테고리가 선택되었는지 확인하는 함수
+  const areAllCategoriesSelected = () => {
+    return categoryGroups.every(group =>
+      group.categories.some(category => category.selected),
+    );
+  };
+
   // 버튼 활성화 상태 업데이트
   useEffect(() => {
-    const isFormValid = selectedPopup && reviewText.trim().length >= 10;
+    const isFormValid =
+      selectedPopup && reviewText.trim().length >= 10 && areAllCategoriesSelected();
     setIsButtonDisabled(!isFormValid);
-  }, [selectedPopup, reviewText]);
+  }, [selectedPopup, reviewText, categoryGroups]);
 
   return (
     <>

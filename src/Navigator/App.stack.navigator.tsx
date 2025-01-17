@@ -119,6 +119,10 @@ import {
   AlarmNotificationDetailScreenProps,
 } from '../Screen/Alarm/Alarm.notification.detail.screen';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import {
+  AlarmSettingScreen,
+  AlarmSettingScreenProps,
+} from '../Screen/Alarm/Alarm.setting.screen';
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
@@ -147,6 +151,8 @@ export type AppStackProps = {
   AlarmNotificationScreen: AlarmNotificationScreenProps;
 
   AlarmNotificationDetailScreen: AlarmNotificationDetailScreenProps;
+
+  AlarmSettingScreen: AlarmSettingScreenProps;
 
   PopupDetailScreen: PopupDetailScreenProps;
 
@@ -322,6 +328,8 @@ const AppStackScreen = () => {
           // 배지 숫자 업데이트
           const badgeCount = pushNotification.notification?.ios?.badge || 0;
           PushNotificationIOS.setApplicationIconBadgeNumber(badgeCount);
+
+          console.log('all data: ', pushNotification);
 
           console.log('Notification received in terminated state:');
           console.log('Badge Count:', badgeCount);
@@ -540,6 +548,10 @@ const AppStackScreen = () => {
           //* 알림 상세 페이지
           name={'AlarmNotificationDetailScreen'}
           component={AlarmNotificationDetailScreen}
+        />
+        <AppStack.Screen
+          name={'AlarmSettingScreen'}
+          component={AlarmSettingScreen}
         />
       </AppStack.Group>
       <AppStack.Group>

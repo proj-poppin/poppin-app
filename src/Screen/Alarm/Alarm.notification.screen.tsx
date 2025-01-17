@@ -5,11 +5,12 @@ import {Screen} from '../../Component/Screen/Screen.component';
 import {ScreenHeader} from '../../Component/View';
 import SettingIcon from 'src/Resource/svg/setting-icon.svg';
 import styled from 'styled-components/native';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import {moderateScale} from '../../Util';
 import {themeColors} from '../../Theme/theme';
 import {H1} from '../../StyledComponents/Text';
 import {AlarmNotificationTabScreen} from './Alarm.notification.tab.screen';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
 export type AlarmNotificationScreenProps = {
   initialTopTabRouteName?: keyof AlarmNotificationTopTabProps;
@@ -33,6 +34,13 @@ const NoticeNotificationScreen = () => (
 export const AlarmNotificationScreen = ({
   route,
 }: NativeStackScreenProps<AppStackProps, 'AlarmNotificationScreen'>) => {
+  const navigation = useNavigation<NavigationProp<AppStackProps>>();
+
+  const navigateToSetting = () => {
+    console.log('navigateToSetting');
+    navigation.navigate('AlarmSettingScreen', {});
+  };
+
   return (
     <Screen
       fullScreen
@@ -40,7 +48,11 @@ export const AlarmNotificationScreen = ({
         <ScreenHeader
           LeftComponents={'BACK_BUTTON'}
           title="알림"
-          RightComponents={<SettingIcon />}
+          RightComponents={
+            <TouchableOpacity onPress={navigateToSetting}>
+              <SettingIcon />
+            </TouchableOpacity>
+          }
           RightStyle={{marginLeft: moderateScale(55)}}
         />
       }

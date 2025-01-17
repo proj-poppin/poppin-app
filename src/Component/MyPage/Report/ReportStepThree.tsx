@@ -190,7 +190,7 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
         isVisible={modalVisible}
         onClose={() => setModalVisible(false)}
         title={'이용 가능 연령을 선택해주세요'}
-        height={'40%'}>
+      >
         <AgeChooseBottomSheet
           onClose={() => setModalVisible(false)}
           selectedAges={availableAge} // 초기 선택값

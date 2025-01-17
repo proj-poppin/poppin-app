@@ -5,7 +5,6 @@ import {Alert, ScrollView} from 'react-native';
 import {
   HHMMFormatTime,
   moderateScale,
-  useImagePicker,
   YYYYHHMMFormatDate,
 } from '../../../Util';
 import CustomBottomSheet from '../../BottomSheet/CustomBottomSheet';
@@ -347,7 +346,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}
           title={'제보하려는 팝업의 카테고리를 설정해주세요'}
-          height={'65%'}>
+          >
           <PopupCategoryModal
             visible={modalVisible}
             onClose={() => setModalVisible(false)}
@@ -358,35 +357,12 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
             buttonName={'카테고리 설정'}
             validationMode={'both'}
             isPopupRequestModal={true}
-            initialPreferenceCategory={{
-              fashionBeauty: false,
-              characters: false,
-              foodBeverage: false,
-              webtoonAni: false,
-              interiorThings: false,
-              movie: false,
-              musical: false,
-              sports: false,
-              game: false,
-              itTech: false,
-              kpop: false,
-              alcohol: false,
-              animalPlant: false,
-              guitar: false,
-            }}
-            initialPreferencePopupStore={{
-              market: false,
-              display: false,
-              experience: false,
-              wantFree: false,
-            }}
           />
         </CustomBottomSheet>
 
         <CustomBottomSheet
           isVisible={showCalendar}
           onClose={() => setShowCalendar(false)}
-          height={'70%'}
           title={'날짜 설정'}>
           <CalendarPicker
             openDate={openDate}
@@ -400,7 +376,6 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
         <CustomBottomSheet
           isVisible={showTimePicker}
           onClose={() => setShowTimePicker(false)}
-          height={'40%'}
           title={'시간 설정'}>
           <TimePicker
             initialStartTime={new Date()}
@@ -421,7 +396,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <SubmitButton onPress={onBackPress}>
             <SubmitButtonText>돌아가기</SubmitButtonText>
           </SubmitButton>
-          <SubmitButton onPress={secondReportHandler}>
+          <SubmitButton onPress={secondReportHandler} disabled={!isFormValid}>
             <SubmitButtonText>다음</SubmitButtonText>
           </SubmitButton>
         </RowButtonContainer>

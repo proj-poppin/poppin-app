@@ -1,5 +1,5 @@
 // src/Screen/Review/ReviewListContainer.tsx
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components/native';
 import {ScrollViewPage} from 'src/Component/Page';
 import {moderateScale} from 'src/Util';
@@ -12,6 +12,8 @@ import {BeforeReviewPopupCard} from 'src/Component/MyPage/Review/Mypage.before.r
 import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
 import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
 import {useReviewListContext} from './Mypage.review.list.context';
+import {useUserStore} from 'src/Zustand/User/user.zustand';
+import shallow from 'zustand/shallow';
 
 interface ReviewListContainerProps {
   navigation: NavigationProp<AppStackProps, 'MypageReviewListScreen'>;
@@ -21,8 +23,16 @@ export const ReviewListContainer: React.FC<ReviewListContainerProps> = ({
   navigation,
 }) => {
   const {visitedPopups, isLoading, error} = useReviewListContext();
-  const {} = usePopupStore();
+  const isLoggedInCheckFn = useUserStore(state => state.isLoggedIn, shallow);
 
+  const isLoggedIn = isLoggedInCheckFn();
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigation.goBack();
+      navigation.navigate('AuthLandingScreen', {});
+      return;
+    }
+  }, [isLoggedIn, navigation]);
   return (
     <ScrollViewPage
       UpperPart={

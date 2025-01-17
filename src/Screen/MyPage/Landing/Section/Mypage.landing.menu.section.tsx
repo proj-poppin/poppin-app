@@ -21,7 +21,7 @@ export const MyPageLandingMenuSection = () => {
     state => ({setLogoutModalVisible: state.setLogoutModalVisible}),
     shallow,
   );
-  const isLoggedIn = useUserStore(state => state.isLoggedIn);
+  const isLoggedIn = useUserStore(state => state.isLoggedIn, shallow);
 
   const menuItems: MenuItem[] = [
     {title: '키워드 알림 설정', onPress: () => {}},

@@ -3,11 +3,7 @@ import styled from 'styled-components/native';
 import {ScrollViewPage} from 'src/Component/Page';
 import {moderateScale} from 'src/Util';
 import {ScreenHeader} from 'src/Component/View';
-import {useImagePicker} from '../../../Util';
 import LinearGradient from 'react-native-linear-gradient';
-import {ReviewSearchBar} from 'src/Component/MyPage/Review/Mypage.review.searchBar';
-import {BeforeReviewPopupCard} from 'src/Component/MyPage/Review/Mypage.before.review.popupCard';
-import {FlatList} from 'react-native';
 import {PopupSchema} from 'src/Schema/Popup/popup.schema';
 import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
 import VisitedReview from 'src/Resource/svg/visited-review.svg';
@@ -31,13 +27,12 @@ export const VisitedReviewWriteScreen: React.FC<
     images,
     handleAddImages: openGallery,
     handleDeleteImage,
-    submitting,
     submitReview,
   } = useReviewWriteContext();
 
   useEffect(() => {
     setSelectedPopup(selectedPopup);
-  }, [selectedPopup]);
+  }, [selectedPopup, setSelectedPopup]);
 
   return (
     <ScrollViewPage

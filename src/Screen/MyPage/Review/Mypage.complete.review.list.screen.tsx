@@ -14,7 +14,7 @@ export function MyPageCompleteReviewListScreen({
 }: NativeStackScreenProps<AppStackProps, 'MypageCompleteReviewListScreen'>) {
   return (
     <CompleteReviewProvider>
-      <CompleteReviewContainer navigation={navigation} />
+      <CompleteReviewContainer />
     </CompleteReviewProvider>
   );
 }

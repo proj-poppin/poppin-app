@@ -14,7 +14,7 @@ export function StarSymbol({
   fill?: string;
 }) {
   return (
-    <Svg width={size.toString()} height={size.toString()} viewBox="0 0 28 28">
+    <Svg width={29.26} height={size.toString()} viewBox="0 0 29.26 28">
       <Path
         fillRule="evenodd"
         clipRule="evenodd"

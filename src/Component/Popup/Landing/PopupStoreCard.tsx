@@ -103,7 +103,14 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
     <CardContainer onPress={onPress}>
       <CardImage source={{uri: item.mainImageUrl}} resizeMode="cover" />
 
-      {!isInterestPopupCard && (
+      {/* 종료 상태일 때 ClosedWrapper를 렌더링 */}
+      {status === 'TERMINATED' && (
+        <ClosedWrapper>
+          <ClosedText>팝업 종료</ClosedText>
+        </ClosedWrapper>
+      )}
+
+      {!isInterestPopupCard && status !== 'TERMINATED' && (
         <DdayBadge>
           <DdayText>종료 D-{dday}</DdayText>
         </DdayBadge>
@@ -155,6 +162,37 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
     </CardContainer>
   );
 };
+
+//   closeWrapper: {
+//     width: 140,
+//     height: 140,
+//     position: 'absolute',
+//     top: 0,
+//     left: 0,
+//     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+//     display: 'flex',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+
+const ClosedText = styled.Text`
+  color: white;
+  font-size: ${moderateScale(16)}px;
+  font-weight: bold;
+`;
+
+const ClosedWrapper = styled.View`
+  width: ${moderateScale(124)}px;
+  height: ${moderateScale(124)}px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: ${moderateScale(8)}px;
+`;
 
 const CardContainer = styled.TouchableOpacity.attrs({
   activeOpacity: 0.4,

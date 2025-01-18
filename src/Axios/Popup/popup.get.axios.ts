@@ -16,6 +16,7 @@ import {StateWrapper} from '../wrapper/state_wrapper';
 export const axiosGetPopupsBySearchFiltering = async (
   param: PopupSearchParams,
 ) => {
+  // console.log('request params: ', param);
   return await customAxios
     .request<{
       data: {
@@ -28,7 +29,8 @@ export const axiosGetPopupsBySearchFiltering = async (
       params: param,
     })
     .then(response => {
-      return response.data.data; // response.data.data로 반환
+      // console.log(response.data.data.items.length + '개의 팝업을 가져왔습니다');
+      return response.data.data;
     })
     .catch(error => {
       console.log(`error: ${error}`);

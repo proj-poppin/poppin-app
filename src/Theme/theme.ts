@@ -26,6 +26,7 @@ const commonThemeColors: CommonThemeColorsType = {
   grey: {
     black: '#000000',
     deep: '#70828A',
+    unselected: '#BBBBBB',
     main: '#9F9F9F',
     mild: '#DDDDDD',
     icon: '#B8CAD2',

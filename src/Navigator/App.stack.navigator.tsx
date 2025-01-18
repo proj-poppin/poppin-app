@@ -35,12 +35,7 @@ import {
   ServiceStatusScreen,
   ServiceStatusScreenProps,
 } from '../Screen/App/ServiceStatus/App.serviceStatus.screen';
-import {AlarmNotificationScreenProps} from '../Screen/Notification/Alarm.notification.screen';
-import {
-  AlarmNotificationDetailScreen,
-  AlarmNotificationDetailScreenProps,
-} from 'src/Screen/Notification/Detail/Mypage.notification.detail.screen';
-import {AlarmNotificationTabScreen} from '../Screen/Notification/Alarm.notification.tab.screen';
+
 import {
   PopupDetailScreen,
   PopupDetailScreenProps,
@@ -115,6 +110,19 @@ import {
   MypagePreferenceSettingScreen,
   MypagePreferenceSettingScreenProps,
 } from '../Screen/MyPage/PreferenceSetting/Mypage.preferenceSetting.screen';
+import {
+  AlarmNotificationScreen,
+  AlarmNotificationScreenProps,
+} from '../Screen/Alarm/Alarm.notification.screen';
+import {
+  AlarmNotificationDetailScreen,
+  AlarmNotificationDetailScreenProps,
+} from '../Screen/Alarm/Alarm.notification.detail.screen';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import {
+  AlarmSettingScreen,
+  AlarmSettingScreenProps,
+} from '../Screen/Alarm/Alarm.setting.screen';
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
@@ -143,6 +151,8 @@ export type AppStackProps = {
   AlarmNotificationScreen: AlarmNotificationScreenProps;
 
   AlarmNotificationDetailScreen: AlarmNotificationDetailScreenProps;
+
+  AlarmSettingScreen: AlarmSettingScreenProps;
 
   PopupDetailScreen: PopupDetailScreenProps;
 
@@ -290,51 +300,117 @@ const AppStackScreen = () => {
    * navigator 가 존재하지 않아서 화면으로 이동하지 못하는 문제가 발생하기 때문입니다.
    */
   useEffect(() => {
-    //* background 상태에서 푸시 알림으로 진입한 경우: 곧바로 해당 화면으로 이동
+    //* background 상태에서 푸시 알림으로 진입한 경우
     messaging().onNotificationOpenedApp(remoteMessage => {
       const pushNotification = remoteMessage as unknown as PushNotification;
-      axiosCheckNotification(pushNotification.data.notificationId);
-      // makeFirebaseLogEvent(APP_LOGS.goto_app_by_push(pushNotification.data));
+
+      // 배지 숫자 업데이트
+      const badgeCount = pushNotification.notification?.ios?.badge || 0;
+      PushNotificationIOS.setApplicationIconBadgeNumber(badgeCount);
+
+      console.log('Notification opened from background state:');
+      console.log('Badge Count:', badgeCount);
+      console.log('Title:', pushNotification.notification?.title);
+      console.log('Content:', pushNotification.notification?.body);
+      console.log('Destination data in background:', pushNotification.data);
+
+      axiosCheckNotification(pushNotification.data.id);
       navigateInAppScreen({navigation, destination: pushNotification.data});
     });
 
-    //* 앱이 완전히 종료되었던 상태에서 알림으로 진입한 경우:
-    //* 곧바로 해당 화면으로 이동하지 않고, 대신 initialDestination 을 설정합니다.
+    //* 앱이 완전히 종료되었던 상태에서 알림으로 진입한 경우
     messaging()
       .getInitialNotification()
       .then(remoteMessage => {
         if (remoteMessage) {
           const pushNotification = remoteMessage as unknown as PushNotification;
-          axiosCheckNotification(pushNotification.data.notificationId);
-          // makeFirebaseLogEvent(
-          //   APP_LOGS.open_app_by_push(pushNotification.data),
-          // );
+
+          // 배지 숫자 업데이트
+          const badgeCount = pushNotification.notification?.ios?.badge || 0;
+          PushNotificationIOS.setApplicationIconBadgeNumber(badgeCount);
+
+          console.log('all data: ', pushNotification);
+
+          console.log('Notification received in terminated state:');
+          console.log('Badge Count:', badgeCount);
+          console.log('Title:', pushNotification.notification?.title);
+          console.log('Content:', pushNotification.notification?.body);
+          console.log('Destination data in terminated:', pushNotification.data);
+
+          axiosCheckNotification(pushNotification.data.id);
           setInitialDestination(pushNotification.data);
         }
       });
 
-    //* foreground 상태에서 푸시 알람을 받은 경우: 상단에 토스트메세지를 띄웁니다
+    //* foreground 상태에서 푸시 알람을 받은 경우
     const unsubscribe = messaging().onMessage(async pushNotification => {
       const message = pushNotification as unknown as PushNotification;
-      if (message.notification) {
-        const {title, body} = message.notification;
-        const data = message.data;
 
-        console.log('message: ', message);
-        console.log('title: ', title);
-        console.log('body: ', body);
-        console.log('data: ', data);
+      if (message.notification) {
+        const badgeCount = message.notification?.ios?.badge || 0;
+        PushNotificationIOS.setApplicationIconBadgeNumber(badgeCount);
+
+        console.log('Notification received in foreground state:');
+        console.log('Badge Count:', badgeCount);
+        console.log('Title:', message.notification?.title);
+        console.log('Content:', message.notification?.body);
 
         showNotificationToast({
-          text1: title,
-          text2: body,
-          props: {detail: data.detail, type: data.type, destination: data},
+          text1: message.notification?.title ?? '알림',
+          text2: message.notification?.body ?? '',
+          props: {detail: message.data.detail, type: message.data.type},
         });
       }
     });
 
     return unsubscribe;
   }, []);
+  // useEffect(() => {
+  //   //* background 상태에서 푸시 알림으로 진입한 경우: 곧바로 해당 화면으로 이동
+  //   messaging().onNotificationOpenedApp(remoteMessage => {
+  //     const pushNotification = remoteMessage as unknown as PushNotification;
+  //     axiosCheckNotification(pushNotification.data.notificationId);
+  //     // makeFirebaseLogEvent(APP_LOGS.goto_app_by_push(pushNotification.data));
+  //     navigateInAppScreen({navigation, destination: pushNotification.data});
+  //   });
+  //
+  //   //* 앱이 완전히 종료되었던 상태에서 알림으로 진입한 경우:
+  //   //* 곧바로 해당 화면으로 이동하지 않고, 대신 initialDestination 을 설정합니다.
+  //   messaging()
+  //     .getInitialNotification()
+  //     .then(remoteMessage => {
+  //       if (remoteMessage) {
+  //         const pushNotification = remoteMessage as unknown as PushNotification;
+  //         axiosCheckNotification(pushNotification.data.notificationId);
+  //         // makeFirebaseLogEvent(
+  //         //   APP_LOGS.open_app_by_push(pushNotification.data),
+  //         // );
+  //         setInitialDestination(pushNotification.data);
+  //       }
+  //     });
+  //
+  //   //* foreground 상태에서 푸시 알람을 받은 경우: 상단에 토스트메세지를 띄웁니다
+  //   const unsubscribe = messaging().onMessage(async pushNotification => {
+  //     const message = pushNotification as unknown as PushNotification;
+  //     if (message.notification) {
+  //       const {title, body} = message.notification;
+  //       const data = message.data;
+  //
+  //       console.log('message: ', message);
+  //       console.log('title: ', title);
+  //       console.log('body: ', body);
+  //       console.log('data: ', data);
+  //
+  //       showNotificationToast({
+  //         text1: title ?? '알림',
+  //         text2: body ?? '',
+  //         props: {detail: data.detail, type: data.type, destination: data},
+  //       });
+  //     }
+  //   });
+  //
+  //   return unsubscribe;
+  // }, []);
 
   const parseUrlParams = (url: string) => {
     const params: {[key: string]: string} = {};
@@ -466,12 +542,16 @@ const AppStackScreen = () => {
         <AppStack.Screen
           //* 알림 페이지
           name={'AlarmNotificationScreen'}
-          component={AlarmNotificationTabScreen}
+          component={AlarmNotificationScreen}
         />
         <AppStack.Screen
           //* 알림 상세 페이지
           name={'AlarmNotificationDetailScreen'}
           component={AlarmNotificationDetailScreen}
+        />
+        <AppStack.Screen
+          name={'AlarmSettingScreen'}
+          component={AlarmSettingScreen}
         />
       </AppStack.Group>
       <AppStack.Group>

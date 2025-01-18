@@ -73,24 +73,95 @@ export const NotificationListItem = memo(
     //* (체크되지 않은 알림인 경우) 해당 알림을 확인 표시하고 lastCheck 값을 업데이트합니다.
     //* 프로젝트/투표 상세 페이지 혹은 마이페이지의 크레딧 변경내역 리스트로 이동
     //* 이외의 경우, 알림 상세 페이지로 이동
+    // const onPress = () => {
+    //   if (!notification.checked) {
+    //     checkNotification({
+    //       category: notification.category,
+    //       notificationId: notification.id,
+    //     });
+    //   }
+    //   navigateInAppScreen({
+    //     navigation,
+    //     destination: notification.destination
+    //       ? notification.destination
+    //       : notification,
+    //     //* 만약 특정 화면으로 이동하게 만드는 알림이 아니라면 알림 상세 페이지로 이동합니다.
+    //     onFailure: {
+    //       screen: 'AlarmNotificationDetailScreen',
+    //       params: {notification},
+    //     },
+    //   });
+    // };
+
     const onPress = () => {
+      console.log('notification.category', notification.category);
+      // 알림이 아직 읽히지 않은 경우, 확인 처리
       if (!notification.checked) {
         checkNotification({
           category: notification.category,
           notificationId: notification.id,
         });
       }
-      navigateInAppScreen({
-        navigation,
-        destination: notification.destination
-          ? notification.destination
-          : notification,
-        //* 만약 특정 화면으로 이동하게 만드는 알림이 아니라면 알림 상세 페이지로 이동합니다.
-        onFailure: {
-          screen: 'AlarmNotificationDetailScreen',
-          params: {notification},
-        },
-      });
+
+      // category에 따라 적절한 화면으로 이동
+      if (
+        notification.category === 'POPUP' ||
+        notification.category === 'KEYWORD'
+      ) {
+        console.log('popupId############', notification.popupId);
+        navigateInAppScreen({
+          navigation,
+          destination: {
+            screen: 'PopupDetailScreen',
+            popupId: notification.popupId,
+          },
+        });
+      } else if (
+        notification.category === 'NOTICE' ||
+        notification.category === 'INFORM'
+      ) {
+        console.log('notification######: ', notification);
+        navigateInAppScreen({
+          navigation,
+          destination: notification.destination
+            ? notification.destination
+            : notification,
+          //* 만약 특정 화면으로 이동하게 만드는 알림이 아니라면 알림 상세 페이지로 이동합니다.
+          onFailure: {
+            screen: 'AlarmNotificationDetailScreen',
+            params: {notification},
+          },
+        });
+        // navigateInAppScreen({
+        //   navigation,
+        //   destination: {
+        //     screen: 'AlarmNotificationDetailScreen',
+        //     noticeId: notification.noticeId,
+        //   },
+        // });
+      } else {
+        navigateInAppScreen({
+          navigation,
+          destination: notification.destination
+            ? notification.destination
+            : notification,
+          //* 만약 특정 화면으로 이동하게 만드는 알림이 아니라면 알림 상세 페이지로 이동합니다.
+          onFailure: {
+            screen: 'AlarmNotificationDetailScreen',
+            params: {notification},
+          },
+        });
+      }
+      // // 기본 동작
+      // navigateInAppScreen({
+      //   navigation,
+      //   destination: notification.destination
+      //     ? notification.destination
+      //     : {
+      //         screen: 'AlarmNotificationDetailScreen',
+      //         params: {notification},
+      //       },
+      // });
     };
 
     //* 알림 삭제 아이콘을 누르는 경우

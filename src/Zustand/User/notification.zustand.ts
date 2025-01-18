@@ -7,7 +7,7 @@ import {
 } from 'src/Axios/User/user.get.axios';
 import {axiosCheckNotification} from 'src/Axios/User/user.patch.axios';
 
-export type NotificationCategory = 'POPUP' | 'NOTICE';
+export type NotificationCategory = 'popups' | 'notices';
 
 type NotificationStoreProps = {
   notifications: {
@@ -38,8 +38,8 @@ type NotificationStoreProps = {
   gettingNewer: boolean;
   gettingOlder: boolean;
   noMoreNotifications: {
-    POPUP: [];
-    NOTICE: [];
+    popups: [];
+    notices: [];
   };
   getNewNotifications: () => Promise<void>;
   getOlderNotifications: (category: NotificationCategory) => Promise<void>;
@@ -49,7 +49,6 @@ type NotificationStoreProps = {
 
 /**
  * 사용자가 수신한 (푸시) 알림 상태값 및 관련 함수들입니다.
- * alarm 과 notification 은 사실상 같은 개념이라고 보면 됩니다.
  * @author 도형
  */
 export const useNotificationStore = create<NotificationStoreProps>(
@@ -80,7 +79,7 @@ export const useNotificationStore = create<NotificationStoreProps>(
         return;
       }
       const updatedTargetNotifications = get().notifications[
-        param.category
+        'popups' || 'notices'
       ].map(notification => {
         if (notification.id === param.notificationId) {
           return {
@@ -125,8 +124,8 @@ export const useNotificationStore = create<NotificationStoreProps>(
     gettingNewer: false,
     gettingOlder: false,
     noMoreNotifications: {
-      POPUP: [],
-      NOTICE: [],
+      popups: [],
+      notices: [],
     },
     getNewNotifications: async () => {
       if (get().gettingNewer) {
@@ -194,8 +193,8 @@ export const useNotificationStore = create<NotificationStoreProps>(
         gettingNewer: false,
         gettingOlder: false,
         noMoreNotifications: {
-          POPUP: [],
-          NOTICE: [],
+          popups: [],
+          notices: [],
         },
       });
     },

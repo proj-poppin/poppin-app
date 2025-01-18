@@ -1,8 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  ScrollView,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import {ScrollView, TouchableWithoutFeedback} from 'react-native';
 import CategorySelectButton from '../../Screen/Popup/Landing/category.select.button';
 import {
   BackMiddleButton,
@@ -47,8 +44,12 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
   const [isValidSelection, setIsValidSelection] = useState(false);
 
   useEffect(() => {
-    setPreferenceCategory(initialPreferenceCategory || BlankPreference.preferenceCategory);
-    setPreferencePopupStore(initialPreferencePopupStore || BlankPreference.preferencePopupStore);
+    setPreferenceCategory(
+      initialPreferenceCategory || BlankPreference.preferenceCategory,
+    );
+    setPreferencePopupStore(
+      initialPreferencePopupStore || BlankPreference.preferencePopupStore,
+    );
   }, [initialPreferenceCategory, initialPreferencePopupStore]);
 
   useEffect(() => {
@@ -117,68 +118,67 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
       </TouchableWithoutFeedback>
       <ScrollView>
         <ModalContent>
-
           <CategoryTitle type="category">
             팝업 카테고리
             {validationMode === 'both' && <RequiredMark> *</RequiredMark>}
           </CategoryTitle>
           <SelectionContainer>
             {categoryKeys.map(key => (
-                <CategorySelectButton
-                    key={key}
-                    preferenceKey={key}
-                    isSelected={
-                      !!preferenceCategory[key as keyof typeof preferenceCategory]
-                    }
-                    onPress={() =>
-                        toggleCategory(key as keyof typeof preferenceCategory)
-                    }
-                />
+              <CategorySelectButton
+                key={key}
+                preferenceKey={key}
+                isSelected={
+                  !!preferenceCategory[key as keyof typeof preferenceCategory]
+                }
+                onPress={() =>
+                  toggleCategory(key as keyof typeof preferenceCategory)
+                }
+              />
             ))}
           </SelectionContainer>
 
           {!isPopupRequestModal && (
-              <>
-                <CategoryTitle type="type">
-                  팝업 유형
-                  {validationMode === 'both' && <RequiredMark> *</RequiredMark>}
-                </CategoryTitle>
-                <SelectionContainer>
-                  {popupStoreKeys.map(key => (
-                      <CategorySelectButton
-                          key={key}
-                          preferenceKey={key}
-                          isSelected={
-                            !!preferencePopupStore[
-                                key as keyof typeof preferencePopupStore
-                                ]
-                          }
-                          onPress={() =>
-                              togglePopupStoreType(
-                                  key as keyof typeof preferencePopupStore,
-                              )
-                          }
-                      />
-                  ))}
-                </SelectionContainer>
-              </>
+            <>
+              <CategoryTitle type="type">
+                팝업 유형
+                {validationMode === 'both' && <RequiredMark> *</RequiredMark>}
+              </CategoryTitle>
+              <SelectionContainer>
+                {popupStoreKeys.map(key => (
+                  <CategorySelectButton
+                    key={key}
+                    preferenceKey={key}
+                    isSelected={
+                      !!preferencePopupStore[
+                        key as keyof typeof preferencePopupStore
+                      ]
+                    }
+                    onPress={() =>
+                      togglePopupStoreType(
+                        key as keyof typeof preferencePopupStore,
+                      )
+                    }
+                  />
+                ))}
+              </SelectionContainer>
+            </>
           )}
 
           <ButtonsWrapper>
             <BackMiddleButton
-                title="초기화"
-                onPress={() => {
-                  setPreferenceCategory(BlankPreference.preferenceCategory);
-                  setPreferencePopupStore(BlankPreference.preferencePopupStore);
-                  onReset();
-                }}
-                style={{marginRight: 10}}
+              title="초기화"
+              onPress={() => {
+                setPreferenceCategory(BlankPreference.preferenceCategory);
+                setPreferencePopupStore(BlankPreference.preferencePopupStore);
+                onReset();
+              }}
+              style={{marginRight: 10}}
             />
             <NextMiddleButton
-                title={buttonName}
-                onPress={handleApplyFilter}
-                style={{width: '60%'}}
-                disabled={!isValidSelection}
+              title={buttonName}
+              onPress={handleApplyFilter}
+              style={{width: '60%'}}
+              disabled={!isValidSelection}
             />
           </ButtonsWrapper>
         </ModalContent>
@@ -204,14 +204,15 @@ const ModalContent = styled.View`
 `;
 
 const CategoryTitle = styled.Text<{type: 'category' | 'type'}>`
+  align-self: center;
   font-size: ${moderateScale(16)}px;
   margin-top: ${moderateScale(16)}px;
   margin-bottom: ${moderateScale(8)}px;
   font-weight: 600;
   color: ${props =>
-      props.type === 'category'
-          ? props.theme.color.purple.main
-          : props.theme.color.blue.main};
+    props.type === 'category'
+      ? props.theme.color.purple.main
+      : props.theme.color.blue.main};
 `;
 
 const RequiredMark = styled.Text`
@@ -221,8 +222,8 @@ const RequiredMark = styled.Text`
 const SelectionContainer = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: flex-start;
-  padding: ${moderateScale(10)}px 0;
+  justify-content: center;
+  padding: ${moderateScale(10)}px;
   margin-bottom: ${moderateScale(20)}px;
 `;
 

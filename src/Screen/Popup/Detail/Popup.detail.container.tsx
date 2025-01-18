@@ -19,6 +19,7 @@ import {PopupDetailVisitorSection} from './Section/Popup.detail.visitor.section'
 import DividerLine from 'src/Component/DividerLine/DividerLine';
 import {PopupDetailReviewSection} from './Section/Popup.detail.review.section';
 import PopupDetailBottomButtonRowSection from './Section/Popup.detail.button.row.section';
+import styled from 'styled-components/native';
 
 export const PopupDetailContainer = ({
   params,
@@ -44,6 +45,8 @@ export const PopupDetailContainer = ({
     getPopupDetailReviews,
     setTargetReview,
   } = usePopupDetailReviewContext();
+
+  console.log('params: ', params);
 
   /**
    * 팝업 상세 정보 상태값을 설정합니다.
@@ -124,13 +127,12 @@ export const PopupDetailContainer = ({
   );
 
   return (
-    <>
+    <PopupDetailContainerView>
       <PopupDetailScreenHeader />
       <FlatList
         data={reviews}
         renderItem={RenderItem}
         style={{backgroundColor: 'white'}}
-        contentContainerStyle={{paddingBottom: moderateScale(120)}}
         ListHeaderComponent={
           loading ? (
             <PopupDetailLoadingScreen />
@@ -156,6 +158,13 @@ export const PopupDetailContainer = ({
         keyExtractor={keyExtractor}
       />
       <PopupDetailBottomButtonRowSection />
-    </>
+    </PopupDetailContainerView>
   );
 };
+
+const PopupDetailContainerView = styled.View`
+    flex: 1;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+`;

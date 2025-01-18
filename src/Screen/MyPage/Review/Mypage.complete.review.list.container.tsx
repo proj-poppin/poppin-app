@@ -1,24 +1,23 @@
 // src/Screen/Review/ReviewListContainer.tsx
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import styled from 'styled-components/native';
 import {ScrollViewPage} from 'src/Component/Page';
 import {moderateScale} from 'src/Util';
-import {NavigationProp} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 import {ScreenHeader} from 'src/Component/View';
 import Filter from 'src/Resource/svg/filter.svg';
 import {CompleteReviewCard} from 'src/Component/MyPage/Review/Mypage.complete.review.poupupCard';
 import {useReviewListContext} from './Mypage.complete.review.list.context';
-interface CompleteReviewContainerProps {
-  navigation: NavigationProp<AppStackProps, 'MypageCompleteReviewListScreen'>;
-}
+interface CompleteReviewContainerProps {}
 
 export const CompleteReviewContainer: React.FC<
   CompleteReviewContainerProps
-> = ({navigation}) => {
-  //TODO-[규진] 산아형 다 끝나면 할
+> = () => {
+  //TODO-[규진] 산아형 다 끝나면 할 일 - 생년월일 받기
   const [isLastest, setIsLastest] = useState(true);
   const context = useReviewListContext();
+  const navigation = useNavigation<NavigationProp<AppStackProps>>();
 
   // 정렬된 리뷰 목록 계산
   const sortedReviews = useMemo(() => {

@@ -23,6 +23,7 @@ export type CommonThemeColorsType = {
   grey: {
     black: string;
     deep: string;
+    unselected: string;
     main: string;
     mild: string;
     icon: string;

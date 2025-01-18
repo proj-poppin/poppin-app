@@ -10,7 +10,7 @@ import {
   checkNotifications,
   requestNotifications,
 } from 'react-native-permissions';
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
+// import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 const queryClient = new QueryClient();
 
@@ -29,7 +29,7 @@ const checkNotificationPermission = async () => {
   }
 
   // 앱 아이콘 뱃지 설정 (초기 값: 5)
-  PushNotificationIOS.setApplicationIconBadgeNumber(4);
+  // PushNotificationIOS.setApplicationIconBadgeNumber(4);
 };
 
 export const App = () => {

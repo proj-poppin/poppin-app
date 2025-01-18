@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform, View, Pressable} from 'react-native';
+import {Platform} from 'react-native';
 import {
   appleAuth,
   appleAuthAndroid,
@@ -49,7 +49,6 @@ export function AppleLoginButton({
             const loginResult = await useUserStore.getState().appleLogin({
               appleUserId: appleAuthRequestResponse.user,
             });
-            console.log('appleUserID@: ', appleAuthRequestResponse.user);
             if (loginResult.success) {
               showBlackToast({text1: '애플 간편 로그인 되었습니다.'});
               onLoginSucceed();
@@ -70,8 +69,6 @@ export function AppleLoginButton({
             showBlackToast({text1: appleAccountStatus.errorMessage});
           }
         } else if (appleAuthRequestResponse.user) {
-          console.log('appleUserID@: ', appleAuthRequestResponse.user);
-          console.log('email@: ', appleAuthRequestResponse.email);
           //애플 로그인 2번째
           const appleAccountStatus = await axiosGetAppleAccountStatus({
             appleUserId: appleAuthRequestResponse.user,

@@ -11,6 +11,7 @@ import {FastImageContainer} from '../../../../Component/Image/FastImage.componen
 import {RadiusBlueButton} from '../../../../Component/Button/RadiusBlueButton';
 const PopupDetailBottomButtonRowSection: React.FC = () => {
   const [inProgress, setInProgress] = useState(false);
+  const [visitorTooltipOpen, setVisitorTooltipOpen] = useState(false);
   const {popupDetail, visitPopup} = usePopupDetailContext();
   const {isVisitedPopup, isWaitingPopup, waitingPopups, startWaitingPopup} =
     usePopupStore(
@@ -45,6 +46,8 @@ const PopupDetailBottomButtonRowSection: React.FC = () => {
 
   const popupId = popupDetail.id;
 
+  const handleVisitorButton = () => setVisitorTooltipOpen(prev => !prev);
+
   if (popupDetail.operationStatus === 'NOTYET') {
     return (
       <PopupDetailBottomButtonBar>
@@ -73,7 +76,7 @@ const PopupDetailBottomButtonRowSection: React.FC = () => {
     return (
       <PopupDetailBottomButtonBar>
         <RowSection>
-          <VisitorButton onPress={() => {}}>
+          <VisitorButton onPress={handleVisitorButton}>
             <RowContainer>
               <QuestionIcon
                 style={{
@@ -85,7 +88,7 @@ const PopupDetailBottomButtonRowSection: React.FC = () => {
               <CountText>{popupDetail.viewCnt}명</CountText>
             </RowContainer>
           </VisitorButton>
-          {
+          { visitorTooltipOpen &&
             <TooltipContainer>
               <FastImageContainer
                 fitOnHeight

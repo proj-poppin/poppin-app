@@ -1,5 +1,5 @@
-import React, {useEffect, useRef} from 'react';
-import {Modal, Animated, Dimensions, PanResponder} from 'react-native';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {Modal, Animated, Dimensions, PanResponder, View} from 'react-native';
 import styled from 'styled-components/native';
 import {moderateScale} from '../../Util';
 
@@ -16,23 +16,32 @@ interface CustomBottomSheetProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
-  height?: string | number; // height prop 추가
 }
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
-  isVisible,
-  onClose,
-  title,
-  children,
-  height = '40%', // 기본값 설정
-}) => {
+                                                                      isVisible,
+                                                                      onClose,
+                                                                      title,
+                                                                      children,
+                                                                    }) => {
   const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
+  const [contentHeight, setContentHeight] = useState(0);
+  const contentRef = useRef(null);
+
+  useLayoutEffect(() => {
+    if (contentRef.current) {
+      // View 타입으로 타입 단언
+      const view = contentRef.current as unknown as View;
+      view.measure((x, y, width, height) => {
+        setContentHeight(height);
+      });
+    }
+  }, [children]);
 
   useEffect(() => {
     if (isVisible) {
-      // 올라오는 애니메이션
       Animated.spring(translateY, {
         toValue: 0,
         useNativeDriver: true,
@@ -40,70 +49,70 @@ export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
         friction: 8,
       }).start();
     } else {
-      // 내려가는 애니메이션
       Animated.timing(translateY, {
         toValue: SCREEN_HEIGHT,
         useNativeDriver: true,
         duration: 200,
       }).start();
     }
-  }, [isVisible, translateY]);
+  }, [isVisible, translateY, contentHeight]);
 
   const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: (evt, gestureState) => {
-        if (gestureState.dy > 0) {
-          translateY.setValue(gestureState.dy);
-        }
-      },
-      onPanResponderRelease: (evt, gestureState) => {
-        if (gestureState.dy > SCREEN_HEIGHT * 0.2) {
-          Animated.timing(translateY, {
-            toValue: SCREEN_HEIGHT,
-            useNativeDriver: true,
-            duration: 200,
-          }).start(() => onClose());
-        } else {
-          Animated.spring(translateY, {
-            toValue: 0,
-            useNativeDriver: true,
-            tension: 40,
-            friction: 8,
-          }).start();
-        }
-      },
-    }),
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onPanResponderMove: (evt, gestureState) => {
+          if (gestureState.dy > 0) {
+            translateY.setValue(gestureState.dy);
+          }
+        },
+        onPanResponderRelease: (evt, gestureState) => {
+          if (gestureState.dy > SCREEN_HEIGHT * 0.2) {
+            Animated.timing(translateY, {
+              toValue: SCREEN_HEIGHT,
+              useNativeDriver: true,
+              duration: 200,
+            }).start(() => onClose());
+          } else {
+            Animated.spring(translateY, {
+              toValue: 0,
+              useNativeDriver: true,
+              tension: 40,
+              friction: 8,
+            }).start();
+          }
+        },
+      }),
   ).current;
 
   return (
-    <Modal
-      visible={isVisible}
-      transparent
-      statusBarTranslucent
-      animationType="fade">
-      <Container>
-        <Backdrop onPress={onClose} />
-        <SheetContainer
-          $height={height}
-          as={Animated.View}
-          style={{
-            transform: [{translateY}],
-          }}
-          {...panResponder.panHandlers}>
-          <HandleBar />
-          <SheetContent>
-            <HeaderContainer>
-              <HeaderText>{title}</HeaderText>
-              <HeaderDivider />
-            </HeaderContainer>
-            <BodyContainer>{children}</BodyContainer>
-          </SheetContent>
-        </SheetContainer>
-      </Container>
-    </Modal>
+      <Modal
+          visible={isVisible}
+          transparent
+          statusBarTranslucent
+          animationType="fade">
+        <Container>
+          <Backdrop onPress={onClose} />
+          <SheetContainer
+              $height={contentHeight}
+              as={Animated.View}
+              style={{
+                transform: [{translateY}],
+              }}
+              {...panResponder.panHandlers}>
+            <HandleBar />
+            <SheetContent ref={contentRef}>
+              <HeaderContainer>
+                <HeaderText>{title}</HeaderText>
+                <HeaderDivider />
+              </HeaderContainer>
+              <BodyContainer>{children}</BodyContainer>
+            </SheetContent>
+          </SheetContainer>
+        </Container>
+      </Modal>
   );
 };
+
 
 const Container = styled.View`
   flex: 1;
@@ -134,12 +143,15 @@ const SheetContainer = styled.View<{$height: string | number}>`
   background-color: white;
   border-top-left-radius: ${moderateScale(20)}px;
   border-top-right-radius: ${moderateScale(20)}px;
-  min-height: ${({$height}) =>
-    typeof $height === 'string' ? $height : `${$height}px`};
+  ${({$height}) =>
+      typeof $height === 'string'
+          ? `min-height: ${$height};`
+          : `min-height: ${$height}px;`
+  }
 `;
 
+
 const SheetContent = styled.View`
-  flex: 1;
 `;
 
 const HeaderContainer = styled.View``;
@@ -157,7 +169,6 @@ const HeaderDivider = styled.View`
 `;
 
 const BodyContainer = styled.View`
-  flex: 1;
   background-color: white;
 `;
 

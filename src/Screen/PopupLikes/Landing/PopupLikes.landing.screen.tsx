@@ -95,8 +95,6 @@ export const PopupLikesLandingScreen = () => {
       }
     });
 
-  console.log('filteredAndSortedPopups', filteredAndSortedPopups);
-
   return (
     <ScreenContainer>
       <PopupLikesLandingScreenHeader

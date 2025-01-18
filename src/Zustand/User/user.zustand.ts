@@ -247,7 +247,6 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
     const result = await axiosSignUp(param);
 
     if (result === null) {
-      console.log('result: ', result);
       showBlackToast({text1: '회원가입에 실패했습니다. 다시 시도해주세요.'});
       return false;
     }
@@ -453,15 +452,15 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
       loginResponse.data.userNotificationSetting,
     );
 
-    console.log(
-      'userActivities from user state: ',
-      loginResponse.data.userActivities,
-    );
-
-    console.log(
-      'userprefeenceSetting from user state: ',
-      loginResponse.data.userPreferenceSetting,
-    );
+    // console.log(
+    //   'userActivities from user state: ',
+    //   loginResponse.data.userActivities,
+    // );
+    //
+    // console.log(
+    //   'userprefeenceSetting from user state: ',
+    //   loginResponse.data.userPreferenceSetting,
+    // );
 
     // 관심 팝업 정보가 종속되어 있으므로 로그인 시점에 부트스트랩 재호출(로그아웃 상태에서, 로그인 시 관심 팝업 정보를 불러오기 위함)
     const loadSuccess = await useAppStore.getState().loadInitialData();

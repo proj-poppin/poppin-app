@@ -29,7 +29,7 @@ export const useRecentPopups = () => {
       const updatedPopups = [
         newPopup,
         ...currentPopups.filter((p: PopupSchema) => p.id !== popup.id),
-      ].slice(0, 10);
+      ].slice(0, 5);
 
       await AsyncStorage.setItem(
         RECENT_POPUPS_KEY,

@@ -74,47 +74,41 @@ export const HomeLandingScreen = ({
 
   const loggedin = isLoggedIn();
 
-  const renderContent = () => {
-    console.log('추천 팝업 in home landing screen: ', recommendedPopupStores);
-    return (
-      <>
-        {loggedin ? (
-          <>
-            <TitleText style={{marginLeft: 12}}>
-              어서오세요, {user.nickname}님{'\n'}취향저격 팝업 알려드릴게요
-            </TitleText>
-            {isPreferenceSettingCreated ? (
-              // HomeLandingRecommendedPopupSection 표시
-              <HomeLandingPopupSection
-                popups={recommendedPopupStores}
-                sectionType={'PREFERENCE_TARGETED'}
-              />
-            ) : (
-              // 취향 설정 안내 박스 표시
-              <ActionPromptBox boxType="PREFERENCE" />
-            )}
-          </>
-        ) : (
-          <ActionPromptBox
-            boxType="LOGIN"
-            onPress={() => {
-              navigation.navigate('AuthLandingScreen', {});
-            }}
-          />
-        )}
-        <DividerLine style={{marginTop: moderateScale(10)}} />
-        <HomeLandingPopularTop5PopupSection popups={popularTop5PopupStores} />
-        <HomeLandingPopupSection
-          popups={newlyOpenedPopupStores}
-          sectionType={'NEWLY_OPENED'}
+  const renderContent = () => (
+    <>
+      {loggedin ? (
+        <>
+          <TitleText style={{marginLeft: 12}}>
+            어서오세요, {user.nickname}님{'\n'}취향저격 팝업 알려드릴게요
+          </TitleText>
+          {isPreferenceSettingCreated ? (
+            // HomeLandingRecommendedPopupSection 표시
+            <HomeLandingPopupSection
+              popups={recommendedPopupStores}
+              sectionType={'PREFERENCE_TARGETED'}
+            />
+          ) : (
+            // 취향 설정 안내 박스 표시
+            <ActionPromptBox boxType="PREFERENCE" />
+          )}
+        </>
+      ) : (
+        <ActionPromptBox
+          boxType="LOGIN"
         />
-        <HomeLandingPopupSection
-          popups={closingSoonPopupStores}
-          sectionType={'CLOSING_SOON'}
-        />
-      </>
-    );
-  };
+      )}
+      <DividerLine style={{marginTop: moderateScale(10)}} />
+      <HomeLandingPopularTop5PopupSection popups={popularTop5PopupStores} />
+      <HomeLandingPopupSection
+        popups={newlyOpenedPopupStores}
+        sectionType={'NEWLY_OPENED'}
+      />
+      <HomeLandingPopupSection
+        popups={closingSoonPopupStores}
+        sectionType={'CLOSING_SOON'}
+      />
+    </>
+  );
 
   //* 만약 푸시 알림/다이나믹 링크/카카오톡 공유하기를 통해 종료되어 있던 앱을 실행한 경우,
   //* 목적지가 initialDestination 에 저장됩니다.

@@ -1,11 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  ScrollView,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import {ScrollView, TouchableWithoutFeedback} from 'react-native';
 import CategorySelectButton from '../../Screen/Popup/Landing/category.select.button';
 import {
   BackMiddleButton,
@@ -27,8 +21,8 @@ interface PopupCategoryModalProps {
   onReset: () => void;
   validationMode: 'both' | 'any';
   isPopupRequestModal?: boolean;
-  initialPreferenceCategory: typeof BlankPreference.preferenceCategory;
-  initialPreferencePopupStore: typeof BlankPreference.preferencePopupStore;
+  initialPreferenceCategory?: typeof BlankPreference.preferenceCategory;
+  initialPreferencePopupStore?: typeof BlankPreference.preferencePopupStore;
 }
 
 const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
@@ -122,80 +116,78 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
       <TouchableWithoutFeedback onPress={onClose}>
         <BackgroundTouchable />
       </TouchableWithoutFeedback>
-      <ModalContent>
-        <CategoryTitle type="category">
-          팝업 카테고리
-          {validationMode === 'both' && <RequiredMark> *</RequiredMark>}
-        </CategoryTitle>
-        <SelectionContainer>
-          {categoryKeys.map(key => (
-            <CategorySelectButton
-              key={key}
-              preferenceKey={key}
-              isSelected={
-                // !!preferenceCategory[key as keyof typeof preferenceCategory]
-                !!preferenceCategory?.[
-                  key as keyof typeof BlankPreference.preferenceCategory
-                ]
-              }
-              onPress={() =>
-                toggleCategory(key as keyof typeof preferenceCategory)
-              }
+      <ScrollView>
+        <ModalContent>
+          <CategoryTitle type="category">
+            팝업 카테고리
+            {validationMode === 'both' && <RequiredMark> *</RequiredMark>}
+          </CategoryTitle>
+          <SelectionContainer>
+            {categoryKeys.map(key => (
+              <CategorySelectButton
+                key={key}
+                preferenceKey={key}
+                isSelected={
+                  !!preferenceCategory[key as keyof typeof preferenceCategory]
+                }
+                onPress={() =>
+                  toggleCategory(key as keyof typeof preferenceCategory)
+                }
+              />
+            ))}
+          </SelectionContainer>
+
+          {!isPopupRequestModal && (
+            <>
+              <CategoryTitle type="type">
+                팝업 유형
+                {validationMode === 'both' && <RequiredMark> *</RequiredMark>}
+              </CategoryTitle>
+              <SelectionContainer>
+                {popupStoreKeys.map(key => (
+                  <CategorySelectButton
+                    key={key}
+                    preferenceKey={key}
+                    isSelected={
+                      !!preferencePopupStore[
+                        key as keyof typeof preferencePopupStore
+                      ]
+                    }
+                    onPress={() =>
+                      togglePopupStoreType(
+                        key as keyof typeof preferencePopupStore,
+                      )
+                    }
+                  />
+                ))}
+              </SelectionContainer>
+            </>
+          )}
+
+          <ButtonsWrapper>
+            <BackMiddleButton
+              title="초기화"
+              onPress={() => {
+                setPreferenceCategory(BlankPreference.preferenceCategory);
+                setPreferencePopupStore(BlankPreference.preferencePopupStore);
+                onReset();
+              }}
+              style={{marginRight: 10}}
             />
-          ))}
-        </SelectionContainer>
-
-        {!isPopupRequestModal && (
-          <>
-            <CategoryTitle type="type">
-              팝업 유형
-              {validationMode === 'both' && <RequiredMark> *</RequiredMark>}
-            </CategoryTitle>
-            <SelectionContainer>
-              {popupStoreKeys.map(key => (
-                <CategorySelectButton
-                  key={key}
-                  preferenceKey={key}
-                  isSelected={
-                    !!preferencePopupStore[
-                      key as keyof typeof preferencePopupStore
-                    ]
-                  }
-                  onPress={() =>
-                    togglePopupStoreType(
-                      key as keyof typeof preferencePopupStore,
-                    )
-                  }
-                />
-              ))}
-            </SelectionContainer>
-          </>
-        )}
-
-        <ButtonsWrapper>
-          <BackMiddleButton
-            title="초기화"
-            onPress={() => {
-              setPreferenceCategory(BlankPreference.preferenceCategory);
-              setPreferencePopupStore(BlankPreference.preferencePopupStore);
-              onReset();
-            }}
-            style={{marginRight: 10}}
-          />
-          <NextMiddleButton
-            title={buttonName}
-            onPress={handleApplyFilter}
-            style={{width: '60%'}}
-            disabled={!isValidSelection}
-          />
-        </ButtonsWrapper>
-      </ModalContent>
+            <NextMiddleButton
+              title={buttonName}
+              onPress={handleApplyFilter}
+              style={{width: '60%'}}
+              disabled={!isValidSelection}
+            />
+          </ButtonsWrapper>
+        </ModalContent>
+      </ScrollView>
     </ModalOverlay>
   );
 };
 export default PopupCategoryModal;
 const ModalOverlay = styled.View`
-  flex: 1;
   justify-content: flex-end;
 `;
 
@@ -205,12 +197,18 @@ const BackgroundTouchable = styled.View`
 
 const ModalContent = styled.View`
   background-color: white;
-  max-height: 100%;
+  padding: ${moderateScale(20)}px;
+  padding-bottom: 0;
+  border-top-left-radius: ${moderateScale(20)}px;
+  border-top-right-radius: ${moderateScale(20)}px;
 `;
 
 const CategoryTitle = styled.Text<{type: 'category' | 'type'}>`
-  font-size: 16px;
-  text-align: center;
+  align-self: center;
+  font-size: ${moderateScale(16)}px;
+  margin-top: ${moderateScale(16)}px;
+  margin-bottom: ${moderateScale(8)}px;
+  font-weight: 600;
   color: ${props =>
     props.type === 'category'
       ? props.theme.color.purple.main
@@ -225,7 +223,8 @@ const SelectionContainer = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 10px;
+  padding: ${moderateScale(10)}px;
+  margin-bottom: ${moderateScale(20)}px;
 `;
 
 const ButtonsWrapper = styled.View`

@@ -2,12 +2,7 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {Alert, ScrollView} from 'react-native';
-import {
-  HHMMFormatTime,
-  moderateScale,
-  useImagePicker,
-  YYYYHHMMFormatDate,
-} from '../../../Util';
+import {HHMMFormatTime, moderateScale, YYYYHHMMFormatDate} from '../../../Util';
 import CustomBottomSheet from '../../BottomSheet/CustomBottomSheet';
 import CalendarPicker from '../../CalendarPicker';
 import TimePicker from '../../TimePicker';
@@ -17,6 +12,7 @@ import {StepProps} from './ReportStepOne';
 import CustomBottomSheetButton from '../../BottomSheet/CustomBottomSheetButton';
 import PostalCodeModal from '../../operatorRequest/PostalCodeModal';
 import CategorySelectButton from '../../../Screen/Popup/Landing/category.select.button';
+import {themeColors} from "../../../Theme/theme";
 const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
   const {
     // State
@@ -60,7 +56,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
       Alert.alert('알림', '팝업 이름을 입력해주세요.');
       return false;
     }
-    if (!filteringFourteenCategories || filteringThreeCategories.length === 0) {
+    if (!filteringFourteenCategories) {
       Alert.alert('알림', '카테고리를 선택해주세요.');
       return false;
     }
@@ -218,7 +214,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
                 setShowCalendar(true);
                 setIsOpenDate(true);
               }}>
-              <DateButtonText>{YYYYHHMMFormatDate(openDate)}</DateButtonText>
+              <DateButtonText style={{color: openDate ? themeColors().grey.black : themeColors().grey.main}}>{YYYYHHMMFormatDate(openDate)}</DateButtonText>
             </DateButton>
             <DateSeparator>~</DateSeparator>
             <DateButton
@@ -226,7 +222,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
                 setShowCalendar(true);
                 setIsOpenDate(false);
               }}>
-              <DateButtonText>{YYYYHHMMFormatDate(closeDate)}</DateButtonText>
+              <DateButtonText style={{color: closeDate ? themeColors().grey.black : themeColors().grey.main}}>{YYYYHHMMFormatDate(closeDate)}</DateButtonText>
             </DateButton>
           </DateContainer>
 
@@ -239,7 +235,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
                 setShowTimePicker(true);
                 setIsOpenTime(true);
               }}>
-              <TimeText>{HHMMFormatTime(openTime)}</TimeText>
+              <TimeText style={{color: openTime ? themeColors().grey.black : themeColors().grey.main}}>{HHMMFormatTime(openTime)}</TimeText>
             </TimeButton>
             <TimeSeparator>~</TimeSeparator>
             <TimeButton
@@ -247,7 +243,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
                 setShowTimePicker(true);
                 setIsOpenTime(false);
               }}>
-              <TimeText>{HHMMFormatTime(closeTime)}</TimeText>
+              <TimeText style={{color: closeTime ? themeColors().grey.black : themeColors().grey.main}}>{HHMMFormatTime(closeTime)}</TimeText>
             </TimeButton>
           </TimeContainer>
 
@@ -346,8 +342,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
         <CustomBottomSheet
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}
-          title={'제보하려는 팝업의 카테고리를 설정해주세요'}
-          height={'65%'}>
+          title={'제보하려는 팝업의 카테고리를 설정해주세요'}>
           <PopupCategoryModal
             visible={modalVisible}
             onClose={() => setModalVisible(false)}
@@ -358,35 +353,12 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
             buttonName={'카테고리 설정'}
             validationMode={'both'}
             isPopupRequestModal={true}
-            initialPreferenceCategory={{
-              fashionBeauty: false,
-              characters: false,
-              foodBeverage: false,
-              webtoonAni: false,
-              interiorThings: false,
-              movie: false,
-              musical: false,
-              sports: false,
-              game: false,
-              itTech: false,
-              kpop: false,
-              alcohol: false,
-              animalPlant: false,
-              guitar: false,
-            }}
-            initialPreferencePopupStore={{
-              market: false,
-              display: false,
-              experience: false,
-              wantFree: false,
-            }}
           />
         </CustomBottomSheet>
 
         <CustomBottomSheet
           isVisible={showCalendar}
           onClose={() => setShowCalendar(false)}
-          height={'70%'}
           title={'날짜 설정'}>
           <CalendarPicker
             openDate={openDate}
@@ -400,7 +372,6 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
         <CustomBottomSheet
           isVisible={showTimePicker}
           onClose={() => setShowTimePicker(false)}
-          height={'40%'}
           title={'시간 설정'}>
           <TimePicker
             initialStartTime={new Date()}
@@ -421,7 +392,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <SubmitButton onPress={onBackPress}>
             <SubmitButtonText>돌아가기</SubmitButtonText>
           </SubmitButton>
-          <SubmitButton onPress={secondReportHandler}>
+          <SubmitButton onPress={secondReportHandler} disabled={!isFormValid}>
             <SubmitButtonText>다음</SubmitButtonText>
           </SubmitButton>
         </RowButtonContainer>

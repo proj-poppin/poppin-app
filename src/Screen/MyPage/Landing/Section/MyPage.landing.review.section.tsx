@@ -6,13 +6,32 @@ import ReviewWriteReadyIcon from '../../../../Resource/svg/review-write-ready-ic
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 import {useUserStore} from 'src/Zustand/User/user.zustand';
+import {useAppStore} from 'src/Zustand/App/app.zustand';
+import shallow from 'zustand/shallow';
 export const MyPageLandingReviewSection = () => {
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
   const user = useUserStore(state => state.user);
+
+  const checkLoginAndShowModal = useAppStore(
+    state => state.checkLoginAndShowModal,
+    shallow,
+  );
+  const onPressReviewWriteButton = () => {
+    if (!checkLoginAndShowModal('POPUP_REVIEW')) {
+      return;
+    }
+    navigation.navigate('MypageReviewListScreen', {});
+  };
+  const onPressReivewListButton = () => {
+    if (!checkLoginAndShowModal('POPUP_REVIEW')) {
+      return;
+    }
+    navigation.navigate('MypageCompleteReviewListScreen', {});
+  };
+
   return (
     <ReviewsContainer>
-      <ReviewItem
-        onPress={() => navigation.navigate('MypageReviewListScreen', {})}>
+      <ReviewItem onPress={() => onPressReviewWriteButton()}>
         <ReviewLabel>후기 작성하기</ReviewLabel>
         <ReviewIconRowContainer>
           <ReviewWriteReadyIcon />
@@ -20,10 +39,7 @@ export const MyPageLandingReviewSection = () => {
         </ReviewIconRowContainer>
       </ReviewItem>
       <Divider />
-      <ReviewItem
-        onPress={() =>
-          navigation.navigate('MypageCompleteReviewListScreen', {})
-        }>
+      <ReviewItem onPress={() => onPressReivewListButton()}>
         <ReviewLabel>작성 완료한 후기</ReviewLabel>
         <ReviewIconRowContainer>
           <ReviewCompleteIcon />

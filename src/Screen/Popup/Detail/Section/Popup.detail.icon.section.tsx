@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import {Linking, Pressable, Text} from 'react-native';
+import {Alert, Linking, Pressable, Text} from 'react-native';
 import InstagramTestSvg from 'src/Resource/svg/instagram-border-button.svg';
 import LinkCopySvg from 'src/Resource/svg/link-copy-blue-icon.svg';
 import StarFilledSvg from 'src/Resource/svg/star-filled-icon.svg';
-import StarOutlineSvg from 'src/Resource/svg/star-outline-icon.svg';
+import StarOutlineBlackSvg from 'src/Resource/svg/star-outline-black-icon.svg';
 import ShareSvg from 'src/Resource/svg/share-icon.svg';
 import {usePopupDetailContext} from '../Provider/Popup.detail.provider';
 import SvgWithNameBoxLabel from '../../../../Component/SvgWithNameBoxLabel';
@@ -25,8 +25,17 @@ const PopupDetailIconSection = () => {
   const scrapped =
     interestedPopupStores?.some(popup => popup.id === popupDetail.id) ?? false;
 
+  const loggedIn = useUserStore(state => state.isLoggedIn());
+
   const handleFavoritePress = async () => {
+    if(!loggedIn) {
+      // #RESACLE
+      Alert.alert('로그인 모달 추가하기');
+      return;
+    }
+
     setLoadingState(popupDetail.id, true); // 로딩 상태 시작
+
     try {
       if (scrapped) {
         await unScrapPopup();
@@ -86,7 +95,7 @@ const PopupDetailIconSection = () => {
             <Pressable
               onPress={handleFavoritePress}
               disabled={scrapping || isLoading}>
-              {scrapped ? <StarFilledSvg /> : <StarOutlineSvg />}
+              {scrapped ? <StarFilledSvg /> : <StarOutlineBlackSvg />}
             </Pressable>
             {(isLoading || scrapping) && <LoadingText>로딩중...</LoadingText>}
           </FavoriteButton>

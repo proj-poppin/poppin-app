@@ -18,7 +18,6 @@ export interface MyPageReviewWriteScreenProps {
 
 export function MyPageReviewWriteScreen({
   route,
-  navigation,
 }: NativeStackScreenProps<AppStackProps, 'MypageReviewWriteScreen'>) {
   return (
     <ReviewWriteProvider>

@@ -71,8 +71,6 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
   const handleNext = () => {
     if (validateStep()) {
       onNext();
-      setAppModalVisible(true);
-      showAppModal('POPUP_REPORT_COMPLETED');
       // navigation.navigate('MyPage', {});
     }
   };
@@ -189,8 +187,7 @@ const ReportStepThree: React.FC<StepProps> = ({onNext, onBackPress}) => {
       <CustomBottomSheet
         isVisible={modalVisible}
         onClose={() => setModalVisible(false)}
-        title={'이용 가능 연령을 선택해주세요'}
-        height={'40%'}>
+        title={'이용 가능 연령을 선택해주세요'}>
         <AgeChooseBottomSheet
           onClose={() => setModalVisible(false)}
           selectedAges={availableAge} // 초기 선택값

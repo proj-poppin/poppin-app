@@ -10,12 +10,9 @@ import PoppinCirclePng from 'src/Resource/png/app-logo.png';
 import styled from 'styled-components/native';
 import RequiredTextLabel from 'src/Component/RequiredTextLabel';
 import {useProfileEdit} from './Mypage.profile.edit.context';
-import {useUserStore} from 'src/Zustand/User/user.zustand';
-import {Asset} from 'react-native-image-picker';
 import {MypageProfileEditModal} from './Mypage.profile.edit.modal';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
-import shallow from 'zustand/shallow';
 
 // 통합 이미지 소스 타입 정의
 export type UnifiedImageSource = ImageSourcePropType | string | {uri: string};
@@ -24,17 +21,6 @@ export type UnifiedImageSource = ImageSourcePropType | string | {uri: string};
 export function MyProfileEditContainer() {
   const context = useProfileEdit();
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
-  const isLoggedInCheckFn = useUserStore(state => state.isLoggedIn, shallow);
-
-  const isLoggedIn = isLoggedInCheckFn();
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigation.goBack();
-      navigation.navigate('AuthLandingScreen', {});
-      return;
-    }
-  }, [isLoggedIn, navigation]);
-
   return (
     <>
       <ProfileContainer>

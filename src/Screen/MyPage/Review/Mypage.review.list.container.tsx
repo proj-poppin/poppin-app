@@ -9,11 +9,8 @@ import {ScreenHeader} from 'src/Component/View';
 import LinearGradient from 'react-native-linear-gradient';
 import CheckIcon from 'src/Resource/svg/check_circle.svg';
 import {BeforeReviewPopupCard} from 'src/Component/MyPage/Review/Mypage.before.review.popupCard';
-import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
 import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
 import {useReviewListContext} from './Mypage.review.list.context';
-import {useUserStore} from 'src/Zustand/User/user.zustand';
-import shallow from 'zustand/shallow';
 
 interface ReviewListContainerProps {
   navigation: NavigationProp<AppStackProps, 'MypageReviewListScreen'>;
@@ -23,16 +20,6 @@ export const ReviewListContainer: React.FC<ReviewListContainerProps> = ({
   navigation,
 }) => {
   const {visitedPopups, isLoading, error} = useReviewListContext();
-  const isLoggedInCheckFn = useUserStore(state => state.isLoggedIn, shallow);
-
-  const isLoggedIn = isLoggedInCheckFn();
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigation.goBack();
-      navigation.navigate('AuthLandingScreen', {});
-      return;
-    }
-  }, [isLoggedIn, navigation]);
   return (
     <ScrollViewPage
       UpperPart={

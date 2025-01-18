@@ -149,24 +149,19 @@ export const useOperatorReportStore = create<OperatorReportStore>(
     setFilteringFourteenCategories: filteringFourteenCategories =>
       set({filteringFourteenCategories: filteringFourteenCategories}),
     handleAddImages: async () => {
-      try {
-        const selectedImages = await getGalleryImages({
-          sectionLimit: 5,
-          requestRationale: {
-            title: '카메라 권한 필요',
-            message: '제보하기를 위해 카메라 권한이 필요합니다.',
-            buttonPositive: '확인',
-          },
-        });
+      const selectedImages = await getGalleryImages({
+        sectionLimit: 5,
+        requestRationale: {
+          title: '카메라 권한 필요',
+          message: '제보하기를 위해 카메라 권한이 필요합니다.',
+          buttonPositive: '확인',
+        },
+      });
 
-        if (selectedImages) {
-          set(state => ({
-            images: [...state.images, ...selectedImages],
-          }));
-        }
-      } catch (error) {
-        console.error('이미지 선택 오류:', error);
-        Alert.alert('알림', '이미지를 선택하는 중 오류가 발생했습니다.');
+      if (selectedImages) {
+        set(state => ({
+          images: [...state.images, ...selectedImages],
+        }));
       }
     },
 

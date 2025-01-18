@@ -9,8 +9,6 @@ import {ScreenHeader} from 'src/Component/View';
 import Filter from 'src/Resource/svg/filter.svg';
 import {CompleteReviewCard} from 'src/Component/MyPage/Review/Mypage.complete.review.poupupCard';
 import {useReviewListContext} from './Mypage.complete.review.list.context';
-import {useUserStore} from 'src/Zustand/User/user.zustand';
-import shallow from 'zustand/shallow';
 interface CompleteReviewContainerProps {}
 
 export const CompleteReviewContainer: React.FC<
@@ -19,16 +17,7 @@ export const CompleteReviewContainer: React.FC<
   //TODO-[규진] 산아형 다 끝나면 할 일 - 생년월일 받기
   const [isLastest, setIsLastest] = useState(true);
   const context = useReviewListContext();
-  const isLoggedInCheckFn = useUserStore(state => state.isLoggedIn, shallow);
-  const isLoggedIn = isLoggedInCheckFn();
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigation.goBack();
-      navigation.navigate('AuthLandingScreen', {});
-      return;
-    }
-  }, [isLoggedIn, navigation]);
 
   // 정렬된 리뷰 목록 계산
   const sortedReviews = useMemo(() => {

@@ -59,7 +59,7 @@ export const axiosUpdateUserNotificationSetting = async (
 
 /**
  * 특정 알림을 읽음 처리합니다.
- * 만약 알림 _id 가 빈 문자열인 경우 요청을 보내지 않습니다.
+ * 만약 알림 id 가 빈 문자열인 경우 요청을 보내지 않습니다.
  * @author 도형
  */
 export const axiosCheckNotification = async (notificationId: string) => {

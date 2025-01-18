@@ -27,7 +27,7 @@ export const axiosSettingPreference = async (param: {
       fashionBeauty: param.data.preferenceCategory.fashionBeauty,
       characters: param.data.preferenceCategory.characters,
       foodBeverage: param.data.preferenceCategory.foodBeverage,
-      webtoonAni: param.data.preferenceCategory.webtoonAnimation,
+      webtoonAnimation: param.data.preferenceCategory.webtoonAnimation,
       interiorThings: param.data.preferenceCategory.interiorThings,
       movie: param.data.preferenceCategory.movie,
       musical: param.data.preferenceCategory.musical,

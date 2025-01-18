@@ -95,9 +95,6 @@ export const HomeLandingScreen = ({
       ) : (
         <ActionPromptBox
           boxType="LOGIN"
-          onPress={() => {
-            navigation.navigate('AuthLandingScreen', {});
-          }}
         />
       )}
       <DividerLine style={{marginTop: moderateScale(10)}} />

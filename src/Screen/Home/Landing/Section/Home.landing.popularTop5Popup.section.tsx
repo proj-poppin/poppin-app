@@ -139,7 +139,6 @@ const TooltipContainer = styled.View`
 
 const HotListContainer = styled.View`
   flex-direction: column;
-  flex-wrap: wrap;
   background-color: ${themeColors().purple.mild};
   border-radius: ${moderateScale(10)}px;
   padding: ${moderateScale(10)}px;

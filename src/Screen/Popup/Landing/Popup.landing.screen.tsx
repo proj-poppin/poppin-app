@@ -33,6 +33,7 @@ import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 import CustomBottomSheet from '../../../Component/BottomSheet/CustomBottomSheet';
 import {PopupDetailProvider} from '../Detail/Provider/Popup.detail.provider';
 import {PopupLandingCategoryModal} from './Popup.landing.category.modal';
+import NotList from 'src/Component/findPopup/NotList';
 
 interface SearchBarProps {
   isSearchMode: boolean;
@@ -195,6 +196,15 @@ const PopupListScreen: React.FC<PopupListScreenProps> = ({operationStatus}) => {
       loadMorePopupStores(operationStatus);
     }
   };
+
+  // 검색 결과가 없을 때 NotList를 렌더링
+  if (!isLoading && searchedPopupStores.length === 0) {
+    return (
+      <SectionContainer fullPage style={{flex: 1}}>
+        <NotList />
+      </SectionContainer>
+    );
+  }
 
   return (
     <SectionContainer fullPage style={{flex: 1}}>

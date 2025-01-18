@@ -50,8 +50,12 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
   const [isValidSelection, setIsValidSelection] = useState(false);
 
   useEffect(() => {
-    setPreferenceCategory(initialPreferenceCategory);
-    setPreferencePopupStore(initialPreferencePopupStore);
+    setPreferenceCategory(
+      initialPreferenceCategory || BlankPreference.preferenceCategory,
+    );
+    setPreferencePopupStore(
+      initialPreferencePopupStore || BlankPreference.preferencePopupStore,
+    );
   }, [initialPreferenceCategory, initialPreferencePopupStore]);
 
   useEffect(() => {
@@ -129,7 +133,10 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
               key={key}
               preferenceKey={key}
               isSelected={
-                !!preferenceCategory[key as keyof typeof preferenceCategory]
+                // !!preferenceCategory[key as keyof typeof preferenceCategory]
+                !!preferenceCategory?.[
+                  key as keyof typeof BlankPreference.preferenceCategory
+                ]
               }
               onPress={() =>
                 toggleCategory(key as keyof typeof preferenceCategory)

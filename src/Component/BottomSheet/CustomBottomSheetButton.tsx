@@ -16,6 +16,9 @@ interface CustomBottomSheetButtonProps {
   selected?: boolean;
   filteringFourteenCategories?: string;
   filteringAge?: string; // 연령 prop 추가
+  style?: object; // NotList.tsx용 스타일 추가
+  textStyle?: object; // NotList.tsx용 텍스트 스타일 추가
+  hideArrowIcon?: boolean;
 }
 const getAgeLabel = (age: string): string => {
   switch (age) {
@@ -39,6 +42,9 @@ const CustomBottomSheetButton: React.FC<CustomBottomSheetButtonProps> = ({
   selected = false,
   filteringFourteenCategories = '',
   filteringAge = '',
+  style = {},
+  textStyle = {},
+  hideArrowIcon = false,
 }) => {
   const selectedCategories = filteringFourteenCategories
     ? filteringFourteenCategories.split(',').filter(Boolean)
@@ -69,21 +75,31 @@ const CustomBottomSheetButton: React.FC<CustomBottomSheetButtonProps> = ({
       );
     }
 
-    return <ButtonText selected={selected}>{text}</ButtonText>;
+    return (
+      <ButtonText selected={selected} style={textStyle}>
+        {text}
+      </ButtonText>
+    );
   };
 
   return (
-    <ButtonContainer onPress={onPress} selected={hasSelections}>
-      <ContentContainer>{renderContent()}</ContentContainer>
-      <ArrowIconContainer>
-        <DownArrowGrayIcon />
-      </ArrowIconContainer>
+    <ButtonContainer onPress={onPress} selected={hasSelections} style={style}>
+      {/* <ContentContainer> */}
+      <ContentContainer centered={hideArrowIcon}>
+        {renderContent()}
+      </ContentContainer>
+      {!hideArrowIcon && (
+        <ArrowIconContainer>
+          <DownArrowGrayIcon />
+        </ArrowIconContainer>
+      )}
     </ButtonContainer>
   );
 };
 
 interface StyledProps {
   selected?: boolean;
+  centered?: boolean; // NotList.tsx에서 버튼 내부 텍스트 가운데 정렬을 위해
 }
 
 const ButtonContainer = styled.TouchableOpacity<StyledProps>`
@@ -96,9 +112,11 @@ const ButtonContainer = styled.TouchableOpacity<StyledProps>`
   min-height: ${moderateScale(24)}px;
 `;
 
-const ContentContainer = styled.View`
+const ContentContainer = styled.View<StyledProps>`
   flex: 1;
-  margin-right: 8px;
+  margin-right: ${({centered}) => (centered ? 0 : 8)}px;
+  justify-content: ${({centered}) => (centered ? 'center' : 'flex-start')};
+  align-items: ${({centered}) => (centered ? 'center' : 'flex-start')};
 `;
 
 const ButtonText = styled.Text<StyledProps>`

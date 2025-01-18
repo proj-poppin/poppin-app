@@ -15,24 +15,29 @@ import {
   MaterialTopTabBarProps,
 } from '@react-navigation/material-top-tabs';
 import {LandingBottomTabProps} from 'src/Navigator/Landing.bottomTab.navigator';
-import {BlankDropdown} from '../../../Component/Dropdown';
+import {BlankDropdown} from 'src/Component/Dropdown';
 import SearchIcon from 'src/Resource/svg/search-icon.svg';
-import {LandingScreenHeader} from '../../../Component/View';
+import {LandingScreenHeader} from 'src/Component/View';
 import {themeColors} from 'src/Theme/theme';
-import {PopupSortOrder} from '../../../Object/Type/popupSortOrder.type';
-import {OperationStatus} from '../../../Object/Type/operationStatus.type';
+import {PopupSortOrder} from 'src/Object/Type/popupSortOrder.type';
+import {OperationStatus} from 'src/Object/Type/operationStatus.type';
 import {usePopupScreenStore} from './Popup.landing.zustand';
 import styled from 'styled-components/native';
-import {SectionContainer} from '../../../Unit/View';
-import {PopupSchema} from '../../../Schema/Popup/popup.schema';
+import {SectionContainer} from 'src/Unit/View';
+import {PopupSchema} from 'src/Schema/Popup/popup.schema';
 import {EdgeInsets} from 'react-native-safe-area-context';
-import GradientButton from '../../../Component/Button/FilterSettingButton';
-import PopupStoreCard from '../../../Component/Popup/Landing/PopupStoreCard';
+import GradientButton from 'src/Component/Button/FilterSettingButton';
+import PopupStoreCard from 'src/Component/Popup/Landing/PopupStoreCard';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {AppStackProps} from '../../../Navigator/App.stack.navigator';
-import CustomBottomSheet from '../../../Component/BottomSheet/CustomBottomSheet';
+import {AppStackProps} from 'src/Navigator/App.stack.navigator';
+import CustomBottomSheet from 'src/Component/BottomSheet/CustomBottomSheet';
 import {PopupDetailProvider} from '../Detail/Provider/Popup.detail.provider';
-import {PopupLandingCategoryModal} from './Popup.landing.category.modal';
+import PopupCategoryModal from 'src/Component/Modal/Popup.category.modal';
+import shallow from 'zustand/shallow';
+import {PreferenceCategory} from 'src/Schema/Preference/preferenceCategory.schema';
+import {categoryKeys, popupStoreKeys} from 'src/Object/preference.enum';
+import {PreferencePopupStore} from 'src/Schema/Preference/preferencePopupStore';
+import {BlankPreference} from '../../../Schema/Preference/preference.schema';
 
 interface SearchBarProps {
   isSearchMode: boolean;
@@ -63,38 +68,76 @@ const REVIEW_ORDER_TYPES = [
 
 export type PopupLandingScreenProps = {};
 
-export const PopupLandingScreen = ({
-  route,
-  navigation,
-}: NativeStackScreenProps<LandingBottomTabProps, 'PopupLandingScreen'>) => {
+export const PopupLandingScreen = ({}: NativeStackScreenProps<
+  LandingBottomTabProps,
+  'PopupLandingScreen'
+>) => {
   const [isSearchMode, setIsSearchMode] = useState(false);
   const {
     setSelectedCategories,
     setSelectedPopupStores,
+    setFilteringFourteenCategories,
+    setFilteringThreeCategories,
+    preferenceCategory: preferenceCategory,
+    preferencePopupStore: preferencePopupStore,
     searchKeyword,
     setSearchKeyword,
-    isSetting,
     setIsSetting,
-  } = usePopupScreenStore();
+  } = usePopupScreenStore(
+    state => ({
+      setSelectedCategories: state.setSelectedCategories,
+      setSelectedPopupStores: state.setSelectedPopupStores,
+      preferenceCategory: state.preferenceCategory,
+      preferencePopupStore: state.preferencePopupStore,
+      setFilteringFourteenCategories: state.setFilteringFourteenCategories,
+      setFilteringThreeCategories: state.setFilteringThreeCategories,
+      searchKeyword: state.searchKeyword,
+      setSearchKeyword: state.setSearchKeyword,
+      isSetting: state.isSetting,
+      setIsSetting: state.setIsSetting,
+    }),
+    shallow,
+  );
+
   const [selectedOrder, setSelectedOrder] = useState<PopupSortOrder>(
     PopupSortOrder.RECENTLY_OPENED,
   );
   const [modalVisible, setModalVisible] = useState(false);
+
   const handleFilterChange = (selectedCategories: {
     selectedPopupTypes: string[];
     selectedCategories: string[];
   }) => {
+    const updatedCategories = categoryKeys.reduce((acc, key) => {
+      acc[key as keyof PreferenceCategory] =
+        selectedCategories.selectedCategories.includes(key);
+      return acc;
+    }, {} as PreferenceCategory);
+
+    const updatedPopupStores = popupStoreKeys.reduce((acc, key) => {
+      acc[key as keyof PreferencePopupStore] =
+        selectedCategories.selectedPopupTypes.includes(key);
+      return acc;
+    }, {} as PreferencePopupStore);
+
+    // 상태 업데이트
+    setFilteringFourteenCategories(updatedCategories);
+    setFilteringThreeCategories(updatedPopupStores);
+
+    // 기존 필터 값 업데이트
     setSelectedCategories(selectedCategories.selectedCategories.join(','));
     setSelectedPopupStores(selectedCategories.selectedPopupTypes.join(','));
-    setModalVisible(false);
-    setIsSetting(!isSetting);
+    setIsSetting(true);
   };
 
   const handleResetFilter = () => {
+    // 상태 초기화
     setSelectedCategories('');
     setSelectedPopupStores('');
+    setFilteringFourteenCategories(BlankPreference.preferenceCategory);
+    setFilteringThreeCategories(BlankPreference.preferencePopupStore);
     setModalVisible(false);
-    setIsSetting(!isSetting);
+    setIsSetting(false);
   };
 
   const handleSearchToggle = () => setIsSearchMode(true);
@@ -102,8 +145,9 @@ export const PopupLandingScreen = ({
     setIsSearchMode(false);
     setSearchKeyword('');
   };
-  const handleOrderChange = (newOrder: PopupSortOrder) =>
+  const handleOrderChange = (newOrder: PopupSortOrder) => {
     setSelectedOrder(newOrder);
+  };
 
   return (
     <ScreenContainer>
@@ -153,17 +197,21 @@ export const PopupLandingScreen = ({
         onClose={() => setModalVisible(false)}
         title={'찾고싶은 팝업의 카테고리를 설정해주세요'}
       >
-        <PopupLandingCategoryModal
+        <PopupCategoryModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
+          onApply={handleFilterChange}
+          onReset={handleResetFilter}
           buttonName={'필터 적용하기'}
+          validationMode="both"
+          initialPreferenceCategory={preferenceCategory}
+          initialPreferencePopupStore={preferencePopupStore}
         />
       </CustomBottomSheet>
     </ScreenContainer>
   );
 };
 
-// Popup List Screen Component
 const PopupListScreen: React.FC<PopupListScreenProps> = ({operationStatus}) => {
   const {
     loadMorePopupStores,
@@ -171,6 +219,20 @@ const PopupListScreen: React.FC<PopupListScreenProps> = ({operationStatus}) => {
   } = usePopupScreenStore();
   //
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
+
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'white',
+        }}>
+        <ActivityIndicator size="large" color={themeColors().blue.main} />
+      </View>
+    );
+  }
 
   const handlePressCard = (id: string) => {
     navigation.navigate('PopupDetailScreen', {popupId: id});
@@ -277,7 +339,6 @@ const TAB_LABELS = ['운영 중', '오픈 예정', '운영 종료'];
 
 const CustomTabBar: React.FC<CustomTabBarProps> = ({
   state,
-  descriptors,
   navigation,
   insets = {top: 0, left: 0, right: 0, bottom: 0},
   onOrderChange,

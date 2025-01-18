@@ -154,7 +154,7 @@ export const useMypagePreferenceSettingScreenStore =
           }
           return false; // 실패 시 false 반환
         } catch (error) {
-          console.error('Error saving preferences:', error);
+          // console.error('Error saving preferences:', error);
           return false; // 실패 시 false 반환
         }
       },

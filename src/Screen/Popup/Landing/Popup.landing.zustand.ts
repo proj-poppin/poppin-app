@@ -100,29 +100,22 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
     setIsSetting: (isSetting: boolean) => set({isSetting}),
 
     setFilteringFourteenCategories: categoryState => {
-      set(state => {
-        const hasCategorySelected = Object.values(categoryState).some(Boolean);
-        const hasPopupSelected = Object.values(state.preferencePopupStore).some(
-          Boolean,
-        );
-
+      set(() => {
+        const selectedCategories = convertToCommaSeparatedString(categoryState);
         return {
           preferenceCategory: categoryState,
-          isSetting: hasCategorySelected || hasPopupSelected,
+          filteringFourteenCategories: selectedCategories,
         };
       });
     },
 
     setFilteringThreeCategories: popupStoreState => {
-      set(state => {
-        const hasCategorySelected = Object.values(
-          state.preferenceCategory,
-        ).some(Boolean);
-        const hasPopupSelected = Object.values(popupStoreState).some(Boolean);
-
+      set(() => {
+        const selectedPopupStores =
+          convertToCommaSeparatedString(popupStoreState);
         return {
           preferencePopupStore: popupStoreState,
-          isSetting: hasCategorySelected || hasPopupSelected,
+          filteringThreeCategories: selectedPopupStores,
         };
       });
     },
@@ -189,7 +182,8 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
       set(state => ({
         ...state,
         [operationStatus]: {...state[operationStatus], isLoading: true},
-      }));
+      })); // 로딩 시작
+
       try {
         const response = await axiosGetPopupsBySearchFiltering(params);
         if (response) {
@@ -199,7 +193,7 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
               searchedPopupStores: response.items,
               pageInfo: response.pageInfo,
               noMoreOlderPopupStores: response.pageInfo.isLast,
-              isLoading: false,
+              isLoading: false, // 로딩 종료
             },
           }));
         }
@@ -208,7 +202,7 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
         set(state => ({
           ...state,
           [operationStatus]: {...state[operationStatus], isLoading: false},
-        }));
+        })); // 오류 시 로딩 종료
       }
     },
     setPopupStoreByOperationStatus: (
@@ -255,7 +249,6 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
         ...state,
         [operationStatus]: {...state[operationStatus], isLoading: true},
       }));
-      console.log('Loading more popups with params:', params);
 
       try {
         const response = await axiosGetPopupsBySearchFiltering(params);
@@ -284,10 +277,19 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
   }),
 );
 
-export const convertToBinaryString = (
+// export const convertToBinaryString = (
+//   state: Record<string, boolean>,
+// ): string => {
+//   return Object.values(state)
+//     .map(value => (value ? '1' : '0'))
+//     .join('');
+// };
+
+export const convertToCommaSeparatedString = (
   state: Record<string, boolean>,
 ): string => {
-  return Object.values(state)
-    .map(value => (value ? '1' : '0'))
-    .join('');
+  return Object.entries(state)
+    .filter(([_, value]) => value) // true인 값만 필터링
+    .map(([key]) => key) // key값만 추출
+    .join(','); // 쉼표로 연결
 };

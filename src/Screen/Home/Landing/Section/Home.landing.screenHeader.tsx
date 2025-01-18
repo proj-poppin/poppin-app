@@ -32,7 +32,9 @@ const RightIcons = () => {
   );
 
   const onPressSetting = () => {
-    if (!checkLoginAndShowModal('ALARM')) return;
+    if (!checkLoginAndShowModal('ALARM')) {
+      return;
+    }
     // makeFirebaseLogEvent(MYPAGE_LOGS.landing.goto_setting);
     setUserNotificationSetting({lastCheck: getCurrentISOTime()});
     // navigation.navigate('MypageSettingScreen', {});
@@ -40,7 +42,7 @@ const RightIcons = () => {
 
   const onPressAlarm = () => {
     // makeFirebaseLogEvent(MYPAGE_LOGS.landing.goto_notification_list);
-    // navigation.navigate('MypageNotificationScreen', {});
+    navigation.navigate('AlarmNotificationScreen', {});
   };
 
   return (

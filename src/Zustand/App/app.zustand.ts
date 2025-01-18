@@ -208,12 +208,12 @@ export const useAppStore = create<AppStoreProps>((set, get) => ({
       );
 
     usePopupStore.getState().setInitialPopupStores({
-      recommendedPopupStores: initialData.data.recommendedPopupStores,
-      popularTop5PopupStores: initialData.data.popularTop5PopupStores,
-      newlyOpenedPopupStores: initialData.data.newlyOpenedPopupStores,
-      closingSoonPopupStores: initialData.data.closingSoonPopupStores,
-      searchedPopupStores: initialData.data.filteredPopupStores,
-      interestedPopupStores: initialData.data.interestedPopupStores,
+      recommendedPopupStores: initialData.data.recommendedPopupStores ?? [],
+      popularTop5PopupStores: initialData.data.popularTop5PopupStores ?? [],
+      newlyOpenedPopupStores: initialData.data.newlyOpenedPopupStores ?? [],
+      closingSoonPopupStores: initialData.data.closingSoonPopupStores ?? [],
+      searchedPopupStores: initialData.data.filteredPopupStores ?? [],
+      interestedPopupStores: initialData.data.interestedPopupStores ?? [],
     });
     return true;
   },

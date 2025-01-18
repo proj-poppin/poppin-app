@@ -8,6 +8,7 @@ import {PopupSortOrder} from '../../Object/Type/popupSortOrder.type';
 import {usePopupScreenStore} from '../../Screen/Popup/Landing/Popup.landing.zustand';
 import {OperationStatus} from '../../Object/Type/operationStatus.type';
 import {logger} from 'react-native-logs';
+import {useUserStore} from '../User/user.zustand';
 export type HomeLandingSectionType =
   | 'NEWLY_OPENED'
   | 'CLOSING_SOON'
@@ -218,14 +219,14 @@ export const useAppStore = create<AppStoreProps>((set, get) => ({
   },
 
   checkLoginAndShowModal: (type: RequireLoginModalType) => {
-    // if (!useUserStore.getState().isLoggedIn()) {
-    //   set({
-    //     appModalVisible: true,
-    //     appModalType: 'REQUIRE_LOGIN',
-    //     appModalProps: {requireLogin: {type}},
-    //   });
-    //   return false;
-    // }
+    if (!useUserStore.getState().isLoggedIn()) {
+      set({
+        appModalVisible: true,
+        appModalType: 'REQUIRE_LOGIN',
+        appModalProps: {requireLogin: {type}},
+      });
+      return false;
+    }
     return true;
   },
 

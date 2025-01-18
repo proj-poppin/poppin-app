@@ -1,5 +1,5 @@
 // src/Screen/Review/ReviewListContainer.tsx
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components/native';
 import {ScrollViewPage} from 'src/Component/Page';
 import {moderateScale} from 'src/Util';
@@ -9,7 +9,6 @@ import {ScreenHeader} from 'src/Component/View';
 import LinearGradient from 'react-native-linear-gradient';
 import CheckIcon from 'src/Resource/svg/check_circle.svg';
 import {BeforeReviewPopupCard} from 'src/Component/MyPage/Review/Mypage.before.review.popupCard';
-import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
 import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
 import {useReviewListContext} from './Mypage.review.list.context';
 
@@ -21,8 +20,6 @@ export const ReviewListContainer: React.FC<ReviewListContainerProps> = ({
   navigation,
 }) => {
   const {visitedPopups, isLoading, error} = useReviewListContext();
-  const {} = usePopupStore();
-
   return (
     <ScrollViewPage
       UpperPart={

@@ -66,17 +66,14 @@ const AgeChooseBottomSheet: React.FC<AgeGroupModalProps> = ({
 };
 
 const ModalContainer = styled.View`
-  flex: 1;
   justify-content: flex-end;
 `;
 
 const ModalOverlay = styled.View`
-  flex: 1;
   justify-content: flex-end;
 `;
 
 const BackgroundDim = styled.View`
-  flex: 1;
   background-color: rgba(0, 0, 0, 0.5);
 `;
 

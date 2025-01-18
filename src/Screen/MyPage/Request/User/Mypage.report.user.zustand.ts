@@ -3,6 +3,7 @@ import create from 'zustand';
 import {Asset} from 'react-native-image-picker';
 import {Alert} from 'react-native';
 import {axiosMyPageUserReport} from 'src/Axios/Mypage/mypage.post.axios';
+import {getGalleryImages} from 'src/Util';
 
 export interface UserReportStore {
   // State
@@ -27,6 +28,7 @@ export interface UserReportStore {
   userRequestInput: UserRequestInput;
   setUserRequestInput: (input: UserRequestInput) => void;
   images: Asset[];
+  handleAddImages: () => void;
   addImages: (images: Asset[] | undefined) => void;
   removeImage: (index: number) => void;
   setContactLink: (link: string) => void;
@@ -63,6 +65,22 @@ export const useUserReportStore = create<UserReportStore>((set, get) => ({
   // Actions
   setModalVisible: visible => set({modalVisible: visible}),
   setPopupName: name => set({storeName: name}),
+  handleAddImages: async () => {
+    const selectedImages = await getGalleryImages({
+      sectionLimit: 5,
+      requestRationale: {
+        title: '카메라 권한 필요',
+        message: '제보하기를 위해 카메라 권한이 필요합니다.',
+        buttonPositive: '확인',
+      },
+    });
+
+    if (selectedImages) {
+      set(state => ({
+        images: [...state.images, ...selectedImages],
+      }));
+    }
+  },
 
   requestOperatorReport: () => {},
 

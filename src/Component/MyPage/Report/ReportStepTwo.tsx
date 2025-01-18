@@ -2,12 +2,7 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {Alert, ScrollView} from 'react-native';
-import {
-  HHMMFormatTime,
-  moderateScale,
-  useImagePicker,
-  YYYYHHMMFormatDate,
-} from '../../../Util';
+import {HHMMFormatTime, moderateScale, YYYYHHMMFormatDate} from '../../../Util';
 import CustomBottomSheet from '../../BottomSheet/CustomBottomSheet';
 import CalendarPicker from '../../CalendarPicker';
 import TimePicker from '../../TimePicker';
@@ -23,6 +18,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
     modalVisible,
     postcodeVisible,
     storeName,
+    images,
 
     filteringThreeCategories,
     filteringFourteenCategories,
@@ -39,7 +35,8 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
     setModalVisible,
     setPostcodeVisible,
     setStoreName,
-
+    handleAddImages,
+    handleDeleteImage,
     setFilteringThreeCategories,
     setFilteringFourteenCategories,
     setStoreAddress,
@@ -53,22 +50,12 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
     addImages,
   } = useOperatorReportStore();
 
-  const {
-    images,
-    handleAddImages: openGallery,
-    handleDeleteImage,
-  } = useImagePicker({
-    maxImages: 5,
-    maxWidth: 512,
-    maxHeight: 512,
-  });
-
   const validateStep = () => {
     if (!storeName.trim()) {
       Alert.alert('알림', '팝업 이름을 입력해주세요.');
       return false;
     }
-    if (!filteringFourteenCategories || filteringThreeCategories.length === 0) {
+    if (!filteringFourteenCategories) {
       Alert.alert('알림', '카테고리를 선택해주세요.');
       return false;
     }
@@ -327,7 +314,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
               </ImageContainer>
             ))}
             {(!images || images.length < 5) && (
-              <ImageUploadButton onPress={openGallery}>
+              <ImageUploadButton onPress={handleAddImages}>
                 <PlusIcon>+</PlusIcon>
                 <UploadText>
                   사진 추가하기{'\n'}
@@ -354,8 +341,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
         <CustomBottomSheet
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}
-          title={'제보하려는 팝업의 카테고리를 설정해주세요'}
-          height={'65%'}>
+          title={'제보하려는 팝업의 카테고리를 설정해주세요'}>
           <PopupCategoryModal
             visible={modalVisible}
             onClose={() => setModalVisible(false)}
@@ -366,14 +352,12 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
             buttonName={'카테고리 설정'}
             validationMode={'both'}
             isPopupRequestModal={true}
-            initialSelectedCategories={filteringFourteenCategories} // 초기값 전달
           />
         </CustomBottomSheet>
 
         <CustomBottomSheet
           isVisible={showCalendar}
           onClose={() => setShowCalendar(false)}
-          height={'70%'}
           title={'날짜 설정'}>
           <CalendarPicker
             openDate={openDate}
@@ -387,7 +371,6 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
         <CustomBottomSheet
           isVisible={showTimePicker}
           onClose={() => setShowTimePicker(false)}
-          height={'40%'}
           title={'시간 설정'}>
           <TimePicker
             initialStartTime={new Date()}
@@ -408,7 +391,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
           <SubmitButton onPress={onBackPress}>
             <SubmitButtonText>돌아가기</SubmitButtonText>
           </SubmitButton>
-          <SubmitButton onPress={secondReportHandler}>
+          <SubmitButton onPress={secondReportHandler} disabled={!isFormValid}>
             <SubmitButtonText>다음</SubmitButtonText>
           </SubmitButton>
         </RowButtonContainer>

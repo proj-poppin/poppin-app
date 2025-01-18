@@ -2,11 +2,7 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {Alert, ScrollView} from 'react-native';
-import {
-  HHMMFormatTime,
-  moderateScale,
-  YYYYHHMMFormatDate,
-} from '../../../Util';
+import {HHMMFormatTime, moderateScale, YYYYHHMMFormatDate} from '../../../Util';
 import CustomBottomSheet from '../../BottomSheet/CustomBottomSheet';
 import CalendarPicker from '../../CalendarPicker';
 import TimePicker from '../../TimePicker';
@@ -59,7 +55,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
       Alert.alert('알림', '팝업 이름을 입력해주세요.');
       return false;
     }
-    if (!filteringFourteenCategories || filteringThreeCategories.length === 0) {
+    if (!filteringFourteenCategories) {
       Alert.alert('알림', '카테고리를 선택해주세요.');
       return false;
     }
@@ -345,8 +341,7 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
         <CustomBottomSheet
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}
-          title={'제보하려는 팝업의 카테고리를 설정해주세요'}
-          >
+          title={'제보하려는 팝업의 카테고리를 설정해주세요'}>
           <PopupCategoryModal
             visible={modalVisible}
             onClose={() => setModalVisible(false)}

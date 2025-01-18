@@ -306,8 +306,6 @@ export const axiosAutoLogin = async (
     const {accessToken, refreshToken} = response.data.data.jwtToken;
     await EncryptedStorage.setItem('accessToken', accessToken);
     await EncryptedStorage.setItem('refreshToken', refreshToken);
-    console.log('present fcmToken: ', fcmToken);
-    logger.createLogger().info('loginData!: ', response.data);
 
     return response.data;
   } catch (error) {

@@ -211,6 +211,7 @@ export function AppStackNavigator() {
       }}
       linking={kakaoLinkingOption}>
       <AppStackScreen />
+      <AppModal />
       <Toast config={toastConfig} />
     </NavigationContainer>
   );

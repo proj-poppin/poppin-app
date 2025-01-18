@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {FlatList} from 'react-native';
 import {AppStackProps} from '../../../Navigator/App.stack.navigator';
@@ -24,7 +25,7 @@ export const MypagePreferenceSettingScreen = ({
   const goBack = () => navigation.goBack();
 
   const {
-    selectedTags,
+    draftSelectedTags,
     toggleTag,
     resetTags,
     isAllCategoriesSelected,
@@ -37,7 +38,14 @@ export const MypagePreferenceSettingScreen = ({
   // 버튼 활성화 여부 업데이트
   useEffect(() => {
     setIsButtonDisabled(!isAllCategoriesSelected());
-  }, [selectedTags, isAllCategoriesSelected]);
+  }, [draftSelectedTags, isAllCategoriesSelected]);
+
+  // 화면 진입/이탈 시 초기화
+  useFocusEffect(
+    React.useCallback(() => {
+      resetTags(); // draft 상태를 저장된 상태로 초기화
+    }, [resetTags]),
+  );
 
   const handleSubmit = async () => {
     const success = await savePreferences();
@@ -78,7 +86,7 @@ export const MypagePreferenceSettingScreen = ({
           <CategorySelectButton
             key={key}
             preferenceKey={key}
-            isSelected={selectedTags[key]}
+            isSelected={draftSelectedTags[key]}
             onPress={() => toggleTag(key)}
           />
         ))}

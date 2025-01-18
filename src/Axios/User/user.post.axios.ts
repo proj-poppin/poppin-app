@@ -2,7 +2,6 @@ import customAxios, {POPUP_TASTE, USERS} from '../axios.core';
 import {PreferenceSchema} from '../../Schema/Preference/preference.schema';
 import {handleAxiosError} from 'src/Util';
 import {PopupSchema} from '../../Schema/Popup/popup.schema';
-import {usePopupStore} from '../../Zustand/Popup/popup.zustand';
 
 /**
  * 유저의 팝업 취향 정보를 설정합니다.
@@ -15,7 +14,10 @@ export interface SettingPreferenceResponseData {
 
 export const axiosSettingPreference = async (param: {
   data: PreferenceSchema;
-}) => {
+}): Promise<{
+  userPreferenceSetting: PreferenceSchema;
+  updatedRecommendedPopupStores: PopupSchema[];
+} | null> => {
   const requestBody = {
     preference: {
       market: param.data.preferencePopupStore.market,
@@ -51,30 +53,26 @@ export const axiosSettingPreference = async (param: {
     // Axios 요청
     const response = await customAxios.request<{
       userPreferenceSetting: PreferenceSchema;
-      updatedRecommendedPopupStores: PopupSchema[];
+      updatedRecommendedPopupStores: {[key: string]: PopupSchema}; // 객체 형태로 응답
     }>({
       method: 'PUT',
       url: `v1/${USERS}/${POPUP_TASTE}`,
       data: requestBody,
     });
 
-    // 응답 데이터 구조 확인
-    const {userPreferenceSetting, updatedRecommendedPopupStores} =
-      response.data;
+    // console.log('axios에서는 ', response.data);
 
-    // // Zustand 상태 업데이트
-    // usePopupStore
-    //   .getState()
-    //   .setRecommendedPopupStores(updatedRecommendedPopupStores);
+    const userPreferenceSetting = response.data.userPreferenceSetting;
 
-    // // 콘솔 로깅 (디버깅 용도)
-    // console.log('Updated User Preference:', userPreferenceSetting);
-    // console.log(
-    //   'Updated Recommended Popup Stores:',
-    //   updatedRecommendedPopupStores,
-    // );
+    // 객체 형태의 recommendedPopupStores를 배열로 변환
+    const updatedRecommendedPopupStores = Object.values(
+      response.data.updatedRecommendedPopupStores ?? {},
+    );
 
-    return response.data;
+    return {
+      userPreferenceSetting,
+      updatedRecommendedPopupStores,
+    };
   } catch (error) {
     // 오류 처리
     handleAxiosError({

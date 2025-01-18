@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {ScrollViewPage} from 'src/Component/Page';
 import {moderateScale} from 'src/Util';
@@ -35,6 +35,23 @@ export const NormalReviewWriteScreen: React.FC = () => {
   } = useReviewWriteContext();
   const shouldShowSearchBar =
     !selectedPopup || (showResults && searchKeyword.length > 0);
+
+  // 제출 버튼 활성화 상태
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  // 모든 카테고리가 선택되었는지 확인하는 함수
+  const areAllCategoriesSelected = () => {
+    return categoryGroups.every(group =>
+      group.categories.some(category => category.selected),
+    );
+  };
+
+  // 버튼 활성화 상태 업데이트
+  useEffect(() => {
+    const isFormValid =
+      selectedPopup && reviewText.trim().length >= 10 && areAllCategoriesSelected();
+    setIsButtonDisabled(!isFormValid);
+  }, [selectedPopup, reviewText, categoryGroups]);
 
   return (
     <>
@@ -121,6 +138,7 @@ export const NormalReviewWriteScreen: React.FC = () => {
                 <CommonCompleteButton
                   title={'일반 후기 제출하기'}
                   onPress={submitReview}
+                  isDisabled={isButtonDisabled} // 버튼 활성화 상태
                 />
               </>
             }

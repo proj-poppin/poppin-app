@@ -3,6 +3,7 @@ import {ScrollView, Pressable, View, FlatList} from 'react-native';
 import styled from 'styled-components/native';
 import {SectionContainer} from '../../../../Unit/View';
 import {usePopupDetailContext} from '../Provider/Popup.detail.provider';
+import {usePopupDetailReviewContext} from '../Provider/Popup.detail.review.provider';
 import {BodyLargeText} from '../../../../StyledComponents/Text/bodyLarge.component';
 import {themeColors} from '../../../../Theme/theme';
 import {deviceWidth, moderateScale} from '../../../../Util';
@@ -41,12 +42,21 @@ const ItemSeparatorComponent = () => {
 export const PopupDetailReviewSection = () => {
   const user = useUserStore(state => state.user);
   const {popupDetail} = usePopupDetailContext();
+  const {recommendReview} = usePopupDetailReviewContext();
   const {review} = popupDetail;
   const reviews = review || [];
 
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
 
   const [expandedReviews, setExpandedReviews] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  // 인증된 사용자 후기만 보기 상태
+  const [isOnlyVerifiedReview, setIsOnlyVerifiedReview] = useState(false);
+
+  // 리뷰 추천 상태
+  const [recommendedReviews, setRecommendedReviews] = useState<{
     [key: string]: boolean;
   }>({});
 
@@ -67,6 +77,37 @@ export const PopupDetailReviewSection = () => {
   const getDisplayedText = (text: string, isExpanded: boolean) =>
     isExpanded ? text : `${text.substring(0, 80)}...`;
 
+  const handleIsOnlyVerifiedReview = () => {
+    setIsOnlyVerifiedReview(prev => !prev); // 인증된 리뷰만 보기 토글
+  };
+
+  // 인증된 사용자 후기만 보기 상태에 따라 리뷰 필터링
+  const filteredReviews = isOnlyVerifiedReview
+    ? reviews.filter(review => review.isCertificated)
+    : reviews;
+
+  // 리뷰 추천 핸들링
+  const handleRecommendReview = async (popupId: number, reviewId: number) => {
+    try {
+      // 이미 추천된 리뷰는 요청하지 않음
+      if (recommendedReviews[reviewId]) {
+        return;
+      }
+
+      const response = await recommendReview(popupId, reviewId);
+
+      // 추천 성공 시에만 UI 상태 업데이트
+      if (response?.success) {
+        setRecommendedReviews(prev => ({
+          ...prev,
+          [reviewId]: true,
+        }));
+      }
+    } catch (error) {
+      console.error('추천 처리 중 오류:', error);
+    }
+  };
+
   return (
     <SectionContainer>
       <SectionRow>
@@ -86,9 +127,9 @@ export const PopupDetailReviewSection = () => {
 
       <SectionRow style={{marginTop: moderateScale(10)}}>
         <PurpleCheckSelectionRow
-          isSelected={false}
+          isSelected={isOnlyVerifiedReview}
           label="인증된 방문자 후기만 보기"
-          onClicked={() => {}}
+          onClicked={handleIsOnlyVerifiedReview}
         />
         <BlankDropdown
           buttonStyle={{width: moderateScale(120)}}
@@ -97,8 +138,8 @@ export const PopupDetailReviewSection = () => {
         />
       </SectionRow>
 
-      {reviews.length > 0 ? (
-        reviews.map(review => {
+      {filteredReviews.length > 0 ? (
+        filteredReviews.map(review => {
           const isExpanded = expandedReviews[review.reviewId] || false; // Fixed variable name
           const shouldShowMoreButton = review.text.length > 20;
 
@@ -141,19 +182,27 @@ export const PopupDetailReviewSection = () => {
                 />
               )}
 
-              <Pressable onPress={() => console.log('추천하기')}>
-                <RecommendContainer>
-                  <SvgWithNameBoxLabel
-                    textStyle={[{fontSize: moderateScale(13)}]}
-                    borderRadius={15}
-                    width={55}
-                    height={30}
-                    Icon={LikeReviewSvg}
-                    iconStyle={{transform: [{scale: 0.9}]}}
-                    label={`${review.recommendCnt}`}
-                  />
-                </RecommendContainer>
-              </Pressable>
+              <RecommendContainer>
+                <SvgWithNameBoxLabel
+                  onPress={() =>
+                    handleRecommendReview(
+                      Number(popupDetail.id),
+                      review.reviewId,
+                    )
+                  }
+                  isCompleted={!!recommendedReviews[review.reviewId]}
+                  textStyle={[{fontSize: moderateScale(13)}]}
+                  borderRadius={15}
+                  width={55}
+                  height={30}
+                  Icon={LikeReviewSvg}
+                  iconStyle={{transform: [{scale: 0.9}]}}
+                  label={`${
+                    review.recommendCnt +
+                    (recommendedReviews[review.reviewId] ? 1 : 0)
+                  }`}
+                />
+              </RecommendContainer>
             </ReviewContainer>
           );
         })

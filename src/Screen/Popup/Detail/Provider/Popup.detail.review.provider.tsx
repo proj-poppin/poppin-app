@@ -9,6 +9,7 @@ import {
   PopupReviewReportOptions,
 } from '../../../../Constant/popup.constant';
 import {axiosReportPopupReview} from '../../../../Axios/Report/report.post.axios';
+import {axiosAddRecommendReview} from '../../../..//Axios/Review/review.post.axios';
 
 type PopupDetailReviewContextProp = {
   reviewLoading: boolean;
@@ -39,6 +40,12 @@ type PopupDetailReviewContextProp = {
   reporting: boolean;
   reportVoteComment: () => Promise<void>;
   clearCommentReportStates: () => void;
+
+  // 추천한 리뷰
+  recommendReview: (
+    popupId: number,
+    reviewId: number,
+  ) => Promise<{success: boolean}>; 
 };
 
 export const PopupDetailReviewContext =
@@ -68,6 +75,8 @@ export const PopupDetailReviewContext =
     reporting: false,
     reportVoteComment: async () => {},
     clearCommentReportStates: () => {},
+
+    recommendReview: async () => ({success: false}),
   });
 
 export const usePopupDetailReviewContext = () =>
@@ -162,6 +171,38 @@ export const PopupDetailReviewProvider = ({children}: {children: any}) => {
     setReporting(false);
   };
 
+  const recommendReview = async (popupId: number, reviewId: number) => {
+    try {
+      const response = await axiosAddRecommendReview(popupId, reviewId);
+
+      if (response?.success) {
+        // 추천 성공 시에만 리뷰 상태 업데이트
+        setPopupDetailReviews(reviews =>
+          reviews.map(review =>
+            review.reviewId === reviewId
+              ? {
+                  ...review,
+                  recommendCnt: review.recommendCnt + 1,
+                }
+              : review,
+          ),
+        );
+
+        showBlackToast({text1: '추천을 완료하였습니다!'});
+        return {success: true};
+      } else {
+        showBlackToast({
+          text1:
+            response?.error?.message || '추천 처리 중 문제가 발생했습니다.',
+        });
+        return {success: false};
+      }
+    } catch (error) {
+      showBlackToast({text1: '추천 처리 중 오류가 발생했습니다.'});
+      return {success: false};
+    }
+  };
+
   const popupDetailReviewContext = {
     reviewLoading,
     popupDetailReviews,
@@ -182,6 +223,7 @@ export const PopupDetailReviewProvider = ({children}: {children: any}) => {
     reporting,
     reportVoteComment: reportPopupReview,
     clearCommentReportStates: clearReviewReportStates,
+    recommendReview,
   };
 
   return (

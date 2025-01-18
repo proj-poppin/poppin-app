@@ -38,6 +38,7 @@ import {PreferenceCategory} from 'src/Schema/Preference/preferenceCategory.schem
 import {categoryKeys, popupStoreKeys} from 'src/Object/preference.enum';
 import {PreferencePopupStore} from 'src/Schema/Preference/preferencePopupStore';
 import {BlankPreference} from '../../../Schema/Preference/preference.schema';
+import NotList from 'src/Component/findPopup/NotList';
 
 interface SearchBarProps {
   isSearchMode: boolean;
@@ -257,6 +258,15 @@ const PopupListScreen: React.FC<PopupListScreenProps> = ({operationStatus}) => {
       loadMorePopupStores(operationStatus);
     }
   };
+
+  // 검색 결과가 없을 때 NotList를 렌더링
+  if (!isLoading && searchedPopupStores.length === 0) {
+    return (
+      <SectionContainer fullPage style={{flex: 1}}>
+        <NotList />
+      </SectionContainer>
+    );
+  }
 
   return (
     <SectionContainer fullPage style={{flex: 1}}>

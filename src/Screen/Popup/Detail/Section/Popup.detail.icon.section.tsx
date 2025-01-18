@@ -50,6 +50,10 @@ const PopupDetailIconSection = () => {
   };
 
   const handleOpenLink = (link: string) => {
+    if (!link) {
+      console.warn('유효하지 않은 링크입니다.');
+      return;
+    }
     Linking.openURL(link).catch(e => console.log(e));
   };
 
@@ -60,25 +64,32 @@ const PopupDetailIconSection = () => {
   return (
     <IconSectionContainer>
       <LeftRightContainer>
-        <Pressable onPress={() => handleOpenLink(popupDetail.homepageLink)}>
-          {popupDetail.isInstagram ? (
-            <SvgWithNameBoxLabel
-              width={moderateScale(150)}
-              height={moderateScale(35)}
-              Icon={InstagramTestSvg}
-              label="공식 인스타그램"
-              isBold={false}
-            />
-          ) : (
-            <SvgWithNameBoxLabel
-              width={moderateScale(150)}
-              height={moderateScale(35)}
-              Icon={LinkCopySvg}
-              label="공식 페이지"
-              isBold={false}
-            />
-          )}
-        </Pressable>
+        {/* 
+          클릭 이벤트는 SvgWithNameBoxLabel 내부 PressableContainer에서 처리됩니다.
+          따라서 상위 Pressable을 삭제한 뒤 SvgWithNameBoxLabel에 직접 onPress를 전달하도록 수정하였습니다.
+          @author 희진 
+        */}
+        {/* <Pressable onPress={() => handleOpenLink(popupDetail.homepageLink)}> */}
+        {popupDetail.isInstagram ? (
+          <SvgWithNameBoxLabel
+            width={moderateScale(150)}
+            height={moderateScale(35)}
+            Icon={InstagramTestSvg}
+            label="공식 인스타그램"
+            isBold={false}
+            onPress={() => handleOpenLink(popupDetail.homepageLink)}
+          />
+        ) : (
+          <SvgWithNameBoxLabel
+            width={moderateScale(150)}
+            height={moderateScale(35)}
+            Icon={LinkCopySvg}
+            label="공식 페이지"
+            isBold={false}
+            onPress={() => handleOpenLink(popupDetail.homepageLink)}
+          />
+        )}
+        {/* </Pressable> */}
         <RightIconsContainer>
           <FavoriteButton>
             <Pressable

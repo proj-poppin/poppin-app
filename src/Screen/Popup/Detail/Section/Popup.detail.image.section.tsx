@@ -1,6 +1,7 @@
 import React, {useRef} from 'react';
 import {Dimensions, FlatList, Animated, View} from 'react-native';
-import {ExpandingDot} from 'react-native-animated-pagination-dots'; // Importing pagination dots
+import {ExpandingDot} from 'react-native-animated-pagination-dots';
+import styled from 'styled-components/native';
 import {moderateScale} from 'src/Util';
 import {FastImageContainer} from '../../../../Component/Image/FastImage.component';
 import {usePopupDetailContext} from '../Provider/Popup.detail.provider';
@@ -9,29 +10,37 @@ import {themeColors} from '../../../../Theme/theme';
 const screenWidth = Dimensions.get('window').width;
 
 export const PopupDetailImageSection = () => {
-  const {popupDetail} = usePopupDetailContext(); // Context에서 popupDetail 접근
-  const scrollX = useRef(new Animated.Value(0)).current; // Animated value for scroll position
+  const {popupDetail} = usePopupDetailContext();
+  const scrollX = useRef(new Animated.Value(0)).current;
 
   if (!popupDetail.imageUrls || popupDetail.imageUrls.length === 0) {
-    return null; // 이미지가 없는 경우 렌더링하지 않음
+    return null;
   }
 
   const images = [popupDetail.imageUrls[0], ...popupDetail.imageUrls.slice(1)];
 
   const renderImage = ({item}: {item: string}) => (
-    <FastImageContainer
-      source={{uri: item}}
-      style={{
-        width: screenWidth,
-        height: moderateScale(400),
-      }}
-    />
+    <ImageWrapper>
+      <FastImageContainer
+        source={{uri: item}}
+        style={{
+          width: screenWidth,
+          height: moderateScale(400),
+        }}
+      />
+      {/* 팝업 종료 상태일 때 덮는 Wrapper */}
+      {popupDetail.operationStatus === 'TERMINATED' && (
+        <ClosedWrapper>
+          <ClosedText>팝업 종료</ClosedText>
+        </ClosedWrapper>
+      )}
+    </ImageWrapper>
   );
 
   return (
     <View>
       <FlatList
-        data={images} // Context에서 가져온 imageUrls 사용
+        data={images}
         renderItem={renderImage}
         keyExtractor={(item, index) => index.toString()}
         horizontal
@@ -41,10 +50,10 @@ export const PopupDetailImageSection = () => {
           [{nativeEvent: {contentOffset: {x: scrollX}}}],
           {useNativeDriver: false},
         )}
-        scrollEventThrottle={16} // Smooth scrolling event
+        scrollEventThrottle={16}
       />
 
-      {/* Pagination dots placed below the FlatList */}
+      {/* Pagination dots */}
       <ExpandingDot
         data={images}
         scrollX={scrollX}
@@ -59,10 +68,33 @@ export const PopupDetailImageSection = () => {
         }}
         containerStyle={{
           position: 'absolute',
-          bottom: 10, // Adjust as needed to place it below the image
+          bottom: 10,
           alignSelf: 'center',
         }}
       />
     </View>
   );
 };
+
+// Styled components
+const ImageWrapper = styled.View`
+  position: relative;
+`;
+
+const ClosedWrapper = styled.View`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ClosedText = styled.Text`
+  color: white;
+  font-size: ${moderateScale(24)}px;
+  font-weight: bold;
+`;

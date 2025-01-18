@@ -25,33 +25,43 @@ export function GoogleLoginButton({
     try {
       // Google Sign-In
       const googleResponse = await GoogleSignin.signIn();
+
       if (!googleResponse) {
         return showBlackToast({
           text1: '구글 로그인에 실패했습니다. 다시 시도해주세요.',
         });
       }
 
-      // Get user profile and tokens
-      const profile = await GoogleSignin.getCurrentUser();
-      if (!profile || !profile.user || !googleResponse.data?.idToken) {
+      // Extract user profile
+      const profile = googleResponse.data?.user;
+
+      if (!profile || !profile.email) {
         return showBlackToast({
           text1: '구글 계정 정보를 가져올 수 없습니다. 다시 시도해주세요.',
         });
       }
 
+      // Fetch accessToken and idToken
+      const tokens = await GoogleSignin.getTokens();
+      if (!tokens.accessToken) {
+        return showBlackToast({
+          text1: '구글 액세스 토큰을 가져올 수 없습니다.',
+        });
+      }
+
       // Fetch account status
       const googleAccountStatus = await axiosGetSocialAccountStatus({
-        email: profile.user.email,
+        email: profile.email,
       });
 
-      if (googleAccountStatus === null) {
+      if (!googleAccountStatus) {
         return showBlackToast({text1: '구글 계정 조회에 실패했습니다.'});
       }
 
       // Handle different account statuses
       if (googleAccountStatus.accountStatus === 'LOGIN') {
         const loginResult = await useUserStore.getState().googleLogin({
-          token: googleResponse.data.idToken,
+          token: tokens.accessToken, // accessToken 전달
         });
         if (loginResult.success) {
           showBlackToast({text1: '구글 간편 로그인이 완료되었습니다.'});
@@ -62,7 +72,7 @@ export function GoogleLoginButton({
           });
         }
       } else if (googleAccountStatus.accountStatus === 'SIGNUP') {
-        onSignupRequired({email: profile.user.email});
+        onSignupRequired({email: profile.email});
       } else if (googleAccountStatus.accountStatus === 'UNAVAILABLE') {
         return showBlackToast({text1: googleAccountStatus.errorMessage});
       }
@@ -74,7 +84,6 @@ export function GoogleLoginButton({
       });
     }
   }
-
   /** Attempt to Login */
   async function tryGoogleLogin() {
     setLoggingIn(true);

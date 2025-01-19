@@ -81,7 +81,7 @@ export const HomeLandingScreen = ({
           <TitleText style={{marginLeft: 12}}>
             어서오세요, {user.nickname}님{'\n'}취향저격 팝업 알려드릴게요
           </TitleText>
-          {isPreferenceSettingCreated ? (
+          {isPreferenceSettingCreated && recommendedPopupStores.length > 0 ? (
             // HomeLandingRecommendedPopupSection 표시
             <HomeLandingPopupSection
               popups={recommendedPopupStores}
@@ -93,9 +93,7 @@ export const HomeLandingScreen = ({
           )}
         </>
       ) : (
-        <ActionPromptBox
-          boxType="LOGIN"
-        />
+        <ActionPromptBox boxType="LOGIN" />
       )}
       <DividerLine style={{marginTop: moderateScale(10)}} />
       <HomeLandingPopularTop5PopupSection popups={popularTop5PopupStores} />

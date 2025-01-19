@@ -186,14 +186,17 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
     popularTop5PopupStores: PopupSchema[];
     newlyOpenedPopupStores: PopupSchema[];
     closingSoonPopupStores: PopupSchema[];
-    recommendedPopupStores: PopupSchema[];
+
+    /* 추천 팝업 데이터가 존재하지 않는 경우에는 취향 설정하러 가기 박스가 나타나야 하므로
+      데이터를 패치하지 않습니다. */
+    // recommendedPopupStores: PopupSchema[];
     interestedPopupStores: PopupSchema[];
   }) => {
     set({
       popularTop5PopupStores: param.popularTop5PopupStores,
       newlyOpenedPopupStores: param.newlyOpenedPopupStores,
       closingSoonPopupStores: param.closingSoonPopupStores,
-      recommendedPopupStores: param.recommendedPopupStores,
+      // recommendedPopupStores: param.recommendedPopupStores,
       interestedPopupStores: param.interestedPopupStores,
     });
   },
@@ -211,7 +214,15 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
   },
 
   setRecommendedPopupStores: (recommendedPopupStores: PopupSchema[]) => {
-    set({recommendedPopupStores});
+    set(state => {
+      if (
+        JSON.stringify(state.recommendedPopupStores) ===
+        JSON.stringify(recommendedPopupStores)
+      ) {
+        return state; 
+      }
+      return {recommendedPopupStores};
+    });
   },
 
   isVisitedPopup: (popupId: string) => {

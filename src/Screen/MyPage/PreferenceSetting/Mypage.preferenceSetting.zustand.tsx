@@ -59,15 +59,15 @@ export const useMypagePreferenceSettingScreenStore =
 
       // 모든 카테고리가 선택되었는지 확인
       isAllCategoriesSelected: () => {
-        const {selectedTags} = get();
+        const {draftSelectedTags} = get();
         const isPopupCategorySelected = preferenceKeysForPopupCategory.some(
-          key => selectedTags[key],
+          key => draftSelectedTags[key],
         );
         const isPopupInterestSelected = preferenceKeysForPopupInterest.some(
-          key => selectedTags[key],
+          key => draftSelectedTags[key],
         );
         const isPopupMateSelected = preferenceKeysForPopupMate.some(
-          key => selectedTags[key],
+          key => draftSelectedTags[key],
         );
 
         return (

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {FlatList} from 'react-native';
+import {Alert, FlatList} from 'react-native';
 import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 import {ScreenHeader} from '../../../Component/View';
 import styled from 'styled-components/native';
@@ -16,12 +16,17 @@ import {
   preferenceKeysForPopupInterest,
   preferenceKeysForPopupMate,
 } from 'src/Object/preference.enum';
+import {HomeLandingScreenProps} from 'src/Screen/Home/Landing/Home.landing.screen';
+
+export type MypagePreferenceSettingScreenProps = {
+  HomeLandingScreen: HomeLandingScreenProps;
+};
 
 // MypagePreferenceSettingScreen
 export const MypagePreferenceSettingScreen = ({
   route,
   navigation,
-}: NativeStackScreenProps<AppStackProps, 'MypagePreferenceSettingScreen'>) => {
+}: NativeStackScreenProps<MypagePreferenceSettingScreenProps>) => {
   const goBack = () => navigation.goBack();
 
   const {
@@ -50,8 +55,17 @@ export const MypagePreferenceSettingScreen = ({
   const handleSubmit = async () => {
     const success = await savePreferences();
     if (success) {
-      alert('설정이 성공적으로 저장되었습니다!');
-      goBack(); // 이전 화면으로 이동
+      Alert.alert(
+        '알림',
+        '설정이 성공적으로 저장되었습니다!',
+        [
+          {
+            text: '확인',
+            onPress: () => navigation.navigate('HomeLandingScreen', {}),
+          },
+        ],
+        {cancelable: false},
+      );
     } else {
       goBack(); // 이전 화면으로 이동
       // alert('설정 저장에 실패했습니다. 다시 시도해주세요.');

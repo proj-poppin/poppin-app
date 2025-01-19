@@ -1,5 +1,5 @@
 import React from 'react';
-import {ActivityIndicator, StyleProp, ViewStyle} from 'react-native';
+import {StyleProp, ViewStyle} from 'react-native';
 import {showBlackToast} from 'src/Util';
 import {moderateScale} from 'src/Util';
 import {FastImageContainer} from '../Image/FastImage.component';
@@ -9,7 +9,6 @@ import styled from 'styled-components/native';
 import {login, me, KakaoUser, KakaoLoginToken} from '@react-native-kakao/user';
 
 export function KakaoLoginButton({
-  loggingIn,
   setLoggingIn,
   onLoginSucceed,
   onSignupRequired,
@@ -23,9 +22,9 @@ export function KakaoLoginButton({
   /** Handle Kakao Login */
   async function handleKakaoLogin() {
     let profile: KakaoUser | undefined;
-    let kakaoResponse: KakaoLoginToken | undefined;
+    let kakaoLoginResult: KakaoLoginToken | undefined;
     try {
-      kakaoResponse = await login();
+      kakaoLoginResult = await login();
       profile = await me();
     } catch (error) {
       console.log('Kakao Login Error!:', error);
@@ -50,10 +49,9 @@ export function KakaoLoginButton({
     if (kakaoAccountStatus === null) {
       return showBlackToast({text1: '카카오톡 계정 조회에 실패했습니다.'});
     } else if (kakaoAccountStatus.accountStatus === 'LOGIN') {
-      console.log(`kakaoaccessToken: ${kakaoResponse.accessToken}`);
       //* 1) 카카오톡 간편 로그인을 진행했던 경우
       const loginResult = await useUserStore.getState().kakaoLogin({
-        token: kakaoResponse.accessToken,
+        token: kakaoLoginResult.accessToken,
       });
       if (loginResult.success) {
         showBlackToast({text1: '카카오 간편 로그인 되었습니다.'});

@@ -24,7 +24,12 @@ export const MyPageLandingMenuSection = () => {
   const isLoggedIn = useUserStore(state => state.isLoggedIn, shallow);
 
   const menuItems: MenuItem[] = [
-    {title: '키워드 알림 설정', onPress: () => {}},
+    {
+      title: '키워드 알림 설정',
+      onPress: () => {
+        navigation.navigate('MypageKeywordAlarmScreen', {});
+      },
+    },
     {title: '앱 버전', rightText: '1.16.0', onPress: () => {}},
     {
       title: '이용 약관 및 정책',

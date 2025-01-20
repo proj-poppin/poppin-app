@@ -67,7 +67,7 @@ export const useUserReportStore = create<UserReportStore>((set, get) => ({
   setPopupName: name => set({storeName: name}),
   handleAddImages: async () => {
     const selectedImages = await getGalleryImages({
-      sectionLimit: 5,
+      sectionLimit: 5 - get().images.length,
       requestRationale: {
         title: '카메라 권한 필요',
         message: '제보하기를 위해 카메라 권한이 필요합니다.',
@@ -171,6 +171,8 @@ export const useUserReportStore = create<UserReportStore>((set, get) => ({
       filteringThreeCategories: '',
       contactLink: '',
       images: [],
+      userRequestInput: initialUserReportInput,
+      requestLoading: false,
     }),
   validate: () => {
     const state = get();

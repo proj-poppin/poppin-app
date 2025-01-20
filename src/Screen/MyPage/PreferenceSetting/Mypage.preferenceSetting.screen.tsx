@@ -18,6 +18,7 @@ import {
 } from 'src/Object/preference.enum';
 
 // MypagePreferenceSettingScreen
+export interface MypagePreferenceSettingScreenProps {}
 export const MypagePreferenceSettingScreen = ({
   route,
   navigation,

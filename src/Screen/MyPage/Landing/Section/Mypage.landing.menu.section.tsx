@@ -25,7 +25,6 @@ export const MyPageLandingMenuSection = () => {
 
   const menuItems: MenuItem[] = [
     {title: '키워드 알림 설정', onPress: () => {}},
-    {title: '문의하기 / FAQ', onPress: () => {}},
     {title: '앱 버전', rightText: '1.16.0', onPress: () => {}},
     {
       title: '이용 약관 및 정책',

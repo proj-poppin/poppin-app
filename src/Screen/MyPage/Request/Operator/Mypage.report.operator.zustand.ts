@@ -150,7 +150,7 @@ export const useOperatorReportStore = create<OperatorReportStore>(
       set({filteringFourteenCategories: filteringFourteenCategories}),
     handleAddImages: async () => {
       const selectedImages = await getGalleryImages({
-        sectionLimit: 5,
+        sectionLimit: 5 - get().images.length,
         requestRationale: {
           title: '카메라 권한 필요',
           message: '제보하기를 위해 카메라 권한이 필요합니다.',

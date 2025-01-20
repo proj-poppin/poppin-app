@@ -2,8 +2,8 @@ import React from 'react';
 import {BlackBackgroundModal} from 'src/Component/Modal';
 import shallow from 'zustand/shallow';
 import {useAppStore} from '../Zustand/App/app.zustand';
-import {SuccessModal} from './Modal/App.popupReportSuccess.modal';
 import {RequireLoginModal} from './Modal/App.requiredLogin.modal';
+import {PopupReportCancelModal} from './Modal/App.popupReportCancel.modal';
 
 /**
  * 특정 페이지에 종속되지 않고 앱 전반에서 사용되는 앱 모달입니다.
@@ -31,6 +31,8 @@ export const AppModal = () => {
     switch (appModalType) {
       case 'REQUIRE_LOGIN':
         return <RequireLoginModal />;
+      case 'POPUP_REPORT_CANCEL':
+        return <PopupReportCancelModal />;
     }
     return null;
   };

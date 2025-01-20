@@ -18,6 +18,7 @@ import {
 } from 'src/Object/preference.enum';
 import {useAuthPreferenceSettingScreenStore} from './Auth.preference.zustand';
 
+export interface AuthPreferenceScreenProps {}
 export const AuthPreferenceScreen = ({
   route,
   navigation,

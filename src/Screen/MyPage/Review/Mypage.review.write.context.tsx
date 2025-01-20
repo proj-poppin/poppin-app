@@ -13,6 +13,8 @@ import {
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 import {useImagePicker} from '../../../Util';
 import {getGalleryImages} from '../../../Util';
+import {useUserStore} from 'src/Zustand/User/user.zustand';
+import shallow from 'zustand/shallow';
 
 export interface CategoryType {
   id: number;
@@ -39,6 +41,8 @@ type ReviewWriteContextProp = {
   searchedPopupStores: PopupSchema[];
   searchKeyword: string;
   setSearchKeyword: (text: string) => void;
+  isVisited: boolean;
+  setIsVisited: (visited: boolean) => void;
 
   // 리뷰 작성 상태
   categoryGroups: CategoryGroupType[];
@@ -78,6 +82,8 @@ const ReviewWriteContext = createContext<ReviewWriteContextProp>({
   showResults: false,
   setShowResults: () => {},
   selectedPopup: undefined,
+  isVisited: false,
+  setIsVisited: () => {},
   setSelectedPopup: () => {},
   handleCategorySelect: () => {},
   getSelectedCategories: () => ({
@@ -141,15 +147,26 @@ export const ReviewWriteProvider = ({
   const [selectedPopup, setSelectedPopup] = useState<PopupSchema>();
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [images, setImages] = useState<Asset[]>([]);
+  const [isVisited, setIsVisited] = useState<boolean>(false);
 
+  const {setUser, user} = useUserStore(
+    state => ({setUser: state.setUser, user: state.user}),
+    shallow,
+  );
+
+  setUser;
   // 이미지 피커 설정
   const handleAddImages = async () => {
-    try {
-      const images = await getGalleryImages();
-      if (!images || !Boolean(images.length)) return;
-    } catch (error) {
-      console.error('이미지 선택 오류:', error);
-      Alert.alert('알림', '이미지를 선택하는 중 오류가 발생했습니다.');
+    const selectedImages = await getGalleryImages({
+      sectionLimit: 5 - images.length,
+      requestRationale: {
+        title: '카메라 권한 필요',
+        message: '후기 작성하기를 위해 카메라 권한이 필요합니다.',
+        buttonPositive: '확인',
+      },
+    });
+    if (selectedImages) {
+      setImages([...images, ...selectedImages]);
     }
   };
 
@@ -232,6 +249,23 @@ export const ReviewWriteProvider = ({
             })),
           })),
         );
+        // 방문 후기면 작성 후 writtenReview의 숫자를 1 증가시키고, visitedPopupCnt
+        if (isVisited) {
+          const updatedUser = {
+            ...user,
+            writtenReview: user.writtenReview + 1,
+            visitedPopupCnt: user.visitedPopupCnt - 1,
+          };
+          setUser(updatedUser);
+        } else {
+          // 일반 후기면, 작성 후 writtenReview의 숫자만 1 증가시켜준다.
+          const updatedUser = {
+            ...user,
+            writtenReview: user.writtenReview + 1,
+          };
+          setUser(updatedUser);
+        }
+
         setReviewText('');
         setSelectedPopup(undefined);
 
@@ -291,6 +325,8 @@ export const ReviewWriteProvider = ({
     handleCategorySelect,
     getSelectedCategories,
     images,
+    isVisited,
+    setIsVisited,
     handleAddImages,
     handleDeleteImage,
     submitting,

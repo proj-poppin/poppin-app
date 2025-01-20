@@ -1,5 +1,5 @@
 import {PopupSearchParams} from 'src/Object/Type/filtering.type';
-import customAxios, {DETAIL, POPUP} from 'src/Axios/axios.core';
+import customAxios, {ALARM, DETAIL, POPUP} from 'src/Axios/axios.core';
 import {PopupSchema} from 'src/Schema/Popup/popup.schema';
 import {PageInfoType} from 'src/Object/Type/pageInfo.type';
 import {handleAuthCheckAxiosError, handleAxiosError} from 'src/Util/axios.util';
@@ -8,6 +8,7 @@ import {TempPopupSchema} from '../../Schema/Popup/tempPopup.schema';
 import {StateWrapper} from '../wrapper/state_wrapper';
 import {CompletePopupReview} from 'src/Screen/MyPage/Review/Mypage.complete.review.list.context';
 import {ReviewResponse} from 'src/Screen/MyPage/Review/Mypage.review.detail.context';
+import {KeywordAlarm} from 'src/Screen/MyPage/KeywordAlarm/Mypage.keywordAlarm.context';
 /**
  * 방문한 팝업들을 불러옵니다.
  * @returns 방문한 팝업 정보
@@ -54,6 +55,28 @@ export const axiosGetCompleteReviewList = async () => {
         error,
         errorMessage:
           '작성 완료 후기 리스트를 불러오는 것이 정상적으로 처리되지 못했습니다',
+      });
+      return null;
+    });
+};
+
+export const axiosGetKeywordAlarms = async () => {
+  return await customAxios
+    .request<{
+      data: KeywordAlarm[];
+    }>({
+      method: 'GET',
+      url: `v1/${ALARM}/keywords`,
+    })
+    .then(response => {
+      return response.data.data; // response.data.data로 반환
+    })
+    .catch(error => {
+      console.log(`error: ${error}`);
+      handleAxiosError({
+        error,
+        errorMessage:
+          '키워드 알람들 불러오는 것이 정상적으로 처리되지 않았습니다.',
       });
       return null;
     });

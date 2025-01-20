@@ -22,7 +22,6 @@ export const axiosScrapInterestPopup = async (popupId: string) => {
       data: {popupId},
     })
     .then(response => {
-      console.log('notificationId read patch: ', response);
       return response.data;
     })
     .catch(error => {

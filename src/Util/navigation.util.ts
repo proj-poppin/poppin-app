@@ -209,12 +209,10 @@ export const getContentDestination = (contents: {
   popup: PopupSchema;
 }): Destination => {
   const loggedIn = useUserStore.getState().isLoggedIn;
-
   return {
-    popupId: contents.popup.id.toString(),
+    popupId: contents.popup.id.toString(), // popupId를 포함
   };
 };
-
 /**
  * Navigates to a screen or performs other actions based on the provided Destination.
  */

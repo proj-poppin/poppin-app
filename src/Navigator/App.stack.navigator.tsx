@@ -123,6 +123,10 @@ import {
   AlarmSettingScreen,
   AlarmSettingScreenProps,
 } from '../Screen/Alarm/Alarm.setting.screen';
+import {
+  MypageKeywordAlarmScreen,
+  MypageKeywordAlarmScreenProps,
+} from 'src/Screen/MyPage/KeywordAlarm/Mypage.keywordAlarm.screen';
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
@@ -187,6 +191,8 @@ export type AppStackProps = {
   MypagePasswordChangeScreen: MypagePasswordChangeScreenProps;
 
   MypageWithdrawScreen: MypageWithdrawScreenProps;
+
+  MypageKeywordAlarmScreen: MypageKeywordAlarmScreenProps;
 };
 
 const AppStack = createNativeStackNavigator<AppStackProps>();
@@ -618,6 +624,10 @@ const AppStackScreen = () => {
         <AppStack.Screen
           name={'MypagePolicyScreen'}
           component={MypagePolicyScreen}
+        />
+        <AppStack.Screen
+          name={'MypageKeywordAlarmScreen'}
+          component={MypageKeywordAlarmScreen}
         />
       </AppStack.Group>
     </AppStack.Navigator>

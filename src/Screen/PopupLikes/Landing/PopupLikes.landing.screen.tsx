@@ -14,6 +14,11 @@ import PopupStoreCard from 'src/Component/Popup/Landing/PopupStoreCard';
 import {useUserStore} from 'src/Zustand/User/user.zustand';
 import InterestedPopupCalendarSection from './InterestedPopupCalendarSection';
 import InterestedPopupCalendarWithBottomSheet from './InterestedPopupCalendarSection';
+import {LandingScreenHeader} from "../../../Component/View";
+import PoppinShadowedLogo from 'src/Resource/svg/poppin-shadowed-logo.svg';
+import {BodyMediumText} from "../../../StyledComponents/Text/bodyMedium.component";
+import {moderateScale} from "../../../Util";
+import {RadiusButtonV2} from "../../../Component/Button/RadiusButton.v2";
 
 export enum OperationStatus {
   NOTYET = 'NOTYET',
@@ -54,6 +59,8 @@ export const PopupLikesLandingScreen = () => {
     navigation.navigate('PopupDetailScreen', {popupId: id});
   };
 
+  const handlePressLogin = () =>  navigation.navigate('AuthLandingScreen', {});
+
   const renderPopupItem = ({item}: {item: PopupSchema}) => (
     <View style={popupItemStyles.popupItemContainer}>
       <PopupDetailProvider>
@@ -72,7 +79,27 @@ export const PopupLikesLandingScreen = () => {
   if (!loggedIn) {
     return (
       <ScreenContainer>
-        <Text>로그인이 필요한 서비스입니다.</Text>
+        <LandingScreenHeader title={'관심 팝업'}/>
+          <LoggedOutScreenContainer>
+            <PoppinShadowedLogo/>
+            <StyledText>
+              {'로그인하고\n관심 팝업을 저장해보세요!'}
+            </StyledText>
+            <RadiusButtonV2
+                style={{
+                  height: undefined,
+                  paddingVertical: moderateScale(10),
+                  paddingHorizontal: moderateScale(24),
+                  marginBottom: moderateScale(8),
+                  maxHeight: moderateScale(48),
+                }}
+                color={'BLUE'}
+                priority={'PRIMARY'}
+                text={'로그인 하러 가기'}
+                textStyle={{fontSize: moderateScale(14)}}
+                onPress={handlePressLogin}
+            />
+          </LoggedOutScreenContainer>
       </ScreenContainer>
     );
   }
@@ -135,6 +162,23 @@ export const PopupLikesLandingScreen = () => {
     </ScreenContainer>
   );
 };
+
+const LoggedOutScreenContainer = styled.SafeAreaView`
+  flex: 1;
+  background-color: ${({theme}) => theme.color.grey.white};
+  justify-content: center;   
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: ${moderateScale(66)}px;
+`;
+
+const StyledText = styled(BodyMediumText)`
+  text-align: center;
+  font-weight: 400;
+  line-height: ${moderateScale(20)}px;
+  margin-top: ${moderateScale(12)}px;
+  margin-bottom: ${moderateScale(16)}px;
+`;
 
 const ScreenContainer = styled.View`
   flex: 1;

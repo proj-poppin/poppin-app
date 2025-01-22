@@ -1,15 +1,14 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {LandingScreenHeader} from 'src/Component/View';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {getCurrentISOTime, moderateScale} from 'src/Util';
-import {useUserStore} from 'src/Zustand/User/user.zustand';
-import {useAppStore} from 'src/Zustand/App/app.zustand';
+import { moderateScale} from 'src/Util';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
-import {StyleSheet} from 'react-native';
+import {Animated, StyleSheet} from 'react-native';
 import InfoIcon from 'src/Resource/svg/info-icon.svg';
 import AppLogoIcon from 'src/Resource/svg/app-logo-p-icon.svg';
 import styled from 'styled-components/native';
 import {NotificationButtonSegment} from 'src/Segment/Notification';
+import HeaderInfoSvg from 'src/Resource/svg/home-manual-tooltip.svg';
 
 export const HomeLandingScreenHeader = () => {
   return (
@@ -21,34 +20,43 @@ export const HomeLandingScreenHeader = () => {
 };
 
 const RightIcons = () => {
+
   const navigation =
-    useNavigation<NavigationProp<AppStackProps, 'LandingBottomTabNavigator'>>();
+    useNavigation<NavigationProp<AppStackProps,'BeginnerTipsScreen'>>();
+  const [visible, setVisible] = useState(true);
+  const fadeAnim = new Animated.Value(1);
 
-  const checkLoginAndShowModal = useAppStore(
-    state => state.checkLoginAndShowModal,
-  );
-  const setUserNotificationSetting = useUserStore(
-    state => state.setUserNotificationSetting,
-  );
-
-  const onPressSetting = () => {
-    if (!checkLoginAndShowModal('ALARM')) {
-      return;
+  useEffect(() => {
+    if(visible) {
+      // 5초 동안 보여주고, 그 후 2초 동안 천천히 사라짐
+      Animated.sequence([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 5000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+      ]).start(()=> setVisible(false));
     }
-    // makeFirebaseLogEvent(MYPAGE_LOGS.landing.goto_setting);
-    setUserNotificationSetting({lastCheck: getCurrentISOTime()});
-    // navigation.navigate('MypageSettingScreen', {});
-  };
+  }, [visible]);
 
-  const onPressAlarm = () => {
-    // makeFirebaseLogEvent(MYPAGE_LOGS.landing.goto_notification_list);
-    navigation.navigate('AlarmNotificationScreen', {});
+  const onPressInfoIcon = () => {
+    navigation.navigate('BeginnerTipsScreen',{});
   };
 
   return (
     <Icons__Container>
-      <InfoIcon style={styles.icon__margin} onPress={onPressSetting} />
-      <NotificationButtonSegment navigateOnPress={onPressAlarm} />
+      <InfoIcon style={styles.icon__margin} onPress={onPressInfoIcon} />
+      <NotificationButtonSegment/>
+      {visible && (
+          <Animated.View style={[styles.headerInfoSvg,{opacity:fadeAnim}]}>
+            <HeaderInfoSvg />
+          </Animated.View>
+          )}
     </Icons__Container>
   );
 };
@@ -56,6 +64,16 @@ const RightIcons = () => {
 const styles = StyleSheet.create({
   icon__margin: {
     marginRight: moderateScale(12),
+  },
+  headerInfoSvg: {
+    position: 'absolute',
+    left: -235,
+    top: -4,
+    zIndex: 1,
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.2,
+    shadowRadius: 1,
+    elevation: 3,
   },
 });
 

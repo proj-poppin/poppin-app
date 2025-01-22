@@ -123,6 +123,7 @@ import {
   AlarmSettingScreen,
   AlarmSettingScreenProps,
 } from '../Screen/Alarm/Alarm.setting.screen';
+import BeginnerTipsScreen, {BeginnerTipsScreenProps} from "../Tip/BeginnerTipsScreen";
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
@@ -147,6 +148,8 @@ export type AppStackProps = {
   ServiceStatusScreen: ServiceStatusScreenProps;
 
   KakaoLinkScreen: KakaoLinkScreenProps;
+
+  BeginnerTipsScreen: BeginnerTipsScreenProps;
 
   AlarmNotificationScreen: AlarmNotificationScreenProps;
 
@@ -538,6 +541,10 @@ const AppStackScreen = () => {
         name="LandingBottomTabNavigator"
         component={LandingBottomTabNavigator}
         options={{animation: 'none'}}
+      />
+      <AppStack.Screen
+          name="BeginnerTipsScreen"
+          component={BeginnerTipsScreen}
       />
       <AppStack.Group>
         <AppStack.Screen

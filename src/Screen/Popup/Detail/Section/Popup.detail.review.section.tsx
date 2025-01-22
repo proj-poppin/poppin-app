@@ -61,9 +61,9 @@ export const PopupDetailReviewSection = () => {
   }>({});
 
   const navigateToReviewWriteScreen = () => {
-    navigation.navigate('PopupDetailReviewWriteScreen', {
-      popupId: popupDetail?.id,
-      popup: popupDetail,
+    navigation.navigate('MypageReviewWriteScreen', {
+      selectedPopup: popupDetail,
+      isVisited: true,
     });
   };
 

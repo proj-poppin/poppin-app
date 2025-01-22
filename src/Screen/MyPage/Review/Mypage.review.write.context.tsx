@@ -215,10 +215,7 @@ export const ReviewWriteProvider = ({
       setSubmitting(true);
       const {visitDate, satisfaction, congestion} = getSelectedCategories();
 
-      // FormData 생성
       const formData = new FormData();
-
-      // 필수 데이터 추가
       formData.append('popupId', selectedPopup!.id);
       formData.append('visitDate', visitDate);
       formData.append('satisfaction', satisfaction);
@@ -235,44 +232,17 @@ export const ReviewWriteProvider = ({
         }
       });
 
-      // API 호출
       const response = await axiosMypageReviewReport(formData);
 
       if (response?.success) {
-        // 성공 시 초기화
-        setCategoryGroups(prev =>
-          prev.map(group => ({
-            ...group,
-            categories: group.categories.map(cat => ({
-              ...cat,
-              selected: false,
-            })),
-          })),
-        );
-        // 방문 후기면 작성 후 writtenReview의 숫자를 1 증가시키고, visitedPopupCnt
-        if (isVisited) {
-          const updatedUser = {
-            ...user,
-            writtenReview: user.writtenReview + 1,
-            visitedPopupCnt: user.visitedPopupCnt - 1,
-          };
-          setUser(updatedUser);
+        handleSuccessSubmission();
+      } else {
+        // 에러 코드에 따른 처리
+        if (response?.error?.code === '40033') {
+          Alert.alert('알림', '이미 리뷰를 작성한 팝업 스토어입니다.');
         } else {
-          // 일반 후기면, 작성 후 writtenReview의 숫자만 1 증가시켜준다.
-          const updatedUser = {
-            ...user,
-            writtenReview: user.writtenReview + 1,
-          };
-          setUser(updatedUser);
+          Alert.alert('알림', '리뷰 제출에 실패했습니다. 다시 시도해주세요.');
         }
-
-        setReviewText('');
-        setSelectedPopup(undefined);
-
-        // TODO: 성공 메시지 또는 네비게이션 처리
-        Alert.alert('알림', '리뷰가 성공적으로 제출되었습니다.');
-
-        navigation.dispatch(StackActions.replace('LandingBottomTabNavigator'));
       }
     } catch (error) {
       console.error('리뷰 제출 실패:', error);
@@ -280,6 +250,34 @@ export const ReviewWriteProvider = ({
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleSuccessSubmission = () => {
+    // 카테고리 초기화
+    setCategoryGroups(prev =>
+      prev.map(group => ({
+        ...group,
+        categories: group.categories.map(cat => ({
+          ...cat,
+          selected: false,
+        })),
+      })),
+    );
+
+    // 사용자 정보 업데이트
+    const updatedUser = {
+      ...user,
+      writtenReview: user.writtenReview + 1,
+      ...(isVisited && {visitedPopupCnt: user.visitedPopupCnt - 1}),
+    };
+    setUser(updatedUser);
+
+    // 폼 초기화
+    setReviewText('');
+    setSelectedPopup(undefined);
+
+    Alert.alert('알림', '리뷰가 성공적으로 제출되었습니다.');
+    navigation.dispatch(StackActions.replace('LandingBottomTabNavigator'));
   };
 
   // 유효성 검사 함수 수정

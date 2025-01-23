@@ -9,6 +9,8 @@ import {
   BlankPreference,
   PreferenceSchema,
 } from 'src/Schema/Preference/preference.schema';
+import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
+import {useHomeLandingScreenStore} from 'src/Screen/Home/Landing/Home.landing.zustand';
 
 type AuthPreferenceSettingScreenProps = {
   selectedTags: Record<string, boolean>;
@@ -90,6 +92,21 @@ export const useAuthPreferenceSettingScreenStore =
               ...preferenceSchema.preferenceCompanion,
             },
           });
+
+          // 태그 상태 업데이트
+          set({
+            selectedTags: selectedTags, // 저장된 상태 업데이트
+          });
+
+          // 새롭게 설정한 추천(취향설정된) 팝업스토어로 새롭게 업데이트
+          usePopupStore
+            .getState()
+            .setRecommendedPopupStores(result.updatedRecommendedPopupStores);
+
+          // 홈 화면에 반영
+          const {refreshHomePopupStores} = useHomeLandingScreenStore.getState();
+          refreshHomePopupStores();
+
           return true;
         }
         return false;

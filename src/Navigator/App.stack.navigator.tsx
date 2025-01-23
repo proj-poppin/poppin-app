@@ -123,6 +123,7 @@ import {
   AlarmSettingScreen,
   AlarmSettingScreenProps,
 } from '../Screen/Alarm/Alarm.setting.screen';
+import {HomeLandingScreenProps} from 'src/Screen/Home/Landing/Home.landing.screen';
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
@@ -187,6 +188,8 @@ export type AppStackProps = {
   MypagePasswordChangeScreen: MypagePasswordChangeScreenProps;
 
   MypageWithdrawScreen: MypageWithdrawScreenProps;
+
+  HomeLandingScreen: HomeLandingScreenProps;
 };
 
 const AppStack = createNativeStackNavigator<AppStackProps>();

@@ -10,6 +10,8 @@ import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 import {BodyLargeText} from '../../StyledComponents/Text/bodyLarge.component';
 import {themeColors} from '../../Theme/theme';
 
+import {TouchableOpacity} from 'react-native';
+
 /**
  *
  * @description A header component for screens with customizable left, title, and right elements.
@@ -80,9 +82,17 @@ export const ScreenHeader = ({
   };
 
   const RightPart = () => {
+    if (!RightComponents) return null;
+
+    const handlePress = () => {
+      if (onPressRightComponent) {
+        onPressRightComponent();
+      } else {
+        console.warn('onPressRightComponent가 정의되지 않았습니다.');
+      }
+    };
+
     switch (RightComponents) {
-      case undefined:
-        return null;
       case 'SEARCH_BUTTON':
         return (
           <FunctionButton__Container onPress={onPressRightComponent || goBack}>
@@ -96,7 +106,11 @@ export const ScreenHeader = ({
           </FunctionButton__Container>
         );
       default:
-        return <View style={RightStyle}>{RightComponents}</View>;
+        return (
+          <TouchableOpacity onPress={handlePress} style={RightStyle}>
+            {RightComponents}
+          </TouchableOpacity>
+        );
     }
   };
 

@@ -47,6 +47,7 @@ type RequireLoginModalType =
   | 'POPUP_BLOCK'
   | 'POPUP_MODIFY_REQUEST'
   | 'REVIEW_REPORT'
+  | 'REVIEW_LIKE'
   | 'POPUP_INQUIRY'
   | 'ALARM'
   | 'USER_BLOCK'

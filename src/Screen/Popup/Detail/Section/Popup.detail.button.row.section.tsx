@@ -15,8 +15,7 @@ import {
 } from '../../../../Util/location.util';
 import {Alert} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import {BlackBackgroundModal} from '../../../../Component/Modal';
-import {PreferenceSkipModal} from '../../../../Component/Modal/Auth.preference.skip.modal';
+import {useAppStore} from '../../../../Zustand/App/app.zustand';
 
 const PopupDetailBottomButtonRowSection: React.FC<{
   modalVisible: boolean;
@@ -198,15 +197,6 @@ const PopupDetailBottomButtonRowSection: React.FC<{
             textStyle={{fontSize: moderateScale(18)}}
           />
         </RowSection>
-        <BlackBackgroundModal
-          modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
-          allowIgnore={true}>
-          <PreferenceSkipModal
-            onSkip={navigateHome}
-            onComplete={() => setModalVisible(false)}
-          />
-        </BlackBackgroundModal>
       </PopupDetailBottomButtonBar>
     );
   }

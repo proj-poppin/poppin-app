@@ -9,6 +9,8 @@ import shallow from 'zustand/shallow';
 import CommonCompleteButton from '../../Landing/common.complete.button';
 import {FastImageContainer} from '../../../../Component/Image/FastImage.component';
 import {RadiusBlueButton} from '../../../../Component/Button/RadiusBlueButton';
+import {useUserStore} from 'src/Zustand/User/user.zustand';
+import {useAppStore} from 'src/Zustand/App/app.zustand';
 const PopupDetailBottomButtonRowSection: React.FC = () => {
   const [inProgress, setInProgress] = useState(false);
   const [visitorTooltipOpen, setVisitorTooltipOpen] = useState(false);
@@ -34,8 +36,14 @@ const PopupDetailBottomButtonRowSection: React.FC = () => {
     await startWaitingPopup(popupDetail.id);
     setInProgress(false);
   };
-
+  const checkLoginAndShowModal = useAppStore(
+    state => state.checkLoginAndShowModal,
+    shallow,
+  );
   const requestVisitPopup = async () => {
+    if (!checkLoginAndShowModal('POPUP_VISIT')) {
+      return;
+    }
     if (isVisitedPopup(popupDetail.id)) {
       return;
     }
@@ -88,7 +96,7 @@ const PopupDetailBottomButtonRowSection: React.FC = () => {
               <CountText>{popupDetail.viewCnt}명</CountText>
             </RowContainer>
           </VisitorButton>
-          { visitorTooltipOpen &&
+          {visitorTooltipOpen && (
             <TooltipContainer>
               <FastImageContainer
                 fitOnHeight
@@ -96,7 +104,7 @@ const PopupDetailBottomButtonRowSection: React.FC = () => {
                 source={require('src/Resource/png/real-time-visitors-alert-tooltip.png')}
               />
             </TooltipContainer>
-          }
+          )}
           <Spacer />
           <RadiusBlueButton
             text={visited ? '방문완료' : '방문하기'}

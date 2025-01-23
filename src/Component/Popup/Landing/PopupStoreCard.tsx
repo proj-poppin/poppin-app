@@ -14,6 +14,8 @@ import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
 import {usePopupDetailContext} from 'src/Screen/Popup/Detail/Provider/Popup.detail.provider';
 import {POP_UP_TYPES} from 'src/Component/findPopup/constants';
 import {themeColors} from '../../../Theme/theme';
+import {useAppStore} from 'src/Zustand/App/app.zustand';
+import shallow from 'zustand/shallow';
 
 interface PopupStoreCardProps {
   item: PopupSchema;
@@ -82,13 +84,19 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
   const scrapped =
     interestedPopupStores?.some(popup => popup.id === item.id) ?? false;
 
+  const {setLoadingState, togglePopupScrap} = usePopupStore.getState();
+  const checkLoginAndShowModal = useAppStore(
+    state => state.checkLoginAndShowModal,
+    shallow,
+  );
   const handleFavoritePress = async (
     event: GestureResponderEvent,
     popupId: string,
   ) => {
     event.persist(); // Synthetic Event를 유지
-    const {setLoadingState, togglePopupScrap} = usePopupStore.getState();
-
+    if (!checkLoginAndShowModal('POPUP_SCRAP')) {
+      return;
+    }
     setLoadingState(popupId, true);
     try {
       await togglePopupScrap(popupId);

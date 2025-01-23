@@ -31,16 +31,19 @@ const RightIcons = () => {
     state => state.setUserNotificationSetting,
   );
 
-  const onPressSetting = () => {
+  const onPressSetting = async () => {
     if (!checkLoginAndShowModal('ALARM')) {
       return;
     }
     // makeFirebaseLogEvent(MYPAGE_LOGS.landing.goto_setting);
-    setUserNotificationSetting({lastCheck: getCurrentISOTime()});
+    await setUserNotificationSetting({lastCheck: getCurrentISOTime()});
     // navigation.navigate('MypageSettingScreen', {});
   };
 
   const onPressAlarm = () => {
+    if (!checkLoginAndShowModal('ALARM')) {
+      return;
+    }
     // makeFirebaseLogEvent(MYPAGE_LOGS.landing.goto_notification_list);
     navigation.navigate('AlarmNotificationScreen', {});
   };

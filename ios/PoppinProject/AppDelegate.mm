@@ -1,4 +1,4 @@
-//#import <React/RCTLinkingManager.h> // #SETTING #DEEP_LINKING #IAMPORT iOS 실시간 계좌이체 결제 시 앱 리다이렉트를 위해 필요
+#import <React/RCTLinkingManager.h> // #SETTING #DEEP_LINKING #IAMPORT iOS 실시간 계좌이체 결제 시 앱 리다이렉트를 위해 필요
 #import <RNCKakaoUser/RNCKakaoUserUtil.h> // 새로운 @react-native-kakao/user에 필요
 // #import <RNFBDynamicLinksAppDelegateInterceptor.h>
 
@@ -21,6 +21,31 @@
 //- (void)sendLaunch:(UIApplication *)application {
 //   [[AppsFlyerLib shared] start];
 //}
+
+
+// Linking API
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+
+    // 네이버 로그인 URL 처리
+    if ([[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options]) {
+        return YES;
+    }
+
+    // 카카오톡 로그인 URL 처리
+    if ([RNCKakaoUserUtil isKakaoTalkLoginUrl:url]) {
+        return [RNCKakaoUserUtil handleOpenUrl:url];
+    }
+
+    // React Native Linking 처리
+    if ([RCTLinkingManager application:application openURL:url options:options]) {
+        return YES;
+    }
+
+    // 기본 동작
+    return [super application:application openURL:url options:options];
+}
 
 
 // #SETTING #DEEP_LINKING #IAMPORT iOS 실시간 계좌이체 결제 시 앱 리다이렉트를 위해 필요
@@ -53,11 +78,11 @@
 //    return YES;
 //}
 
-- (BOOL)application:(UIApplication *)application
-            openURL:(NSURL *)url
-            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-    return [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
-}
+// - (BOOL)application:(UIApplication *)application
+//             openURL:(NSURL *)url
+//             options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+//     return [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
+// }
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions

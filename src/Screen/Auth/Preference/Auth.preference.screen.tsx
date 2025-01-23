@@ -20,6 +20,7 @@ import {useAuthPreferenceSettingScreenStore} from './Auth.preference.zustand';
 import {BlackBackgroundModal} from 'src/Component/Modal';
 import {PreferenceSkipModal} from 'src/Component/Modal/Auth.preference.skip.modal';
 
+export interface AuthPreferenceScreenProps {}
 export const AuthPreferenceScreen = ({
   route,
   navigation,

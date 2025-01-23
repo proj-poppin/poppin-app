@@ -8,6 +8,7 @@ import {AppStackProps} from '../../../../Navigator/App.stack.navigator';
 import {useMypageLandingScreenStore} from '../Mypage.landing.zustand';
 import {useUserStore} from '../../../../Zustand/User/user.zustand';
 import shallow from 'zustand/shallow';
+import {useAppStore} from 'src/Zustand/App/app.zustand';
 
 interface MenuItem {
   title: string;
@@ -22,10 +23,20 @@ export const MyPageLandingMenuSection = () => {
     shallow,
   );
   const isLoggedIn = useUserStore(state => state.isLoggedIn, shallow);
-
+  const checkLoginAndShowModal = useAppStore(
+    state => state.checkLoginAndShowModal,
+    shallow,
+  );
   const menuItems: MenuItem[] = [
-    {title: '키워드 알림 설정', onPress: () => {}},
-    {title: '문의하기 / FAQ', onPress: () => {}},
+    {
+      title: '키워드 알림 설정',
+      onPress: () => {
+        if (!checkLoginAndShowModal('POPUP_REPORT')) {
+          return;
+        }
+        navigation.navigate('MypageKeywordAlarmScreen', {});
+      },
+    },
     {title: '앱 버전', rightText: '1.16.0', onPress: () => {}},
     {
       title: '이용 약관 및 정책',

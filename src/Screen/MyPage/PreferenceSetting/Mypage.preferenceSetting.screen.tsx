@@ -23,6 +23,7 @@ export type MypagePreferenceSettingScreenProps = {
 };
 
 // MypagePreferenceSettingScreen
+export interface MypagePreferenceSettingScreenProps {}
 export const MypagePreferenceSettingScreen = ({
   route,
   navigation,

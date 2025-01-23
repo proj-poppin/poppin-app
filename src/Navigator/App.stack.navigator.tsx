@@ -123,6 +123,10 @@ import {
   AlarmSettingScreen,
   AlarmSettingScreenProps,
 } from '../Screen/Alarm/Alarm.setting.screen';
+import {
+  MypageKeywordAlarmScreen,
+  MypageKeywordAlarmScreenProps,
+} from 'src/Screen/MyPage/KeywordAlarm/Mypage.keywordAlarm.screen';
 import {HomeLandingScreenProps} from 'src/Screen/Home/Landing/Home.landing.screen';
 
 /**
@@ -188,6 +192,8 @@ export type AppStackProps = {
   MypagePasswordChangeScreen: MypagePasswordChangeScreenProps;
 
   MypageWithdrawScreen: MypageWithdrawScreenProps;
+
+  MypageKeywordAlarmScreen: MypageKeywordAlarmScreenProps;
 
   HomeLandingScreen: HomeLandingScreenProps;
 };
@@ -621,6 +627,10 @@ const AppStackScreen = () => {
         <AppStack.Screen
           name={'MypagePolicyScreen'}
           component={MypagePolicyScreen}
+        />
+        <AppStack.Screen
+          name={'MypageKeywordAlarmScreen'}
+          component={MypageKeywordAlarmScreen}
         />
       </AppStack.Group>
     </AppStack.Navigator>

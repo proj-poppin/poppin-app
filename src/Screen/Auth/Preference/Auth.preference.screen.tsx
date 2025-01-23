@@ -26,7 +26,7 @@ export const AuthPreferenceScreen = ({
   navigation,
 }: NativeStackScreenProps<AppStackProps, 'AuthPreferenceScreen'>) => {
   const {user} = useUserStore(state => ({user: state.user}), shallow);
-  const {selectedTags, toggleTag, isStepValid, savePreferences} =
+  const {draftSelectedTags, toggleTag, isStepValid, savePreferences} =
     useAuthPreferenceSettingScreenStore();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -109,7 +109,7 @@ export const AuthPreferenceScreen = ({
                   <CategorySelectButton
                     key={key}
                     preferenceKey={key}
-                    isSelected={selectedTags[key]}
+                    isSelected={draftSelectedTags[key]}
                     onPress={() => toggleTag(key)}>
                     {getPreferenceTitle(key)}
                   </CategorySelectButton>

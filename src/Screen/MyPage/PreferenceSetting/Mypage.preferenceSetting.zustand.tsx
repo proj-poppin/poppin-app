@@ -126,6 +126,10 @@ export const useMypagePreferenceSettingScreenStore =
               ...updatedPreferenceSetting.preferenceCompanion,
             };
 
+            useUserStore
+              .getState()
+              .setUserPreferenceSetting(updatedPreferenceSetting);
+
             // 태그 상태 업데이트
             set({
               selectedTags: updatedTags, // 저장된 상태 업데이트

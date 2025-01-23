@@ -9,6 +9,7 @@ import {useMypageLandingScreenStore} from '../Mypage.landing.zustand';
 import {useUserStore} from '../../../../Zustand/User/user.zustand';
 import shallow from 'zustand/shallow';
 import {useAppStore} from 'src/Zustand/App/app.zustand';
+import {Linking} from 'react-native';
 
 interface MenuItem {
   title: string;
@@ -27,14 +28,24 @@ export const MyPageLandingMenuSection = () => {
     state => state.checkLoginAndShowModal,
     shallow,
   );
+
+  function moveToKakaoChannel() {
+    Linking.openURL('https://pf.kakao.com/_CCtFG');
+  }
   const menuItems: MenuItem[] = [
     {
       title: '키워드 알림 설정',
       onPress: () => {
-        if (!checkLoginAndShowModal('POPUP_REPORT')) {
+        if (!checkLoginAndShowModal('ALARM')) {
           return;
         }
         navigation.navigate('MypageKeywordAlarmScreen', {});
+      },
+    },
+    {
+      title: '문의하기 / FAQ',
+      onPress: () => {
+        moveToKakaoChannel();
       },
     },
     {title: '앱 버전', rightText: '1.16.0', onPress: () => {}},

@@ -108,6 +108,10 @@ export const PopupDetailReviewSection = () => {
     }
   };
 
+  const handleReportReview = () => {
+    navigation.navigate('PopupDetailReportScreen');
+  };
+
   return (
     <SectionContainer>
       <SectionRow>
@@ -160,9 +164,10 @@ export const PopupDetailReviewSection = () => {
                     <ReviewMetaText>리뷰 {reviews.length}개</ReviewMetaText>
                   </Column>
                 </RecentReviewHeader>
-                <Pressable onPress={() => console.log('신고하기')}>
-                  <UnderlinedTextButton label="신고하기" onClicked={() => {}} />
-                </Pressable>
+                <UnderlinedTextButton
+                  label="신고하기"
+                  onClicked={handleReportReview}
+                />
               </RowBetween>
 
               <HorizontalScrollView horizontal>

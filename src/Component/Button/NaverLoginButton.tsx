@@ -62,6 +62,7 @@ export function NaverLoginButton({
     if (naverAccountStatus === null) {
       return showBlackToast({text1: '네이버 계정 조회에 실패했습니다.'});
     } else if (naverAccountStatus.accountStatus === 'LOGIN') {
+      setLoggingIn(true);
       console.log(
         `naveraccessToken: ${naverResponse.successResponse!.accessToken}`,
       );
@@ -93,7 +94,6 @@ export function NaverLoginButton({
 
   /** Attempt to Login */
   async function tryNaverLogin() {
-    setLoggingIn(true);
     const result = await handleNaverLogin();
     setLoggingIn(false);
     return result;

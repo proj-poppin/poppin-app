@@ -60,6 +60,7 @@ export function GoogleLoginButton({
 
       // Handle different account statuses
       if (googleAccountStatus.accountStatus === 'LOGIN') {
+        setLoggingIn(true);
         const loginResult = await useUserStore.getState().googleLogin({
           token: tokens.accessToken, // accessToken 전달
         });
@@ -86,7 +87,6 @@ export function GoogleLoginButton({
   }
   /** Attempt to Login */
   async function tryGoogleLogin() {
-    setLoggingIn(true);
     await handleGoogleLogin();
     setLoggingIn(false);
   }

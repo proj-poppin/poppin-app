@@ -9,9 +9,13 @@ import {
   BlankPreference,
   PreferenceSchema,
 } from 'src/Schema/Preference/preference.schema';
+import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
+import {useHomeLandingScreenStore} from 'src/Screen/Home/Landing/Home.landing.zustand';
+import {useUserStore} from 'src/Zustand/User/user.zustand';
 
 type AuthPreferenceSettingScreenProps = {
   selectedTags: Record<string, boolean>;
+  draftSelectedTags: Record<string, boolean>;
   toggleTag: (tag: string) => void;
   resetTags: () => void;
   isStepValid: (step: number) => boolean;
@@ -21,6 +25,7 @@ type AuthPreferenceSettingScreenProps = {
 export const useAuthPreferenceSettingScreenStore =
   create<AuthPreferenceSettingScreenProps>((set, get) => ({
     selectedTags: {},
+    draftSelectedTags: {},
 
     toggleTag: tag =>
       set(state => ({
@@ -28,9 +33,17 @@ export const useAuthPreferenceSettingScreenStore =
           ...state.selectedTags,
           [tag]: !state.selectedTags[tag],
         },
+        draftSelectedTags: {
+          ...state.draftSelectedTags,
+          [tag]: !state.draftSelectedTags[tag],
+        },
       })),
 
-    resetTags: () => set({selectedTags: {}}),
+    resetTags: () =>
+      set({
+        selectedTags: {},
+        draftSelectedTags: {},
+      }),
 
     isStepValid: step => {
       const {selectedTags} = get();
@@ -78,18 +91,35 @@ export const useAuthPreferenceSettingScreenStore =
         },
       };
 
-      // API 호출
       try {
         const result = await axiosSettingPreference({data: preferenceSchema});
-        console.log('result: ', result);
         if (result) {
+          const updatedPreferenceSetting = result.userPreferenceSetting;
+
+          const updatedTags = {
+            ...updatedPreferenceSetting.preferencePopupStore,
+            ...updatedPreferenceSetting.preferenceCategory,
+            ...updatedPreferenceSetting.preferenceCompanion,
+          };
+
+          useUserStore
+            .getState()
+            .setUserPreferenceSetting(updatedPreferenceSetting);
+
           set({
-            selectedTags: {
-              ...preferenceSchema.preferencePopupStore,
-              ...preferenceSchema.preferenceCategory,
-              ...preferenceSchema.preferenceCompanion,
-            },
+            selectedTags: updatedTags,
+            draftSelectedTags: updatedTags,
           });
+
+          // 새롭게 설정한 추천(취향설정된) 팝업스토어로 새롭게 업데이트
+          usePopupStore
+            .getState()
+            .setRecommendedPopupStores(result.updatedRecommendedPopupStores);
+
+          // 홈 화면에 반영
+          const {refreshHomePopupStores} = useHomeLandingScreenStore.getState();
+          refreshHomePopupStores();
+
           return true;
         }
         return false;

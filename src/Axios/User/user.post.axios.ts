@@ -2,6 +2,7 @@ import customAxios, {POPUP_TASTE, USERS} from '../axios.core';
 import {PreferenceSchema} from '../../Schema/Preference/preference.schema';
 import {handleAxiosError} from 'src/Util';
 import {PopupSchema} from '../../Schema/Popup/popup.schema';
+import {StateWrapper} from '../wrapper/state_wrapper';
 
 /**
  * 유저의 팝업 취향 정보를 설정합니다.
@@ -9,7 +10,8 @@ import {PopupSchema} from '../../Schema/Popup/popup.schema';
  */
 
 export interface SettingPreferenceResponseData {
-  updatedRecommendedPopup: PopupSchema[];
+  userPreferenceSetting: PreferenceSchema;
+  updatedRecommendedPopupStores: {[key: string]: PopupSchema}; // 객체 형태로 응답
 }
 
 export const axiosSettingPreference = async (param: {
@@ -51,22 +53,19 @@ export const axiosSettingPreference = async (param: {
 
   try {
     // Axios 요청
-    const response = await customAxios.request<{
-      userPreferenceSetting: PreferenceSchema;
-      updatedRecommendedPopupStores: {[key: string]: PopupSchema}; // 객체 형태로 응답
-    }>({
+    const response = await customAxios.request<
+      StateWrapper<SettingPreferenceResponseData>
+    >({
       method: 'PUT',
       url: `v1/${USERS}/${POPUP_TASTE}`,
       data: requestBody,
     });
 
-    // console.log('axios에서는 ', response.data);
-
-    const userPreferenceSetting = response.data.userPreferenceSetting;
+    const userPreferenceSetting = response.data.data.userPreferenceSetting;
 
     // 객체 형태의 recommendedPopupStores를 배열로 변환
     const updatedRecommendedPopupStores = Object.values(
-      response.data.updatedRecommendedPopupStores ?? {},
+      response.data.data.updatedRecommendedPopupStores ?? {},
     );
 
     return {

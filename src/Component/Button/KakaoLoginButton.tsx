@@ -49,6 +49,7 @@ export function KakaoLoginButton({
     if (kakaoAccountStatus === null) {
       return showBlackToast({text1: '카카오톡 계정 조회에 실패했습니다.'});
     } else if (kakaoAccountStatus.accountStatus === 'LOGIN') {
+      setLoggingIn(true);
       //* 1) 카카오톡 간편 로그인을 진행했던 경우
       const loginResult = await useUserStore.getState().kakaoLogin({
         token: kakaoLoginResult.accessToken,
@@ -72,7 +73,6 @@ export function KakaoLoginButton({
 
   /** Attempt to Login */
   async function tryKakaoLogin() {
-    setLoggingIn(true);
     const result = await handleKakaoLogin();
     setLoggingIn(false);
     return result;

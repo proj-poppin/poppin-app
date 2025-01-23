@@ -20,6 +20,7 @@ import LoginBasicLetterIcon from 'src/Screen/Auth/Landing/Resource/login-basic-l
 import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
 import {NaverLoginButton} from 'src/Component/Button/NaverLoginButton';
 import {GoogleLoginButton} from 'src/Component/Button/GoogleLoginButton';
+import LoadingScreen from 'src/Screen/Splash/LoadingScreen';
 
 // type BasicLoginButtonProps = {
 //   onPressLogin: () => void;
@@ -43,8 +44,10 @@ export function AuthLandingScreen({
   const [kakaoLoggingIn, setKakaoLoggingIn] = useState<boolean>(false);
   const [naverLoggingIn, setNaverLoggingIn] = useState<boolean>(false);
   const [googleLoggingIn, setGoogleLoggingIn] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   function onLoginSucceed() {
+    setIsLoading(false);
     navigation.replace('LandingBottomTabNavigator', {
       HomeLandingScreen: {},
       PopupLandingScreen: {},
@@ -59,6 +62,7 @@ export function AuthLandingScreen({
       return;
     }
 
+    setIsLoading(true);
     console.log('Navigating to LoginScreen...');
     const popWhenSucceed = route.params?.popWhenSucceed ?? 0;
     navigation.navigate('LoginScreen', {
@@ -146,81 +150,90 @@ export function AuthLandingScreen({
   };
 
   return (
-    <FullViewPage
-      PageContent={
-        <>
-          <ScreenHeader
-            LeftComponents="CLOSE_BUTTON"
-            leftText="비회원으로 보기"
-          />
-          <SectionContainer
-            style={{
-              marginTop: 30,
-              justifyContent: 'flex-start',
-              paddingBottom: moderateScale(64),
-            }}>
-            <AppLogoIcon />
-            <TitleText>내 취향을 기반으로</TitleText>
-            <TitleText>팝업스토어를 관리하고 저장해요</TitleText>
-            <LoginButtonsContainer>
-              <AppleLoginButton
-                isSignIn={false}
-                onSignupRequired={onAppleSignUpRequired}
-                onLoginSucceed={onLoginSucceed}
-              />
-              <CommonCompleteButton
-                title="이메일로 로그인"
-                onPress={onPressLogin}
-                style={{marginTop: 20, width: '95%'}}
-                textStyle={{fontSize: 18, fontWeight: 'bold'}}
-                extraIcon={LoginBasicLetterIcon}
-              />
-            </LoginButtonsContainer>
-            <TouchableOpacity onPress={onPressSignup}>
-              <SignupMotivateContainer>
-                <SignupMotivateText>
-                  아직 POPPIN 회원이 아니신가요?
-                </SignupMotivateText>
-                <RoundRightIcon style={{marginLeft: 8}} />
-              </SignupMotivateContainer>
-            </TouchableOpacity>
-          </SectionContainer>
-          <SectionContainer
-            style={{
-              alignItems: 'center',
-              paddingBottom: moderateScale(64),
-            }}>
-            <BottomText style={{marginTop: moderateScale(110)}}>
-              다른 방법으로 로그인하기
-            </BottomText>
-            <RowIconsContainer style={{paddingBottom: moderateScale(24)}}>
-              <NaverLoginButton
-                loggingIn={naverLoggingIn}
-                setLoggingIn={setNaverLoggingIn}
-                onLoginSucceed={onLoginSucceed}
-                onSignupRequired={onNaverSignupRequired}
-              />
-              <GoogleLoginButton
-                loggingIn={googleLoggingIn}
-                setLoggingIn={setGoogleLoggingIn}
-                onLoginSucceed={onLoginSucceed}
-                onSignupRequired={onGoogleSignupRequired}
-              />
-              <KakaoLoginButton
-                loggingIn={kakaoLoggingIn}
-                setLoggingIn={setKakaoLoggingIn}
-                onLoginSucceed={onLoginSucceed}
-                onSignupRequired={onKakaoSignupRequired}
-              />
-            </RowIconsContainer>
-            <TermsAndPrivacyPolicyAgreement
-              onPrivacyPolicyPress={() => {}}
-              onTermsOfServicePress={() => {}}
+    <>
+      <FullViewPage
+        PageContent={
+          <>
+            <ScreenHeader
+              LeftComponents="CLOSE_BUTTON"
+              leftText="비회원으로 보기"
             />
-          </SectionContainer>
-        </>
-      }
-    />
+            <SectionContainer
+              style={{
+                marginTop: 30,
+                justifyContent: 'flex-start',
+                paddingBottom: moderateScale(64),
+              }}>
+              <AppLogoIcon />
+              <TitleText>내 취향을 기반으로</TitleText>
+              <TitleText>팝업스토어를 관리하고 저장해요</TitleText>
+              <LoginButtonsContainer>
+                <AppleLoginButton
+                  isSignIn={isLoading}
+                  setIsSignIn={setIsLoading}
+                  onSignupRequired={onAppleSignUpRequired}
+                  onLoginSucceed={onLoginSucceed}
+                />
+                <CommonCompleteButton
+                  title="이메일로 로그인"
+                  onPress={onPressLogin}
+                  style={{marginTop: 20, width: '95%'}}
+                  textStyle={{fontSize: 18, fontWeight: 'bold'}}
+                  extraIcon={LoginBasicLetterIcon}
+                />
+              </LoginButtonsContainer>
+              <TouchableOpacity onPress={onPressSignup}>
+                <SignupMotivateContainer>
+                  <SignupMotivateText>
+                    아직 POPPIN 회원이 아니신가요?
+                  </SignupMotivateText>
+                  <RoundRightIcon style={{marginLeft: 8}} />
+                </SignupMotivateContainer>
+              </TouchableOpacity>
+            </SectionContainer>
+            <SectionContainer
+              style={{
+                alignItems: 'center',
+                paddingBottom: moderateScale(64),
+              }}>
+              <BottomText style={{marginTop: moderateScale(110)}}>
+                다른 방법으로 로그인하기
+              </BottomText>
+              <RowIconsContainer style={{paddingBottom: moderateScale(24)}}>
+                <NaverLoginButton
+                  loggingIn={naverLoggingIn}
+                  setLoggingIn={setNaverLoggingIn}
+                  onLoginSucceed={onLoginSucceed}
+                  onSignupRequired={onNaverSignupRequired}
+                />
+                <GoogleLoginButton
+                  loggingIn={googleLoggingIn}
+                  setLoggingIn={setGoogleLoggingIn}
+                  onLoginSucceed={onLoginSucceed}
+                  onSignupRequired={onGoogleSignupRequired}
+                />
+                <KakaoLoginButton
+                  loggingIn={kakaoLoggingIn}
+                  setLoggingIn={setKakaoLoggingIn}
+                  onLoginSucceed={onLoginSucceed}
+                  onSignupRequired={onKakaoSignupRequired}
+                />
+              </RowIconsContainer>
+              <TermsAndPrivacyPolicyAgreement
+                onPrivacyPolicyPress={() => {}}
+                onTermsOfServicePress={() => {}}
+              />
+            </SectionContainer>
+          </>
+        }
+      />
+      <LoadingScreen
+        isLoading={
+          isLoading || naverLoggingIn || googleLoggingIn || kakaoLoggingIn
+        }
+      />
+      {/* 로딩 중일 때 FullScreenLoader 표시 */}
+    </>
   );
 }
 const TitleText = styled.Text`

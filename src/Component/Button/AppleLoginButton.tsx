@@ -13,10 +13,12 @@ import {themeColors} from '../../Theme/theme';
 
 export function AppleLoginButton({
   isSignIn = false,
+  setIsSignIn,
   onSignupRequired,
   onLoginSucceed,
 }: {
   isSignIn?: boolean;
+  setIsSignIn: (status: boolean) => void;
   onSignupRequired: (param: {email: string; appleUserId: string}) => void;
   onLoginSucceed: () => void;
 }) {
@@ -45,14 +47,17 @@ export function AppleLoginButton({
           if (appleAccountStatus === null) {
             return showBlackToast({text1: '애플 계정 조회에 실패했습니다.'});
           } else if (appleAccountStatus.accountStatus === 'LOGIN') {
+            setIsSignIn(true);
             //이전에 애플 간편 로그인을 진행했던 경우
             const loginResult = await useUserStore.getState().appleLogin({
               appleUserId: appleAuthRequestResponse.user,
             });
             if (loginResult.success) {
+              setIsSignIn(false);
               showBlackToast({text1: '애플 간편 로그인 되었습니다.'});
               onLoginSucceed();
             } else {
+              setIsSignIn(false);
               showBlackToast({
                 text1: '애플 로그인 정보를 가져오지 못했습니다.',
               });
@@ -85,9 +90,11 @@ export function AppleLoginButton({
                 appleUserId: appleAuthRequestResponse.user,
               });
               if (loginResult.success) {
+                setIsSignIn(false);
                 showBlackToast({text1: '애플 간편 로그인 되었습니다.'});
                 onLoginSucceed();
               } else {
+                setIsSignIn(false);
                 showBlackToast({
                   text1: '애플 로그인 정보를 가져오지 못했습니다.',
                 });

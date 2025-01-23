@@ -12,6 +12,8 @@ import {moderateScale} from '../../../../Util';
 import {useUserStore} from '../../../../Zustand/User/user.zustand';
 import {usePopupStore} from '../../../../Zustand/Popup/popup.zustand';
 import {shareFeedTemplate} from '@react-native-kakao/share';
+import {useAppStore} from 'src/Zustand/App/app.zustand';
+import shallow from 'zustand/shallow';
 
 const PopupDetailIconSection = () => {
   const {popupDetail, scrapping, scrapPopup, unScrapPopup} =
@@ -26,12 +28,14 @@ const PopupDetailIconSection = () => {
   const scrapped =
     interestedPopupStores?.some(popup => popup.id === popupDetail.id) ?? false;
 
-  const loggedIn = useUserStore(state => state.isLoggedIn());
+  const checkLoginAndShowModal = useAppStore(
+    state => state.checkLoginAndShowModal,
+    shallow,
+  );
 
   const handleFavoritePress = async () => {
-    if (!loggedIn) {
-      // #RESACLE
-      Alert.alert('로그인 모달 추가하기');
+    // #RESACLE
+    if (!checkLoginAndShowModal('POPUP_SCRAP')) {
       return;
     }
 

@@ -21,6 +21,8 @@ import UnderlinedTextButton from '../../../../Component/UnderlineTextButton';
 import DividerLine from '../../../../Component/DividerLine/DividerLine';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AppStackProps} from '../../../../Navigator/App.stack.navigator';
+import {useAppStore} from 'src/Zustand/App/app.zustand';
+import shallow from 'zustand/shallow';
 
 const REVIEW_ORDER_TYPES: EnumValueWithName[] = [
   {displayName: '최근 작성 순', value: 'latest'},
@@ -61,6 +63,9 @@ export const PopupDetailReviewSection = () => {
   }>({});
 
   const navigateToReviewWriteScreen = () => {
+    if (!checkLoginAndShowModal('POPUP_REVIEW')) {
+      return;
+    }
     navigation.navigate('MypageReviewWriteScreen', {
       selectedPopup: popupDetail,
       isVisited: true,
@@ -81,6 +86,10 @@ export const PopupDetailReviewSection = () => {
     setIsOnlyVerifiedReview(prev => !prev); // 인증된 리뷰만 보기 토글
   };
 
+  const checkLoginAndShowModal = useAppStore(
+    state => state.checkLoginAndShowModal,
+    shallow,
+  );
   // 인증된 사용자 후기만 보기 상태에 따라 리뷰 필터링
   const filteredReviews = isOnlyVerifiedReview
     ? reviews.filter(review => review.isCertificated)
@@ -189,12 +198,15 @@ export const PopupDetailReviewSection = () => {
 
               <RecommendContainer>
                 <SvgWithNameBoxLabel
-                  onPress={() =>
+                  onPress={() => {
+                    if (!checkLoginAndShowModal('REVIEW_LIKE')) {
+                      return;
+                    }
                     handleRecommendReview(
                       Number(popupDetail.id),
                       review.reviewId,
-                    )
-                  }
+                    );
+                  }}
                   isCompleted={!!recommendedReviews[review.reviewId]}
                   textStyle={[{fontSize: moderateScale(13)}]}
                   borderRadius={15}

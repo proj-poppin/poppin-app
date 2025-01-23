@@ -45,8 +45,14 @@ const PopupDetailBottomButtonRowSection: React.FC<{
     await startWaitingPopup(popupDetail.id);
     setInProgress(false);
   };
-
+  const checkLoginAndShowModal = useAppStore(
+    state => state.checkLoginAndShowModal,
+    shallow,
+  );
   const requestVisitPopup = async () => {
+    if (!checkLoginAndShowModal('POPUP_VISIT')) {
+      return;
+    }
     if (isVisitedPopup(popupDetail.id)) {
       return;
     }

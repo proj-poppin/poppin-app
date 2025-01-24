@@ -1,5 +1,4 @@
 import React from 'react';
-import {StyleProp, ViewStyle} from 'react-native';
 import styled from 'styled-components/native';
 import shallow from 'zustand/shallow';
 import AlarmIcon from 'src/Resource/svg/alarm-icon.svg';
@@ -11,6 +10,9 @@ import {
   useNotificationStore,
 } from '../../Zustand/User/notification.zustand';
 import {useAppStore} from 'src/Zustand/App/app.zustand';
+import {NavigationProp, useNavigation} from "@react-navigation/native";
+import {AppStackProps} from "../../Navigator/App.stack.navigator";
+import {StyleProp, ViewStyle} from "react-native";
 
 /**
  * 스크린 헤더 등에서 사용되는 알림 아이콘 버튼입니다.
@@ -22,18 +24,17 @@ import {useAppStore} from 'src/Zustand/App/app.zustand';
  * @param navigateOnPress 알림 아이콘을 눌렀을 때의 이동 로직
  * @author 도형
  */
-export function NotificationButtonSegment({
-  navigateOnPress,
-  fill,
-  style,
-}: {
-  navigateOnPress: () => void;
-  fill?: boolean;
+export function NotificationButtonSegment({style}: {
   style?: StyleProp<ViewStyle>;
 }) {
+
+  const navigation =
+      useNavigation<NavigationProp<AppStackProps>>();
+
   const checkLoginAndShowModal = useAppStore(
-    state => state.checkLoginAndShowModal,
+      state => state.checkLoginAndShowModal
   );
+
   const {userNotificationSetting, setUserNotificationSetting} = useUserStore(
     state => ({
       userNotificationSetting: state.userNotificationSetting,
@@ -63,24 +64,12 @@ export function NotificationButtonSegment({
    * userNotificationSetting 의 lastCheck 를 업데이트하고 알림 페이지로 이동합니다.
    */
   const onPress = () => {
-    // if (!checkLoginAndShowModal('ALARM')) {
-    //   return;
-    // }
-    setUserNotificationSetting({lastCheck: getCurrentISOTime()});
-    navigateOnPress();
+    if (!checkLoginAndShowModal('ALARM')) {
+      return;
+    }
+    setUserNotificationSetting({lastCheck: getCurrentISOTime()}).then(result => console.log("alarm최근본시간 업데이트"));
+    navigation.navigate('AlarmNotificationScreen', {});
   };
-
-  // if (fill === true) {
-  //   return (
-  //     <IconContainer activeOpacity={1} onPress={onPress} style={style}>
-  //       {!hasNewNotification ? (
-  //         <FilledAlarmSymbol />
-  //       ) : (
-  //         <FilledAlarmWithRedDotSymbol />
-  //       )}
-  //     </IconContainer>
-  //   );
-  // }
 
   return (
     <IconContainer activeOpacity={1} onPress={onPress} style={style}>

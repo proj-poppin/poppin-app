@@ -123,6 +123,7 @@ import {
   AlarmSettingScreen,
   AlarmSettingScreenProps,
 } from '../Screen/Alarm/Alarm.setting.screen';
+import BeginnerTipsScreen, {BeginnerTipsScreenProps} from "../Tip/BeginnerTipsScreen";
 import {
   MypageKeywordAlarmScreen,
   MypageKeywordAlarmScreenProps,
@@ -152,6 +153,8 @@ export type AppStackProps = {
   ServiceStatusScreen: ServiceStatusScreenProps;
 
   KakaoLinkScreen: KakaoLinkScreenProps;
+
+  BeginnerTipsScreen: BeginnerTipsScreenProps;
 
   AlarmNotificationScreen: AlarmNotificationScreenProps;
 
@@ -547,6 +550,10 @@ const AppStackScreen = () => {
         name="LandingBottomTabNavigator"
         component={LandingBottomTabNavigator}
         options={{animation: 'none'}}
+      />
+      <AppStack.Screen
+          name="BeginnerTipsScreen"
+          component={BeginnerTipsScreen}
       />
       <AppStack.Group>
         <AppStack.Screen

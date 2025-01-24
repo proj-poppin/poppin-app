@@ -78,6 +78,7 @@
     "react-native-screens": "3.15.0",
     "react-native-select-dropdown": "2.0.4",
     "react-native-svg": "^15.8.0",
+    "react-native-swiper": "^1.6.0",
     "react-native-tab-view": "3.1.1",
     "react-native-toast-message": "2.1.5",
     "react-native-vector-icons": "10.0.3",

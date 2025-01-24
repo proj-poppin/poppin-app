@@ -1,4 +1,5 @@
 import customAxios, {
+  ALARM,
   AUTH,
   MANAGER_INFORM,
   REVIEWS,
@@ -59,6 +60,7 @@ export const axiosMypageReviewReport = async (formData: FormData) => {
       data: formData,
     })
     .then(response => {
+      console.log(response);
       return response.data;
     })
     .catch(error => {
@@ -82,5 +84,25 @@ export const axiosMypagePasswordCheck = async (password: string) => {
     })
     .catch(error => {
       handleAxiosError({error, errorMessage: '패스워드 검증에 실패했습니다.'});
+    });
+};
+
+/**
+ * 키워드 알림 추가 기능입니다.
+ * @author 규진
+ */
+export const axiosMypageAddKeywordAlarm = async (keyword: string) => {
+  return await customAxios
+    .request({
+      method: 'POST',
+      url: `v1/${ALARM}/keywords`,
+      data: {keyword: keyword},
+    })
+    .then(response => {
+      console.log(response);
+      return response.data;
+    })
+    .catch(error => {
+      handleAxiosError({error, errorMessage: '키워드 등록에 실패했습니다.'});
     });
 };

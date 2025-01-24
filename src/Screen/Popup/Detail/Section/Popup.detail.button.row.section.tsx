@@ -9,7 +9,18 @@ import shallow from 'zustand/shallow';
 import CommonCompleteButton from '../../Landing/common.complete.button';
 import {FastImageContainer} from '../../../../Component/Image/FastImage.component';
 import {RadiusBlueButton} from '../../../../Component/Button/RadiusBlueButton';
-const PopupDetailBottomButtonRowSection: React.FC = () => {
+import {
+  calculateDistanceInMeters,
+  requestLocationPermission,
+} from '../../../../Util/location.util';
+import {Alert} from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
+import {useAppStore} from '../../../../Zustand/App/app.zustand';
+
+const PopupDetailBottomButtonRowSection: React.FC<{
+  modalVisible: boolean;
+  setModalVisible: (visible: boolean) => void;
+}> = ({modalVisible, setModalVisible}) => {
   const [inProgress, setInProgress] = useState(false);
   const [visitorTooltipOpen, setVisitorTooltipOpen] = useState(false);
   const {popupDetail, visitPopup} = usePopupDetailContext();
@@ -25,7 +36,6 @@ const PopupDetailBottomButtonRowSection: React.FC = () => {
     );
 
   const waiting = isWaitingPopup(popupDetail.id);
-
   const requestWaitingPopup = async () => {
     if (waiting) {
       return;
@@ -34,17 +44,58 @@ const PopupDetailBottomButtonRowSection: React.FC = () => {
     await startWaitingPopup(popupDetail.id);
     setInProgress(false);
   };
-
+  const checkLoginAndShowModal = useAppStore(
+    state => state.checkLoginAndShowModal,
+    shallow,
+  );
   const requestVisitPopup = async () => {
+    if (!checkLoginAndShowModal('POPUP_VISIT')) {
+      return;
+    }
     if (isVisitedPopup(popupDetail.id)) {
       return;
     }
-    setInProgress(true);
-    await visitPopup();
-    setInProgress(false);
-  };
 
-  const popupId = popupDetail.id;
+    const hasPermission = await requestLocationPermission();
+    if (!hasPermission) {
+      return;
+    }
+
+    Geolocation.getCurrentPosition(
+      async position => {
+        const userLatitude = position.coords.latitude;
+        const userLongitude = position.coords.longitude;
+        const popupLatitude = popupDetail.latitude;
+        const popupLongitude = popupDetail.longitude;
+
+        const distance = calculateDistanceInMeters(
+          userLatitude,
+          userLongitude,
+          popupLatitude,
+          popupLongitude,
+        );
+
+        // 50m 보다는 조금 넉넉하게 100m로 설정 해야 그나마 정확한 방문 인증이 가능할 것으로 보임
+        if (distance > 100) {
+          setModalVisible(true);
+          return;
+        }
+
+        setInProgress(true);
+        try {
+          await visitPopup();
+        } catch (error) {
+          Alert.alert('오류', '방문 인증 중 문제가 발생했습니다.');
+        } finally {
+          setInProgress(false);
+        }
+      },
+      error => {
+        Alert.alert('위치 확인 실패', '사용자의 위치를 가져올 수 없습니다.');
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    );
+  };
 
   const handleVisitorButton = () => setVisitorTooltipOpen(prev => !prev);
 
@@ -71,7 +122,7 @@ const PopupDetailBottomButtonRowSection: React.FC = () => {
   }
 
   if (popupDetail.operationStatus === 'OPERATING') {
-    const visited = isVisitedPopup(popupId);
+    const visited = isVisitedPopup(popupDetail.id);
 
     return (
       <PopupDetailBottomButtonBar>
@@ -88,7 +139,7 @@ const PopupDetailBottomButtonRowSection: React.FC = () => {
               <CountText>{popupDetail.viewCnt}명</CountText>
             </RowContainer>
           </VisitorButton>
-          { visitorTooltipOpen &&
+          {visitorTooltipOpen && (
             <TooltipContainer>
               <FastImageContainer
                 fitOnHeight
@@ -96,7 +147,7 @@ const PopupDetailBottomButtonRowSection: React.FC = () => {
                 source={require('src/Resource/png/real-time-visitors-alert-tooltip.png')}
               />
             </TooltipContainer>
-          }
+          )}
           <Spacer />
           <RadiusBlueButton
             text={visited ? '방문완료' : '방문하기'}

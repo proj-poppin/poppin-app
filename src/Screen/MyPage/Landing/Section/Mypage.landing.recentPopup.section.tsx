@@ -20,7 +20,7 @@ export const MyPageLandingRecentPopupSection = () => {
   useFocusEffect(
     useCallback(() => {
       getRecentPopups();
-    }, []),
+    }, [getRecentPopups]),
   );
 
   // 날짜 포맷팅 함수

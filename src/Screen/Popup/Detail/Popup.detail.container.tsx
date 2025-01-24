@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 import {usePopupDetailContext} from './Provider/Popup.detail.provider';
@@ -19,7 +19,9 @@ import {PopupDetailVisitorSection} from './Section/Popup.detail.visitor.section'
 import DividerLine from 'src/Component/DividerLine/DividerLine';
 import {PopupDetailReviewSection} from './Section/Popup.detail.review.section';
 import PopupDetailBottomButtonRowSection from './Section/Popup.detail.button.row.section';
+import {BlackBackgroundModal} from 'src/Component/Modal';
 import styled from 'styled-components/native';
+import {PopupDetailVisitAlertModal} from 'src/Component/Modal/Popup.detail.visit.alert.modal';
 
 export const PopupDetailContainer = ({
   params,
@@ -28,6 +30,7 @@ export const PopupDetailContainer = ({
 }) => {
   const navigation =
     useNavigation<NavigationProp<AppStackProps, 'PopupDetailScreen'>>();
+  const [modalVisible, setModalVisible] = useState(false);
 
   const {
     randomizeOffset,
@@ -46,7 +49,10 @@ export const PopupDetailContainer = ({
     setTargetReview,
   } = usePopupDetailReviewContext();
 
-  console.log('params: ', params);
+  const navigateHome = () => {
+    setModalVisible(false);
+    // navigation.navigate('LandingBottomTabNavigator');
+  };
 
   /**
    * 팝업 상세 정보 상태값을 설정합니다.
@@ -67,37 +73,23 @@ export const PopupDetailContainer = ({
     const updatePopupDetailReviews = await getPopupDetailReviews(popupId);
     Promise.all([updatePopupDetail, updatePopupDetailReviews]);
   };
-  const onVisitPress = () => {
-    if (visitButtonType === 'VISIT_NOW') {
-      visitPopup();
-    } else if (visitButtonType === 'RECEIVE_REOPEN_ALERT') {
-      requestReopenPopup();
-    }
-  };
 
-  /**
-   * 컴포넌트가 마운트되었을 때 팝업 정보를 업데이트합니다.
-   */
   useEffect(() => {
     let updatePopupInfo: NodeJS.Timeout;
     if ('popup' in params) {
-      /** 전체 투표 정보를 가져온 경우, reanimated thread 와 겹치지 않게 간극을 두고 투표 정보 업데이트를 진행합니다. */
       setPopupDetail(params.popup);
       updatePopupInfo = setTimeout(() => updatePopupDetailInfo(), 500);
     } else {
       updatePopupDetailInfo();
     }
-    //* 2초 이상 페이지에 머무르는 경우 투표 조회를 요청합니다.
     const popupId = 'popup' in params ? params.popup.id : params.popupId;
     return () => {
       clearTimeout(updatePopupInfo);
     };
   }, []);
+
   const loading = popupDetail.id === '';
 
-  /**
-   * 리뷰 아이템을 렌더링하는 함수
-   */
   const RenderItem = ({item}: {item: PopupReviewSchema}) => (
     <ReviewComponent
       randomizeOffset={randomizeOffset}
@@ -108,14 +100,8 @@ export const PopupDetailContainer = ({
     />
   );
 
-  /**
-   * 리스트의 각 아이템을 구분하는 키를 반환하는 함수
-   */
   const keyExtractor = (item: PopupReviewSchema) => item.reviewId.toString();
 
-  /**
-   * 리스트 아이템들 사이의 구분선
-   */
   const ItemSeparatorComponent = () => (
     <View
       style={{
@@ -157,14 +143,23 @@ export const PopupDetailContainer = ({
         }
         keyExtractor={keyExtractor}
       />
-      <PopupDetailBottomButtonRowSection />
+      <PopupDetailBottomButtonRowSection
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
+      <BlackBackgroundModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        allowIgnore={true}>
+        <PopupDetailVisitAlertModal onComplete={navigateHome} />
+      </BlackBackgroundModal>
     </PopupDetailContainerView>
   );
 };
 
 const PopupDetailContainerView = styled.View`
-    flex: 1;
-    background-color: white;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
 `;

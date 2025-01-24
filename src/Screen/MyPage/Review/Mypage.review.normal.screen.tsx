@@ -49,7 +49,9 @@ export const NormalReviewWriteScreen: React.FC = () => {
   // 버튼 활성화 상태 업데이트
   useEffect(() => {
     const isFormValid =
-      selectedPopup && reviewText.trim().length >= 10 && areAllCategoriesSelected();
+      selectedPopup &&
+      reviewText.trim().length >= 10 &&
+      areAllCategoriesSelected();
     setIsButtonDisabled(!isFormValid);
   }, [selectedPopup, reviewText, categoryGroups]);
 

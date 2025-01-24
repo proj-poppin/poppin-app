@@ -28,11 +28,13 @@ export const VisitedReviewWriteScreen: React.FC<
     handleAddImages: openGallery,
     handleDeleteImage,
     submitReview,
+    setIsVisited,
   } = useReviewWriteContext();
 
   useEffect(() => {
     setSelectedPopup(selectedPopup);
-  }, [selectedPopup, setSelectedPopup]);
+    setIsVisited(true);
+  }, [selectedPopup, setSelectedPopup, setIsVisited]);
 
   return (
     <ScrollViewPage

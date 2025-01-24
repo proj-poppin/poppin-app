@@ -32,7 +32,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="com.googleusercontent.apps.807321583109-ga5ufm8ce8kfnf7nn12ucse59ihm0jj7" android:host="popup" />
                 <data android:host="kakaolink" android:scheme="@string/KAKAO_API_KEY_WITH_KAKAO" />
-                <!-- 🚨Redirect URI: "kakao${각자 AIP KEY}://oauth🚨 -->
+                <!-- 🚨Redirect URI: "kakao${각자 API KEY}://oauth🚨 -->
                 <data android:host="oauth" android:scheme="@string/KAKAO_API_KEY_WITH_KAKAO" />
             </intent-filter>
         </activity>

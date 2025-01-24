@@ -13,6 +13,8 @@ import {
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 import {useImagePicker} from '../../../Util';
 import {getGalleryImages} from '../../../Util';
+import {useUserStore} from 'src/Zustand/User/user.zustand';
+import shallow from 'zustand/shallow';
 
 export interface CategoryType {
   id: number;
@@ -39,6 +41,8 @@ type ReviewWriteContextProp = {
   searchedPopupStores: PopupSchema[];
   searchKeyword: string;
   setSearchKeyword: (text: string) => void;
+  isVisited: boolean;
+  setIsVisited: (visited: boolean) => void;
 
   // 리뷰 작성 상태
   categoryGroups: CategoryGroupType[];
@@ -78,6 +82,8 @@ const ReviewWriteContext = createContext<ReviewWriteContextProp>({
   showResults: false,
   setShowResults: () => {},
   selectedPopup: undefined,
+  isVisited: false,
+  setIsVisited: () => {},
   setSelectedPopup: () => {},
   handleCategorySelect: () => {},
   getSelectedCategories: () => ({
@@ -141,15 +147,26 @@ export const ReviewWriteProvider = ({
   const [selectedPopup, setSelectedPopup] = useState<PopupSchema>();
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [images, setImages] = useState<Asset[]>([]);
+  const [isVisited, setIsVisited] = useState<boolean>(false);
 
+  const {setUser, user} = useUserStore(
+    state => ({setUser: state.setUser, user: state.user}),
+    shallow,
+  );
+
+  setUser;
   // 이미지 피커 설정
   const handleAddImages = async () => {
-    try {
-      const images = await getGalleryImages();
-      if (!images || !Boolean(images.length)) return;
-    } catch (error) {
-      console.error('이미지 선택 오류:', error);
-      Alert.alert('알림', '이미지를 선택하는 중 오류가 발생했습니다.');
+    const selectedImages = await getGalleryImages({
+      sectionLimit: 5 - images.length,
+      requestRationale: {
+        title: '카메라 권한 필요',
+        message: '후기 작성하기를 위해 카메라 권한이 필요합니다.',
+        buttonPositive: '확인',
+      },
+    });
+    if (selectedImages) {
+      setImages([...images, ...selectedImages]);
     }
   };
 
@@ -198,10 +215,7 @@ export const ReviewWriteProvider = ({
       setSubmitting(true);
       const {visitDate, satisfaction, congestion} = getSelectedCategories();
 
-      // FormData 생성
       const formData = new FormData();
-
-      // 필수 데이터 추가
       formData.append('popupId', selectedPopup!.id);
       formData.append('visitDate', visitDate);
       formData.append('satisfaction', satisfaction);
@@ -218,27 +232,17 @@ export const ReviewWriteProvider = ({
         }
       });
 
-      // API 호출
       const response = await axiosMypageReviewReport(formData);
 
       if (response?.success) {
-        // 성공 시 초기화
-        setCategoryGroups(prev =>
-          prev.map(group => ({
-            ...group,
-            categories: group.categories.map(cat => ({
-              ...cat,
-              selected: false,
-            })),
-          })),
-        );
-        setReviewText('');
-        setSelectedPopup(undefined);
-
-        // TODO: 성공 메시지 또는 네비게이션 처리
-        Alert.alert('알림', '리뷰가 성공적으로 제출되었습니다.');
-
-        navigation.dispatch(StackActions.replace('LandingBottomTabNavigator'));
+        handleSuccessSubmission();
+      } else {
+        // 에러 코드에 따른 처리
+        if (response?.error?.code === '40033') {
+          Alert.alert('알림', '이미 리뷰를 작성한 팝업 스토어입니다.');
+        } else {
+          Alert.alert('알림', '리뷰 제출에 실패했습니다. 다시 시도해주세요.');
+        }
       }
     } catch (error) {
       console.error('리뷰 제출 실패:', error);
@@ -246,6 +250,34 @@ export const ReviewWriteProvider = ({
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleSuccessSubmission = () => {
+    // 카테고리 초기화
+    setCategoryGroups(prev =>
+      prev.map(group => ({
+        ...group,
+        categories: group.categories.map(cat => ({
+          ...cat,
+          selected: false,
+        })),
+      })),
+    );
+
+    // 사용자 정보 업데이트
+    const updatedUser = {
+      ...user,
+      writtenReview: user.writtenReview + 1,
+      ...(isVisited && {visitedPopupCnt: user.visitedPopupCnt - 1}),
+    };
+    setUser(updatedUser);
+
+    // 폼 초기화
+    setReviewText('');
+    setSelectedPopup(undefined);
+
+    Alert.alert('알림', '리뷰가 성공적으로 제출되었습니다.');
+    navigation.dispatch(StackActions.replace('LandingBottomTabNavigator'));
   };
 
   // 유효성 검사 함수 수정
@@ -291,6 +323,8 @@ export const ReviewWriteProvider = ({
     handleCategorySelect,
     getSelectedCategories,
     images,
+    isVisited,
+    setIsVisited,
     handleAddImages,
     handleDeleteImage,
     submitting,

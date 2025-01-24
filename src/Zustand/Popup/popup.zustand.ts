@@ -211,7 +211,15 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
   },
 
   setRecommendedPopupStores: (recommendedPopupStores: PopupSchema[]) => {
-    set({recommendedPopupStores});
+    set(state => {
+      if (
+        JSON.stringify(state.recommendedPopupStores) ===
+        JSON.stringify(recommendedPopupStores)
+      ) {
+        return state;
+      }
+      return {recommendedPopupStores};
+    });
   },
 
   isVisitedPopup: (popupId: string) => {

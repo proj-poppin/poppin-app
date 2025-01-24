@@ -9,6 +9,7 @@ import {usePopupScreenStore} from '../../Screen/Popup/Landing/Popup.landing.zust
 import {OperationStatus} from '../../Object/Type/operationStatus.type';
 import {logger} from 'react-native-logs';
 import {useUserStore} from '../User/user.zustand';
+import {ReportScreenProps} from 'src/Screen/MyPage/Report';
 export type HomeLandingSectionType =
   | 'NEWLY_OPENED'
   | 'CLOSING_SOON'
@@ -26,6 +27,7 @@ export type AppModalType =
   | 'NO_POPUP_STORES_NEARBY' // 50M 근처 팝업 스토어 없음
   | 'REPORT_SUCCESS' // 신고 성공
   | 'POPUP_REPORT_SUCCESS'
+  | 'POPUP_REPORT_CANCEL'
   | 'ERROR_TRY_AGAIN' // 오류 발생, 재시도 요청
   | 'SUBMIT_REVIEW_CONFIRMATION' // 후기를 제출할 것인지 확인
   | 'REVIEW_SUBMITTED' // 후기 제출 완료
@@ -45,6 +47,7 @@ type RequireLoginModalType =
   | 'POPUP_BLOCK'
   | 'POPUP_MODIFY_REQUEST'
   | 'REVIEW_REPORT'
+  | 'REVIEW_LIKE'
   | 'POPUP_INQUIRY'
   | 'ALARM'
   | 'USER_BLOCK'
@@ -52,6 +55,7 @@ type RequireLoginModalType =
 
 type AppModalProps = {
   requireLogin?: {type: RequireLoginModalType};
+  cancelReportType?: ReportScreenProps;
 };
 
 type AppStoreProps = {

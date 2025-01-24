@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {LandingScreenHeader} from 'src/Component/View';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import { moderateScale} from 'src/Util';
+import {moderateScale} from 'src/Util';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 import {Animated, StyleSheet} from 'react-native';
 import InfoIcon from 'src/Resource/svg/info-icon.svg';
@@ -20,14 +20,13 @@ export const HomeLandingScreenHeader = () => {
 };
 
 const RightIcons = () => {
-
   const navigation =
-    useNavigation<NavigationProp<AppStackProps,'BeginnerTipsScreen'>>();
+    useNavigation<NavigationProp<AppStackProps, 'BeginnerTipsScreen'>>();
   const [visible, setVisible] = useState(true);
   const fadeAnim = new Animated.Value(1);
 
   useEffect(() => {
-    if(visible) {
+    if (visible) {
       // 5초 동안 보여주고, 그 후 2초 동안 천천히 사라짐
       Animated.sequence([
         Animated.timing(fadeAnim, {
@@ -40,23 +39,40 @@ const RightIcons = () => {
           duration: 2000,
           useNativeDriver: true,
         }),
-      ]).start(()=> setVisible(false));
+      ]).start(() => setVisible(false));
     }
   }, [visible]);
 
   const onPressInfoIcon = () => {
-    navigation.navigate('BeginnerTipsScreen',{});
+    navigation.navigate('BeginnerTipsScreen', {});
+  };
+
+  const onPressSetting = async () => {
+    if (!checkLoginAndShowModal('ALARM')) {
+      return;
+    }
+    // makeFirebaseLogEvent(MYPAGE_LOGS.landing.goto_setting);
+    await setUserNotificationSetting({lastCheck: getCurrentISOTime()});
+    // navigation.navigate('MypageSettingScreen', {});
+  };
+
+  const onPressAlarm = () => {
+    if (!checkLoginAndShowModal('ALARM')) {
+      return;
+    }
+    // makeFirebaseLogEvent(MYPAGE_LOGS.landing.goto_notification_list);
+    navigation.navigate('AlarmNotificationScreen', {});
   };
 
   return (
     <Icons__Container>
       <InfoIcon style={styles.icon__margin} onPress={onPressInfoIcon} />
-      <NotificationButtonSegment/>
+      <NotificationButtonSegment />
       {visible && (
-          <Animated.View style={[styles.headerInfoSvg,{opacity:fadeAnim}]}>
-            <HeaderInfoSvg />
-          </Animated.View>
-          )}
+        <Animated.View style={[styles.headerInfoSvg, {opacity: fadeAnim}]}>
+          <HeaderInfoSvg />
+        </Animated.View>
+      )}
     </Icons__Container>
   );
 };

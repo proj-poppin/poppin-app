@@ -17,16 +17,20 @@ import {
   getPreferenceTitle,
 } from 'src/Object/preference.enum';
 import {useAuthPreferenceSettingScreenStore} from './Auth.preference.zustand';
+import {BlackBackgroundModal} from 'src/Component/Modal';
+import {PreferenceSkipModal} from 'src/Component/Modal/Auth.preference.skip.modal';
 
+export interface AuthPreferenceScreenProps {}
 export const AuthPreferenceScreen = ({
   route,
   navigation,
 }: NativeStackScreenProps<AppStackProps, 'AuthPreferenceScreen'>) => {
   const {user} = useUserStore(state => ({user: state.user}), shallow);
-  const {selectedTags, toggleTag, isStepValid, savePreferences} =
+  const {draftSelectedTags, toggleTag, isStepValid, savePreferences} =
     useAuthPreferenceSettingScreenStore();
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const categories = [
     preferenceKeysForPopupCategory,
@@ -41,7 +45,7 @@ export const AuthPreferenceScreen = ({
       const success = await savePreferences();
       if (success) {
         alert('취향 설정이 완료되었습니다!');
-        // navigation.navigate('LandingBottomTabNavigator');
+        navigation.navigate('LandingBottomTabNavigator');
       } else {
         alert('취향 설정에 실패했습니다. 다시 시도해주세요.');
       }
@@ -55,86 +59,102 @@ export const AuthPreferenceScreen = ({
   };
 
   const handleSkip = () => {
-    navigation.navigate('LandingBottomTabNavigator');
+    setModalVisible(true); // 모달 표시
+  };
+
+  const navigateHome = () => {
+    setModalVisible(false); // 모달 닫기
+    navigation.navigate('LandingBottomTabNavigator'); // 홈으로 이동
   };
 
   return (
-    <Screen
-      fullScreen
-      ScreenHeader={
-        <>
-          <ScreenHeader
-            title="나의 취향 설정하기"
-            onPressRightComponent={handleSkip}
-            RightStyle={{paddingLeft: 36}}
-            RightComponents={<SkipText>건너뛰기</SkipText>}
-          />
-          <ProgressBarStepComponentHeader
-            step={currentStep}
-            style={{width: '90%', alignItems: 'center'}}
-          />
-        </>
-      }
-      contentContainerStyle={{
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        paddingTop: moderateScale(20),
-      }}
-      ScreenContent={
-        <>
-          <PreferenceSettingMotivationText>
-            {currentStep === 1
-              ? `${user?.nickname}님이 \n선호하는 팝업을 알려주세요`
-              : currentStep === 2
-              ? `${user?.nickname}님의 관심사가 궁금해요`
-              : `${user?.nickname}님은\n주로 누구와 팝업에 방문하시나요?`}
-          </PreferenceSettingMotivationText>
-          <CenterCategoryContainer>
-            <MultipleChoicePossibleBlueText>
-              *복수 선택 가능
-            </MultipleChoicePossibleBlueText>
-            <CategoryWrapper>
-              {categories[currentStep - 1].map(key => (
-                <CategorySelectButton
-                  key={key}
-                  preferenceKey={key}
-                  isSelected={selectedTags[key]}
-                  onPress={() => toggleTag(key)}>
-                  {getPreferenceTitle(key)}
-                </CategorySelectButton>
-              ))}
-            </CategoryWrapper>
-          </CenterCategoryContainer>
-          <GreyText>마이페이지에서 언제든지 수정할 수 있어요!</GreyText>
-        </>
-      }
-      BottomButton={
-        currentStep === 1 ? (
-          <CommonCompleteButton
-            onPress={handleNext}
-            isDisabled={!isStepValid(currentStep)}
-            title="다음"
-          />
-        ) : (
-          <RowButtonContainer>
-            <CommonCompleteButton
-              isPreviousButton
-              style={{width: '48%'}}
-              onPress={handlePrevious}
-              isDisabled={false}
-              title="이전"
+    <>
+      <Screen
+        fullScreen
+        ScreenHeader={
+          <>
+            <ScreenHeader
+              title="나의 취향 설정하기"
+              onPressRightComponent={handleSkip}
+              RightStyle={{paddingLeft: 36}}
+              RightComponents={<SkipText>건너뛰기</SkipText>}
             />
+            <ProgressBarStepComponentHeader
+              step={currentStep}
+              style={{width: '90%', alignItems: 'center'}}
+            />
+          </>
+        }
+        contentContainerStyle={{
+          flex: 1,
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          paddingTop: moderateScale(20),
+        }}
+        ScreenContent={
+          <>
+            <PreferenceSettingMotivationText>
+              {currentStep === 1
+                ? `${user?.nickname}님이 \n선호하는 팝업을 알려주세요`
+                : currentStep === 2
+                ? `${user?.nickname}님의 관심사가 궁금해요`
+                : `${user?.nickname}님은\n주로 누구와 팝업에 방문하시나요?`}
+            </PreferenceSettingMotivationText>
+            <CenterCategoryContainer>
+              <MultipleChoicePossibleBlueText>
+                *복수 선택 가능
+              </MultipleChoicePossibleBlueText>
+              <CategoryWrapper>
+                {categories[currentStep - 1].map(key => (
+                  <CategorySelectButton
+                    key={key}
+                    preferenceKey={key}
+                    isSelected={draftSelectedTags[key]}
+                    onPress={() => toggleTag(key)}>
+                    {getPreferenceTitle(key)}
+                  </CategorySelectButton>
+                ))}
+              </CategoryWrapper>
+            </CenterCategoryContainer>
+            <GreyText>마이페이지에서 언제든지 수정할 수 있어요!</GreyText>
+          </>
+        }
+        BottomButton={
+          currentStep === 1 ? (
             <CommonCompleteButton
-              style={{width: '48%'}}
               onPress={handleNext}
               isDisabled={!isStepValid(currentStep)}
-              title={currentStep === 3 ? '완료' : '다음'}
+              title="다음"
             />
-          </RowButtonContainer>
-        )
-      }
-    />
+          ) : (
+            <RowButtonContainer>
+              <CommonCompleteButton
+                isPreviousButton
+                style={{width: '48%'}}
+                onPress={handlePrevious}
+                isDisabled={false}
+                title="이전"
+              />
+              <CommonCompleteButton
+                style={{width: '48%'}}
+                onPress={handleNext}
+                isDisabled={!isStepValid(currentStep)}
+                title={currentStep === 3 ? '완료' : '다음'}
+              />
+            </RowButtonContainer>
+          )
+        }
+      />
+      <BlackBackgroundModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        allowIgnore={true}>
+        <PreferenceSkipModal
+          onSkip={navigateHome}
+          onComplete={() => setModalVisible(false)}
+        />
+      </BlackBackgroundModal>
+    </>
   );
 };
 

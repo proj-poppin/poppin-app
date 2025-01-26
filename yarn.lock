@@ -3830,6 +3830,7 @@ __metadata:
     react-native-select-dropdown: 2.0.4
     react-native-svg: ^15.8.0
     react-native-svg-transformer: 1.5.0
+    react-native-swiper: ^1.6.0
     react-native-tab-view: 3.1.1
     react-native-toast-message: 2.1.5
     react-native-vector-icons: 10.0.3
@@ -10966,6 +10967,15 @@ __metadata:
   version: 1.0.5
   resolution: "react-native-swipe-gestures@npm:1.0.5"
   checksum: d637bc40baa50fa0ce3b6cf2b494efeceaea03cc3875cb7cf7d76922914a21d5e6b098d4a084fb291ce61bfbb0a241c03cff24b15bebf0cfae1c146f4ad10d92
+  languageName: node
+  linkType: hard
+
+"react-native-swiper@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "react-native-swiper@npm:1.6.0"
+  dependencies:
+    prop-types: ^15.5.10
+  checksum: 21e7a270dce6d249f718377a8aa2578c9a89b2b076710f6a60dc849ace5b47ade9e071345607947e738c0fdb06b17d9dad6ef99a8f76d7072b13bf3655026225
   languageName: node
   linkType: hard
 

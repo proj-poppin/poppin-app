@@ -244,7 +244,7 @@ export function SplashScreenProvider({
     if (loginData !== null) {
       await setStorage('EMAIL', loginData.data.user.email);
       await useUserStore.getState().setLoggedInUserInfo(loginData);
-      logger.createLogger().info('loginData', loginData);
+      // logger.createLogger().info('loginData', loginData);
       // useUserStore.getState().setUserActivities(loginData.data.userActivities);
       // useUserStore.getState().setFirebaseTopicSubscription(loginData.data.userNotificationSetting);
       // useUserStore.

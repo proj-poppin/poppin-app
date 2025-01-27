@@ -159,9 +159,6 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
   };
 
   const scrapPopup = async () => {
-    console.log('현재 scrapping 상태:', scrapping);
-    console.log('scrapPopup called, popupDetail.id:', popupDetail.id);
-    console.log('scrapPopup called, scrapping:', scrapping);
     if (!useAppStore.getState().checkLoginAndShowModal('POPUP_SCRAP')) {
       return;
     }

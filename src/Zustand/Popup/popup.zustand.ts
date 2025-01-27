@@ -332,31 +332,30 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
   // * Spread
   // * 업데이트된 팝업 정보 전파
   spreadPopupUpdated: (popup: PopupSchema) => {
-    console.log('spreadPopupUpdated');
     set({
-      // recommendedPopupStores: updateVoteListItem(
-      //   popup,
-      //   get().recommendedPopupStores,
-      // ),
-      // popularTop5PopupStores: updateVoteListItem(
-      //   popup,
-      //   get().popularTop5PopupStores,
-      // ),
-      // newlyOpenedPopupStores: updateVoteListItem(
-      //   popup,
-      //   get().newlyOpenedPopupStores,
-      // ),
-      // closingSoonPopupStores: updateVoteListItem(
-      //   popup,
-      //   get().closingSoonPopupStores,
-      // ),
-      // searchedPopupStores: updateVoteListItem(popup, get().searchedPopupStores),
-      // scrappedPopupStores: updateVoteListItem(popup, get().scrappedPopupStores),
-      // visitedPopupStores: updateVoteListItem(popup, get().visitedPopupStores),
-      // interestedPopupStores: updateVoteListItem(
-      //   popup,
-      //   get().interestedPopupStores,
-      // ),
+      recommendedPopupStores: updateVoteListItem(
+        popup,
+        get().recommendedPopupStores,
+      ),
+      popularTop5PopupStores: updateVoteListItem(
+        popup,
+        get().popularTop5PopupStores,
+      ),
+      newlyOpenedPopupStores: updateVoteListItem(
+        popup,
+        get().newlyOpenedPopupStores,
+      ),
+      closingSoonPopupStores: updateVoteListItem(
+        popup,
+        get().closingSoonPopupStores,
+      ),
+      searchedPopupStores: updateVoteListItem(popup, get().searchedPopupStores),
+      scrappedPopupStores: updateVoteListItem(popup, get().scrappedPopupStores),
+      visitedPopupStores: updateVoteListItem(popup, get().visitedPopupStores),
+      interestedPopupStores: updateVoteListItem(
+        popup,
+        get().interestedPopupStores,
+      ),
     });
   },
 

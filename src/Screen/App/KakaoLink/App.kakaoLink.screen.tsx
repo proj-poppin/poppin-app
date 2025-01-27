@@ -2,14 +2,11 @@ import React, {useEffect} from 'react';
 import {LinkingOptions} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import shallow from 'zustand/shallow';
-import {
-  // makeFirebaseLogEvent,
-  Destination,
-  // navigateInAppScreen,
-} from 'src/Util';
+import {Destination, navigateInAppScreen} from 'src/Util';
 import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 import {useAppStore} from '../../../Zustand/App/app.zustand';
 import Config from 'react-native-config';
+import {axiosGetPopupById} from '../../../Axios/Popup/popup.get.axios';
 // import {APP_LOGS} from 'src/Constant';
 
 export type KakaoLinkScreenProps = {
@@ -29,9 +26,13 @@ export type KakaoLinkScreenProps = {
  */
 export const kakaoLinkingOption: LinkingOptions<any> = {
   prefixes: [`${Config.KAKAO_API_KEY_WITH_KAKAO}://`],
-  config: {screens: {KakaoLinkScreen: 'kakaolink'}},
+  config: {
+    screens: {
+      PopupDetailScreen: 'popup/:popupId',
+      KakaoLinkScreen: 'kakaolink',
+    },
+  },
 };
-
 /**
  * 카카오톡 공유하기 링크를 통해 앱에 접근했을 때, 해당 링크를 처리하는 화면입니다.
  * (링크를 만드는 방법은 kakao.util.ts 를 참고)
@@ -46,6 +47,7 @@ export const kakaoLinkingOption: LinkingOptions<any> = {
  * @link https://developers.kakao.com/docs/latest/ko/message/js-link#custom-scheme
  * @author 도형
  */
+
 export const KakaoLinkScreen = ({
   route,
   navigation,
@@ -54,7 +56,6 @@ export const KakaoLinkScreen = ({
     state => ({setInitialDestination: state.setInitialDestination}),
     shallow,
   );
-
   const {kakaoLinkParams} = route.params;
 
   const destination = kakaoLinkParams
@@ -64,28 +65,22 @@ export const KakaoLinkScreen = ({
   const bootstrapped = useAppStore(state => state.bootstrapped);
 
   useEffect(() => {
-    //* 만약 앱 실행시 초기 정보를 가져오지 않았다면, (= 카카오톡 공유하기 링크를 통해 앱이 처음 실행된 경우)
-    //* initialDestination 를 설정하고 Splash Screen 으로 이동합니다.
-    // if (!bootstrapped) {
-    //   makeFirebaseLogEvent(APP_LOGS.open_app_by_kakao(destination));
-    //   setInitialDestination(destination);
-    //   navigation.replace('SplashScreen', {});
-    //   return;
-    // }
-    //
-    // //* 만약 그렇지 않다면, (= 앱이 이미 실행되어 있던 경우)
-    // //* 어차피 이 화면은 비어있기 때문에, params 가 존재하든 하지 않든 일단 .goBack() 한 후 목적지로 이동합니다.
-    // navigation.goBack();
-    // makeFirebaseLogEvent(APP_LOGS.goto_app_by_kakao(destination));
-    // if (destination.researchId) {
-    //   axiosCountupKakaoShareAccessToResearch(destination.researchId);
-    // }
-    // if (destination.voteId) {
-    //   axiosCountupKakaoShareAccessToVote(destination.voteId);
-    // }
-    //
-    // navigateInAppScreen({navigation, destination});
-  }, []);
+    if (!bootstrapped) {
+      if (destination.popupId) {
+        axiosGetPopupById(destination.popupId);
+      }
 
-  return <></>;
+      console.log('destination1: ', destination);
+
+      setInitialDestination(destination);
+      navigation.replace('SplashScreen', {});
+      return;
+    }
+
+    //* 만약 그렇지 않다면, (= 앱이 이미 실행되어 있던 경우)
+    //* 어차피 이 화면은 비어있기 때문에, params 가 존재하든 하지 않든 일단 .goBack() 한 후 목적지로 이동합니다.
+    navigation.goBack();
+    navigateInAppScreen({navigation, destination});
+  }, [bootstrapped, destination, navigation, setInitialDestination]);
+  return null;
 };

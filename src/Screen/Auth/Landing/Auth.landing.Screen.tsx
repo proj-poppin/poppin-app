@@ -68,6 +68,7 @@ export function AuthLandingScreen({
     navigation.navigate('LoginScreen', {
       popWhenSucceed: popWhenSucceed + 1,
     });
+    setIsLoading(false);
   }
 
   function onPressSignup() {

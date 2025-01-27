@@ -86,7 +86,7 @@ export const axiosGetPopupById = async (popupId: string) => {
       url: `v1/${POPUP}/${DETAIL}/${popupId}`,
     })
     .then(response => {
-      console.log(response.data.data);
+      // console.log(response.data.data);
       return response.data.data;
     })
     .catch(error => {

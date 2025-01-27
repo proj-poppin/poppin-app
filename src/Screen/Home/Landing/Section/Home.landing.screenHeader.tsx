@@ -41,25 +41,22 @@ const RightIcons = () => {
         }),
       ]).start(() => setVisible(false));
     }
-  }, [visible]);
+  }, [fadeAnim, visible]);
 
   const onPressInfoIcon = () => {
     navigation.navigate('BeginnerTipsScreen', {});
   };
 
-  const onPressSetting = async () => {
-    if (!checkLoginAndShowModal('ALARM')) {
-      return;
-    }
-    // makeFirebaseLogEvent(MYPAGE_LOGS.landing.goto_setting);
-    await setUserNotificationSetting({lastCheck: getCurrentISOTime()});
-    // navigation.navigate('MypageSettingScreen', {});
-  };
+  // const onPressSetting = async () => {
+  //   if (!checkLoginAndShowModal('ALARM')) {
+  //     return;
+  //   }
+  //   // makeFirebaseLogEvent(MYPAGE_LOGS.landing.goto_setting);
+  //   await setUserNotificationSetting({lastCheck: getCurrentISOTime()});
+  //   // navigation.navigate('MypageSettingScreen', {});
+  // };
 
   const onPressAlarm = () => {
-    if (!checkLoginAndShowModal('ALARM')) {
-      return;
-    }
     // makeFirebaseLogEvent(MYPAGE_LOGS.landing.goto_notification_list);
     navigation.navigate('AlarmNotificationScreen', {});
   };
@@ -67,7 +64,7 @@ const RightIcons = () => {
   return (
     <Icons__Container>
       <InfoIcon style={styles.icon__margin} onPress={onPressInfoIcon} />
-      <NotificationButtonSegment />
+      <NotificationButtonSegment navigateOnPress={onPressAlarm} />
       {visible && (
         <Animated.View style={[styles.headerInfoSvg, {opacity: fadeAnim}]}>
           <HeaderInfoSvg />

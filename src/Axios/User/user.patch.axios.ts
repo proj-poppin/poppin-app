@@ -39,10 +39,12 @@ export const axiosUpdateUserProfile = async (formData: FormData) => {
 export const axiosUpdateUserNotificationSetting = async (
   userNotificationSetting: Partial<UserNotificationSettingSchema>,
 ) => {
+  // console.log('userNotificationSetting!!!@', userNotificationSetting);
+  // console.log('request data!!!', {...userNotificationSetting});
   return await customAxios
     .request<void>({
       method: 'PATCH',
-      url: `${USERS}/notifications/setting`,
+      url: `v1/${USERS}/notifications/setting`,
       data: {...userNotificationSetting},
     })
     .then(response => {

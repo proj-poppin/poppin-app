@@ -38,8 +38,8 @@ type NotificationStoreProps = {
   gettingNewer: boolean;
   gettingOlder: boolean;
   noMoreNotifications: {
-    popups: [];
-    notices: [];
+    popups: boolean;
+    notices: boolean;
   };
   getNewNotifications: () => Promise<void>;
   getOlderNotifications: (category: NotificationCategory) => Promise<void>;
@@ -65,10 +65,25 @@ export const useNotificationStore = create<NotificationStoreProps>(
     },
 
     refreshNotifications: async () => {
-      const newNotifications = await axiosGetRecentNotifications();
-      if (newNotifications !== null) {
-        set({notifications: newNotifications});
+      if (get().gettingNewer) {
+        return;
       }
+      set({gettingNewer: true});
+
+      const newNotifications = await axiosGetRecentNotifications();
+
+      // console.log('newNotifications:', newNotifications);
+      //
+      // if (newNotifications !== null) {
+      //   set({
+      //     notifications: newNotifications,
+      //     noMoreNotifications: {
+      //       popups: false,
+      //       notices: false,
+      //     },
+      //   });
+      // }
+      set({gettingNewer: false});
     },
 
     checkNotification: async (param: {
@@ -124,8 +139,8 @@ export const useNotificationStore = create<NotificationStoreProps>(
     gettingNewer: false,
     gettingOlder: false,
     noMoreNotifications: {
-      popups: [],
-      notices: [],
+      popups: false,
+      notices: false,
     },
     getNewNotifications: async () => {
       if (get().gettingNewer) {
@@ -193,8 +208,8 @@ export const useNotificationStore = create<NotificationStoreProps>(
         gettingNewer: false,
         gettingOlder: false,
         noMoreNotifications: {
-          popups: [],
-          notices: [],
+          popups: false,
+          notices: false,
         },
       });
     },

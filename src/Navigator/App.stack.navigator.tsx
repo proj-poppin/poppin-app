@@ -123,7 +123,9 @@ import {
   AlarmSettingScreen,
   AlarmSettingScreenProps,
 } from '../Screen/Alarm/Alarm.setting.screen';
-import BeginnerTipsScreen, {BeginnerTipsScreenProps} from "../Tip/BeginnerTipsScreen";
+import BeginnerTipsScreen, {
+  BeginnerTipsScreenProps,
+} from '../Tip/BeginnerTipsScreen';
 import {
   MypageKeywordAlarmScreen,
   MypageKeywordAlarmScreenProps,
@@ -218,12 +220,14 @@ export function AppStackNavigator() {
       ref={navigationRef}
       onReady={() => {
         routeNameRef.current = navigationRef?.getCurrentRoute()?.name;
+        // console.log('Initial Screen:', routeNameRef.current);
       }}
       onStateChange={async () => {
         const previousRouteName = routeNameRef.current;
         const currentRouteName = navigationRef?.getCurrentRoute()?.name;
 
         if (previousRouteName !== currentRouteName) {
+          // console.log('Navigated to:', currentRouteName);
           await analytics().logScreenView({
             screen_name: currentRouteName,
             screen_class: currentRouteName,
@@ -377,7 +381,7 @@ const AppStackScreen = () => {
     });
 
     return unsubscribe;
-  }, []);
+  }, [navigation, setInitialDestination]);
   // useEffect(() => {
   //   //* background 상태에서 푸시 알림으로 진입한 경우: 곧바로 해당 화면으로 이동
   //   messaging().onNotificationOpenedApp(remoteMessage => {
@@ -552,8 +556,8 @@ const AppStackScreen = () => {
         options={{animation: 'none'}}
       />
       <AppStack.Screen
-          name="BeginnerTipsScreen"
-          component={BeginnerTipsScreen}
+        name="BeginnerTipsScreen"
+        component={BeginnerTipsScreen}
       />
       <AppStack.Group>
         <AppStack.Screen

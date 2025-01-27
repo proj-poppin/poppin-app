@@ -14,6 +14,8 @@ import {usePopupStore} from '../../../../Zustand/Popup/popup.zustand';
 import {shareFeedTemplate} from '@react-native-kakao/share';
 import {useAppStore} from 'src/Zustand/App/app.zustand';
 import shallow from 'zustand/shallow';
+import Config from 'react-native-config';
+import {DETAIL, POPUP} from '../../../../Axios/axios.core';
 
 const PopupDetailIconSection = () => {
   const {popupDetail, scrapping, scrapPopup, unScrapPopup} =
@@ -68,37 +70,42 @@ const PopupDetailIconSection = () => {
 
   const handleShare = async () => {
     try {
-      // 필요한 데이터 추출
       const {name, introduce, imageUrls} = popupDetail;
-
-      // 첫 번째 이미지 URL 가져오기
       const mainImageUrl = imageUrls?.[0];
 
-      // 링크 설정 (웹 및 모바일 URL)
-      const link = {
-        webUrl: 'http://43.202.82.111:8080/api/', // 앱 웹 URL
-        mobileWebUrl: 'http://43.202.82.111:8080', // 앱 모바일 URL
+      const destination = {
+        type: 'popup',
+        popupId: popupDetail.id.toString(),
       };
 
-      // 카카오톡 공유 템플릿
+      // Link parameters with correct typing
+      const link = {
+        webUrl: `${Config.API_URL}/popup/${popupDetail.id}`,
+        mobileWebUrl: `${Config.API_URL}/popup/${popupDetail.id}`,
+        androidExecutionParams: {
+          kakaoLinkParams: JSON.stringify(destination),
+        },
+        iosExecutionParams: {
+          kakaoLinkParams: JSON.stringify(destination),
+        },
+      };
+
       await shareFeedTemplate({
         template: {
           content: {
-            title: name || '디폴트 팝업 이름', // 팝업 이름
-            description: introduce || '팝업스토어 한줄 소개가 없습니다.', // 한줄 소개
-            imageUrl: mainImageUrl, // 첫 번째 이미지 URL
-            link, // 링크 정보
+            title: name || '디폴트 팝업 이름',
+            description: introduce || '팝업스토어 한줄 소개가 없습니다.',
+            imageUrl: mainImageUrl,
+            link,
           },
           buttons: [
             {
-              title: '자세히 보기', // 버튼 제목
-              link, // 링크 정보
+              title: '자세히 보기',
+              link,
             },
           ],
         },
       });
-
-      console.log('카카오톡 공유 성공');
     } catch (error) {
       console.error('카카오톡 공유 실패', error);
     }

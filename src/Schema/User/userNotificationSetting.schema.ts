@@ -10,9 +10,6 @@ export type UserNotificationSettingSchema = {
   // 알림 설정 변경 시간
   lastUpdatedAt?: string;
 
-  /** 푸시 알림을 위한 fcm 토큰 */
-  fcmToken: string;
-
   /** 앱 푸시 알림 수신 자체에 대한 설정 */
   appPush: boolean; // 기존 pushYn
 
@@ -34,7 +31,6 @@ export type UserNotificationSettingSchema = {
 
 export const BlankUserNotificationSetting: UserNotificationSettingSchema = {
   lastCheck: '',
-  fcmToken: '',
   appPush: true,
   nightPush: true,
   helpfulReviewPush: true,

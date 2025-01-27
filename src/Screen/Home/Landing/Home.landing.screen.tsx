@@ -116,7 +116,7 @@ export const HomeLandingScreen = ({
       navigateInAppScreen({navigation, destination: initialDestination});
       setInitialDestination(undefined);
     }
-  }, [initialDestination]);
+  }, [initialDestination, navigation, setInitialDestination]);
 
   return (
     <Container>

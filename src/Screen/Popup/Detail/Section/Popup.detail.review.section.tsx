@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ScrollView, Pressable, View, FlatList} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import styled from 'styled-components/native';
 import {SectionContainer} from '../../../../Unit/View';
 import {usePopupDetailContext} from '../Provider/Popup.detail.provider';
@@ -18,11 +18,11 @@ import PurpleCheckSelectionRow from '../../../../Component/Purple.Selection.Comp
 import {EnumValueWithName} from '../../../../Object/Type/enum.type';
 import {BlankDropdown} from '../../../../Component/Dropdown';
 import UnderlinedTextButton from '../../../../Component/UnderlineTextButton';
-import DividerLine from '../../../../Component/DividerLine/DividerLine';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AppStackProps} from '../../../../Navigator/App.stack.navigator';
 import {useAppStore} from 'src/Zustand/App/app.zustand';
 import shallow from 'zustand/shallow';
+import {usePopupStore} from '../../../../Zustand/Popup/popup.zustand';
 
 const REVIEW_ORDER_TYPES: EnumValueWithName[] = [
   {displayName: '최근 작성 순', value: 'latest'},
@@ -47,6 +47,18 @@ export const PopupDetailReviewSection = () => {
   const {recommendReview} = usePopupDetailReviewContext();
   const {review} = popupDetail;
   const reviews = review || [];
+  const {isVisitedPopup, isWaitingPopup, waitingPopups, startWaitingPopup} =
+    usePopupStore(
+      state => ({
+        isVisitedPopup: state.isVisitedPopup,
+        isWaitingPopup: state.isWaitingPopup,
+        waitingPopups: state.waitingPopups,
+        startWaitingPopup: state.startWaitingPopup,
+      }),
+      shallow,
+    );
+
+  const visited = isVisitedPopup(popupDetail.id);
 
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
 
@@ -68,7 +80,7 @@ export const PopupDetailReviewSection = () => {
     }
     navigation.navigate('MypageReviewWriteScreen', {
       selectedPopup: popupDetail,
-      isVisited: true,
+      isVisited: visited,
     });
   };
 
@@ -118,25 +130,27 @@ export const PopupDetailReviewSection = () => {
   };
 
   const handleReportReview = () => {
-    navigation.navigate('PopupDetailReportScreen');
+    navigation.navigate('PopupDetailReportScreen', {});
   };
 
   return (
     <SectionContainer>
-      <SectionRow>
-        <ReviewDataTitle>방문후기</ReviewDataTitle>
-        <SvgWithNameBoxLabel
-          onPress={navigateToReviewWriteScreen}
-          textStyle={[
-            {fontSize: moderateScale(13)},
-            {marginRight: moderateScale(5)},
-          ]}
-          width={moderateScale(150)}
-          height={moderateScale(33)}
-          Icon={ReviewWriteCheckIcon}
-          label="방문 후기 작성하기"
-        />
-      </SectionRow>
+      {popupDetail.operationStatus === 'OPERATING' && (
+        <SectionRow>
+          <ReviewDataTitle>방문후기</ReviewDataTitle>
+          <SvgWithNameBoxLabel
+            onPress={navigateToReviewWriteScreen}
+            textStyle={[
+              {fontSize: moderateScale(13)},
+              {marginRight: moderateScale(5)},
+            ]}
+            width={moderateScale(150)}
+            height={moderateScale(33)}
+            Icon={ReviewWriteCheckIcon}
+            label={visited ? '인증후기 작성하기' : '일반후기 작성하기'}
+          />
+        </SectionRow>
+      )}
 
       <SectionRow style={{marginTop: moderateScale(10)}}>
         <PurpleCheckSelectionRow

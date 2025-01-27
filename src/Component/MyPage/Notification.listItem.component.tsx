@@ -206,12 +206,12 @@ export const NotificationListItem = memo(
           )}
         </ItemCenterContainer>
 
-        {/* 우측: 알림 삭제 아이콘 */}
-        <ItemRightContainer>
-          <ItemDeleteIcon activeOpacity={1} onPress={onPressCloseIcon}>
-            <CloseIcon />
-          </ItemDeleteIcon>
-        </ItemRightContainer>
+        {/*/!* 우측: 알림 삭제 아이콘(일단 주석처리) *!/*/}
+        {/*<ItemRightContainer>*/}
+        {/*  <ItemDeleteIcon activeOpacity={1} onPress={onPressCloseIcon}>*/}
+        {/*    <CloseIcon />*/}
+        {/*  </ItemDeleteIcon>*/}
+        {/*</ItemRightContainer>*/}
       </ItemContainer>
     );
   },

@@ -2339,7 +2339,7 @@ SPEC CHECKSUMS:
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   naveridlogin-sdk-ios: d9d46d02119d303023d7000cd5963864d5bb89e5
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  RCT-Folly: 34124ae2e667a0e5f0ea378db071d27548124321
+  RCT-Folly: 4464f4d875961fce86008d45f4ecf6cef6de0740
   RCTDeprecation: 726d24248aeab6d7180dac71a936bbca6a994ed1
   RCTRequired: a94e7febda6db0345d207e854323c37e3a31d93b
   RCTTypeSafety: 28e24a6e44f5cbf912c66dde6ab7e07d1059a205
@@ -2400,35 +2400,35 @@ SPEC CHECKSUMS:
   React-RuntimeApple: de0976836b90b484305638616898cbc665c67c13
   React-RuntimeCore: 3c4a5aa63d9e7a3c17b7fb23f32a72a8bcfccf57
   React-runtimeexecutor: ea90d8e3a9e0f4326939858dafc6ab17c031a5d3
-  React-RuntimeHermes: 49f86328914021f50fd5a5b9756685f5f6d8b4da
-  React-runtimescheduler: fed70991b942c6df752a59a22081e45fc811b11c
-  React-utils: 02526ea15628a768b8db9517b6017a1785c734d2
-  ReactCodegen: 8b5341ecb61898b8bd40a73ebc443c6bf2d14423
-  ReactCommon: 36d48f542b4010786d6b2bcee615fe5f906b7105
-  RNAppleAuthentication: 8d313d93fe2238d6b7ff0a39c67ebcf298d96653
-  RNCAsyncStorage: b6410dead2732b5c72a7fdb1ecb5651bbcf4674b
-  RNCClipboard: dbcf25b8f666b4685c02eeb65be981d30198e505
-  RNCKakaoCore: dc69810226db38b80fbb0e38f5eeb5f449e1ce16
-  RNCKakaoShare: f4723612266cbe1bb5a3fefb3ebb8a7ed662f10e
-  RNCKakaoSocial: c1cdfe69c2c5a9c50150689ca35faed675753010
-  RNCKakaoUser: 424d020453a14270ace880c8e5929c54dc61481b
-  RNCPushNotificationIOS: 6c4ca3388c7434e4a662b92e4dfeeee858e6f440
-  RNDateTimePicker: 5ba751964d314b755e6f1fe365f0bba6a0775ec6
-  RNDeviceInfo: 900bd20e1fd3bfd894e7384cc4a83880c0341bd3
-  RNFastImage: 462a183c4b0b6b26fdfd639e1ed6ba37536c3b87
-  RNFBAnalytics: fc768791c394d20169958f5b389847698d3df582
-  RNFBApp: e21b5e2ee25cfffdf6e477628105434fdceb6272
-  RNFBDynamicLinks: 4a7618125276679bcb22ec02cf136664337ba864
-  RNFBInAppMessaging: 283a15a0ac996c61950bf971a48cef23a05cb154
-  RNFBMessaging: bafb0925fa53f5bc11186d92fa8eff922f125e41
-  RNGoogleSignin: ba93c1137f8d5cebdd39b04f493fd212ddf5ecd6
-  RNImageCropPicker: d14a08134d1b5bc2d5f29a12ce3ac1d402dd2389
-  RNNaverLogin: 7a8b1ff45bb9eff5e227ea869fceca800a0126f8
-  RNOpenAppSettings: 73c178e228c94a4a5d9ba2f243ce4799389e5463
-  RNPermissions: 1961a00cdb58d25fe210a6e3fcb3f78a3f03c34e
-  RNScreens: 3c581ebc42ad074c9be97825081d1ad9a004dd2d
-  RNSVG: 3421710ac15f4f2dc47e5c122f2c2e4282116830
-  RNVectorIcons: 4a7bd77379b1f63416bec24816a3ae835a377edf
+  React-RuntimeHermes: c6b0afdf1f493621214eeb6517fb859ce7b21b81
+  React-runtimescheduler: 84f0d876d254bce6917a277b3930eb9bc29df6c7
+  React-utils: cbe8b8b3d7b2ac282e018e46f0e7b25cdc87c5a0
+  ReactCodegen: 4bcb34e6b5ebf6eef5cee34f55aa39991ea1c1f1
+  ReactCommon: 6a952e50c2a4b694731d7682aaa6c79bc156e4ad
+  RNAppleAuthentication: e00c76acb03351f5544373c78fa7f359bef6d5d3
+  RNCAsyncStorage: ec53e44dc3e75b44aa2a9f37618a49c3bc080a7a
+  RNCClipboard: 69ab8e51324d5b351f6ba72bbdb72478087a2c64
+  RNCKakaoCore: 247950eec77e40b04ea58528850cdf6ae17571d1
+  RNCKakaoShare: ba64cb66108601cc94006c5d0fb1d758af71ab0c
+  RNCKakaoSocial: 6758e8eb543eda7cd495216b735f40a64a4df154
+  RNCKakaoUser: 5140e32e7bfa8360983f18c670102cf857292ff9
+  RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
+  RNDateTimePicker: 4f1fc917f5af9d9ae4c5fc0c63a4474d61338693
+  RNDeviceInfo: b899ce37a403a4dea52b7cb85e16e49c04a5b88e
+  RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
+  RNFBAnalytics: e322910ad15c7cccabbac4c92071b8a4b4c55898
+  RNFBApp: 1ee535dcb7773ca612d3a2e53a1f78f8f2fb6abf
+  RNFBDynamicLinks: 7c409b3d7f0fdad7aaf96837db627a6c554e58aa
+  RNFBInAppMessaging: b77f9fd03c541713643c0fc7ed91be76b268c3ce
+  RNFBMessaging: 04ecf12bae7543cd8df145f1b26d89d867594be7
+  RNGoogleSignin: 9e68b9bcc3888219357924e32ee563624745647d
+  RNImageCropPicker: 771e2ca319d2cf92e04ebf334ece892ee9a6728f
+  RNNaverLogin: 5558e71bd0faa39b67ded6daedb855b0f638e967
+  RNOpenAppSettings: 1169b90a275e9e18c5973e1608949f97d426e7f3
+  RNPermissions: 823a796649f4938762a6a2a211d9f3e0a4028dc3
+  RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
+  RNSVG: 7ff26379b2d1871b8571e6f9bc9630de6baf9bdf
+  RNVectorIcons: 2f598cd7d540ba02572867eda117665912d0de0b
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d

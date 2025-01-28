@@ -4,6 +4,8 @@ import customAxios from 'src/Axios/axios.core';
 import {handleAxiosError} from 'src/Util/axios.util';
 import axios from 'axios';
 import {StateWrapper} from '../wrapper/state_wrapper';
+import {DynamicServiceConstants} from '../../Zustand/App/service.dynamic.constant.zustand';
+import {PopupReviewSchema} from '../../Schema/Popup/popupReview.schema';
 
 export type InitialData = {
   /** 홈화면의 취향 저격 팝업 리스트 */
@@ -35,6 +37,25 @@ export const axiosLoadInitialData = async () => {
       console.log('request: ', error.request);
       console.log('error', error);
       handleAxiosError({error});
+      return null;
+    });
+};
+
+// <StateWrapper<PopupReviewSchema>>({
+
+// service: Partial<DynamicServiceConstants>;
+
+export const axiosGetAppConstants = async () => {
+  return await customAxios
+    .request<StateWrapper<DynamicServiceConstants>>({
+      method: 'GET',
+      url: 'v1/constants',
+    })
+    .then(response => {
+      console.log('axiosGetAppConstants', response.data);
+      return response.data;
+    })
+    .catch(error => {
       return null;
     });
 };

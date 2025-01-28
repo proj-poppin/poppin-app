@@ -7,6 +7,7 @@ import {H1, H2} from 'src/StyledComponents/Text';
 import {moderateScale, openAppStore} from 'src/Util';
 import {useDynamicServiceConstant} from 'src/Zustand/App/service.dynamic.constant.zustand';
 import {FastImageContainer} from '../../../Component/Image/FastImage.component';
+import {SectionContainer} from '../../../Unit/View';
 
 export type ForceUpdateScreenProps = {};
 
@@ -33,44 +34,52 @@ export const ForceUpdateScreen = () => {
 
   return (
     <FullViewPage
-      style={{
-        justifyContent: 'space-between',
-        backgroundColor: '#a9a8ff',
-        paddingTop: moderateScale(72),
-        paddingBottom: moderateScale(32),
-        paddingHorizontal: moderateScale(16),
-      }}
+      style={
+        {
+          // backgroundColor: '#a9a8ff',
+          // paddingTop: moderateScale(72),
+          // paddingBottom: moderateScale(32),
+          // paddingHorizontal: moderateScale(16),
+        }
+      }
       PageContent={
         <>
-          <UpperContainer>
-            <LogoImageContainer>
-              {/*<FastImageContainer*/}
-              {/*  source={require('src/Resource/png/Logo/pickply-full-white-logo.png')}*/}
-              {/*/>*/}
-            </LogoImageContainer>
-            <TitleText>{'팝핀 앱\n업데이트 안내'}</TitleText>
-            <ContentText>
-              {
-                '보다 나은 서비스 이용을 위해\n지금 바로 업데이트 후 픽플러분들과 소통하고,\n다양한 프로젝트를 진행해보세요.'
-              }
-            </ContentText>
+          <SectionContainer fullPage>
+            <FastImageContainer
+              source={require('src/Resource/png/Splash/force-update-image.png')}
+            />
+          </SectionContainer>
 
-            {APP_VERSION_INFO.updateList &&
-              APP_VERSION_INFO.updateList.length > 0 && (
-                <UpdateContainer>
-                  <UpdateTitleText>업데이트 내역</UpdateTitleText>
-                  {APP_VERSION_INFO.updateList.map(update => (
-                    <UpdateContentText
-                      key={update}>{`  • ${update}`}</UpdateContentText>
-                  ))}
-                </UpdateContainer>
-              )}
-          </UpperContainer>
+          {/*<UpperContainer>*/}
+          {/*  <LogoImageContainer>*/}
+          {/*    /!*<FastImageContainer*!/*/}
+          {/*    /!*  source={require('src/Resource/png/Logo/pickply-full-white-logo.png')}*!/*/}
+          {/*    /!*/
+          /*/}
+          {/*  </LogoImageContainer>*/}
+          {/*  <TitleText>{'팝핀 앱\n업데이트 안내'}</TitleText>*/}
+          {/*  <ContentText>*/}
+          {/*    {*/}
+          {/*      '보다 나은 서비스 이용을 위해\n지금 바로 업데이트 후 픽플러분들과 소통하고,\n다양한 프로젝트를 진행해보세요.'*/}
+          {/*    }*/}
+          {/*  </ContentText>*/}
+
+          {/*  {APP_VERSION_INFO.updateList &&*/}
+          {/*    APP_VERSION_INFO.updateList.length > 0 && (*/}
+          {/*      <UpdateContainer>*/}
+          {/*        <UpdateTitleText>업데이트 내역</UpdateTitleText>*/}
+          {/*        {APP_VERSION_INFO.updateList.map(update => (*/}
+          {/*          <UpdateContentText*/}
+          {/*            key={update}>{`  • ${update}`}</UpdateContentText>*/}
+          {/*        ))}*/}
+          {/*      </UpdateContainer>*/}
+          {/*    )}*/}
+          {/*</UpperContainer>*/}
 
           <BottomContainer>
-            <GuideMessageContainer>
-              <UpdateGuide />
-            </GuideMessageContainer>
+            {/*<GuideMessageContainer>*/}
+            {/*  <UpdateGuide />*/}
+            {/*</GuideMessageContainer>*/}
 
             <ButtonContainer onPress={openAppStore}>
               <ButtonText>업데이트 하러 가기</ButtonText>
@@ -128,10 +137,12 @@ const GuideMessageContainer = styled.View`
 const ButtonContainer = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
-  width: 100%;
+  align-self: center;
+  border-radius: ${moderateScale(24)}px;
+  width: 90%;
   background-color: ${({theme}) => theme.color.grey.white};
   padding: ${moderateScale(16)}px;
-  border-radius: 8px;
+  margin-bottom: ${moderateScale(24)}px;
 `;
 
 const ButtonText = styled(H1)`

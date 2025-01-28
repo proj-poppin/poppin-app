@@ -1,6 +1,9 @@
 import {Destination} from 'src/Util';
 import create from 'zustand';
-import {axiosLoadInitialData} from 'src/Axios/App/app.axios';
+import {
+  axiosGetAppConstants,
+  axiosLoadInitialData,
+} from 'src/Axios/App/app.axios';
 import {usePopupStore} from '../Popup/popup.zustand';
 import Config from 'react-native-config';
 import {PopupSearchParams} from '../../Object/Type/filtering.type';
@@ -10,6 +13,7 @@ import {OperationStatus} from '../../Object/Type/operationStatus.type';
 import {logger} from 'react-native-logs';
 import {useUserStore} from '../User/user.zustand';
 import {ReportScreenProps} from 'src/Screen/MyPage/Report';
+import {useDynamicServiceConstant} from './service.dynamic.constant.zustand';
 export type HomeLandingSectionType =
   | 'NEWLY_OPENED'
   | 'CLOSING_SOON'
@@ -76,7 +80,7 @@ type AppStoreProps = {
   appModalProps: AppModalProps;
   setAppModalProps: (props: AppModalProps) => void;
 
-  getDynamicConstants: () => Promise<void>;
+  getDynamicConstants: () => Promise<boolean>;
 
   /** 앱 시작 후 최초 정보들(최신 팝업정보, 공지사항 등)을 받아오고 저장합니다. */
   loadInitialData: () => Promise<boolean>;
@@ -141,23 +145,25 @@ export const useAppStore = create<AppStoreProps>((set, get) => ({
   },
 
   getDynamicConstants: async () => {
-    // const constants = await axiosGetAppConstants();
-    // if (constants !== null) {
-    //   useDynamicServiceConstant
-    //     .getState()
-    //     .updateServiceConstants(constants.service);
-    //   useDynamicResearchConstant
-    //     .getState()
-    //     .updateResearchConstants(constants.research);
-    //   useDynamicUserConstant.getState().updateUserConstants(constants.user);
-    //   useDynamicVoteConstant.getState().updateVoteConstants(constants.vote);
-    //   useDynamicCompanyConstant
-    //     .getState()
-    //     .updateCompanyConstants(constants.company);
-    //   useDynamicCreditConstant
-    //     .getState()
-    //     .updateCreditConstants(constants.credit);
-    // }
+    const constants = await axiosGetAppConstants();
+    if (constants !== null) {
+      useDynamicServiceConstant
+        .getState()
+        .updateServiceConstants(constants.data);
+      // useDynamicResearchConstant
+      //   .getState()
+      //   .updateResearchConstants(constants.research);
+      // useDynamicUserConstant.getState().updateUserConstants(constants.user);
+      // useDynamicVoteConstant.getState().updateVoteConstants(constants.vote);
+      // useDynamicCompanyConstant
+      //   .getState()
+      //   .updateCompanyConstants(constants.company);
+      // useDynamicCreditConstant
+      //   .getState()
+      //   .updateCreditConstants(constants.credit);
+      return true;
+    }
+    return false;
   },
   loadInitialData: async () => {
     const initialData = await axiosLoadInitialData();

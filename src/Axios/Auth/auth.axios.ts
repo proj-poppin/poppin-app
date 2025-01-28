@@ -309,10 +309,10 @@ export const axiosAutoLogin = async (
 
     return response.data;
   } catch (error) {
-    handleAxiosError({
-      error,
-      errorMessage: '자동 로그인에 실패하였습니다\n다시 로그인 해 주세요',
-    });
+    // handleAxiosError({
+    //   error,
+    //   errorMessage: '자동 로그인에 실패하였습니다\n다시 로그인 해 주세요',
+    // });
     return null;
   }
 };
@@ -321,31 +321,31 @@ export const axiosAutoLogin = async (
  * JWT를 이용하여 자동 로그인합니다.
  * @author 도형
  */
-export const axiosLoginWithAccessToken = async (jwt: string) => {
-  // 로그인 시 사용자 OS, 앱 버전, fcmToken 값을 추가로 전달합니다.
-  const OS = Platform.OS;
-  const version = APP_VERSION;
-  // const fcmToken = await messaging().getToken();
-  const fcmToken = testFcmToken;
-  return await customAxios
-    .request<StateWrapper<UserInfo>>({
-      method: 'POST',
-      url: `v1/${AUTH}/app/start`,
-      headers: {Authorization: `Bearer ${jwt}`},
-      data: {OS, version, testFcmToken},
-    })
-    .then(response => {
-      console.log('user response: ', response.data);
-      return response.data;
-    })
-    .catch(error => {
-      handleAxiosError({
-        error,
-        errorMessage: '자동 로그인에 실패하였습니다\n다시 로그인 해 주세요',
-      });
-      return null;
-    });
-};
+// export const axiosLoginWithAccessToken = async (jwt: string) => {
+//   // 로그인 시 사용자 OS, 앱 버전, fcmToken 값을 추가로 전달합니다.
+//   const OS = Platform.OS;
+//   const version = APP_VERSION;
+//   // const fcmToken = await messaging().getToken();
+//   const fcmToken = testFcmToken;
+//   return await customAxios
+//     .request<StateWrapper<UserInfo>>({
+//       method: 'POST',
+//       url: `v1/${AUTH}/app/start`,
+//       headers: {Authorization: `Bearer ${jwt}`},
+//       data: {OS, version, testFcmToken},
+//     })
+//     .then(response => {
+//       console.log('user response: ', response.data);
+//       return response.data;
+//     })
+//     .catch(error => {
+//       handleAxiosError({
+//         error,
+//         errorMessage: '자동 로그인에 실패하였습니다\n다시 로그인 해 주세요',
+//       });
+//       return null;
+//     });
+// };
 
 /**
  * 회원가입합니다.

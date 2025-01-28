@@ -1,4 +1,4 @@
-export const APP_VERSION = '1.1.1';
+export const APP_VERSION = '1.4.1';
 
 /**
  * localhost 에서 실행 중인 서버에 요청을 하는 경우,

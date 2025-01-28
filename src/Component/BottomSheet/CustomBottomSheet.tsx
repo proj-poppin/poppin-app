@@ -21,11 +21,11 @@ interface CustomBottomSheetProps {
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
-                                                                      isVisible,
-                                                                      onClose,
-                                                                      title,
-                                                                      children,
-                                                                    }) => {
+  isVisible,
+  onClose,
+  title,
+  children,
+}) => {
   const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const [contentHeight, setContentHeight] = useState(0);
   const contentRef = useRef(null);
@@ -58,61 +58,60 @@ export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
   }, [isVisible, translateY, contentHeight]);
 
   const panResponder = useRef(
-      PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onPanResponderMove: (evt, gestureState) => {
-          if (gestureState.dy > 0) {
-            translateY.setValue(gestureState.dy);
-          }
-        },
-        onPanResponderRelease: (evt, gestureState) => {
-          if (gestureState.dy > SCREEN_HEIGHT * 0.2) {
-            Animated.timing(translateY, {
-              toValue: SCREEN_HEIGHT,
-              useNativeDriver: true,
-              duration: 200,
-            }).start(() => onClose());
-          } else {
-            Animated.spring(translateY, {
-              toValue: 0,
-              useNativeDriver: true,
-              tension: 40,
-              friction: 8,
-            }).start();
-          }
-        },
-      }),
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (evt, gestureState) => {
+        if (gestureState.dy > 0) {
+          translateY.setValue(gestureState.dy);
+        }
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        if (gestureState.dy > SCREEN_HEIGHT * 0.2) {
+          Animated.timing(translateY, {
+            toValue: SCREEN_HEIGHT,
+            useNativeDriver: true,
+            duration: 200,
+          }).start(() => onClose());
+        } else {
+          Animated.spring(translateY, {
+            toValue: 0,
+            useNativeDriver: true,
+            tension: 40,
+            friction: 8,
+          }).start();
+        }
+      },
+    }),
   ).current;
 
   return (
-      <Modal
-          visible={isVisible}
-          transparent
-          statusBarTranslucent
-          animationType="fade">
-        <Container>
-          <Backdrop onPress={onClose} />
-          <SheetContainer
-              $height={contentHeight}
-              as={Animated.View}
-              style={{
-                transform: [{translateY}],
-              }}
-              {...panResponder.panHandlers}>
-            <HandleBar />
-            <SheetContent ref={contentRef}>
-              <HeaderContainer>
-                <HeaderText>{title}</HeaderText>
-                <HeaderDivider />
-              </HeaderContainer>
-              <BodyContainer>{children}</BodyContainer>
-            </SheetContent>
-          </SheetContainer>
-        </Container>
-      </Modal>
+    <Modal
+      visible={isVisible}
+      transparent
+      statusBarTranslucent
+      animationType="fade">
+      <Container>
+        <Backdrop onPress={onClose} />
+        <SheetContainer
+          $height={contentHeight}
+          as={Animated.View}
+          style={{
+            transform: [{translateY}],
+          }}
+          {...panResponder.panHandlers}>
+          <HandleBar />
+          <SheetContent ref={contentRef}>
+            <HeaderContainer>
+              <HeaderText>{title}</HeaderText>
+              <HeaderDivider />
+            </HeaderContainer>
+            <BodyContainer>{children}</BodyContainer>
+          </SheetContent>
+        </SheetContainer>
+      </Container>
+    </Modal>
   );
 };
-
 
 const Container = styled.View`
   flex: 1;
@@ -144,15 +143,12 @@ const SheetContainer = styled.View<{$height: string | number}>`
   border-top-left-radius: ${moderateScale(20)}px;
   border-top-right-radius: ${moderateScale(20)}px;
   ${({$height}) =>
-      typeof $height === 'string'
-          ? `min-height: ${$height};`
-          : `min-height: ${$height}px;`
-  }
+    typeof $height === 'string'
+      ? `min-height: ${$height};`
+      : `min-height: ${$height}px;`}
 `;
 
-
-const SheetContent = styled.View`
-`;
+const SheetContent = styled.View``;
 
 const HeaderContainer = styled.View``;
 

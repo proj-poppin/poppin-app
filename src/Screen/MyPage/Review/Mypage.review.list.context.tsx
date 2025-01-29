@@ -31,10 +31,14 @@ export const ReviewProvider: React.FC<{children: React.ReactNode}> = ({
   const fetchVisitedPopups = async () => {
     setIsLoading(true);
     setError(null);
+
+    // 기존 방문 목록 초기화 (즉시 반영되도록 강제 업데이트)
+    setVisitedPopups([]);
+
     try {
       const response = await axiosGetVisitedPopups();
       if (response) {
-        setVisitedPopups(response); // null 체크 추가
+        setVisitedPopups([...response]); // null 체크 추가
       }
     } catch (err) {
       setError('방문한 팝업을 불러오는데 실패했습니다.');

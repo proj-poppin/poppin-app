@@ -11,6 +11,9 @@ import {
 import {useRecentPopups} from 'src/Util/local.util';
 import {showBlackToast} from '../../../../Util';
 import {set} from 'lodash';
+import {useUserStore} from 'src/Zustand/User/user.zustand';
+import shallow from 'zustand/shallow';
+import {handleAxiosError} from '../../../../Util';
 
 export type VisitButtonType =
   | 'VISIT_NOW'
@@ -113,18 +116,53 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
   const [popupReopenAlert, setPopupReopenAlert] = useState<boolean>(false);
   const [popupDetail, setPopupDetail] = useState<PopupSchema>(BlankPopup);
 
+  const {setUser, user} = useUserStore(
+    state => ({
+      setUser: state.setUser,
+      user: state.user,
+    }),
+    shallow,
+  );
+
   useEffect(() => {}, [popupDetail]);
 
   const visitPopup = async () => {
     try {
       const result = await axiosVisitPopupStore(popupDetail.id);
-      if (result !== null) {
-        usePopupStore.getState().spreadPopupVisited({
-          popup: result.data.updatedPopupStore,
-          newPopupVisit: result.data.newPopupVisit,
-        });
+      // console.log('방문하기 응답:', result);
+
+      if (result?.success) {
+        const updatedUser = {
+          ...user,
+          visitedPopupCnt: user.visitedPopupCnt + 1, // 상태 관리에서 증가
+        };
+        setUser(updatedUser);
+
+        // 🔹 팝업 방문 완료 처리
+        if (result.data.updatedPopupStore) {
+          usePopupStore.getState().spreadPopupVisited({
+            popup: result.data.updatedPopupStore,
+            newPopupVisit: result.data.newPopupVisit,
+          });
+        }
+
+        // console.log('방문하기 성공:', result);
+        return true;
       }
-    } catch (error) {}
+
+      if (result?.error && result?.error.code === '40037') {
+        showBlackToast({
+          text1: result?.error.message,
+        });
+        return false;
+      }
+    } catch (error) {
+      console.error('방문하기 중 오류 발생:', error);
+      handleAxiosError({
+        error,
+        errorMessage: '방문하기에 실패했습니다.',
+      });
+    }
   };
 
   const requestReopenPopup = async () => {

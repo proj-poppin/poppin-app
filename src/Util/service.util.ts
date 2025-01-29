@@ -1,18 +1,18 @@
 import {Platform, Linking} from 'react-native';
-import {APP_VERSION} from '../Constant/app.constant';
-import {useDynamicServiceConstant} from '../Zustand/App/service.dynamic.constant.zustand';
+import {APP_VERSION} from 'src/Constant/app.constant';
+import {useDynamicServiceConstant} from 'src/Zustand/App/service.dynamic.constant.zustand';
 
-/** 픽플리 앱 스토어 링크를 엽니다. 사용자의 OS 에 따라 링크가 달라집니다. */
+/** 팝핀 앱 스토어 링크를 엽니다. 사용자의 OS 에 따라 링크가 달라집니다. */
 export function openAppStore() {
   if (Platform.OS === 'android') {
-    Linking.openURL(useDynamicServiceConstant.getState().GOOGLE_PLAY_STORE_URL);
+    // Linking.openURL(useDynamicServiceConstant.getState().GOOGLE_PLAY_STORE_URL);
     return;
   }
   if (Platform.OS === 'ios') {
     Linking.openURL(useDynamicServiceConstant.getState().APPLE_APP_STORE_URL);
     return;
   }
-  Linking.openURL(useDynamicServiceConstant.getState().WEB_SERVICE_URL);
+  // Linking.openURL(useDynamicServiceConstant.getState().WEB_SERVICE_URL);
 }
 
 /** 현재 앱 버전이 인자로 받은 최소 요구 버전보다 같거나 앞서는지 확인합니다. */
@@ -48,6 +48,7 @@ export const doesAppMeetRequiredVersion = () => {
   //* 서버에서 받아온 앱 버전 정보. 안드로이드, iOS 별로 별도의 버전 요구 정보를 적용합니다.
   const APP_VERSION_INFO =
     useDynamicServiceConstant.getState().APP_VERSION_INFO;
+  console.log('APP_VERSION_INFO from Server', APP_VERSION_INFO);
 
   let requiredVersion = APP_VERSION_INFO.requiredVersion;
   if (Platform.OS === 'android') {

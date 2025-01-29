@@ -16,64 +16,64 @@ type StudentEvent = {
  * @author 도형
  */
 export type DynamicServiceConstants = {
-  /** 크레딧을 이용해 결제 금액을 차감할 때 차감비율 */
-  CREDIT_VALUE: number;
-
-  /** 서비스 상태 */
-  SERVICE_STATUS: {
-    available: boolean;
-    title: string;
-    content: string;
-  };
-
-  /** 서비스 상태 사전 안내 팝업  */
-  CAUTION_MODAL?: {
-    name: string;
-    title: string;
-    subTitle: string;
-    contents: string[];
-    destination?: Destination;
-    button: {text: string};
-  };
-
-  /** 홈 피드에서 프로젝트 : 투표 섞는 비율 */
-  homeResearchVoteRatio: number;
-
-  homeLandingGuideDestination: Destination;
-
-  attendanceInduceText: string;
-  communityInduceTextInDailyContent: string;
-  communityInduceTextInDailyContentAfterParticipation: string;
+  // /** 크레딧을 이용해 결제 금액을 차감할 때 차감비율 */
+  // CREDIT_VALUE: number;
+  //
+  // /** 서비스 상태 */
+  // SERVICE_STATUS: {
+  //   available: boolean;
+  //   title: string;
+  //   content: string;
+  // };
+  //
+  // /** 서비스 상태 사전 안내 팝업  */
+  // CAUTION_MODAL?: {
+  //   name: string;
+  //   title: string;
+  //   subTitle: string;
+  //   contents: string[];
+  //   destination?: Destination;
+  //   button: {text: string};
+  // };
+  //
+  // /** 홈 피드에서 프로젝트 : 투표 섞는 비율 */
+  // homeResearchVoteRatio: number;
+  //
+  // homeLandingGuideDestination: Destination;
+  //
+  // attendanceInduceText: string;
+  // communityInduceTextInDailyContent: string;
+  // communityInduceTextInDailyContentAfterParticipation: string;
 
   APP_VERSION_INFO: {
     recentVersion: string;
-    requiredVersion: string;
+    requiredVersion: string; // 1.1.2 > 1.1.2
     requiredAndroidVersion: string;
     requiredIOSVersion: string;
-    requiredVersionForResearchUpload: string;
-    requiredVersionForVoteUpload: string;
-    updateList?: string[];
+    // requiredVersionForResearchUpload: string;
+    // requiredVersionForVoteUpload: string;
+    // updateList?: string[];
   };
 
   // feedbackTypes: EnumValueWithName[];
 
-  CONTACT_EMAIL: string;
-  WEB_SERVICE_URL: string;
-  GOOGLE_PLAY_STORE_URL: string;
+  // CONTACT_EMAIL: string;
+  // WEB_SERVICE_URL: string;
+  // GOOGLE_PLAY_STORE_URL: string;
   APPLE_APP_STORE_URL: string;
   KAKAO_CHAT_URL: string;
 
-  STORE_URL: string;
-  STORE_FIRST_URLs: string[];
-  PARTNER_URL: string;
-  PARTNER_FIRST_URLs: string[];
+  // STORE_URL: string;
+  // STORE_FIRST_URLs: string[];
+  // PARTNER_URL: string;
+  // PARTNER_FIRST_URLs: string[];
 
   SERVICE_TERMS: string;
   PRIVACY_TERMS: string;
 
-  /** 추후 operation zustand 에서 담당하게 합니다. */
-  studentEvents?: StudentEvent[];
-  getOngoingStudentEvent: () => StudentEvent | undefined;
+  // /** 추후 operation zustand 에서 담당하게 합니다. */
+  // studentEvents?: StudentEvent[];
+  // getOngoingStudentEvent: () => StudentEvent | undefined;
 };
 
 type DynamicServiceConstantStoreProps = DynamicServiceConstants & {
@@ -127,9 +127,10 @@ export const useDynamicServiceConstant =
     WEB_SERVICE_URL: 'https://pickply.com',
     GOOGLE_PLAY_STORE_URL:
       'https://play.google.com/store/apps/details?id=com.pickpleresearch&hl=ko',
-    APPLE_APP_STORE_URL: 'https://apps.apple.com/kr/app/pickply/id1640390682',
+    APPLE_APP_STORE_URL:
+      'https://apps.apple.com/kr/app/팝핀-맞춤형-팝업-스토어-추천/id6482994685',
 
-    KAKAO_CHAT_URL: 'http://pf.kakao.com/_xkDElxj/chat',
+    KAKAO_CHAT_URL: 'http://pf.kakao.com/_CCtFG/chat',
 
     STORE_URL: 'https://pickply.com/products',
     STORE_FIRST_URLs: [],
@@ -138,24 +139,24 @@ export const useDynamicServiceConstant =
     PARTNER_FIRST_URLs: [],
 
     SERVICE_TERMS:
-      'https://docs.google.com/document/d/e/2PACX-1vSSuPTA7Y6EBWjw5hCYBVJ4eaW68cRf9hYp1-Y_9H9WTAFHJBEXKo7O-A1UsEJ_BQ/pub?embedded=true',
+      'https://docs.google.com/document/d/1gFo_QEY_lea3pzP9fJH9X0oWx7yF6PgefenNWsJDMvM/edit?usp=sharing',
     PRIVACY_TERMS:
-      'https://docs.google.com/document/d/e/2PACX-1vS3HRyE32LgbNpmaxEgUGFT1vVX_Ht_FfWka_E6EB89RAeauUhttsJedkvN19nq0A/pub?embedded=true',
+      'https://docs.google.com/document/d/1KgYNHqbleQ3r9lbhuVjbCDEpxW-zPzDKka8D2qVZ2UI/edit?usp=sharing',
 
-    getOngoingStudentEvent: () => {
-      return get().studentEvents?.find(
-        event =>
-          didDatePassedDeadline({
-            deadline: event.startAt,
-            defaultValue: true,
-          }) &&
-          !didDatePassedDeadline({
-            deadline: event.endAt,
-            defaultValue: false,
-            strict: true,
-          }),
-      );
-    },
+    // getOngoingStudentEvent: () => {
+    //   return get().studentEvents?.find(
+    //     event =>
+    //       didDatePassedDeadline({
+    //         deadline: event.startAt,
+    //         defaultValue: true,
+    //       }) &&
+    //       !didDatePassedDeadline({
+    //         deadline: event.endAt,
+    //         defaultValue: false,
+    //         strict: true,
+    //       }),
+    //   );
+    // },
 
     updateServiceConstants: (
       serviceConstants: Partial<DynamicServiceConstants>,

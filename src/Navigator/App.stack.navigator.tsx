@@ -19,7 +19,12 @@ import shallow from 'zustand/shallow';
 import {useAppStore} from '../Zustand/App/app.zustand';
 import {PushNotification} from '../Object/Type/app.type';
 import {axiosCheckNotification} from '../Axios/User/user.patch.axios';
-import {Destination, navigateInAppScreen, showNotificationToast} from '../Util';
+import {
+  Destination,
+  doesAppMeetRequiredVersion,
+  navigateInAppScreen,
+  showNotificationToast,
+} from '../Util';
 import {WEB_ONELINK_URL_PREFIX} from '../Constant/app.constant';
 import {
   ForceUpdateScreen,
@@ -131,6 +136,7 @@ import {
   MypageKeywordAlarmScreenProps,
 } from 'src/Screen/MyPage/KeywordAlarm/Mypage.keywordAlarm.screen';
 import {HomeLandingScreenProps} from 'src/Screen/Home/Landing/Home.landing.screen';
+import {useDynamicServiceConstant} from '../Zustand/App/service.dynamic.constant.zustand';
 
 /**
  * 앱에서 사용되는 모든 스크린의 속성들을 정의합니다.
@@ -261,23 +267,23 @@ const AppStackScreen = () => {
    */
   const handleAppStateChange = async (appState: string) => {
     // makeFirebaseLogEvent(APP_LOGS.open_app);
-    // if (appState === 'active') {
-    //   makeFirebaseLogEvent(APP_LOGS.return_app);
-    //   if (useUserStore.getState().isLoggedIn()) {
-    //     axiosReportReturnApp();
-    //   }
-    //   await getDynamicConstants();
-    //   //* 만약 새로 받아온 앱 최소 요구 버전을 충족하지 못하는 경우, 강제 업데이트 페이지로 이동합니다.
-    //   if (!doesAppMeetRequiredVersion()) {
-    //     navigation.navigate('ForceUpdateScreen', {});
-    //   }
-    //   //* 만약 새로 받아온 서비스 상태가 사용 불가인 경우, 서비스 상태 안내 페이지로 이동합니다.
-    //   if (
-    //     useDynamicServiceConstant.getState().SERVICE_STATUS.available === false
-    //   ) {
-    //     navigation.navigate('ServiceStatusScreen', {});
-    //   }
-    // }
+    if (appState === 'active') {
+      // makeFirebaseLogEvent(APP_LOGS.return_app);
+      // if (useUserStore.getState().isLoggedIn()) {
+      //   axiosReportReturnApp();
+      // }
+      await getDynamicConstants();
+      //* 만약 새로 받아온 앱 최소 요구 버전을 충족하지 못하는 경우, 강제 업데이트 페이지로 이동합니다.
+      if (!doesAppMeetRequiredVersion()) {
+        navigation.navigate('ForceUpdateScreen', {});
+      }
+      // //* 만약 새로 받아온 서비스 상태가 사용 불가인 경우, 서비스 상태 안내 페이지로 이동합니다.
+      // if (
+      //   useDynamicServiceConstant.getState().SERVICE_STATUS.available === false
+      // ) {
+      //   navigation.navigate('ServiceStatusScreen', {});
+      // }
+    }
     // if (appState === 'background') {
     //   makeFirebaseLogEvent(APP_LOGS.goto_background);
     // }

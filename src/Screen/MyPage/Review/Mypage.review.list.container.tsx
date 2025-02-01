@@ -1,5 +1,6 @@
 // src/Screen/Review/ReviewListContainer.tsx
 import React, {useEffect} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import styled from 'styled-components/native';
 import {ScrollViewPage} from 'src/Component/Page';
 import {moderateScale} from 'src/Util';
@@ -19,7 +20,15 @@ interface ReviewListContainerProps {
 export const ReviewListContainer: React.FC<ReviewListContainerProps> = ({
   navigation,
 }) => {
-  const {visitedPopups, isLoading, error} = useReviewListContext();
+  const {refetchVisitedPopups, visitedPopups, isLoading, error} =
+    useReviewListContext();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      void refetchVisitedPopups(); // 화면이 다시 활성화될 때 실행
+    }, []),
+  );
+
   return (
     <ScrollViewPage
       UpperPart={

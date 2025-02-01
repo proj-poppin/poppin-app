@@ -68,9 +68,10 @@ export function GoogleLoginButton({
           showBlackToast({text1: '구글 간편 로그인이 완료되었습니다.'});
           onLoginSucceed();
         } else {
-          return showBlackToast({
-            text1: '구글 로그인 정보를 가져오지 못했습니다.',
-          });
+          // 중복되는 경우 등의 구체적인 에러 메세지 보이기 위해 아래 코드 주석처리
+          // return showBlackToast({
+          //   text1: '구글 로그인 정보를 가져오지 못했습니다.',
+          // });
         }
       } else if (googleAccountStatus.accountStatus === 'SIGNUP') {
         onSignupRequired({email: profile.email});

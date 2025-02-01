@@ -129,7 +129,6 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
   const visitPopup = async () => {
     try {
       const result = await axiosVisitPopupStore(popupDetail.id);
-      // console.log('방문하기 응답:', result);
 
       if (result?.success) {
         const updatedUser = {
@@ -138,7 +137,6 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
         };
         setUser(updatedUser);
 
-        // 🔹 팝업 방문 완료 처리
         if (result.data.updatedPopupStore) {
           usePopupStore.getState().spreadPopupVisited({
             popup: result.data.updatedPopupStore,
@@ -146,7 +144,6 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
           });
         }
 
-        // console.log('방문하기 성공:', result);
         return true;
       }
 

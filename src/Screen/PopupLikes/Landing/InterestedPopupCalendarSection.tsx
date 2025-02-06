@@ -19,10 +19,14 @@ import {
 import {usePopupStore} from '../../../Zustand/Popup/popup.zustand';
 import PopupStoreCard from '../../../Component/Popup/Landing/PopupStoreCard';
 import Star from '../../../Resource/svg/bottom-nav-bar-tab2-active.svg';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 const InterestedPopupCalendarSection = () => {
+  const navigation = useNavigation<NavigationProp<AppStackProps>>();
+
   const {calendarCells, calendarYear, calendarMonth, moveMonth} =
     usePopupLikesLandingScreenStore();
 
@@ -119,6 +123,10 @@ const InterestedPopupCalendarSection = () => {
         popup.openDate.split('T')[0] === selectedDate ||
         popup.closeDate.split('T')[0] === selectedDate,
     ) || [];
+
+  const handlePressCard = (id: string) => {
+    navigation.navigate('PopupDetailScreen', {popupId: id});
+  };
 
   return (
     <SectionContainer style={{flex: 1, paddingBottom: moderateScale(60)}}>
@@ -251,7 +259,16 @@ const InterestedPopupCalendarSection = () => {
         <FlatList
           data={filteredPopups}
           keyExtractor={item => item.id}
-          renderItem={({item}) => <PopupStoreCard item={item} />}
+          renderItem={({item}) => (
+            <PopupStoreCard
+              item={item}
+              key={item.id}
+              onPress={() => {
+                handlePressCard(item.id);
+              }}
+              isInterestPopupCard={true}
+            />
+          )}
           ItemSeparatorComponent={() => <Separator />}
           ListEmptyComponent={
             <EmptyListView>

@@ -15,7 +15,10 @@ import {useReviewWriteContext} from './Mypage.review.write.context';
 import {ReviewWriteSection} from 'src/Component/MyPage/Review/Mypage.review.write.section';
 import {ReivewTitleText} from './Mypage.review.visited.screen';
 
-export const NormalReviewWriteScreen: React.FC = () => {
+interface NormalReviewWriteScreenProps {
+  routedSelectedPopup: PopupSchema | undefined;
+}
+export const NormalReviewWriteScreen: React.FC<NormalReviewWriteScreenProps> = ({routedSelectedPopup}) => {
   const {
     searchedPopupStores,
     searchKeyword,
@@ -33,6 +36,13 @@ export const NormalReviewWriteScreen: React.FC = () => {
     handleDeleteImage,
     submitReview,
   } = useReviewWriteContext();
+
+  useEffect(() => {
+    if(routedSelectedPopup){
+      setSelectedPopup(routedSelectedPopup)
+    }
+  }, [routedSelectedPopup, setSelectedPopup]);
+
   const shouldShowSearchBar =
     !selectedPopup || (showResults && searchKeyword.length > 0);
 
@@ -45,6 +55,7 @@ export const NormalReviewWriteScreen: React.FC = () => {
       group.categories.some(category => category.selected),
     );
   };
+
 
   // 버튼 활성화 상태 업데이트
   useEffect(() => {
@@ -106,12 +117,14 @@ export const NormalReviewWriteScreen: React.FC = () => {
                 {selectedPopup && (
                   <SelectedPopupSection>
                     <ReivewTitleText>{selectedPopup.name}</ReivewTitleText>
-                    <CancelText
-                      onPress={() => {
-                        setSelectedPopup(undefined);
-                      }}>
+                    {routedSelectedPopup ? <TitleRightText>
+                      일반 후기
+                    </TitleRightText> :  <TitleRightText
+                        onPress={() => {
+                          setSelectedPopup(undefined);
+                        }}>
                       선택 취소
-                    </CancelText>
+                    </TitleRightText>}
                   </SelectedPopupSection>
                 )}
                 <ReviewWriteSection
@@ -180,7 +193,7 @@ const ResultsContainer = styled.View`
   background-color: ${theme => theme.theme.color.grey.white};
 `;
 
-const CancelText = styled.Text`
+const TitleRightText = styled.Text`
   font-size: ${moderateScale(12)}px;
   color: ${props => props.theme.color.grey.main};
 `;

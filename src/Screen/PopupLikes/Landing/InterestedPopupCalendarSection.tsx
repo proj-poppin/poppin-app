@@ -21,13 +21,20 @@ import PopupStoreCard from '../../../Component/Popup/Landing/PopupStoreCard';
 import Star from '../../../Resource/svg/bottom-nav-bar-tab2-active.svg';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
+import YearMonthPicker from 'src/Component/YearMonthPicker';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 const InterestedPopupCalendarSection = () => {
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // 1~12월
+
+  // YearMonthPicker 모달 상태
+  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
 
-  const {calendarCells, calendarYear, calendarMonth, moveMonth} =
+  const {calendarCells, calendarYear, calendarMonth, moveMonth, setYearMonth} =
     usePopupLikesLandingScreenStore();
 
   const {interestedPopupStores} = usePopupStore();
@@ -128,166 +135,196 @@ const InterestedPopupCalendarSection = () => {
     navigation.navigate('PopupDetailScreen', {popupId: id});
   };
 
+  const showDatePicker = () => setDatePickerVisible(true);
+  const hideDatePicker = () => setDatePickerVisible(false);
+
+  // 날짜 변경 핸들러 (YearMonthPicker에서 선택한 값을 적용)
+  const handleConfirm = (year: number, month: number) => {
+    setSelectedYear(year);
+    setSelectedMonth(month);
+    setYearMonth(year, month); // 연도-월 업데이트
+    hideDatePicker();
+  };
+
   return (
-    <SectionContainer style={{flex: 1, paddingBottom: moderateScale(60)}}>
-      {/* 날짜 (ex. 2024.03) */}
-      <CalendarHeaderContainer>
-        <TouchableOpacity
-          onPress={() => moveMonth('BACKWARD')}
-          activeOpacity={0.7}>
-          <CalendarLeftArrowGreyIcon
-            width={moderateScale(18)}
-            height={moderateScale(18)}
-          />
-        </TouchableOpacity>
-        {/* 누르면 날짜 박스 보이기 */}
-        <DateContainer>
-          <CalendarHeaderText>{`${calendarYear}.${formattedMonth}`}</CalendarHeaderText>
-          <DownArrowBlackIcon
-            width={moderateScale(18)}
-            height={moderateScale(18)}
-            style={{marginLeft: moderateScale(8)}}
-          />
-        </DateContainer>
-        <TouchableOpacity
-          onPress={() => moveMonth('FORWARD')}
-          activeOpacity={0.7}>
-          <CalendarRightArrowBlackIcon
-            width={moderateScale(18)}
-            height={moderateScale(18)}
-          />
-        </TouchableOpacity>
-      </CalendarHeaderContainer>
-      {/* 월-화-수-목-금-토-일 */}
-      <CalendarDaysContainer>
-        {['일', '월', '화', '수', '목', '금', '토'].map(day => (
-          <CalendarCellBase key={day}>
-            {/* 일요일은 빨간색으로 표시 */}
-            <CalendarCellDayText isSunday={day === '일'}>
-              {day}
-            </CalendarCellDayText>
-          </CalendarCellBase>
-        ))}
-      </CalendarDaysContainer>
-
-      <View {...swipeResponder.panHandlers} style={{flex: 1}}>
-        <CalendarBodyContainer>
-          {calendarCells.map(cell => {
-            const popupsCount =
-              interestedPopupStores?.filter(popup => {
-                const openDate = popup.openDate.split('T')[0];
-                const closeDate = popup.closeDate.split('T')[0];
-                return (
-                  openDate === cell.dateString || closeDate === cell.dateString
-                );
-              }).length || 0;
-            const today = new Date();
-            const isToday =
-              cell.dateString === today.toISOString().split('T')[0];
-            const isSelected = cell.dateString === selectedDate;
-
-            return (
-              <CalendarCellBase
-                key={cell.dateString}
-                onPress={() => handleDateClick(cell.dateString)}
-                style={{
-                  height: cellHeight,
-                }}>
-                {isToday && (
-                  <DateCircle
-                    style={{backgroundColor: themeColors().purple.mild}}
-                  />
-                )}
-                {isSelected && (
-                  <DateCircle
-                    style={{backgroundColor: themeColors().purple.main}}
-                  />
-                )}
-                <CalendarCellDateText
-                  style={{
-                    color: isSelected
-                      ? themeColors().grey.white
-                      : themeColors().grey.black,
-                    zIndex: 1,
-                  }}>
-                  {cell.date}
-                </CalendarCellDateText>
-                {popupsCount > 0 && (
-                  <DotsContainer>
-                    <Dot style={{backgroundColor: themeColors().purple.main}} />
-                    {popupsCount >= 2 && (
-                      <Dot style={{backgroundColor: themeColors().blue.main}} />
-                    )}
-                    {popupsCount >= 3 && (
-                      <Dot
-                        style={{backgroundColor: themeColors().purple.mild}}
-                      />
-                    )}
-                  </DotsContainer>
-                )}
-              </CalendarCellBase>
-            );
-          })}
-        </CalendarBodyContainer>
-      </View>
-
-      {/* 바텀시트 */}
-      <Animated.View
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: SCREEN_HEIGHT,
-          transform: [{translateY}],
-          borderTopLeftRadius: translateY.interpolate({
-            inputRange: [0, SCREEN_HEIGHT * 0.5],
-            outputRange: [0, moderateScale(20)],
-            extrapolate: 'clamp',
-          }),
-          borderTopRightRadius: translateY.interpolate({
-            inputRange: [0, SCREEN_HEIGHT * 0.5],
-            outputRange: [0, moderateScale(20)],
-            extrapolate: 'clamp',
-          }),
-          borderWidth: 2,
-          borderColor: '#F2F4F6',
-          backgroundColor: 'white',
-        }}
-        {...panResponder.panHandlers}>
-        <HandleBar />
-        <FlatList
-          data={filteredPopups}
-          keyExtractor={item => item.id}
-          renderItem={({item}) => (
-            <PopupStoreCard
-              item={item}
-              key={item.id}
-              onPress={() => {
-                handlePressCard(item.id);
-              }}
-              isInterestPopupCard={true}
+    <>
+      <SectionContainer style={{flex: 1, paddingBottom: moderateScale(60)}}>
+        {/* 날짜 (ex. 2024.03) */}
+        <CalendarHeaderContainer>
+          <TouchableOpacity
+            onPress={() => moveMonth('BACKWARD')}
+            activeOpacity={0.7}>
+            <CalendarLeftArrowGreyIcon
+              width={moderateScale(18)}
+              height={moderateScale(18)}
             />
-          )}
-          ItemSeparatorComponent={() => <Separator />}
-          ListEmptyComponent={
-            <EmptyListView>
-              <EmptyListDate>
-                {selectedDate &&
-                  `${selectedDate.split('-')[2]}일 ${getDayOfWeek(
-                    selectedDate,
-                  )}요일`}
-              </EmptyListDate>
-              <StarContainer>
-                <Star />
-              </StarContainer>
+          </TouchableOpacity>
+          {/* 누르면 날짜 박스 보이기 */}
+          <DateContainer onPress={showDatePicker}>
+            <CalendarHeaderText>{`${calendarYear}.${formattedMonth}`}</CalendarHeaderText>
+            <DownArrowBlackIcon
+              width={moderateScale(18)}
+              height={moderateScale(18)}
+              style={{marginLeft: moderateScale(8)}}
+            />
+          </DateContainer>
 
-              <EmptyListMessage>{`저장한 팝업이 없어요!🫤\n관심 있는 팝업을 저장해 보세요.`}</EmptyListMessage>
-            </EmptyListView>
-          }
+          <TouchableOpacity
+            onPress={() => moveMonth('FORWARD')}
+            activeOpacity={0.7}>
+            <CalendarRightArrowBlackIcon
+              width={moderateScale(18)}
+              height={moderateScale(18)}
+            />
+          </TouchableOpacity>
+        </CalendarHeaderContainer>
+        {/* 월-화-수-목-금-토-일 */}
+        <CalendarDaysContainer>
+          {['일', '월', '화', '수', '목', '금', '토'].map(day => (
+            <CalendarCellBase key={day}>
+              {/* 일요일은 빨간색으로 표시 */}
+              <CalendarCellDayText isSunday={day === '일'}>
+                {day}
+              </CalendarCellDayText>
+            </CalendarCellBase>
+          ))}
+        </CalendarDaysContainer>
+
+        <View {...swipeResponder.panHandlers} style={{flex: 1}}>
+          <CalendarBodyContainer>
+            {calendarCells.map(cell => {
+              const popupsCount =
+                interestedPopupStores?.filter(popup => {
+                  const openDate = popup.openDate.split('T')[0];
+                  const closeDate = popup.closeDate.split('T')[0];
+                  return (
+                    openDate === cell.dateString ||
+                    closeDate === cell.dateString
+                  );
+                }).length || 0;
+              const today = new Date();
+              const isToday =
+                cell.dateString === today.toISOString().split('T')[0];
+              const isSelected = cell.dateString === selectedDate;
+
+              return (
+                <CalendarCellBase
+                  key={cell.dateString}
+                  onPress={() => handleDateClick(cell.dateString)}
+                  style={{
+                    height: cellHeight,
+                  }}>
+                  {isToday && (
+                    <DateCircle
+                      style={{backgroundColor: themeColors().purple.mild}}
+                    />
+                  )}
+                  {isSelected && (
+                    <DateCircle
+                      style={{backgroundColor: themeColors().purple.main}}
+                    />
+                  )}
+                  <CalendarCellDateText
+                    style={{
+                      color: isSelected
+                        ? themeColors().grey.white
+                        : themeColors().grey.black,
+                      zIndex: 1,
+                    }}>
+                    {cell.date}
+                  </CalendarCellDateText>
+                  {popupsCount > 0 && (
+                    <DotsContainer>
+                      <Dot
+                        style={{backgroundColor: themeColors().purple.main}}
+                      />
+                      {popupsCount >= 2 && (
+                        <Dot
+                          style={{backgroundColor: themeColors().blue.main}}
+                        />
+                      )}
+                      {popupsCount >= 3 && (
+                        <Dot
+                          style={{backgroundColor: themeColors().purple.mild}}
+                        />
+                      )}
+                    </DotsContainer>
+                  )}
+                </CalendarCellBase>
+              );
+            })}
+          </CalendarBodyContainer>
+        </View>
+
+        {/* 바텀시트 */}
+        <Animated.View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: SCREEN_HEIGHT,
+            transform: [{translateY}],
+            borderTopLeftRadius: translateY.interpolate({
+              inputRange: [0, SCREEN_HEIGHT * 0.5],
+              outputRange: [0, moderateScale(20)],
+              extrapolate: 'clamp',
+            }),
+            borderTopRightRadius: translateY.interpolate({
+              inputRange: [0, SCREEN_HEIGHT * 0.5],
+              outputRange: [0, moderateScale(20)],
+              extrapolate: 'clamp',
+            }),
+            borderWidth: 2,
+            borderColor: '#F2F4F6',
+            backgroundColor: 'white',
+          }}
+          {...panResponder.panHandlers}>
+          <HandleBar />
+          <FlatList
+            data={filteredPopups}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => (
+              <PopupStoreCard
+                item={item}
+                key={item.id}
+                onPress={() => {
+                  handlePressCard(item.id);
+                }}
+                isInterestPopupCard={true}
+              />
+            )}
+            ItemSeparatorComponent={() => <Separator />}
+            ListEmptyComponent={
+              <EmptyListView>
+                <EmptyListDate>
+                  {selectedDate &&
+                    `${selectedDate.split('-')[2]}일 ${getDayOfWeek(
+                      selectedDate,
+                    )}요일`}
+                </EmptyListDate>
+                <StarContainer>
+                  <Star />
+                </StarContainer>
+
+                <EmptyListMessage>{`저장한 팝업이 없어요!🫤\n관심 있는 팝업을 저장해 보세요.`}</EmptyListMessage>
+              </EmptyListView>
+            }
+          />
+        </Animated.View>
+      </SectionContainer>
+
+      {/* YearMonthPicker 모달 추가 */}
+      {isDatePickerVisible && (
+        <YearMonthPicker
+          isVisible={isDatePickerVisible}
+          onClose={hideDatePicker}
+          onConfirm={(year, month) => handleConfirm(year, month)}
+          selectedYear={calendarYear}
+          selectedMonth={Number(formattedMonth)}
         />
-      </Animated.View>
-    </SectionContainer>
+      )}
+    </>
   );
 };
 
@@ -302,6 +339,8 @@ const CalendarHeaderContainer = styled.View`
 const DateContainer = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
+  justify-content: center;
+  padding: ${moderateScale(10)}px;
 `;
 
 /** 요일 표시줄 */

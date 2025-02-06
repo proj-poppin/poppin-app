@@ -300,9 +300,11 @@ const TagText = styled.Text`
   color: ${({theme}) => theme.color.grey.black};
 `;
 
+// 디데이 잘리는 경우 있어서 width auto로 변경
 const StatusContainer = styled.View`
   background-color: ${themeColors().purple.mild};
-  width: ${moderateScale(60)}px;
+  width: auto;
+  max-width: ${moderateScale(82)}px;
   height: ${moderateScale(24)}px;
   border-radius: ${moderateScale(10)}px;
   padding: ${moderateScale(6)}px;

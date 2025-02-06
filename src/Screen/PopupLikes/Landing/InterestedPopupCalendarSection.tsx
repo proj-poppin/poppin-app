@@ -14,6 +14,7 @@ import {
   PanResponder,
   FlatList,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import {usePopupStore} from '../../../Zustand/Popup/popup.zustand';
 import PopupStoreCard from '../../../Component/Popup/Landing/PopupStoreCard';
@@ -82,6 +83,24 @@ const InterestedPopupCalendarSection = () => {
     }),
   ).current;
 
+  const swipeResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => {
+        return true;
+      },
+      onMoveShouldSetPanResponder: () => {
+        return true;
+      },
+      onPanResponderRelease: (_, {dx}) => {
+        if (dx < -30) {
+          moveMonth('FORWARD');
+        } else if (dx > 30) {
+          moveMonth('BACKWARD');
+        }
+      },
+    }),
+  ).current;
+
   const formattedMonth =
     calendarMonth < 10 ? `0${calendarMonth}` : `${calendarMonth}`;
 
@@ -113,6 +132,7 @@ const InterestedPopupCalendarSection = () => {
             height={moderateScale(18)}
           />
         </TouchableOpacity>
+        {/* 누르면 날짜 박스 보이기 */}
         <DateContainer>
           <CalendarHeaderText>{`${calendarYear}.${formattedMonth}`}</CalendarHeaderText>
           <DownArrowBlackIcon
@@ -142,62 +162,66 @@ const InterestedPopupCalendarSection = () => {
         ))}
       </CalendarDaysContainer>
 
-      {/* 캘린더 몸통 */}
-      <CalendarBodyContainer>
-        {calendarCells.map(cell => {
-          const popupsCount =
-            interestedPopupStores?.filter(popup => {
-              const openDate = popup.openDate.split('T')[0];
-              const closeDate = popup.closeDate.split('T')[0];
-              return (
-                openDate === cell.dateString || closeDate === cell.dateString
-              );
-            }).length || 0;
-          const today = new Date();
-          const isToday = cell.dateString === today.toISOString().split('T')[0];
-          const isSelected = cell.dateString === selectedDate;
+      <View {...swipeResponder.panHandlers} style={{flex: 1}}>
+        <CalendarBodyContainer>
+          {calendarCells.map(cell => {
+            const popupsCount =
+              interestedPopupStores?.filter(popup => {
+                const openDate = popup.openDate.split('T')[0];
+                const closeDate = popup.closeDate.split('T')[0];
+                return (
+                  openDate === cell.dateString || closeDate === cell.dateString
+                );
+              }).length || 0;
+            const today = new Date();
+            const isToday =
+              cell.dateString === today.toISOString().split('T')[0];
+            const isSelected = cell.dateString === selectedDate;
 
-          return (
-            <CalendarCellBase
-              key={cell.dateString}
-              onPress={() => handleDateClick(cell.dateString)}
-              style={{
-                height: cellHeight,
-              }}>
-              {isToday && (
-                <DateCircle
-                  style={{backgroundColor: themeColors().purple.mild}}
-                />
-              )}
-              {isSelected && (
-                <DateCircle
-                  style={{backgroundColor: themeColors().purple.main}}
-                />
-              )}
-              <CalendarCellDateText
+            return (
+              <CalendarCellBase
+                key={cell.dateString}
+                onPress={() => handleDateClick(cell.dateString)}
                 style={{
-                  color: isSelected
-                    ? themeColors().grey.white
-                    : themeColors().grey.black,
-                  zIndex: 1,
+                  height: cellHeight,
                 }}>
-                {cell.date}
-              </CalendarCellDateText>
-              {popupsCount > 0 && (
-                <DotsContainer>
-                  <Dot style={{backgroundColor: themeColors().purple.main}} />
-                  {popupsCount >= 2 && (
-                    <Dot style={{backgroundColor: themeColors().blue.main}} />
-                  )}
-                  {popupsCount >= 3 && (
-                    <Dot style={{backgroundColor: themeColors().purple.mild}} />
-                  )}
-                </DotsContainer>
-              )}
-            </CalendarCellBase>
-          );
-        })}
-      </CalendarBodyContainer>
+                {isToday && (
+                  <DateCircle
+                    style={{backgroundColor: themeColors().purple.mild}}
+                  />
+                )}
+                {isSelected && (
+                  <DateCircle
+                    style={{backgroundColor: themeColors().purple.main}}
+                  />
+                )}
+                <CalendarCellDateText
+                  style={{
+                    color: isSelected
+                      ? themeColors().grey.white
+                      : themeColors().grey.black,
+                    zIndex: 1,
+                  }}>
+                  {cell.date}
+                </CalendarCellDateText>
+                {popupsCount > 0 && (
+                  <DotsContainer>
+                    <Dot style={{backgroundColor: themeColors().purple.main}} />
+                    {popupsCount >= 2 && (
+                      <Dot style={{backgroundColor: themeColors().blue.main}} />
+                    )}
+                    {popupsCount >= 3 && (
+                      <Dot
+                        style={{backgroundColor: themeColors().purple.mild}}
+                      />
+                    )}
+                  </DotsContainer>
+                )}
+              </CalendarCellBase>
+            );
+          })}
+        </CalendarBodyContainer>
+      </View>
 
       {/* 바텀시트 */}
       <Animated.View

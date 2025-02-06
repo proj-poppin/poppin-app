@@ -21,6 +21,7 @@ interface PopupStoreCardProps {
   item: PopupSchema;
   onPress?: () => void;
   isInterestPopupCard?: boolean;
+  dDayType?: string;
 }
 
 export type TFilter = {
@@ -59,6 +60,7 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
   item,
   onPress,
   isInterestPopupCard = false,
+  dDayType,
 }) => {
   const remainingDays = calculateDaysRemaining(item.closeDate);
   const status = item.operationStatus;
@@ -118,12 +120,6 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
         </ClosedWrapper>
       )}
 
-      {!isInterestPopupCard && status !== 'TERMINATED' && (
-        <DdayBadge>
-          <DdayText>종료 D-{dday}</DdayText>
-        </DdayBadge>
-      )}
-
       <FavoriteButton
         onPress={event => handleFavoritePress(event, item.id)}
         disabled={scrapping || isAnyLoading}>
@@ -135,7 +131,9 @@ export const PopupStoreCard: React.FC<PopupStoreCardProps> = ({
         {isInterestPopupCard && (
           <StatusContainer>
             <StatusText>
-              {status === 'OPERATING'
+              {dDayType
+                ? dDayType // 오픈 D-Day, 마감 D-Day 표시
+                : status === 'OPERATING'
                 ? '운영 중'
                 : status === 'TERMINATED'
                 ? '팝업 종료'
@@ -300,12 +298,12 @@ const TagText = styled.Text`
   color: ${({theme}) => theme.color.grey.black};
 `;
 
-// 디데이 잘리는 경우 있어서 width auto로 변경
+// 디데이 잘리는 경우 있어서 width, height auto로 변경
 const StatusContainer = styled.View`
   background-color: ${themeColors().purple.mild};
   width: auto;
   max-width: ${moderateScale(82)}px;
-  height: ${moderateScale(24)}px;
+  height: auto;
   border-radius: ${moderateScale(10)}px;
   padding: ${moderateScale(6)}px;
   justify-content: center;

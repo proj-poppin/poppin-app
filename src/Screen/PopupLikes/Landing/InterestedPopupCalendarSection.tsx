@@ -22,6 +22,8 @@ import Star from '../../../Resource/svg/bottom-nav-bar-tab2-active.svg';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 import YearMonthPicker from 'src/Component/YearMonthPicker';
+import {BodyMediumText} from 'src/StyledComponents/Text/bodyMedium.component';
+import {useFocusEffect} from '@react-navigation/native';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -41,6 +43,14 @@ const InterestedPopupCalendarSection = () => {
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const translateY = useRef(new Animated.Value(SCREEN_HEIGHT * 0.7)).current;
+
+  // 화면에 다시 돌아올 때 오늘 날짜로 초기화
+  useFocusEffect(
+    React.useCallback(() => {
+      const today = new Date();
+      setYearMonth(today.getFullYear(), today.getMonth() + 1);
+    }, []),
+  );
 
   // 캘린더 셀 높이를 반응형으로 조절
   const cellHeight = translateY.interpolate({
@@ -124,12 +134,26 @@ const InterestedPopupCalendarSection = () => {
     }).start();
   };
 
-  const filteredPopups =
-    interestedPopupStores?.filter(
-      popup =>
-        popup.openDate.split('T')[0] === selectedDate ||
-        popup.closeDate.split('T')[0] === selectedDate,
-    ) || [];
+  const filteredPopups = selectedDate
+    ? interestedPopupStores
+        ?.filter(popup => {
+          const openDate = popup.openDate.split('T')[0];
+          const closeDate = popup.closeDate.split('T')[0];
+          const selected = selectedDate || '';
+
+          return selected >= openDate && selected <= closeDate;
+        })
+        .map(popup => {
+          const openDate = popup.openDate.split('T')[0];
+          const closeDate = popup.closeDate.split('T')[0];
+
+          let dDayType = null;
+          if (selectedDate === openDate) dDayType = '오픈 D-day';
+          if (selectedDate === closeDate) dDayType = '마감 D-day';
+
+          return {...popup, dDayType}; // D-Day 정보 추가
+        })
+    : interestedPopupStores || []; // 기본적으로 현재 관심 설정해 둔 팝업 리스트를 보임
 
   const handlePressCard = (id: string) => {
     navigation.navigate('PopupDetailScreen', {popupId: id});
@@ -144,6 +168,15 @@ const InterestedPopupCalendarSection = () => {
     setSelectedMonth(month);
     setYearMonth(year, month); // 연도-월 업데이트
     hideDatePicker();
+  };
+
+  // 오늘 날짜를 반환하는 함수
+  const getTodayDate = () => {
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(
+      2,
+      '0',
+    )}-${String(today.getDate()).padStart(2, '0')}`;
   };
 
   return (
@@ -281,7 +314,15 @@ const InterestedPopupCalendarSection = () => {
           }}
           {...panResponder.panHandlers}>
           <HandleBar />
+
+          {/* 기본은 오늘 날짜 */}
+          <EmptyListDate>
+            {`${
+              (selectedDate || getTodayDate()).split('-')[2]
+            }일 ${getDayOfWeek(selectedDate || getTodayDate())}요일`}
+          </EmptyListDate>
           <FlatList
+            style={{paddingLeft: moderateScale(16)}}
             data={filteredPopups}
             keyExtractor={item => item.id}
             renderItem={({item}) => (
@@ -292,22 +333,17 @@ const InterestedPopupCalendarSection = () => {
                   handlePressCard(item.id);
                 }}
                 isInterestPopupCard={true}
+                dDayType={item.dDayType || ''}
               />
             )}
             ItemSeparatorComponent={() => <Separator />}
             ListEmptyComponent={
               <EmptyListView>
-                <EmptyListDate>
-                  {selectedDate &&
-                    `${selectedDate.split('-')[2]}일 ${getDayOfWeek(
-                      selectedDate,
-                    )}요일`}
-                </EmptyListDate>
                 <StarContainer>
                   <Star />
                 </StarContainer>
 
-                <EmptyListMessage>{`저장한 팝업이 없어요!🫤\n관심 있는 팝업을 저장해 보세요.`}</EmptyListMessage>
+                <EmptyListMessage>{`저장한 팝업이 없어요! 🫤\n관심 있는 팝업을 저장해 보세요.`}</EmptyListMessage>
               </EmptyListView>
             }
           />
@@ -446,10 +482,11 @@ const EmptyListDate = styled.Text`
   text-align: start;
   font-size: ${moderateScale(20)}px;
   font-weight: semi-bold;
+  padding-left: ${moderateScale(16)}px;
+  margin-bottom: ${moderateScale(12)}px;
 `;
-const EmptyListMessage = styled.Text`
+const EmptyListMessage = styled(BodyMediumText)`
   text-align: center;
-  color: #aaa;
   font-size: ${moderateScale(16)}px;
   margin-top: ${moderateScale(20)}px;
 `;

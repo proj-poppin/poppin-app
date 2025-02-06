@@ -109,7 +109,7 @@ type PopupStoreProps = {
   }) => void;
 
   /** 팝업 재오픈 알림 받기를 구독/구독 취소합니다. */
-  startWaitingPopup: (popupId: string) => Promise<void>;
+  startWaitingPopup: (popupId: string) => Promise<{updatedPopup: PopupSchema | null}>;
   // cancelWaitingPopup: (popupId: string) => Promise<void>;
 
   /**
@@ -433,11 +433,12 @@ export const usePopupStore = create<PopupStoreProps>((set, get) => ({
   startWaitingPopup: async (popupId: string) => {
     const result = await axiosRequestReopenPopup(popupId);
     if (result === null) {
-      return;
+     return {updatedPopup: null};
     }
     set({
       waitingPopups: [result.newPopupWaiting, ...get().waitingPopups],
     });
+    return {updatedPopup: result.updatedPopup};
   },
 
   // TODO 기획에 따른 보류

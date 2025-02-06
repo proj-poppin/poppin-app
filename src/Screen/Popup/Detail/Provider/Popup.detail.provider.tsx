@@ -163,7 +163,12 @@ export const PopupDetailProvider = ({children}: {children: any}) => {
   };
 
   const requestReopenPopup = async () => {
-    const result = await axiosRequestReopenPopup(popupDetail.id);
+    const {updatedPopup} = await usePopupStore
+        .getState()
+        .startWaitingPopup(popupDetail.id);
+    if(updatedPopup){
+      setPopupDetail(updatedPopup)
+    }
   };
 
   const [popupDetailModalVisible, setPopupDetailModalVisible] =

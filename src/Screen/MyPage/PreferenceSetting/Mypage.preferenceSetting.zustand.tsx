@@ -141,11 +141,6 @@ export const useMypagePreferenceSettingScreenStore =
               .getState()
               .setRecommendedPopupStores(result.updatedRecommendedPopupStores);
 
-            // 홈 화면에 반영
-            const {refreshHomePopupStores} =
-              useHomeLandingScreenStore.getState();
-            refreshHomePopupStores();
-
             return true; // 성공 여부 반환
           }
           return false; // 실패 시 false 반환

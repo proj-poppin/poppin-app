@@ -14,11 +14,13 @@ import PopupStoreCard from 'src/Component/Popup/Landing/PopupStoreCard';
 import {useUserStore} from 'src/Zustand/User/user.zustand';
 import InterestedPopupCalendarSection from './InterestedPopupCalendarSection';
 import InterestedPopupCalendarWithBottomSheet from './InterestedPopupCalendarSection';
-import {LandingScreenHeader} from "../../../Component/View";
+import {LandingScreenHeader} from '../../../Component/View';
 import PoppinShadowedLogo from 'src/Resource/svg/poppin-shadowed-logo.svg';
-import {BodyMediumText} from "../../../StyledComponents/Text/bodyMedium.component";
-import {moderateScale} from "../../../Util";
-import {RadiusButtonV2} from "../../../Component/Button/RadiusButton.v2";
+import {BodyMediumText} from '../../../StyledComponents/Text/bodyMedium.component';
+import {moderateScale} from '../../../Util';
+import {RadiusButtonV2} from '../../../Component/Button/RadiusButton.v2';
+import Star from '../../../Resource/svg/star-with-bottom-shadow-icon.svg';
+import {BodyLargeText} from 'src/StyledComponents/Text/bodyLarge.component';
 
 export enum OperationStatus {
   NOTYET = 'NOTYET',
@@ -59,7 +61,7 @@ export const PopupLikesLandingScreen = () => {
     navigation.navigate('PopupDetailScreen', {popupId: id});
   };
 
-  const handlePressLogin = () =>  navigation.navigate('AuthLandingScreen', {});
+  const handlePressLogin = () => navigation.navigate('AuthLandingScreen', {});
 
   const renderPopupItem = ({item}: {item: PopupSchema}) => (
     <View style={popupItemStyles.popupItemContainer}>
@@ -79,27 +81,25 @@ export const PopupLikesLandingScreen = () => {
   if (!loggedIn) {
     return (
       <ScreenContainer>
-        <LandingScreenHeader title={'관심 팝업'}/>
-          <LoggedOutScreenContainer>
-            <PoppinShadowedLogo/>
-            <StyledText>
-              {'로그인하고\n관심 팝업을 저장해보세요!'}
-            </StyledText>
-            <RadiusButtonV2
-                style={{
-                  height: undefined,
-                  paddingVertical: moderateScale(10),
-                  paddingHorizontal: moderateScale(24),
-                  marginBottom: moderateScale(8),
-                  maxHeight: moderateScale(48),
-                }}
-                color={'BLUE'}
-                priority={'PRIMARY'}
-                text={'로그인 하러 가기'}
-                textStyle={{fontSize: moderateScale(14)}}
-                onPress={handlePressLogin}
-            />
-          </LoggedOutScreenContainer>
+        <LandingScreenHeader title={'관심 팝업'} />
+        <LoggedOutScreenContainer>
+          <PoppinShadowedLogo />
+          <StyledText>{'로그인하고\n관심 팝업을 저장해보세요!'}</StyledText>
+          <RadiusButtonV2
+            style={{
+              height: undefined,
+              paddingVertical: moderateScale(10),
+              paddingHorizontal: moderateScale(24),
+              marginBottom: moderateScale(8),
+              maxHeight: moderateScale(48),
+            }}
+            color={'BLUE'}
+            priority={'PRIMARY'}
+            text={'로그인 하러 가기'}
+            textStyle={{fontSize: moderateScale(14)}}
+            onPress={handlePressLogin}
+          />
+        </LoggedOutScreenContainer>
       </ScreenContainer>
     );
   }
@@ -156,6 +156,14 @@ export const PopupLikesLandingScreen = () => {
             data={filteredAndSortedPopups}
             keyExtractor={(item: PopupSchema) => item.id}
             renderItem={renderPopupItem}
+            ListEmptyComponent={
+              <EmptyListView>
+                <StarContainer>
+                  <Star />
+                </StarContainer>
+                <EmptyListMessage>{`저장한 팝업이 없어요! 🫤\n관심 있는 팝업을 저장해 보세요.`}</EmptyListMessage>
+              </EmptyListView>
+            }
           />
         </>
       )}
@@ -166,7 +174,7 @@ export const PopupLikesLandingScreen = () => {
 const LoggedOutScreenContainer = styled.SafeAreaView`
   flex: 1;
   background-color: ${({theme}) => theme.color.grey.white};
-  justify-content: center;   
+  justify-content: center;
   align-items: center;
   flex-direction: column;
   margin-bottom: ${moderateScale(66)}px;
@@ -198,3 +206,24 @@ const popupItemStyles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
 });
+
+const EmptyListView = styled.View`
+  position: relative;
+  flex: 1;
+  justify-content: center;
+  padding: ${moderateScale(10)}px;
+`;
+
+const StarContainer = styled.View`
+  position: absolute;
+  top: ${moderateScale(152)}px;
+  align-self: center;
+`;
+
+const EmptyListMessage = styled(BodyLargeText)`
+  position: absolute;
+  top: ${moderateScale(328)}px;
+  text-align: center;
+  align-self: center;
+  font-size: ${moderateScale(16)}px;
+`;

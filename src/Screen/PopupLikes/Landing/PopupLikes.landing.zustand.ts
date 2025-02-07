@@ -20,6 +20,7 @@ type PopupLikesLandingScreenStoreProps = {
   ableToGoForward: boolean;
 
   moveMonth: (action: 'BACKWARD' | 'FORWARD') => void;
+  setYearMonth: (year: number, month: number) => void;
   setFocusedDate: (date: {year: number; month: number; date: number}) => void;
 };
 
@@ -137,6 +138,20 @@ export const usePopupLikesLandingScreenStore =
             ableToGoForward: isAbleToGoForward(calendarYear, calendarMonth),
           };
         });
+      },
+
+      /**
+       * 연도와 월을 직접 설정하는 함수입니다.
+       * @author 희진
+       */
+      setYearMonth: (year, month) => {
+        set(() => ({
+          calendarYear: year,
+          calendarMonth: month,
+          calendarCells: generateCalendarCells(year, month),
+          ableToGoBackward: isAbleToGoBackward(year, month),
+          ableToGoForward: isAbleToGoForward(year, month),
+        }));
       },
 
       setFocusedDate: date => {

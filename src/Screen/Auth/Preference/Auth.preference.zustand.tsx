@@ -57,7 +57,7 @@ export const useAuthPreferenceSettingScreenStore =
     },
 
     savePreferences: async () => {
-      const {selectedTags} = get();
+      const {draftSelectedTags} = get();
 
       // BlankPreference를 기반으로 선택된 태그를 반영
       const preferenceSchema: PreferenceSchema = {
@@ -67,7 +67,7 @@ export const useAuthPreferenceSettingScreenStore =
           ...Object.fromEntries(
             preferenceKeysForPopupCategory.map(key => [
               key,
-              selectedTags[key] ?? false,
+              draftSelectedTags[key] ?? false,
             ]),
           ),
         },
@@ -76,7 +76,7 @@ export const useAuthPreferenceSettingScreenStore =
           ...Object.fromEntries(
             preferenceKeysForPopupInterest.map(key => [
               key,
-              selectedTags[key] ?? false,
+              draftSelectedTags[key] ?? false,
             ]),
           ),
         },
@@ -85,7 +85,7 @@ export const useAuthPreferenceSettingScreenStore =
           ...Object.fromEntries(
             preferenceKeysForPopupMate.map(key => [
               key,
-              selectedTags[key] ?? false,
+              draftSelectedTags[key] ?? false,
             ]),
           ),
         },
@@ -115,10 +115,6 @@ export const useAuthPreferenceSettingScreenStore =
           usePopupStore
             .getState()
             .setRecommendedPopupStores(result.updatedRecommendedPopupStores);
-
-          // 홈 화면에 반영
-          const {refreshHomePopupStores} = useHomeLandingScreenStore.getState();
-          refreshHomePopupStores();
 
           return true;
         }

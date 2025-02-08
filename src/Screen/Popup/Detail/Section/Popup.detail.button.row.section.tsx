@@ -23,14 +23,13 @@ const PopupDetailBottomButtonRowSection: React.FC<{
 }> = ({modalVisible, setModalVisible}) => {
   const [inProgress, setInProgress] = useState(false);
   const [visitorTooltipOpen, setVisitorTooltipOpen] = useState(false);
-  const {popupDetail, visitPopup} = usePopupDetailContext();
-  const {isVisitedPopup, isWaitingPopup, waitingPopups, startWaitingPopup} =
+  const {popupDetail, visitPopup,requestReopenPopup} = usePopupDetailContext();
+  const {isVisitedPopup, isWaitingPopup, waitingPopups} =
     usePopupStore(
       state => ({
         isVisitedPopup: state.isVisitedPopup,
         isWaitingPopup: state.isWaitingPopup,
         waitingPopups: state.waitingPopups,
-        startWaitingPopup: state.startWaitingPopup,
       }),
       shallow,
     );
@@ -41,7 +40,7 @@ const PopupDetailBottomButtonRowSection: React.FC<{
       return;
     }
     setInProgress(true);
-    await startWaitingPopup(popupDetail.id);
+    await requestReopenPopup();
     setInProgress(false);
   };
   const checkLoginAndShowModal = useAppStore(
@@ -172,18 +171,9 @@ const PopupDetailBottomButtonRowSection: React.FC<{
           <VisitorButton onPress={() => {}}>
             <RowContainer>
               <LabelText>재오픈 알림 신청</LabelText>
-              <CountText>{popupDetail.viewCnt}명</CountText>
+              <CountText>{popupDetail.reopenDemandCnt}명</CountText>
             </RowContainer>
           </VisitorButton>
-          {
-            <TooltipContainer>
-              <FastImageContainer
-                fitOnHeight
-                style={{height: moderateScale(37)}}
-                source={require('src/Resource/png/real-time-visitors-alert-tooltip.png')}
-              />
-            </TooltipContainer>
-          }
           <Spacer />
           <RadiusBlueButton
             text={waiting ? '알림 신청 완료' : '재오픈 알림 받기'}

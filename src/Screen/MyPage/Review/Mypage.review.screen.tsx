@@ -24,7 +24,7 @@ export function MyPageReviewWriteScreen({
       {route.params.isVisited ? (
         <VisitedRivewWriteScreen selectedPopup={route.params.selectedPopup} />
       ) : (
-        <NormalReviewWriteScreen />
+        <NormalReviewWriteScreen routedSelectedPopup={route.params.selectedPopup}/>
       )}
     </ReviewWriteProvider>
   );

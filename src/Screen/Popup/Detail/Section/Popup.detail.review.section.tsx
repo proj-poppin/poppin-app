@@ -92,7 +92,7 @@ export const PopupDetailReviewSection = () => {
   };
 
   const getDisplayedText = (text: string, isExpanded: boolean) =>
-    isExpanded ? text : `${text.substring(0, 80)}...`;
+    isExpanded ? text : text.length <= 80 ? text : `${text.substring(0, 80)}...`;
 
   const handleIsOnlyVerifiedReview = () => {
     setIsOnlyVerifiedReview(prev => !prev); // 인증된 리뷰만 보기 토글
@@ -130,6 +130,9 @@ export const PopupDetailReviewSection = () => {
   };
 
   const handleReportReview = () => {
+      if (!checkLoginAndShowModal('POPUP_REPORT')) {
+        return;
+      }
     navigation.navigate('PopupDetailReportScreen', {});
   };
 

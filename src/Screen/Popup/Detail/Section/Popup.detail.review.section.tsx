@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ScrollView, View} from 'react-native';
+import {Pressable, ScrollView, View} from 'react-native';
 import styled from 'styled-components/native';
 import {SectionContainer} from '../../../../Unit/View';
 import {usePopupDetailContext} from '../Provider/Popup.detail.provider';
@@ -46,10 +46,6 @@ const ItemSeparatorComponent = () => {
 
 export const PopupDetailReviewSection = () => {
   const user = useUserStore(state => state.user);
-  const {popupDetail} = usePopupDetailContext();
-  const {recommendReview} = usePopupDetailReviewContext();
-  const {review} = popupDetail;
-  const reviews = review || [];
   const {isVisitedPopup, isWaitingPopup, waitingPopups, startWaitingPopup} =
     usePopupStore(
       state => ({
@@ -60,6 +56,16 @@ export const PopupDetailReviewSection = () => {
       }),
       shallow,
     );
+  const {showAppModal} = useAppStore(
+          state => ({
+            showAppModal : state.showAppModal,
+          }),
+          shallow,
+      );
+  const {popupDetail} = usePopupDetailContext();
+  const {recommendReview} = usePopupDetailReviewContext();
+  const {review} = popupDetail;
+  const reviews = review || [];
   const [reviewFilterSelection,setReviewFilterSelection] = useState<EnumValueWithName>(REVIEW_ORDER_TYPES[0])
 
   const visited = isVisitedPopup(popupDetail.id);
@@ -213,8 +219,13 @@ export const PopupDetailReviewSection = () => {
               </RowBetween>
 
               <HorizontalScrollView horizontal>
-                {review.imageUrls.map((url, index) => (
-                  <ReviewImage key={index} source={{uri: url}} />
+                {review.imageUrls.map((url, index,urls) => (
+                    <Pressable
+                        key={index}
+                      onPress={() => showAppModal('POPUP_REVIEW_IMAGE',{appModalImageUrls:[...urls],appModalImageIndex:index})}
+                    >
+                      <ReviewImage key={index} source={{uri: url}} />
+                    </Pressable>
                 ))}
               </HorizontalScrollView>
 

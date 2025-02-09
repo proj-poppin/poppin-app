@@ -4,6 +4,7 @@ import shallow from 'zustand/shallow';
 import {useAppStore} from '../Zustand/App/app.zustand';
 import {RequireLoginModal} from './Modal/App.requiredLogin.modal';
 import {PopupReportCancelModal} from './Modal/App.popupReportCancel.modal';
+import {AppReviewImageModal} from './Modal/App.review.image.modal';
 
 /**
  * 특정 페이지에 종속되지 않고 앱 전반에서 사용되는 앱 모달입니다.
@@ -33,6 +34,8 @@ export const AppModal = () => {
         return <RequireLoginModal />;
       case 'POPUP_REPORT_CANCEL':
         return <PopupReportCancelModal />;
+    case 'POPUP_REVIEW_IMAGE':
+        return <AppReviewImageModal/>;
     }
     return null;
   };

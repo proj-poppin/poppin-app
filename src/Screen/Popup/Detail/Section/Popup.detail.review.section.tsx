@@ -24,9 +24,12 @@ import {useAppStore} from 'src/Zustand/App/app.zustand';
 import shallow from 'zustand/shallow';
 import {usePopupStore} from '../../../../Zustand/Popup/popup.zustand';
 
+const RECENT_REVIEW_ORDER: EnumValueWithName = {displayName: '최근 작성 순', value: 'latest'}
+const RECOMMEND_REVIEW_ORDER: EnumValueWithName = {displayName: '추천 순', value: 'recommend'}
+
 const REVIEW_ORDER_TYPES: EnumValueWithName[] = [
-  {displayName: '최근 작성 순', value: 'latest'},
-  {displayName: '추천 순', value: 'recommend'},
+  RECENT_REVIEW_ORDER,
+  RECOMMEND_REVIEW_ORDER,
 ];
 
 const ItemSeparatorComponent = () => {
@@ -57,6 +60,7 @@ export const PopupDetailReviewSection = () => {
       }),
       shallow,
     );
+  const [reviewFilterSelection,setReviewFilterSelection] = useState<EnumValueWithName>(REVIEW_ORDER_TYPES[0])
 
   const visited = isVisitedPopup(popupDetail.id);
 
@@ -102,10 +106,22 @@ export const PopupDetailReviewSection = () => {
     state => state.checkLoginAndShowModal,
     shallow,
   );
+
+  //TODO - fp-ts, pipe 써서 함수형 프로그래밍으로 데이터 변환
+
   // 인증된 사용자 후기만 보기 상태에 따라 리뷰 필터링
   const filteredReviews = isOnlyVerifiedReview
     ? reviews.filter(review => review.isCertificated)
-    : reviews;
+    : [...reviews];
+
+  // 기본으로 최신순 정렬, 추천순으로했을때 추천수가 같으면 기본적으로 최신순으로 하기 위함
+  const reverseReviews = filteredReviews.reverse()
+
+  // 선택한 오더 타입에 따른 리뷰 정렬
+  const orderedReviews = reviewFilterSelection.value === RECENT_REVIEW_ORDER.value
+    ? reverseReviews
+    : reverseReviews.sort((prev,next) => next.recommendCnt - prev.recommendCnt)
+
 
   // 리뷰 추천 핸들링
   const handleRecommendReview = async (popupId: number, reviewId: number) => {
@@ -164,12 +180,12 @@ export const PopupDetailReviewSection = () => {
         <BlankDropdown
           buttonStyle={{width: moderateScale(120)}}
           data={REVIEW_ORDER_TYPES}
-          onSelect={(selectedItem, index) => {}}
+          onSelect={(selectedItem, index) => {setReviewFilterSelection(selectedItem)}}
         />
       </SectionRow>
 
-      {filteredReviews.length > 0 ? (
-        filteredReviews.map(review => {
+      {orderedReviews.length > 0 ? (
+          orderedReviews.map(review => {
           const isExpanded = expandedReviews[review.reviewId] || false; // Fixed variable name
           const shouldShowMoreButton = review.text.length > 20;
 

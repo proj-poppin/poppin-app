@@ -1,4 +1,4 @@
-import {PermissionsAndroid, Platform, Rationale} from 'react-native';
+import {Linking, PermissionsAndroid, Platform, Rationale} from 'react-native';
 
 /**
  * 안드로이드 핸드폰에 CAMERA Permission을 요청하는 함수입니다.
@@ -48,24 +48,29 @@ export const getGalleryImages = async (param?: {
 }) => {
   try {
     //* 먼저 권한을 확인합니다.
-    let permission = false;
+    const permission = requestGalleryPermissions();
 
-    if (Platform.OS === 'android') {
-      if (
-        //* 이미 권한이 허용되어 있거나, 권한 요청에 성공했다면
-        (await PermissionsAndroid.check('android.permission.CAMERA')) ||
-        (await requestCameraPermissionFromAndroid({
-          requestRationale: param?.requestRationale,
-        }))
-      ) {
-        permission = true;
-      }
-    }
-    if (Platform.OS === 'ios') {
-      permission = true;
-    }
+    // if (Platform.OS === 'android') {
+    //   if (
+    //     //* 이미 권한이 허용되어 있거나, 권한 요청에 성공했다면
+    //     (await PermissionsAndroid.check('android.permission.CAMERA')) ||
+    //     (await requestCameraPermissionFromAndroid({
+    //       requestRationale: param?.requestRationale,
+    //     }))
+    //   ) {
+    //     permission = true;
+    //   }
+    // }
 
     if (!permission) {
+      Alert.alert(
+          '갤러리 권한 필요',
+          '팝핀에서 제보하기 기능 사용시 필요한 사진 첨부 기능 사용을 위해 사진 라이브러리 접근 권한 동의가 필요합니다. 설정에서 이를 변경할 수 있습니다.',
+          [
+            {text: '다음에 하기', style: 'cancel'},
+            {text: '설정 열기', onPress: () => Linking.openSettings()},
+          ],
+      );
       return;
     }
     const result = await launchImageLibrary({
@@ -95,6 +100,7 @@ import {
   launchImageLibrary,
   ImageLibraryOptions,
 } from 'react-native-image-picker';
+import {requestGalleryPermissions} from "./temp.gallery.util";
 
 interface UseImagePickerProps {
   maxImages?: number;

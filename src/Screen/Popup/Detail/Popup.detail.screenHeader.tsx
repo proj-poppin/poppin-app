@@ -57,13 +57,13 @@ const DotMenu = () => {
   };
 
   const onPressBlockPopup = async () => {
-    console.log('onPressBlockPopup');
+    if (!checkLoginAndShowModal('POPUP_BLOCK')) return;
     await blockPopup();
   };
 
   const onPressModifyRequestPopup = () => {
+    if (!checkLoginAndShowModal('POPUP_MODIFY_REQUEST')) return;
     navigation.navigate('PopupDetailEditScreen', {
-      popupId: popupDetail?.id,
       popup: popupDetail,
     });
   };

@@ -47,6 +47,7 @@ import {PreferencePopupStore} from '../../Schema/Preference/preferencePopupStore
 import {PreferenceCategory} from '../../Schema/Preference/preferenceCategory.schema';
 import {PreferenceCompanion} from '../../Schema/Preference/preferenceCompanion.schema';
 import {useAppStore} from '../App/app.zustand';
+import {axiosModifyPopupInfo} from "../../Axios/Popup/popup.post.axios";
 
 type UserStoreProps = {
   accessToken: string;
@@ -156,9 +157,13 @@ type UserStoreProps = {
    */
   reportReview: (targetReviewId: string, content: string) => Promise<boolean>;
   /**
-   * 사용자의 리뷰를 신고합니다.
+   * 팝업을 신고합니다.
    */
   reportPopup: (targetPopupId: string, content: string) => Promise<boolean>;
+  /**
+   * 팝업 정보수정을 요청합니다.
+   */
+  requestModifyPopup: (formData: FormData) => Promise<boolean>;
   /**
    * 사용자를 차단합니다.
    */
@@ -516,6 +521,14 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
       showBlackToast({text1: '팝업 신고가 완료되었습니다'});
     }
     return result
+  },
+
+  requestModifyPopup: async (formData: FormData) => {
+    const result = await axiosModifyPopupInfo(formData);
+    if (result) {
+      showBlackToast({text1: '팝업 정보 수정 요청이 완료되었습니다.'});
+    }
+    return result;
   },
 
   blockUser: async (blockedUserId: string) => {

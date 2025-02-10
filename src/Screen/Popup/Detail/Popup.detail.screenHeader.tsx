@@ -50,11 +50,10 @@ const DotMenu = () => {
   const isUserBlocked = userRelation.blockedUserIds.includes(popupDetail?.id);
 
   const onPressReportPopup = () => {
-    // if (!checkLoginAndShowModal('POPUP_REPORT')) return;
+    if (!checkLoginAndShowModal('POPUP_REPORT')) return;
     navigation.navigate('PopupDetailReportScreen', {
       popupId: popupDetail?.id,
     });
-    // 신고 로직 추가
   };
 
   const onPressBlockPopup = async () => {

@@ -151,11 +151,11 @@ export const PopupDetailReviewSection = () => {
     }
   };
 
-  const handleReportReview = () => {
+  const handleReportReview = (reviewId?:string) => {
       if (!checkLoginAndShowModal('POPUP_REPORT')) {
         return;
       }
-    navigation.navigate('PopupDetailReportScreen', {});
+    navigation.navigate('PopupDetailReportScreen', {reviewId});
   };
 
   return (
@@ -214,7 +214,7 @@ export const PopupDetailReviewSection = () => {
                 </RecentReviewHeader>
                 <UnderlinedTextButton
                   label="신고하기"
-                  onClicked={handleReportReview}
+                  onClicked={() => handleReportReview(review.reviewId.toString())}
                 />
               </RowBetween>
 

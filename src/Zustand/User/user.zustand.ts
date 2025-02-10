@@ -37,7 +37,7 @@ import {
   axiosBlockUser,
   axiosUpdateUserNotificationSetting,
 } from '../../Axios/User/user.patch.axios';
-import {axiosReportPopupReview} from '../../Axios/Report/report.post.axios';
+import {axiosReportPopup, axiosReportPopupReview} from '../../Axios/Report/report.post.axios';
 import {
   BlankUserRelation,
   UserRelationSchema,
@@ -152,9 +152,13 @@ type UserStoreProps = {
   ) => void;
 
   /**
-   * 사용자를 신고합니다.
+   * 사용자의 리뷰를 신고합니다.
    */
-  reportUser: (targetUserId: string, content: string) => Promise<void>;
+  reportReview: (targetReviewId: string, content: string) => Promise<boolean>;
+  /**
+   * 사용자의 리뷰를 신고합니다.
+   */
+  reportPopup: (targetPopupId: string, content: string) => Promise<boolean>;
   /**
    * 사용자를 차단합니다.
    */
@@ -492,14 +496,26 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
   },
 
   //* UserInfo
-  reportUser: async (targetUserId: string, content: string) => {
+  reportReview: async (targetReviewId: string, content: string) => {
     const result = await axiosReportPopupReview({
-      targetReviewId: targetUserId,
+      targetReviewId,
       content,
     });
     if (result !== null) {
-      showBlackToast({text1: '사용자 신고가 완료되었습니다'});
+      showBlackToast({text1: '리뷰 신고가 완료되었습니다'});
     }
+    return result
+  },
+
+  reportPopup: async (targetPopupId: string, content: string) => {
+    const result = await axiosReportPopup({
+      targetPopupId: targetPopupId,
+      content,
+    });
+    if (result !== null) {
+      showBlackToast({text1: '팝업 신고가 완료되었습니다'});
+    }
+    return result
   },
 
   blockUser: async (blockedUserId: string) => {

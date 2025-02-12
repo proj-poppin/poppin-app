@@ -50,21 +50,20 @@ const DotMenu = () => {
   const isUserBlocked = userRelation.blockedUserIds.includes(popupDetail?.id);
 
   const onPressReportPopup = () => {
-    // if (!checkLoginAndShowModal('POPUP_REPORT')) return;
+    if (!checkLoginAndShowModal('POPUP_REPORT')) return;
     navigation.navigate('PopupDetailReportScreen', {
       popupId: popupDetail?.id,
     });
-    // 신고 로직 추가
   };
 
   const onPressBlockPopup = async () => {
-    console.log('onPressBlockPopup');
+    if (!checkLoginAndShowModal('POPUP_BLOCK')) return;
     await blockPopup();
   };
 
   const onPressModifyRequestPopup = () => {
+    if (!checkLoginAndShowModal('POPUP_MODIFY_REQUEST')) return;
     navigation.navigate('PopupDetailEditScreen', {
-      popupId: popupDetail?.id,
       popup: popupDetail,
     });
   };

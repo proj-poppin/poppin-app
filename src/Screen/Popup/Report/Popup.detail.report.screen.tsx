@@ -9,15 +9,29 @@ import CommonCompleteButton from '../Landing/common.complete.button';
 import {PopupReportOptions} from '../../../Constant/popup.constant';
 import {ScreenHeader} from '../../../Component/View';
 import styled from 'styled-components/native';
+import {useUserStore} from "../../../Zustand/User/user.zustand";
+import shallow from "zustand/shallow";
 
+export type PopupDetailReportScreenProps ={
+  popupId?: string,
+  reviewId?: string
+}
 export const PopupDetailReportScreen = ({
   route,
   navigation,
 }: NativeStackScreenProps<AppStackProps, 'PopupDetailReportScreen'>) => {
+  const{popupId,reviewId} = route.params;
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [reporting, setReporting] = useState<boolean>(false);
   const [etcInput, setEtcInput] = useState<string>('');
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const {reportPopup,reportReview} = useUserStore(
+      state => ({
+        reportPopup: state.reportPopup,
+        reportReview: state.reportReview,
+      }),
+      shallow,
+  );
 
   const characterCount = etcInput.length;
   const isOverLimit = characterCount > 100;
@@ -35,8 +49,17 @@ export const PopupDetailReportScreen = ({
   const handleReportSubmit = async () => {
     if (reporting || selectedOption === null) return;
     setReporting(true);
+    const content = selectedOption >= PopupReportOptions.length -1
+        ? `기타: ${etcInput}`
+        : PopupReportOptions[selectedOption];
+    const result = reviewId ? await reportReview(reviewId,content)
+                            : popupId ? await reportPopup(popupId,content) : false;
+
+    if(result){
+      //TODO 모달 제작
+      navigation.goBack();
+    }
     setReporting(false);
-    navigation.goBack();
   };
 
   const handleEtcInputChange = (text: string) => {

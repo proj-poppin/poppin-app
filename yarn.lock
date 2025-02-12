@@ -3829,6 +3829,7 @@ __metadata:
     react-native-image-modal: 3.0.4
     react-native-image-picker: 4.8.4
     react-native-image-resizer: 1.4.5
+    react-native-image-zoom-viewer: ^3.0.1
     react-native-linear-gradient: 2.6.2
     react-native-logs: ^5.3.0
     react-native-modal-datetime-picker: 13.1.2
@@ -10841,6 +10842,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-image-pan-zoom@npm:^2.1.12":
+  version: 2.1.12
+  resolution: "react-native-image-pan-zoom@npm:2.1.12"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 826ed254d27b079cb985b63c65d0f504f11987b68ae71bac0e1c0e99dc24d5816fc9b8d053eb04737c60c018ad520a1e9c4b99af26952646ccabe9fc2b3bd64f
+  languageName: node
+  linkType: hard
+
 "react-native-image-picker@npm:4.8.4":
   version: 4.8.4
   resolution: "react-native-image-picker@npm:4.8.4"
@@ -10857,6 +10868,18 @@ __metadata:
   peerDependencies:
     react-native: ">=v0.40.0"
   checksum: c530b119f25c27b669148461554440acd05fb37f0a24a1afc3d58c861e426551c70c679983c0399034fd54ca3575c89d0863778c49295721cb33b65bbf3f0f37
+  languageName: node
+  linkType: hard
+
+"react-native-image-zoom-viewer@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "react-native-image-zoom-viewer@npm:3.0.1"
+  dependencies:
+    react-native-image-pan-zoom: ^2.1.12
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: bd32e382100fece8f815bacabe276f8f05a7c1edc1ff8485149fd863780de7d11a1a8241b837adad957e53ce1e19ef249410fdb312bc43fb7071b57fb879b78d
   languageName: node
   linkType: hard
 

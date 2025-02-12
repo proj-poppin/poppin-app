@@ -2,7 +2,7 @@ import customAxios, {REVIEWS} from 'src/Axios/axios.core';
 import {handleAxiosError} from 'src/Util/axios.util';
 
 /**
- * 유저를 신고합니다.
+ * 팝업 리뷰를 신고합니다.
  * @author 도형
  */
 export const axiosReportPopupReview = async (param: {
@@ -12,7 +12,7 @@ export const axiosReportPopupReview = async (param: {
   return await customAxios
     .request({
       method: 'POST',
-      url: `${REVIEWS}/report`,
+      url: `v1/reports/${REVIEWS}`,
       data: {
         reviewId: param.targetReviewId,
         content: param.content,
@@ -23,5 +23,29 @@ export const axiosReportPopupReview = async (param: {
     })
     .catch(error => {
       handleAxiosError({error, errorMessage: '신고에 실패했습니다'});
+      return false;
     });
 };
+
+export const axiosReportPopup = async (param: {
+    targetPopupId: string;
+    content: string;
+}) => {
+    return await customAxios
+        .request({
+            method: 'POST',
+            url: 'v1/reports/popups',
+            data: {
+                popupId: param.targetPopupId,
+                content: param.content,
+            },
+        })
+        .then(response => {
+            return true;
+        })
+        .catch(error => {
+            handleAxiosError({error, errorMessage: '신고에 실패했습니다'});
+            return false;
+        });
+};
+

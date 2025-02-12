@@ -46,10 +46,13 @@ import {
   PopupDetailScreenProps,
 } from '../Screen/Popup/Detail/Popup.detail.screen';
 
-import {PopupDetailReportScreen} from 'src/Screen/Popup/Report/Popup.detail.report.screen';
+import {
+  PopupDetailReportScreen,
+  PopupDetailReportScreenProps
+} from 'src/Screen/Popup/Report/Popup.detail.report.screen';
 
 import '../Screen/Popup/Landing/Popup.landing.screen';
-import PopupDetailEditScreen from '../Screen/Popup/Report/Popup.detail.edit.screen';
+import PopupDetailEditScreen, {PopupDetailEditScreenProps} from '../Screen/Popup/Report/Popup.detail.edit.screen';
 import PopupDetailReviewWriteScreen from '../Screen/Popup/Review/Popup.detail.review.write.screen';
 import {
   AuthLandingScreen,
@@ -172,9 +175,9 @@ export type AppStackProps = {
 
   PopupDetailScreen: PopupDetailScreenProps;
 
-  PopupDetailReportScreen: PopupDetailScreenProps;
+  PopupDetailReportScreen: PopupDetailReportScreenProps;
 
-  PopupDetailEditScreen: PopupDetailScreenProps;
+  PopupDetailEditScreen: PopupDetailEditScreenProps;
 
   PopupDetailReviewWriteScreen: PopupDetailScreenProps;
 

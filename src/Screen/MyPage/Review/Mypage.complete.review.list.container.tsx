@@ -9,13 +9,33 @@ import {ScreenHeader} from 'src/Component/View';
 import Filter from 'src/Resource/svg/filter.svg';
 import {CompleteReviewCard} from 'src/Component/MyPage/Review/Mypage.complete.review.poupupCard';
 import {useReviewListContext} from './Mypage.complete.review.list.context';
+import {EnumValueWithName} from 'src/Object/Type/enum.type';
+import {BlankDropdown} from 'src/Component/Dropdown';
+
 interface CompleteReviewContainerProps {}
+
+const RECENT_REVIEW_ORDER: EnumValueWithName = {
+  displayName: '최신순',
+  value: 'latest',
+};
+const OLDEST_REVIEW_ORDER: EnumValueWithName = {
+  displayName: '오래된 순',
+  value: 'oldest',
+};
+
+const REVIEW_ORDER_TYPES: EnumValueWithName[] = [
+  RECENT_REVIEW_ORDER,
+  OLDEST_REVIEW_ORDER,
+];
 
 export const CompleteReviewContainer: React.FC<
   CompleteReviewContainerProps
 > = () => {
   //TODO-[규진] 산아형 다 끝나면 할 일 - 생년월일 받기
   const [isLastest, setIsLastest] = useState(true);
+  const [reviewFilterSelection, setReviewFilterSelection] =
+    useState<EnumValueWithName>(REVIEW_ORDER_TYPES[0]);
+
   const context = useReviewListContext();
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
 
@@ -26,9 +46,20 @@ export const CompleteReviewContainer: React.FC<
     return [...context.completeReviews].sort((a, b) => {
       const dateA = new Date(a.createdAt).getTime();
       const dateB = new Date(b.createdAt).getTime();
-      return isLastest ? dateB - dateA : dateA - dateB;
+
+      // 최신순 정렬
+      if (reviewFilterSelection.value === RECENT_REVIEW_ORDER.value) {
+        return dateB - dateA;
+      }
+
+      // 오래된 순 정렬
+      if (reviewFilterSelection.value === OLDEST_REVIEW_ORDER.value) {
+        return dateA - dateB;
+      }
+
+      return 0; // 기본값
     });
-  }, [context.completeReviews, isLastest]);
+  }, [context.completeReviews, reviewFilterSelection]);
 
   const totalReviews = context.completeReviews?.length || 0;
 
@@ -42,10 +73,13 @@ export const CompleteReviewContainer: React.FC<
           <InfoSection>
             <InfoContainer>
               <TotalReviewText>총 {totalReviews}개</TotalReviewText>
-              <ToggleFilter onPress={() => setIsLastest(prev => !prev)}>
-                <FilterText>{isLastest ? '최신순' : '오래된 순'}</FilterText>
-                <Filter width={13} height={13} />
-              </ToggleFilter>
+              <ToggleFilter
+                buttonStyle={{width: moderateScale(100)}}
+                data={REVIEW_ORDER_TYPES}
+                onSelect={(selectedItem, index) => {
+                  setReviewFilterSelection(selectedItem);
+                }}
+              />
             </InfoContainer>
           </InfoSection>
           <ReviewListSection>
@@ -95,7 +129,7 @@ const TotalReviewText = styled.Text`
   color: ${props => props.theme.color.grey.main};
 `;
 
-const ToggleFilter = styled.TouchableOpacity`
+const ToggleFilter = styled(BlankDropdown)`
   display: flex;
   flex-direction: row;
 `;

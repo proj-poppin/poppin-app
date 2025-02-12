@@ -45,7 +45,7 @@ export const ReviewComponent = memo(
       state => ({
         user: state.user,
         userRelation: state.userRelation,
-        reportUser: state.reportUser,
+        reportUser: state.reportReview,
         blockUser: state.blockUser,
       }),
       shallow,

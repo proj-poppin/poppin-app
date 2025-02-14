@@ -2,9 +2,9 @@ import React, {useState} from 'react';
 import {Picker} from '@react-native-picker/picker';
 import styled from 'styled-components/native';
 import {moderateScale} from 'src/Util';
-import CalendarTopArrowIcon from '../Resource/svg/calendar-top-arrow-blue-icon.svg';
+import {TitleContentModal} from './Modal';
 import {BlackBackgroundModal} from './Modal';
-import {TouchableWithoutFeedback} from 'react-native';
+import CalendarTopArrowIcon from '../Resource/svg/calendar-top-arrow-blue-icon.svg'; // 아이콘 import
 
 interface YearMonthPickerProps {
   isVisible: boolean;
@@ -23,15 +23,79 @@ const YearMonthPicker: React.FC<YearMonthPickerProps> = ({
 }) => {
   const [tempYear, setTempYear] = useState(selectedYear);
   const [tempMonth, setTempMonth] = useState(selectedMonth);
+  const [monthIndex, setMonthIndex] = useState(50 * 12 + selectedMonth - 1);
 
   const years = Array.from({length: 9999}, (_, i) => i + 1);
-  const months = Array.from({length: 12}, (_, i) => i + 1);
+
+  // 달 변경 처리
+  const handleMonthChange = (itemIndex: number) => {
+    const newMonth = (itemIndex % 12) + 1;
+    const newIndex = itemIndex;
+
+    // 인덱스를 동적으로 업데이트 (Picker를 무한 루프처럼 보이게)
+    if (itemIndex < 6 * 12) {
+      setMonthIndex(prevIndex => prevIndex + 12);
+    } else if (itemIndex > 94 * 12) {
+      setMonthIndex(prevIndex => prevIndex - 12);
+    } else {
+      setMonthIndex(newIndex);
+    }
+
+    setTempMonth(newMonth);
+  };
+
+  const handleConfirm = () => {
+    onConfirm(tempYear, tempMonth);
+    onClose();
+  };
+
+  const PickerContent = (
+    <PickerWrapper>
+      <StyledPicker
+        selectedValue={tempYear}
+        onValueChange={itemValue => setTempYear(itemValue as number)}>
+        {years.map(year => (
+          <Picker.Item
+            key={year}
+            label={`${year}년`}
+            value={year}
+            color={year === tempYear ? 'black' : 'gray'}
+          />
+        ))}
+      </StyledPicker>
+
+      <StyledPicker
+        selectedValue={monthIndex}
+        onValueChange={itemIndex => handleMonthChange(itemIndex as number)}>
+        {Array.from({length: 1200}).map((_, index) => (
+          <Picker.Item
+            key={index}
+            label={`${(index % 12) + 1}월`}
+            value={index}
+            color={(index % 12) + 1 === tempMonth ? 'black' : 'gray'}
+          />
+        ))}
+      </StyledPicker>
+    </PickerWrapper>
+  );
+
+  const CustomButton = (
+    <ButtonContainer>
+      <CancelButton onPress={onClose}>
+        <ButtonText color="grey">취소</ButtonText>
+      </CancelButton>
+      <Separator />
+      <ConfirmButton onPress={handleConfirm}>
+        <ButtonText color="blue">확인</ButtonText>
+      </ConfirmButton>
+    </ButtonContainer>
+  );
 
   return (
     <BlackBackgroundModal modalVisible={isVisible} setModalVisible={onClose}>
-      <TouchableWithoutFeedback>
-        <PickerContainer>
-          <HeaderContainer onPress={onClose}>
+      <TitleContentModal
+        title={
+          <TitleContainer>
             <SelectedDateText>
               {`${tempYear}.${tempMonth < 10 ? `0${tempMonth}` : tempMonth}`}
             </SelectedDateText>
@@ -39,84 +103,17 @@ const YearMonthPicker: React.FC<YearMonthPickerProps> = ({
               width={moderateScale(18)}
               height={moderateScale(18)}
             />
-          </HeaderContainer>
-
-          {/* Picker */}
-          <PickerWrapper>
-            <StyledPicker
-              selectedValue={tempYear}
-              onValueChange={itemValue => setTempYear(itemValue as number)}>
-              {years.map(year => (
-                <Picker.Item
-                  key={year}
-                  label={`${year}년`}
-                  value={year}
-                  color={year === tempYear ? 'black' : 'gray'} 
-                />
-              ))}
-            </StyledPicker>
-
-            <StyledPicker
-              selectedValue={tempMonth}
-              onValueChange={itemValue => setTempMonth(itemValue as number)}>
-              {months.map(month => (
-                <Picker.Item
-                  key={month}
-                  label={`${month}월`}
-                  value={month}
-                  color={month === tempMonth ? 'black' : 'gray'} 
-                />
-              ))}
-            </StyledPicker>
-          </PickerWrapper>
-
-          {/* 버튼 */}
-          <ButtonContainer>
-            <CancelButton onPress={onClose}>
-              <CancelButtonText color="grey">취소</CancelButtonText>
-            </CancelButton>
-            <Separator />
-            <ConfirmButton
-              onPress={() => {
-                onConfirm(tempYear, tempMonth);
-                onClose();
-              }}>
-              <CancelButtonText color="blue">확인</CancelButtonText>
-            </ConfirmButton>
-          </ButtonContainer>
-        </PickerContainer>
-      </TouchableWithoutFeedback>
+          </TitleContainer>
+        }
+        content={PickerContent}
+        head={false}
+        alignCenter={true}
+        buttonSymmetric={true}
+        LeftButton={CustomButton}
+      />
     </BlackBackgroundModal>
   );
 };
-
-const PickerContainer = styled.View`
-  width: ${moderateScale(312)}px;
-  height: ${moderateScale(279)}px;
-  background-color: white;
-  border-radius: ${moderateScale(20)}px;
-  padding: ${moderateScale(20)}px;
-  align-items: center;
-  elevation: 5;
-  shadow-color: black;
-  shadow-opacity: 0.2;
-  shadow-radius: 5px;
-  z-index: 100;
-`;
-
-const HeaderContainer = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: ${moderateScale(10)}px;
-`;
-
-const SelectedDateText = styled.Text`
-  font-size: ${moderateScale(22)}px;
-  font-weight: bold;
-  color: #3498db;
-  margin-right: ${moderateScale(5)}px;
-`;
 
 const PickerWrapper = styled.View`
   flex-direction: row;
@@ -125,7 +122,13 @@ const PickerWrapper = styled.View`
   margin-bottom: ${moderateScale(10)}px;
 `;
 
-const StyledPicker = styled(Picker)`
+const StyledPicker = styled(Picker).attrs({
+  itemStyle: {
+    fontSize: moderateScale(16),
+    fontFamily: 'Pretendard',
+    textAlign: 'center',
+  },
+})`
   flex: 1;
   height: ${moderateScale(150)}px;
 `;
@@ -138,9 +141,17 @@ const ButtonContainer = styled.View`
   margin-top: ${moderateScale(15)}px;
 `;
 
-const CancelButton = styled.TouchableOpacity``;
+const CancelButton = styled.TouchableOpacity`
+  flex: 1;
+  align-items: center;
+`;
 
-const CancelButtonText = styled.Text<{color: 'blue' | 'grey'}>`
+const ConfirmButton = styled.TouchableOpacity`
+  flex: 1;
+  align-items: center;
+`;
+
+const ButtonText = styled.Text<{color: 'blue' | 'grey'}>`
   font-family: 'Pretendard';
   font-style: normal;
   font-weight: 400;
@@ -150,13 +161,24 @@ const CancelButtonText = styled.Text<{color: 'blue' | 'grey'}>`
   text-align: center;
 `;
 
-const ConfirmButton = styled.TouchableOpacity``;
-
 const Separator = styled.View`
   width: ${moderateScale(1)}px;
   height: ${moderateScale(20)}px;
   background-color: #e6e9ed;
   transform: rotate(180deg);
+`;
+
+const TitleContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+
+const SelectedDateText = styled.Text`
+  font-size: ${moderateScale(22)}px;
+  font-weight: bold;
+  color: #3498db;
+  margin-right: ${moderateScale(5)}px;
 `;
 
 export default YearMonthPicker;

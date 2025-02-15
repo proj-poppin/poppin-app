@@ -42,7 +42,6 @@ export const MypageReportOperatorScreen: React.FC = () => {
         );
       case 3:
         return (
-          //TODO- [규진]- 제보하기 API 연동 기능 추가
           <OperatorReportStepThreePage
             onNext={() => handleSubmit()}
             onBackPress={handleBackPress}

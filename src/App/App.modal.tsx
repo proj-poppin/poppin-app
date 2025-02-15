@@ -28,7 +28,7 @@ export const AppModal = () => {
   const unableToIgnore = appModalType === 'POPUP_REPORT_SUCCESS';
 
   const ModalContent = () => {
-    //TODO-[규진] 이거 모든 모달쪽 싹 다 이걸로 바꿔야 할 것 같아요
+    //TODO-[규진, 희진, 은상] 이거 모든 모달쪽 싹 다 이걸로 바꿔야 할 것 같아요
     switch (appModalType) {
       case 'REQUIRE_LOGIN':
         return <RequireLoginModal />;

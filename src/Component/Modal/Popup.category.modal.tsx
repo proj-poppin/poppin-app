@@ -87,7 +87,6 @@ const PopupCategoryModal: React.FC<PopupCategoryModalProps> = ({
   };
 
   const handleApplyFilter = () => {
-    //TODO- [규진] 여러 군데에서 쓸 수 있게끔 확장성 고려하면서 수정해야 함.
     // 선택된 카테고리만 필터링하여 배열로 생성
     const selectedCategories = categoryKeys
       .filter(key => preferenceCategory[key as keyof typeof preferenceCategory])

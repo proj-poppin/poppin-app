@@ -39,8 +39,8 @@ export const PopupDetailEditScreen = ({
     setRequesting(true);
 
     const formData = new FormData();
-    formData.append('popupId', popup!.id);
-    formData.append('content', requestText);
+    const contents = {'popupId': popup!.id,'content':requestText};
+    formData.append('contents',JSON.stringify(contents));
 
     requestImages?.forEach((image, index) => {
       if (image.uri) {

@@ -10,8 +10,8 @@ import {StateWrapper} from '../wrapper/state_wrapper';
  */
 
 export const axiosAddRecommendReview = async (
-  popupId: number,
-  reviewId: number,
+  popupId: string,
+  reviewId: string,
 ) => {
   return await customAxios
     .request<StateWrapper<PopupReviewSchema>>({
@@ -24,10 +24,31 @@ export const axiosAddRecommendReview = async (
     .catch(error => {
       handleAxiosError({
         error,
-        errorMessage: '추천 리뷰 등록에 실패했습니다',
+        errorMessage: '리뷰 추천 등록에 실패했습니다',
       });
       return null;
     });
+};
+
+export const axiosDeleteRecommendReview = async (
+    popupId: string,
+    reviewId: string,
+) => {
+  return await customAxios
+      .request<StateWrapper<PopupReviewSchema>>({
+        method: 'POST',
+        url: `v1/${REVIEWS}/recommend?popupId=${popupId}&reviewId=${reviewId}`,
+      })
+      .then(response => {
+        return response.data;
+      })
+      .catch(error => {
+        handleAxiosError({
+          error,
+          errorMessage: '리뷰 추천 취소에 실패했습니다',
+        });
+        return null;
+      });
 };
 
 // popupId: number;

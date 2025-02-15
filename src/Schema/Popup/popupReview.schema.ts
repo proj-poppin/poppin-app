@@ -1,6 +1,6 @@
 export type PopupReviewSchema = {
   profileUrl: string;
-  reviewId: number;
+  reviewId: string;
   nickname: string;
   reviewCnt: number;
   userId: string;

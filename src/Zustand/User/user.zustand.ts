@@ -48,6 +48,9 @@ import {PreferenceCategory} from '../../Schema/Preference/preferenceCategory.sch
 import {PreferenceCompanion} from '../../Schema/Preference/preferenceCompanion.schema';
 import {useAppStore} from '../App/app.zustand';
 import {axiosModifyPopupInfo} from "../../Axios/Popup/popup.post.axios";
+import {PopupSchema} from "../../Schema/Popup/popup.schema";
+import {axiosScrapInterestPopup, axiosUnscrapInterestPopup} from "../../Axios/Popup/popup.patch.axios";
+import {axiosAddRecommendReview, axiosDeleteRecommendReview} from "../../Axios/Review/review.post.axios";
 
 type UserStoreProps = {
   accessToken: string;
@@ -157,6 +160,13 @@ type UserStoreProps = {
    */
   reportReview: (targetReviewId: string, content: string) => Promise<boolean>;
   /**
+   * 사용자의 리뷰를 추천/비추천 합니다.
+   */
+  toggleRecommendReview: (
+      popupId: string,
+      reviewId: string,
+  ) => Promise<{success:boolean,isRecommending:boolean}>;
+  /**
    * 팝업을 신고합니다.
    */
   reportPopup: (targetPopupId: string, content: string) => Promise<boolean>;
@@ -211,6 +221,9 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
     notifications: {
       popups: [],
       notices: [],
+    },
+    reviewActivities:{
+      recommendReviews:[],
     },
   },
 
@@ -510,6 +523,46 @@ export const useUserStore = create<UserStoreProps>((set, get) => ({
       showBlackToast({text1: '리뷰 신고가 완료되었습니다'});
     }
     return result
+  },
+
+  toggleRecommendReview: async (popupId: string,reviewId:string) => {
+    const recommendReviews = get().userActivities.reviewActivities.recommendReviews || [];
+    const isAlreadyRecommended = recommendReviews.includes(reviewId);
+
+
+    if (isAlreadyRecommended) {
+        const result = await axiosDeleteRecommendReview(popupId,reviewId);
+
+        if (result) {
+          set(state => ({
+            userActivities: {
+              ...state.userActivities,
+                reviewActivities : {
+                ...state.userActivities.reviewActivities,
+                  recommendReviews : recommendReviews.filter(id => reviewId !== id),
+                },
+            },
+          }));
+          return {success:true,isRecommending:false};
+        }
+    } else {
+        const result = await axiosAddRecommendReview(popupId,reviewId);
+
+        if (result) {
+          set(state => ({
+            userActivities: {
+              ...state.userActivities,
+              reviewActivities : {
+                ...state.userActivities.reviewActivities,
+                recommendReviews : [...recommendReviews,reviewId],
+              },
+            },
+          }));
+          return {success:true,isRecommending:true};
+        }
+    }
+
+    return {success: false,isRecommending:false};
   },
 
   reportPopup: async (targetPopupId: string, content: string) => {

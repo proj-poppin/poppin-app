@@ -2,9 +2,9 @@ import React, {useState} from 'react';
 import {Picker} from '@react-native-picker/picker';
 import styled from 'styled-components/native';
 import {moderateScale} from 'src/Util';
-import {TitleContentModal} from './Modal';
+import {CommonModal} from '../Component/Modal/CommonModal.component';
+import CalendarTopArrowIcon from '../Resource/svg/calendar-top-arrow-blue-icon.svg';
 import {BlackBackgroundModal} from './Modal';
-import CalendarTopArrowIcon from '../Resource/svg/calendar-top-arrow-blue-icon.svg'; // 아이콘 import
 
 interface YearMonthPickerProps {
   isVisible: boolean;
@@ -49,52 +49,13 @@ const YearMonthPicker: React.FC<YearMonthPickerProps> = ({
     onClose();
   };
 
-  const PickerContent = (
-    <PickerWrapper>
-      <StyledPicker
-        selectedValue={tempYear}
-        onValueChange={itemValue => setTempYear(itemValue as number)}>
-        {years.map(year => (
-          <Picker.Item
-            key={year}
-            label={`${year}년`}
-            value={year}
-            color={year === tempYear ? 'black' : 'gray'}
-          />
-        ))}
-      </StyledPicker>
-
-      <StyledPicker
-        selectedValue={monthIndex}
-        onValueChange={itemIndex => handleMonthChange(itemIndex as number)}>
-        {Array.from({length: 1200}).map((_, index) => (
-          <Picker.Item
-            key={index}
-            label={`${(index % 12) + 1}월`}
-            value={index}
-            color={(index % 12) + 1 === tempMonth ? 'black' : 'gray'}
-          />
-        ))}
-      </StyledPicker>
-    </PickerWrapper>
-  );
-
-  const CustomButton = (
-    <ButtonContainer>
-      <CancelButton onPress={onClose}>
-        <ButtonText color="grey">취소</ButtonText>
-      </CancelButton>
-      <Separator />
-      <ConfirmButton onPress={handleConfirm}>
-        <ButtonText color="blue">확인</ButtonText>
-      </ConfirmButton>
-    </ButtonContainer>
-  );
-
   return (
-    <BlackBackgroundModal modalVisible={isVisible} setModalVisible={onClose}>
-      <TitleContentModal
-        title={
+    <BlackBackgroundModal
+      modalVisible={isVisible}
+      setModalVisible={onClose} // 여기에 setModalVisible 전달
+    >
+      <CommonModal
+        mainTitle={
           <TitleContainer>
             <SelectedDateText>
               {`${tempYear}.${tempMonth < 10 ? `0${tempMonth}` : tempMonth}`}
@@ -105,12 +66,41 @@ const YearMonthPicker: React.FC<YearMonthPickerProps> = ({
             />
           </TitleContainer>
         }
-        content={PickerContent}
-        head={false}
-        alignCenter={true}
-        buttonSymmetric={true}
-        LeftButton={CustomButton}
-      />
+        subTitle={null}
+        showIcon={false}
+        showCancel={true}
+        confirmText="확인"
+        cancelText="취소"
+        onConfirm={handleConfirm}
+        onCancel={onClose}>
+        <PickerWrapper>
+          <StyledPicker
+            selectedValue={tempYear}
+            onValueChange={itemValue => setTempYear(itemValue as number)}>
+            {years.map(year => (
+              <Picker.Item
+                key={year}
+                label={`${year}년`}
+                value={year}
+                color={year === tempYear ? 'black' : 'gray'}
+              />
+            ))}
+          </StyledPicker>
+
+          <StyledPicker
+            selectedValue={monthIndex}
+            onValueChange={itemIndex => handleMonthChange(itemIndex as number)}>
+            {Array.from({length: 1200}).map((_, index) => (
+              <Picker.Item
+                key={index}
+                label={`${(index % 12) + 1}월`}
+                value={index}
+                color={(index % 12) + 1 === tempMonth ? 'black' : 'gray'}
+              />
+            ))}
+          </StyledPicker>
+        </PickerWrapper>
+      </CommonModal>
     </BlackBackgroundModal>
   );
 };
@@ -118,7 +108,9 @@ const YearMonthPicker: React.FC<YearMonthPickerProps> = ({
 const PickerWrapper = styled.View`
   flex-direction: row;
   justify-content: space-around;
+  align-items: center;
   width: 100%;
+  margin-top: ${moderateScale(-20)}px;
   margin-bottom: ${moderateScale(10)}px;
 `;
 
@@ -131,41 +123,6 @@ const StyledPicker = styled(Picker).attrs({
 })`
   flex: 1;
   height: ${moderateScale(150)}px;
-`;
-
-const ButtonContainer = styled.View`
-  flex-direction: row;
-  justify-content: space-evenly;
-  width: 100%;
-  padding-horizontal: ${moderateScale(20)}px;
-  margin-top: ${moderateScale(15)}px;
-`;
-
-const CancelButton = styled.TouchableOpacity`
-  flex: 1;
-  align-items: center;
-`;
-
-const ConfirmButton = styled.TouchableOpacity`
-  flex: 1;
-  align-items: center;
-`;
-
-const ButtonText = styled.Text<{color: 'blue' | 'grey'}>`
-  font-family: 'Pretendard';
-  font-style: normal;
-  font-weight: 400;
-  font-size: ${moderateScale(14)}px;
-  color: ${({color, theme}) =>
-    color === 'blue' ? theme.color.blue.main : theme.color.grey.main};
-  text-align: center;
-`;
-
-const Separator = styled.View`
-  width: ${moderateScale(1)}px;
-  height: ${moderateScale(20)}px;
-  background-color: #e6e9ed;
-  transform: rotate(180deg);
 `;
 
 const TitleContainer = styled.View`

@@ -196,8 +196,7 @@ export const PopupLandingScreen = ({}: NativeStackScreenProps<
       <CustomBottomSheet
         isVisible={modalVisible}
         onClose={() => setModalVisible(false)}
-        title={'찾고싶은 팝업의 카테고리를 설정해주세요'}
-      >
+        title={'찾고싶은 팝업의 카테고리를 설정해주세요'}>
         <PopupCategoryModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
@@ -221,7 +220,7 @@ const PopupListScreen: React.FC<PopupListScreenProps> = ({operationStatus}) => {
   //
   const navigation = useNavigation<NavigationProp<AppStackProps>>();
 
-  if (isLoading) {
+  if (isLoading && searchedPopupStores.length === 0) {
     return (
       <View
         style={{
@@ -276,7 +275,11 @@ const PopupListScreen: React.FC<PopupListScreenProps> = ({operationStatus}) => {
         renderItem={renderPopupItem}
         onEndReached={onEndReached}
         ListFooterComponent={
-          isLoading ? <ActivityIndicator size="large" /> : null
+          isLoading && searchedPopupStores.length > 0 ? (
+            <View style={{paddingVertical: 20}}>
+              <ActivityIndicator size="small" color={themeColors().blue.main} />
+            </View>
+          ) : null
         }
       />
     </SectionContainer>

@@ -12,8 +12,8 @@ import {useAppStore} from 'src/Zustand/App/app.zustand';
 import {SvgProps} from 'react-native-svg';
 
 interface CommonModalProps {
-  mainTitle: string;
-  subTitle: string;
+  mainTitle?: string | React.ReactNode;
+  subTitle?: string | React.ReactNode;
   showIcon?: boolean;
   Icon?: React.FC<SvgProps>;
   iconSize?: number;
@@ -23,6 +23,7 @@ interface CommonModalProps {
   onConfirm?: () => void;
   onCancel?: () => void;
   navigateOnConfirm?: boolean;
+  children?: React.ReactNode; // 모달 내부 컨텐츠 추가를 위한 prop ex) YearMonthPicker의 picker 부분
 }
 
 export function CommonModal({
@@ -36,6 +37,7 @@ export function CommonModal({
   showCancel = false,
   onConfirm,
   onCancel,
+  children,
 }: CommonModalProps) {
   const {setAppModalVisible} = useAppStore(state => ({
     setAppModalVisible: state.setAppModalVisible,
@@ -62,10 +64,10 @@ export function CommonModal({
             />
           </IconWrapper>
         )}
-        <MainTitle>{mainTitle}</MainTitle>
-
-        <SubTitle>{subTitle}</SubTitle>
-        <ButtonContainer showCancel={showCancel}>
+        {mainTitle && <MainTitle>{mainTitle}</MainTitle>}
+        {subTitle && <SubTitle>{subTitle}</SubTitle>}
+        {children && <ContentWrapper>{children}</ContentWrapper>}
+        <ButtonContainer showCancel={showCancel} hasChildren={!!children}>
           {showCancel && (
             <CancelButton onPress={handleCancel}>
               <CancelText>{cancelText}</CancelText>
@@ -109,11 +111,20 @@ const IconWrapper = styled.View`
   margin-bottom: ${moderateScale(16)}px;
 `;
 
-const ButtonContainer = styled.View<{showCancel: boolean}>`
+const ContentWrapper = styled.View`
+  width: 100%;
+  margin-bottom: ${moderateScale(12)}px;
+`;
+
+const ButtonContainer = styled.View<{
+  showCancel: boolean;
+  hasChildren: boolean;
+}>`
   width: 100%;
   flex-direction: ${({showCancel}) => (showCancel ? 'row' : 'column')};
   justify-content: space-between;
   gap: ${moderateScale(8)}px;
+  margin-top: ${({hasChildren}) => (hasChildren ? moderateScale(12) : 0)}px;
 `;
 
 const BaseButton = styled.TouchableOpacity`

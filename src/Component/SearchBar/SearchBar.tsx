@@ -7,9 +7,17 @@ import {LandingScreenHeader} from 'src/Component/View';
 import SearchIcon from 'src/Resource/svg/search-icon.svg';
 import {TextInput} from 'react-native';
 
+/**
+ * 검색바 컴포넌트
+ * @param isSearchMode 검색 모드 여부
+ * @param onSearchToggle 검색 모드 토글 함수
+ * @param onBackPress 검색 모드 취소 함수
+ * @param searchKeyword 검색 키워드
+ * @param setSearchKeyword 검색 키워드 설정 함수
+ */
 interface SearchBarProps {
-  isSearchMode: boolean;
-  onSearchToggle: () => void;
+  isSearchMode?: boolean;
+  onSearchToggle?: () => void;
   onBackPress: () => void;
   searchKeyword: string;
   setSearchKeyword: (keyword: string) => void;

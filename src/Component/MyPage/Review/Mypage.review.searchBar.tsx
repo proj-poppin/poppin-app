@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
-import {TextInput, Pressable} from 'react-native';
 import {moderateScale} from 'src/Util';
 
 interface SearchBarProps {

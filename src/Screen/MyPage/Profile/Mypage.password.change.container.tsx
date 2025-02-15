@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import styled from 'styled-components/native';
 import {moderateScale} from 'src/Util';
 import GrayEyeIcon from 'src/Resource/svg/password-watch-gray-icon.svg';

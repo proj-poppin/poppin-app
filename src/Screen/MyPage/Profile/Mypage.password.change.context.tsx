@@ -1,7 +1,6 @@
 import React, {createContext, useContext, useEffect, useState} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AppStackProps} from 'src/Navigator/App.stack.navigator';
-import {useUserStore} from 'src/Zustand/User/user.zustand';
 import {axiosMypagePasswordCheck} from 'src/Axios/Mypage/mypage.post.axios';
 import {axiosMypagePasswordChange} from 'src/Axios/Mypage/mypage.put.axios';
 

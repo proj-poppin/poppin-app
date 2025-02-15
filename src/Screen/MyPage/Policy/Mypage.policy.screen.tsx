@@ -1,16 +1,11 @@
 import React from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 import {ScreenHeader} from 'src/Component/View';
 import styled from 'styled-components/native';
 import {Linking, TouchableOpacity} from 'react-native';
 
 export interface MypagePolicyScreenProps {}
 
-export const MypagePolicyScreen = ({
-  route,
-  navigation,
-}: NativeStackScreenProps<AppStackProps, 'MypagePolicyScreen'>) => {
+export const MypagePolicyScreen = () => {
   const handlePolicyPress = (url: string) => {
     Linking.openURL(url);
   };

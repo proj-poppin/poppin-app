@@ -11,7 +11,6 @@ export const MypagePolicyScreen = () => {
   };
 
   return (
-    //TODO-[규진] 이용약관 제발 DOCS로 바꿔주세요!!!!!!!!!
     <>
       <ScreenHeader title="이용 약관 및 정책" LeftComponents={'BACK_BUTTON'} />
       <Container>

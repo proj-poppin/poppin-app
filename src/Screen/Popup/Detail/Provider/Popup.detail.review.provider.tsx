@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {PopupReviewSchema} from '../../../../Schema/Popup/popupReview.schema';
 import {PopupReviewCreateSchema} from '../../../../Schema/Popup/popupReviewCreate.schema';
 import {createContext, useContext, useState} from 'react';
@@ -10,6 +10,8 @@ import {
 } from '../../../../Constant/popup.constant';
 import {axiosReportPopupReview} from '../../../../Axios/Report/report.post.axios';
 import {axiosAddRecommendReview} from '../../../..//Axios/Review/review.post.axios';
+import {useUserStore} from "../../../../Zustand/User/user.zustand";
+import shallow from "zustand/shallow";
 
 type PopupDetailReviewContextProp = {
   reviewLoading: boolean;
@@ -42,10 +44,11 @@ type PopupDetailReviewContextProp = {
   clearCommentReportStates: () => void;
 
   // 추천한 리뷰
-  recommendReview: (
-    popupId: number,
-    reviewId: number,
-  ) => Promise<{success: boolean}>; 
+  recommendReviews: string[]
+  toggleRecommendReviewLike: (
+    popupId: string,
+    reviewId: string,
+  ) => Promise<boolean>;
 };
 
 export const PopupDetailReviewContext =
@@ -76,17 +79,19 @@ export const PopupDetailReviewContext =
     reportVoteComment: async () => {},
     clearCommentReportStates: () => {},
 
-    recommendReview: async () => ({success: false}),
+    recommendReviews : [],
+    toggleRecommendReviewLike: async () => (false),
   });
 
 export const usePopupDetailReviewContext = () =>
   useContext(PopupDetailReviewContext);
 
 export const PopupDetailReviewProvider = ({children}: {children: any}) => {
+  const {popupDetail,setPopupDetail} = usePopupDetailContext();
   const [reviewLoading, setReviewLoading] = useState<boolean>(false);
   const [popupDetailReviews, setPopupDetailReviews] = useState<
     PopupReviewSchema[]
-  >([]);
+  >( []);
   const [targetReview, setTargetReview] = useState<
     undefined | PopupReviewSchema
   >(undefined);
@@ -101,8 +106,10 @@ export const PopupDetailReviewProvider = ({children}: {children: any}) => {
   const [reviewReportEtcOptionInput, setReviewReportEtcOptionInput] =
     useState<string>('');
   const [reporting, setReporting] = useState<boolean>(false);
-
-  const {popupDetail, setPopupDetail} = usePopupDetailContext();
+  const {recommendReviews,toggleRecommendReview} = useUserStore(state => ({
+    recommendReviews: state.userActivities.reviewActivities.recommendReviews,
+    toggleRecommendReview:state.toggleRecommendReview,
+  }), shallow);
 
   const getPopupDetailReviews = async (popupId: string) => {
     setReviewLoading(true);
@@ -171,36 +178,28 @@ export const PopupDetailReviewProvider = ({children}: {children: any}) => {
     setReporting(false);
   };
 
-  const recommendReview = async (popupId: number, reviewId: number) => {
-    try {
-      const response = await axiosAddRecommendReview(popupId, reviewId);
+  const toggleRecommendReviewLike = async (popupId: string, reviewId: string) => {
+      setReporting(true);
+      const response = await toggleRecommendReview(popupId,reviewId);
 
-      if (response?.success) {
-        // 추천 성공 시에만 리뷰 상태 업데이트
-        setPopupDetailReviews(reviews =>
-          reviews.map(review =>
+      if (response.success) {
+        setPopupDetail({...popupDetail,review:popupDetail.review?.map(review =>
             review.reviewId === reviewId
-              ? {
+                ? {
                   ...review,
-                  recommendCnt: review.recommendCnt + 1,
+                  recommendCnt: response.isRecommending ? review.recommendCnt + 1 : review.recommendCnt - 1,
                 }
-              : review,
-          ),
-        );
+                : review,
+        )});
 
-        showBlackToast({text1: '추천을 완료하였습니다!'});
-        return {success: true};
+        response.isRecommending ?  showBlackToast({text1: '추천을 완료하였습니다!'}) : showBlackToast({text1: '추천을 취소했습니다!'})
       } else {
         showBlackToast({
-          text1:
-            response?.error?.message || '추천 처리 중 문제가 발생했습니다.',
+          text1: '추천 처리 중 문제가 발생했습니다.',
         });
-        return {success: false};
       }
-    } catch (error) {
-      showBlackToast({text1: '추천 처리 중 오류가 발생했습니다.'});
-      return {success: false};
-    }
+      setReporting(false);
+      return response.success;
   };
 
   const popupDetailReviewContext = {
@@ -223,7 +222,8 @@ export const PopupDetailReviewProvider = ({children}: {children: any}) => {
     reporting,
     reportVoteComment: reportPopupReview,
     clearCommentReportStates: clearReviewReportStates,
-    recommendReview,
+    recommendReviews,
+    toggleRecommendReviewLike,
   };
 
   return (

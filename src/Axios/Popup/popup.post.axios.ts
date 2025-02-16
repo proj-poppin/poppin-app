@@ -21,13 +21,15 @@ import {PopupWaitingSchema} from '../../Schema/Popup/popupWaiting.schema';
  */
 export const axiosModifyPopupInfo = async (formData: FormData) => {
   return await customAxios
-    .request<void>({
+    .request<StateWrapper<void>>({
       method: 'POST',
       url: 'v1/modify-info',
-      headers: {'Content-Type': 'multipart/form-data'},
+      headers: { 'Content-Type': 'multipart/form-data' },
       data: formData,
     })
-    .then(response => true)
+    .then(response => {
+      return response.data.success;
+    })
     .catch(error => {
       handleAxiosError({
         error,

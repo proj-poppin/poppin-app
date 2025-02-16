@@ -37,17 +37,9 @@ const DotMenu = () => {
     state => state.checkLoginAndShowModal,
   );
 
-  const {user, userRelation} = useUserStore(
-    state => ({
-      user: state.user,
-      userRelation: state.userRelation,
-    }),
-    shallow,
-  );
   const {popupDetail} = usePopupDetailContext();
   const {blockPopup} = usePopupDetailServiceContext();
-
-  const isUserBlocked = userRelation.blockedUserIds.includes(popupDetail?.id);
+  const reload = useAppStore(state => state.loadInitialData);
 
   const onPressReportPopup = () => {
     if (!checkLoginAndShowModal('POPUP_REPORT')) return;
@@ -59,6 +51,8 @@ const DotMenu = () => {
   const onPressBlockPopup = async () => {
     if (!checkLoginAndShowModal('POPUP_BLOCK')) return;
     await blockPopup();
+    await reload();
+    navigation.goBack();
   };
 
   const onPressModifyRequestPopup = () => {
@@ -93,13 +87,3 @@ const RightComponents__Container = styled.View`
   flex: 1;
 `;
 
-const styledMenuStyle = {
-  borderRadius: 8,
-  backgroundColor: '#ffffff',
-  padding: 10,
-  shadowColor: '#000',
-  shadowOffset: {width: 0, height: 2},
-  shadowOpacity: 0.1,
-  shadowRadius: 5,
-  elevation: 3,
-};

@@ -110,6 +110,9 @@ export type PopupSchema = {
 
   /** 팝업스토어에 속한 취향(선호도) 카테고리들 */
   preferences: PreferenceSchema;
+
+  /** 차단한 팝업 여부 */
+  isBlocked : boolean;
 };
 
 export const BlankPopup: PopupSchema = {
@@ -144,4 +147,5 @@ export const BlankPopup: PopupSchema = {
   imageUrls: [],
   review: [],
   visitorData: BlankVisitorData,
+  isBlocked: false,
 };

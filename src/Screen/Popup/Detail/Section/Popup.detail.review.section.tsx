@@ -32,27 +32,11 @@ const REVIEW_ORDER_TYPES: EnumValueWithName[] = [
   RECOMMEND_REVIEW_ORDER,
 ];
 
-const ItemSeparatorComponent = () => {
-  return (
-    <View
-      style={{
-        height: moderateScale(1),
-        backgroundColor: '#e7e7e7',
-        marginVertical: moderateScale(16),
-      }}
-    />
-  );
-};
-
 export const PopupDetailReviewSection = () => {
-  const user = useUserStore(state => state.user);
-  const {isVisitedPopup, isWaitingPopup, waitingPopups, startWaitingPopup} =
+  const {isVisitedPopup} =
     usePopupStore(
       state => ({
         isVisitedPopup: state.isVisitedPopup,
-        isWaitingPopup: state.isWaitingPopup,
-        waitingPopups: state.waitingPopups,
-        startWaitingPopup: state.startWaitingPopup,
       }),
       shallow,
     );
@@ -62,10 +46,10 @@ export const PopupDetailReviewSection = () => {
           }),
           shallow,
       );
+  //TODO reviewContext에서 리뷰가져오록 수정했을 시 화면 깜빡임 이슈가 있어서 원인 찾아서 수정해야함
   const {popupDetail} = usePopupDetailContext();
-  const {recommendReview} = usePopupDetailReviewContext();
-  const {review} = popupDetail;
-  const reviews = review || [];
+  const {toggleRecommendReviewLike,recommendReviews,reporting} = usePopupDetailReviewContext();
+  const reviews= popupDetail.review || []
   const [reviewFilterSelection,setReviewFilterSelection] = useState<EnumValueWithName>(REVIEW_ORDER_TYPES[0])
 
   const visited = isVisitedPopup(popupDetail.id);
@@ -79,10 +63,6 @@ export const PopupDetailReviewSection = () => {
   // 인증된 사용자 후기만 보기 상태
   const [isOnlyVerifiedReview, setIsOnlyVerifiedReview] = useState(false);
 
-  // 리뷰 추천 상태
-  const [recommendedReviews, setRecommendedReviews] = useState<{
-    [key: string]: boolean;
-  }>({});
 
   const navigateToReviewWriteScreen = () => {
     if (!checkLoginAndShowModal('POPUP_REVIEW')) {
@@ -130,25 +110,14 @@ export const PopupDetailReviewSection = () => {
 
 
   // 리뷰 추천 핸들링
-  const handleRecommendReview = async (popupId: number, reviewId: number) => {
-    try {
-      // 이미 추천된 리뷰는 요청하지 않음
-      if (recommendedReviews[reviewId]) {
+  const handleRecommendReview = async (popupId: string, reviewId: string) => {
+      if (!checkLoginAndShowModal('REVIEW_LIKE')) {
         return;
       }
 
-      const response = await recommendReview(popupId, reviewId);
+      if(reporting) return
 
-      // 추천 성공 시에만 UI 상태 업데이트
-      if (response?.success) {
-        setRecommendedReviews(prev => ({
-          ...prev,
-          [reviewId]: true,
-        }));
-      }
-    } catch (error) {
-      console.error('추천 처리 중 오류:', error);
-    }
+      const response = await toggleRecommendReviewLike(popupId, reviewId);
   };
 
   const handleReportReview = (reviewId?:string) => {
@@ -247,21 +216,18 @@ export const PopupDetailReviewSection = () => {
                       return;
                     }
                     handleRecommendReview(
-                      Number(popupDetail.id),
+                      popupDetail.id,
                       review.reviewId,
                     );
                   }}
-                  isCompleted={!!recommendedReviews[review.reviewId]}
+                  isCompleted={recommendReviews.includes(review.reviewId)}
                   textStyle={[{fontSize: moderateScale(13)}]}
                   borderRadius={15}
                   width={55}
                   height={30}
                   Icon={LikeReviewSvg}
                   iconStyle={{transform: [{scale: 0.9}]}}
-                  label={`${
-                    review.recommendCnt +
-                    (recommendedReviews[review.reviewId] ? 1 : 0)
-                  }`}
+                  label={`${review.recommendCnt}`}
                 />
               </RecommendContainer>
             </ReviewContainer>

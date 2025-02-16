@@ -10,10 +10,7 @@ import {
   PreferenceSchema,
 } from 'src/Schema/Preference/preference.schema';
 import {useUserStore} from 'src/Zustand/User/user.zustand';
-
-import {logger} from 'react-native-logs';
 import {usePopupStore} from '../../../Zustand/Popup/popup.zustand';
-import {useHomeLandingScreenStore} from 'src/Screen/Home/Landing/Home.landing.zustand';
 
 type MypagePreferenceSettingScreenProps = {
   selectedTags: Record<string, boolean>; // 실제로 저장된 취향 태그

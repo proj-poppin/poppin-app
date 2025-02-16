@@ -42,10 +42,10 @@ function ProfileEditContent() {
   );
 }
 
-export function MypageProfileEditScreen({
-  route,
-  navigation,
-}: NativeStackScreenProps<AppStackProps, 'MypageProfileEditScreen'>) {
+export function MypageProfileEditScreen({}: NativeStackScreenProps<
+  AppStackProps,
+  'MypageProfileEditScreen'
+>) {
   return (
     <MypageProfileEditProvider>
       <ProfileEditContent />

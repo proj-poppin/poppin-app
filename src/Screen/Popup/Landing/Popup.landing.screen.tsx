@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   ActivityIndicator,
@@ -6,7 +6,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import {
@@ -16,8 +15,6 @@ import {
 } from '@react-navigation/material-top-tabs';
 import {LandingBottomTabProps} from 'src/Navigator/Landing.bottomTab.navigator';
 import {BlankDropdown} from 'src/Component/Dropdown';
-import SearchIcon from 'src/Resource/svg/search-icon.svg';
-import {LandingScreenHeader} from 'src/Component/View';
 import {themeColors} from 'src/Theme/theme';
 import {PopupSortOrder} from 'src/Object/Type/popupSortOrder.type';
 import {OperationStatus} from 'src/Object/Type/operationStatus.type';
@@ -39,14 +36,7 @@ import {categoryKeys, popupStoreKeys} from 'src/Object/preference.enum';
 import {PreferencePopupStore} from 'src/Schema/Preference/preferencePopupStore';
 import {BlankPreference} from '../../../Schema/Preference/preference.schema';
 import NotList from 'src/Component/findPopup/NotList';
-
-interface SearchBarProps {
-  isSearchMode: boolean;
-  onSearchToggle: () => void;
-  onBackPress: () => void;
-  searchKeyword: string;
-  setSearchKeyword: (keyword: string) => void;
-}
+import {SearchBar} from 'src/Component/SearchBar/SearchBar';
 
 interface FilterContainerProps {
   onOrderChange: (newOrder: PopupSortOrder) => void;
@@ -297,51 +287,6 @@ const ClosedPopupScreen: React.FC = () => (
   <PopupListScreen operationStatus={OperationStatus.TERMINATED} />
 );
 
-export const SearchBar: React.FC<SearchBarProps> = ({
-  isSearchMode,
-  onSearchToggle,
-  onBackPress,
-  searchKeyword,
-  setSearchKeyword,
-}) => {
-  const inputStyle = useMemo(
-    () => ({
-      flex: 1,
-      borderWidth: 1,
-      borderRadius: 8,
-      padding: 10,
-      fontSize: 16,
-    }),
-    [],
-  );
-  return isSearchMode ? (
-    <SearchContainer>
-      <InputWrapper>
-        <TextInput
-          style={inputStyle}
-          onChangeText={setSearchKeyword}
-          value={searchKeyword}
-          placeholder="텍스트를 입력하세요."
-          placeholderTextColor="#666"
-          autoFocus={isSearchMode}
-        />
-        <Pressable onPress={onBackPress}>
-          <CancelButtonText>취소</CancelButtonText>
-        </Pressable>
-      </InputWrapper>
-    </SearchContainer>
-  ) : (
-    <LandingScreenHeader
-      title="팝업 찾기"
-      RightComponents={
-        <Pressable onPress={onSearchToggle}>
-          <SearchIcon />
-        </Pressable>
-      }
-    />
-  );
-};
-
 interface CustomTabBarProps
   extends MaterialTopTabBarProps,
     FilterContainerProps {
@@ -433,21 +378,6 @@ const ScreenContainer = styled.View`
 
 const ScreenContent = styled.View`
   flex: 1;
-`;
-
-const SearchContainer = styled.View`
-  padding-horizontal: 20px;
-  padding-vertical: 10px;
-`;
-
-const InputWrapper = styled.View`
-  flex-direction: row;
-  align-items: center;
-`;
-
-const CancelButtonText = styled.Text`
-  font-size: 16px;
-  margin-left: 10px;
 `;
 
 const tabBarStyles = StyleSheet.create({

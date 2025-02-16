@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, useMemo} from 'react';
 import styled from 'styled-components/native';
-import {TextInput, Pressable} from 'react-native';
 import {moderateScale} from 'src/Util';
+import debounce from 'lodash/debounce';
 
 interface SearchBarProps {
   searchKeyword: string;
@@ -17,6 +17,17 @@ export const ReviewSearchBar: React.FC<SearchBarProps> = ({
   onBlur,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
+  // 로컬 검색어 상태 추가
+  const [localSearchKeyword, setLocalSearchKeyword] = useState(searchKeyword);
+
+  // debounce 함수 생성
+  const debouncedSetSearchKeyword = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSearchKeyword(value);
+      }, 300),
+    [setSearchKeyword],
+  );
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -28,24 +39,38 @@ export const ReviewSearchBar: React.FC<SearchBarProps> = ({
     if (onBlur) onBlur();
   };
 
+  // 검색어 변경 핸들러
+  const handleSearchChange = (text: string) => {
+    setLocalSearchKeyword(text);
+    debouncedSetSearchKeyword(text);
+  };
+
+  // 클리어 버튼 핸들러
+  const handleClear = () => {
+    setLocalSearchKeyword('');
+    setSearchKeyword('');
+  };
+
   return (
     <SearchInputContainer isFocused={isFocused}>
       <StyledTextInput
-        value={searchKeyword}
-        onChangeText={setSearchKeyword}
+        value={localSearchKeyword}
+        onChangeText={handleSearchChange}
         placeholder="팝업을 검색해보세요"
         placeholderTextColor="#666"
         onFocus={handleFocus}
         onBlur={handleBlur}
       />
-      {searchKeyword.length > 0 && (
-        <ClearButton onPress={() => setSearchKeyword('')}>
+      {localSearchKeyword.length > 0 && (
+        <ClearButton onPress={handleClear}>
           <ClearButtonText>×</ClearButtonText>
         </ClearButton>
       )}
     </SearchInputContainer>
   );
 };
+
+// Styled components는 그대로 유지...
 
 const SearchInputContainer = styled.View<{isFocused: boolean}>`
   flex-direction: row;

@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Alert, FlatList} from 'react-native';
-import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 import {ScreenHeader} from '../../../Component/View';
 import styled from 'styled-components/native';
 import {moderateScale} from '../../../Util';
@@ -25,7 +24,6 @@ export type MypagePreferenceSettingScreenProps = {
 // MypagePreferenceSettingScreen
 // export interface MypagePreferenceSettingScreenProps {}
 export const MypagePreferenceSettingScreen = ({
-  route,
   navigation,
 }: NativeStackScreenProps<MypagePreferenceSettingScreenProps>) => {
   const goBack = () => navigation.goBack();

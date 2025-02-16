@@ -1,16 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {ScrollViewPage} from 'src/Component/Page';
 import {moderateScale} from 'src/Util';
 import {ScreenHeader} from 'src/Component/View';
-import {useImagePicker} from '../../../Util';
 import LinearGradient from 'react-native-linear-gradient';
 import {ReviewSearchBar} from 'src/Component/MyPage/Review/Mypage.review.searchBar';
 import {BeforeReviewPopupCard} from 'src/Component/MyPage/Review/Mypage.before.review.popupCard';
 import {FlatList} from 'react-native';
 import {PopupSchema} from 'src/Schema/Popup/popup.schema';
 import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
-import {TitleText} from 'src/StyledComponents/Text/title.component';
 import {useReviewWriteContext} from './Mypage.review.write.context';
 import {ReviewWriteSection} from 'src/Component/MyPage/Review/Mypage.review.write.section';
 import {ReivewTitleText} from './Mypage.review.visited.screen';
@@ -18,7 +16,9 @@ import {ReivewTitleText} from './Mypage.review.visited.screen';
 interface NormalReviewWriteScreenProps {
   routedSelectedPopup: PopupSchema | undefined;
 }
-export const NormalReviewWriteScreen: React.FC<NormalReviewWriteScreenProps> = ({routedSelectedPopup}) => {
+export const NormalReviewWriteScreen: React.FC<
+  NormalReviewWriteScreenProps
+> = ({routedSelectedPopup}) => {
   const {
     searchedPopupStores,
     searchKeyword,
@@ -38,8 +38,8 @@ export const NormalReviewWriteScreen: React.FC<NormalReviewWriteScreenProps> = (
   } = useReviewWriteContext();
 
   useEffect(() => {
-    if(routedSelectedPopup){
-      setSelectedPopup(routedSelectedPopup)
+    if (routedSelectedPopup) {
+      setSelectedPopup(routedSelectedPopup);
     }
   }, [routedSelectedPopup, setSelectedPopup]);
 
@@ -50,12 +50,11 @@ export const NormalReviewWriteScreen: React.FC<NormalReviewWriteScreenProps> = (
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   // 모든 카테고리가 선택되었는지 확인하는 함수
-  const areAllCategoriesSelected = () => {
+  const areAllCategoriesSelected = useCallback(() => {
     return categoryGroups.every(group =>
       group.categories.some(category => category.selected),
     );
-  };
-
+  }, [categoryGroups]);
 
   // 버튼 활성화 상태 업데이트
   useEffect(() => {
@@ -64,7 +63,7 @@ export const NormalReviewWriteScreen: React.FC<NormalReviewWriteScreenProps> = (
       reviewText.trim().length >= 10 &&
       areAllCategoriesSelected();
     setIsButtonDisabled(!isFormValid);
-  }, [selectedPopup, reviewText, categoryGroups]);
+  }, [selectedPopup, reviewText, categoryGroups, areAllCategoriesSelected]);
 
   return (
     <>
@@ -117,14 +116,16 @@ export const NormalReviewWriteScreen: React.FC<NormalReviewWriteScreenProps> = (
                 {selectedPopup && (
                   <SelectedPopupSection>
                     <ReivewTitleText>{selectedPopup.name}</ReivewTitleText>
-                    {routedSelectedPopup ? <TitleRightText>
-                      일반 후기
-                    </TitleRightText> :  <TitleRightText
+                    {routedSelectedPopup ? (
+                      <TitleRightText>일반 후기</TitleRightText>
+                    ) : (
+                      <TitleRightText
                         onPress={() => {
                           setSelectedPopup(undefined);
                         }}>
-                      선택 취소
-                    </TitleRightText>}
+                        선택 취소
+                      </TitleRightText>
+                    )}
                   </SelectedPopupSection>
                 )}
                 <ReviewWriteSection

@@ -1,11 +1,10 @@
 // src/screens/MyProfileEdit/MyProfileEditContainer.tsx
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {ImageSourcePropType} from 'react-native';
-import FastImage from 'react-native-fast-image';
 import GallerySvg from 'src/Resource/svg/gallery-icon.svg';
 import CloseIcon from 'src/Resource/svg/closeGray.svg';
 import RightSvg from 'src/Resource/svg/right-arrow-black-icon.svg';
-import {getGalleryImages, moderateScale} from 'src/Util';
+import {moderateScale} from 'src/Util';
 import PoppinCirclePng from 'src/Resource/png/app-logo.png';
 import styled from 'styled-components/native';
 import RequiredTextLabel from 'src/Component/RequiredTextLabel';
@@ -171,12 +170,6 @@ const EmailTextInput = styled.TextInput`
   color: ${props => props.theme.color.grey.main};
 `;
 
-const SocialIcon = styled.Image`
-  margin-right: ${moderateScale(5)}px;
-  width: ${moderateScale(30)}px;
-  height: ${moderateScale(30)}px;
-`;
-
 const LabelText = styled.Text`
   color: ${props => props.theme.color.grey.black};
   font-size: ${moderateScale(15)}px;
@@ -184,11 +177,6 @@ const LabelText = styled.Text`
 `;
 
 const NicknameRow = styled.View`
-  flex-direction: row;
-  align-items: center;
-`;
-
-const BirthDayRow = styled.View`
   flex-direction: row;
   align-items: center;
 `;

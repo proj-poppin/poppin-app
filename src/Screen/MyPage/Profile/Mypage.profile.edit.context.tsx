@@ -1,6 +1,5 @@
 import React, {createContext, useContext, useState} from 'react';
-import {Asset, launchImageLibrary} from 'react-native-image-picker';
-import {Platform} from 'react-native';
+import {Asset} from 'react-native-image-picker';
 import {getGalleryImages} from 'src/Util';
 import {useUserStore} from 'src/Zustand/User/user.zustand';
 import {axiosMypageProfileEdit} from 'src/Axios/Mypage/mypage.patch.axios';
@@ -46,7 +45,7 @@ export function MypageProfileEditProvider({
     string | Asset | null | undefined
   >(user.userImageUrl);
   const [nickname, setNickname] = useState(user.nickname);
-  const [socialMediaType, serSocialMediaType] = useState(user.accountType);
+  const [socialMediaType, setSocialMediaType] = useState(user.accountType);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isImagePickerModalVisible, setIsImagePickerModalVisible] =
     useState(false);

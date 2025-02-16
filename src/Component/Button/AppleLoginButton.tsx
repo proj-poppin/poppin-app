@@ -12,7 +12,6 @@ import CommonCompleteButton from '../../Screen/Popup/Landing/common.complete.but
 import {themeColors} from '../../Theme/theme';
 
 export function AppleLoginButton({
-  isSignIn = false,
   setIsSignIn,
   onSignupRequired,
   onLoginSucceed,

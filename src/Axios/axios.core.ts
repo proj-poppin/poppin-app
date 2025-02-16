@@ -1,14 +1,9 @@
 import axios from 'axios';
 import Config from 'react-native-config';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import {useUserStore} from '../Zustand/User/user.zustand';
 // import messaging from '@react-native-firebase/messaging';
-import {StateWrapper} from './wrapper/state_wrapper';
-import {testFcmToken, UserInfo} from './Auth/auth.axios';
 import {handleAxiosError} from 'src/Util';
-import {logger} from 'react-native-logs';
-
-const log = logger.createLogger();
+import {axiosAutoLogin} from './Auth/auth.axios';
 
 /**
  * axios 요청에 공통적으로 사용되는 설정들을 지정해둔 axios 요청 인스턴스입니다.
@@ -60,12 +55,12 @@ customAxios.interceptors.response.use(
       const errorCode = error.response?.data?.error?.code;
 
       // 에러 코드별 처리
-      if (errorCode === '40102') {
+      if (errorCode === '401') {
         handleAxiosError({
           error,
           errorMessage: '유효하지 않은 토큰입니다. 다시 로그인하세요.',
         });
-        // 로그아웃 로직을 추가할 수 있습니다.
+        await axiosAutoLogin(useUserStore.getState().refreshToken);
       } else if (errorCode === '403') {
         handleAxiosError({
           error,

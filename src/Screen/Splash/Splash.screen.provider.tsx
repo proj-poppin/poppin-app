@@ -1,20 +1,15 @@
 import React, {createContext, useContext, useReducer} from 'react';
-import inAppMessaging from '@react-native-firebase/in-app-messaging';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   doesAppMeetRequiredVersion,
   getEncryptedStorage,
-  getStorage,
   getStringKeyStorage,
-  setEncryptedStorage,
   setStorage,
 } from 'src/Util';
 import {AppStackProps} from '../../Navigator/App.stack.navigator';
 import {useAppStore} from '../../Zustand/App/app.zustand';
 import {useUserStore} from '../../Zustand/User/user.zustand';
 import {axiosAutoLogin} from '../../Axios/Auth/auth.axios';
-import {logger} from 'react-native-logs';
-import {useDynamicServiceConstant} from '../../Zustand/App/service.dynamic.constant.zustand';
 
 /** */
 type SplashScreenState = {
@@ -154,16 +149,11 @@ export function SplashScreenProvider({
     if (accessToken === '') {
       useUserStore.getState().setNonMemberUserInfo();
     }
-    /** 먼저 자동 로그인부터 처리합니다 */
-    // const userStatus = await handleAutoLogin();
 
-    // // Check if userStatus is valid; exit early if it fails
-    // if (!userStatus) {
-    //   console.error('Auto-login failed');
-    //   updateStatus({loading: false});
-    //   return;
-    // }
-
+    /**
+     * 앱 서비스 자체와 관련된 상수를 받아옵니다. 앱 버전, 앱 스토어 링크 등
+     * 이후 AutoLogin 을 진행합니다.
+     * */
     const loadDataResult = await Promise.all([
       setInAppMessagingVisible(),
       useAppStore.getState().getDynamicConstants(),
@@ -223,7 +213,10 @@ export function SplashScreenProvider({
     }
   }
 
-  /** */
+  /**
+   * refreshToken 을 확인하고, 자동 로그인을 진행합니다.
+   * @author 규진
+   */
   async function handleAutoLogin() {
     // await setEncryptedStorage('ACCESS_TOKEN', '');
     // await setEncryptedStorage('REFRESH_TOKEN', '');
@@ -245,11 +238,6 @@ export function SplashScreenProvider({
     if (loginData !== null) {
       await setStorage('EMAIL', loginData.data.user.email);
       await useUserStore.getState().setLoggedInUserInfo(loginData);
-      // logger.createLogger().info('loginData', loginData);
-      // useUserStore.getState().setUserActivities(loginData.data.userActivities);
-      // useUserStore.getState().setFirebaseTopicSubscription(loginData.data.userNotificationSetting);
-      // useUserStore.
-
       return {success: true};
     }
     return;

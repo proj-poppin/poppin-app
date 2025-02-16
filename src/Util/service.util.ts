@@ -12,12 +12,11 @@ export function openAppStore() {
     Linking.openURL(useDynamicServiceConstant.getState().APPLE_APP_STORE_URL);
     return;
   }
-  // Linking.openURL(useDynamicServiceConstant.getState().WEB_SERVICE_URL);
 }
 
 /** 현재 앱 버전이 인자로 받은 최소 요구 버전보다 같거나 앞서는지 확인합니다. */
+/** 현재 앱 버전 (app.constant.ts 에서 정의한 버전입니다.) */
 export const doesAppMeetGivenVersion = (requiredVersion: string) => {
-  //* 현재 앱 버전
   const [appMajor, appMinor, appPatch] = APP_VERSION.split('.').map(n =>
     parseInt(n),
   );

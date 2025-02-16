@@ -5,12 +5,10 @@ import {
   axiosLoadInitialData,
 } from 'src/Axios/App/app.axios';
 import {usePopupStore} from '../Popup/popup.zustand';
-import Config from 'react-native-config';
 import {PopupSearchParams} from '../../Object/Type/filtering.type';
 import {PopupSortOrder} from '../../Object/Type/popupSortOrder.type';
 import {usePopupScreenStore} from '../../Screen/Popup/Landing/Popup.landing.zustand';
 import {OperationStatus} from '../../Object/Type/operationStatus.type';
-import {logger} from 'react-native-logs';
 import {useUserStore} from '../User/user.zustand';
 import {ReportScreenProps} from 'src/Screen/MyPage/Report';
 import {useDynamicServiceConstant} from './service.dynamic.constant.zustand';
@@ -39,7 +37,7 @@ export type AppModalType =
   | 'RESIGN_CONFIRMATION' // 계정 탈퇴 확인
   | 'INQUIRY_SUBMISSION_CONFIRMATION'
   | 'PROFILE_UPDATED' // 프로필 설정 변경 완료
-  | 'POPUP_REPORT_COMPLETED'// 팝업 제보 완료;
+  | 'POPUP_REPORT_COMPLETED' // 팝업 제보 완료;
   | 'POPUP_REVIEW_IMAGE'; // 팝업 리뷰 이미지 클릭
 
 /** 로그인 요구 모달 타입 (표시된 이유) */
@@ -61,8 +59,8 @@ type RequireLoginModalType =
 type AppModalProps = {
   requireLogin?: {type: RequireLoginModalType};
   cancelReportType?: ReportScreenProps;
-  appModalImageUrls?: string[],
-  appModalImageIndex?: number
+  appModalImageUrls?: string[];
+  appModalImageIndex?: number;
 };
 
 type AppStoreProps = {
@@ -83,6 +81,7 @@ type AppStoreProps = {
   appModalProps: AppModalProps;
   setAppModalProps: (props: AppModalProps) => void;
 
+  /** 앱 서비스 자체와 관련된 상수를 받아옵니다. 앱 버전, 앱 스토어 링크 등 */
   getDynamicConstants: () => Promise<boolean>;
 
   /** 앱 시작 후 최초 정보들(최신 팝업정보, 공지사항 등)을 받아오고 저장합니다. */
@@ -95,22 +94,6 @@ type AppStoreProps = {
    * 로그인한 상태인 경우 true 를 반환합니다.
    */
   checkLoginAndShowModal: (type: RequireLoginModalType) => boolean;
-  // /**
-  //  * 본인인증이 필요한 기능에 접근할 때 호출합니다.
-  //  * 사용자가 본인인증을 했는지 확인하고
-  //  * 본인인증 되어있지 않은 경우 본인인증 요구 모달을 띄우며 false 를 반환합니다.
-  //  * 본인인증한 상태인 경우 true 를 반환합니다.
-  //  */
-  // checkCertificateAndShowModal: (type: RequireCertificateModalType) => boolean;
-  // /**
-  //  * 학생증이 필요한 기능에 접근할 때 호출합니다.
-  //  * 사용자가 학생 인증을 진행했는지 확인하고
-  //  * 학생증이 등록되어있지 않은 경우 학생증 요구 모달을 띄우며 false 를 반환합니다.
-  //  * 학생증이 등록되어있는 경우 true 를 반환합니다.
-  //  */
-  // checkStudentCertificateAndShowModal: (action: string) => boolean;
-  // /** 본인인증 요구 모달 내용 */
-  // requireCertificateModalType: RequireCertificateModalType;
 };
 
 /**
@@ -118,7 +101,7 @@ type AppStoreProps = {
  * @author 도형
  */
 
-export const useAppStore = create<AppStoreProps>((set, get) => ({
+export const useAppStore = create<AppStoreProps>(set => ({
   bootstrapped: false,
   setBootStrapped: (status: boolean) => {
     set({bootstrapped: status});
@@ -153,24 +136,12 @@ export const useAppStore = create<AppStoreProps>((set, get) => ({
       useDynamicServiceConstant
         .getState()
         .updateServiceConstants(constants.data);
-      // useDynamicResearchConstant
-      //   .getState()
-      //   .updateResearchConstants(constants.research);
-      // useDynamicUserConstant.getState().updateUserConstants(constants.user);
-      // useDynamicVoteConstant.getState().updateVoteConstants(constants.vote);
-      // useDynamicCompanyConstant
-      //   .getState()
-      //   .updateCompanyConstants(constants.company);
-      // useDynamicCreditConstant
-      //   .getState()
-      //   .updateCreditConstants(constants.credit);
       return true;
     }
     return false;
   },
   loadInitialData: async () => {
     const initialData = await axiosLoadInitialData();
-    // logger.createLogger().info('initialData', initialData);
     if (initialData === null) {
       return false;
     }
@@ -231,6 +202,11 @@ export const useAppStore = create<AppStoreProps>((set, get) => ({
     return true;
   },
 
+  /**
+   * 로그인 여부 확인 후 로그인 요구 모달 표시
+   * @param type 로그인 요구 모달 타입
+   * @returns 로그인 여부
+   */
   checkLoginAndShowModal: (type: RequireLoginModalType) => {
     if (!useUserStore.getState().isLoggedIn()) {
       set({
@@ -242,31 +218,4 @@ export const useAppStore = create<AppStoreProps>((set, get) => ({
     }
     return true;
   },
-
-  //   checkCertificateAndShowModal: (type: RequireCertificateModalType) => {
-  //     if (!useUserStore.getState().isCertified()) {
-  //       set({
-  //         appModalVisible: true,
-  //         appModalType: 'REQUIRE_CERTIFICATE',
-  //         appModalProps: { requireCertificate: { type } },
-  //       });
-  //       makeFirebaseLogEvent(APP_LOGS.try_action_without_cert(type));
-  //       return false;
-  //     }
-  //     return true;
-  //   },
-  //
-  //   checkStudentCertificateAndShowModal: (action: string) => {
-  //     if (!useUserStore.getState().isStudentUser({ strict: false })) {
-  //       set({
-  //         appModalVisible: true,
-  //         appModalType: 'REQUIRE_STUDENT_CERTIFICATE',
-  //       });
-  //       makeFirebaseLogEvent(APP_LOGS.try_action_without_stud_cert(action));
-  //       return false;
-  //     }
-  //     return true;
-  //   },
-  //
-  //   requireCertificateModalType: 'RESEARCH_PARTICIPATE',
 }));

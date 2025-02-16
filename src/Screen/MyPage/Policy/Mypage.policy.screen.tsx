@@ -19,7 +19,7 @@ export const MypagePolicyScreen = () => {
           <PolicyItem
             onPress={() =>
               handlePolicyPress(
-                'https://translucent-saver-b25.notion.site/592d1e8dbf5749b4abaa93619aa9880f',
+                'https://docs.google.com/document/d/1fZkvPAsxs7UqVRALziy1yGXkSglmLjiJhkIn_uT0T2s/edit?tab=t.0',
               )
             }>
             <PolicyText>서비스 이용약관</PolicyText>
@@ -28,7 +28,7 @@ export const MypagePolicyScreen = () => {
           <PolicyItem
             onPress={() =>
               handlePolicyPress(
-                'https://translucent-saver-b25.notion.site/2-21ver-7f7b0bf6605748c388f2c0484f093808',
+                'https://docs.google.com/document/d/11L_D0K85j6oh0DRD2SKO3Iw9A_x6QihQZF3YuCBpV-U/edit?usp=sharing',
               )
             }>
             <PolicyText>개인정보 처리 방침 및 정책 가이드</PolicyText>
@@ -58,7 +58,7 @@ const PolicyItem = styled(TouchableOpacity)`
 
 const PolicyText = styled.Text`
   font-size: 16px;
-  color:rgb(0, 0, 0);
+  color: rgb(0, 0, 0);
 `;
 
 const PolicyArrow = styled.Text`

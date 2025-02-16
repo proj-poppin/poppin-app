@@ -1,5 +1,5 @@
 /** 현재 앱 버전입니다. 서버에서 받아온 버전과 비교하여 최신 버전인지 확인할 때 사용합니다. */
-export const APP_VERSION = '1.4.1';
+export const APP_VERSION = '1.4.2';
 
 /**
  * localhost 에서 실행 중인 서버에 요청을 하는 경우,

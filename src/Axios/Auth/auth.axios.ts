@@ -16,7 +16,6 @@ import {NotificationSchema} from 'src/Schema/User/notification.schema';
 import {UserNoticeSchema} from 'src/Schema/User/userNotice.schema';
 import {PopupVisitSchema} from '../../Schema/Popup/popupVisit.schema';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {logger} from 'react-native-logs';
 import {PopupWaitingSchema} from '../../Schema/Popup/popupWaiting.schema';
 
 export type LoginResponse = StateWrapper<UserInfo>;
@@ -32,6 +31,9 @@ export type UserActivities = {
     popups: NotificationSchema[];
     notices: NotificationSchema[];
   };
+  reviewActivities:{
+    recommendReviews : string[];
+  }
 };
 
 export type UserInfo = {

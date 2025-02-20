@@ -6,10 +6,10 @@ import {
   getStringKeyStorage,
   setStorage,
 } from 'src/Util';
-import {AppStackProps} from '../../Navigator/App.stack.navigator';
-import {useAppStore} from '../../Zustand/App/app.zustand';
-import {useUserStore} from '../../Zustand/User/user.zustand';
-import {axiosAutoLogin} from '../../Axios/Auth/auth.axios';
+import {AppStackProps} from 'src/Navigator/App.stack.navigator';
+import {useAppStore} from 'src/Zustand/App/app.zustand';
+import {useUserStore} from 'src/Zustand/User/user.zustand';
+import {axiosAutoLogin} from 'src/Axios/Auth/auth.axios';
 
 /** */
 type SplashScreenState = {
@@ -21,16 +21,16 @@ const initialSplashScreenState: SplashScreenState = {
   loading: true,
 };
 
-/** */
+/**
+ * Partial을 사용하여 부분적인 상태 업데이트를 일괄적으로 허용합니다.
+ * ex) dispatch({loading: false})
+ * @author 도형
+ */
 function splashScreenReducer(
-  splashScreenState: SplashScreenState,
-  action: {type: string; payload: Partial<SplashScreenState>},
+  state: SplashScreenState,
+  updatedState: Partial<SplashScreenState>,
 ): SplashScreenState {
-  switch (action.type) {
-    case 'UPDATE_STATE':
-      return {...splashScreenState, ...action.payload};
-  }
-  return splashScreenState;
+  return {...state, ...updatedState};
 }
 
 /** */
@@ -67,80 +67,14 @@ export function SplashScreenProvider({
 
   /** */
   function updateStatus(state: Partial<SplashScreenState>) {
-    dispatch({type: 'UPDATE_STATE', payload: state});
+    dispatch(state);
   }
-
-  // function appsFlyerSetting() {
-
-  //   let deepLinkFlag = false
-
-  //   appsFlyer.onInstallConversionData(
-  //     res => {
-  //       //  Alert.alert('onInstallConversionData', JSON.stringify(res));
-  //     },
-  //   );
-
-  //   appsFlyer.onInstallConversionFailure(res => {
-
-  //   });
-
-  //   // OneLink ID를 설정
-  //   appsFlyer.setAppInviteOneLinkID('Ui2T', () => { });
-
-  //   appsFlyer.onDeepLink(res => {
-  //     //     //console.log(res);
-  //     Alert.alert('onDeepLink', JSON.stringify(res));
-  //     if (res.isDeferred === true) {
-  //       if (res.data.deep_link_value) {
-  //         const deep_link_value = JSON.parse(res.data.deep_link_value)
-
-  //         if (deep_link_value.researchId) {
-
-  //           deepLinkFlag = true
-
-  //           screenProps.navigation.navigate('ResearchDetailScreen', {
-  //             researchId: deep_link_value.researchId,
-  //             sharerId: deep_link_value.sharerId,
-  //           });
-
-  //         }
-
-  //       }
-
-  //     }
-  //   })
-
-  //   // //* AppsFlyer SDK 초기화
-  //   appsFlyer.initSdk(
-  //     {
-  //       devKey: 'trYFVCQL4CSnwYeifCJNxa',
-  //       isDebug: true,
-  //       appId: '1640390682',
-  //       onInstallConversionDataListener: true,
-  //       onDeepLinkListener: true,
-  //       timeToWaitForATTUserAuthorization: 60,
-  //     },
-  //     result => {
-  //       // console.log(result);
-  //       // Alert.alert('AppsFlyer', JSON.stringify(result));
-  //     },
-  //     error => {
-  //       // console.error(error);
-  //       // Alert.alert('AppsFlyer', JSON.stringify(error));
-  //     },
-  //   );
-
-  //   appsFlyer.startSdk();
-
-  //   return deepLinkFlag
-
-  // }
 
   /**
    * 앱 실행 시 자동 호출합니다.
    */
   async function bootstrap() {
-    dispatch({type: 'UPDATE_STATE', payload: {loading: true}});
+    dispatch({loading: true});
 
     /** 저장된 access token */
     const accessToken = await getEncryptedStorage('ACCESS_TOKEN');
@@ -154,28 +88,30 @@ export function SplashScreenProvider({
      * 앱 서비스 자체와 관련된 상수를 받아옵니다. 앱 버전, 앱 스토어 링크 등
      * 이후 AutoLogin 을 진행합니다.
      * */
-    const loadDataResult = await Promise.all([
+    const result = await Promise.all([
       setInAppMessagingVisible(),
       useAppStore.getState().getDynamicConstants(),
       useAppStore.getState().loadInitialData(),
       handleAutoLogin(),
-    ]).then(([_, dynamicConstants, loadInitialData]) => {
-      return {loadInitialData};
+    ]).then(([_, __, loadInitialData, userStatus]) => {
+      return {loadInitialData, userStatus};
     });
 
-    //* Check if initial data fetch was successful
-    if (loadDataResult.loadInitialData === false) {
-      updateStatus({loading: false});
+    //* 최초 정보를 받아오는 데 실패한 경우:
+    //* loading 플래그를 false 로 설정합니다
+    if (result === undefined || result.loadInitialData === false) {
+      dispatch({loading: false});
       return;
     }
 
-    //* Mark as bootstrapped in appStore
+    //* 최초 정보를 받아오는 데 성공한 경우:
+    //* appStore 의 bootstrapped 값을 true 로 설정합니다.
     useAppStore.getState().setBootStrapped(true);
 
     /** 현재 앱이 최신 버전인지 여부 */
     const isAppRecent = doesAppMeetRequiredVersion();
 
-    //* 1) 서비스 상태 확인 후 ServiceStatusScreen으로 이동
+    //* 1) 앱 초기 정보를 가져왔을 때 현재 서비스가 가능한 상태가 아닌 경우: 서비스 상태 안내 화면으로 이동합니다.
     // if (!useDynamicServiceConstant.getState().SERVICE_STATUS.available) {
     //   screenProps.navigation.replace('ServiceStatusScreen', {});
     //   return;
@@ -188,7 +124,7 @@ export function SplashScreenProvider({
     }
 
     //* 3) 성공적인 데이터 수신 후 홈 랜딩 화면으로 이동
-    if (loadDataResult.loadInitialData) {
+    if (result.loadInitialData) {
       screenProps.navigation.replace('LandingBottomTabNavigator', {
         HomeLandingScreen: {},
         PopupLandingScreen: {},
@@ -218,17 +154,11 @@ export function SplashScreenProvider({
    * @author 규진
    */
   async function handleAutoLogin() {
-    // await setEncryptedStorage('ACCESS_TOKEN', '');
-    // await setEncryptedStorage('REFRESH_TOKEN', '');
-
     const refreshToken = await getEncryptedStorage('REFRESH_TOKEN');
 
-    if (
-      refreshToken === null ||
-      refreshToken === '' ||
-      typeof refreshToken === 'undefined'
-    ) {
-      console.log('refreshToken is null');
+    //* refreshToken 이 저장되어 있지 않거나 (로그인한 적 없음), 빈 문자열인 경우 (로그아웃 함):
+    //* 비회원 상태로 로그인합니다.
+    if (refreshToken === null || refreshToken === '') {
       useUserStore.getState().setNonMemberUserInfo();
       return;
     }

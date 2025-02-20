@@ -174,7 +174,16 @@ export const useAppStore = create<AppStoreProps>(set => ({
       size: 10,
     };
 
-    // Load for each operation status
+    // // Load for each operation status
+
+    /**
+     * TODO
+     * 각 상태별 팝업 정보를 여기서 가져오지말고,
+     * bootstrap 에서 response data의 일부로 한번에 가져오도록 하여
+     * 다수의 불필요한 비동기 작업을 방지합니다.
+     * @author 도형, 규진
+     */
+
     await usePopupScreenStore
       .getState()
       .getFilteredPopupStores(OperationStatus.NOTYET, notyetTabSearchParams);

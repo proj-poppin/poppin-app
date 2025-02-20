@@ -64,23 +64,8 @@ export function SplashScreenContainer() {
   const {loading, bootstrap} = useSplashScreenContext();
   const [visited, setVisited] = useState(true);
 
-  async function setFirstVisitState() {
-    const jwt = await getEncryptedStorage('REFRESH_TOKEN');
-    const isVisited = await getStringKeyStorage('VISITED');
-
-    const alreadyVisited = (jwt !== null && jwt !== '') || isVisited === 'true';
-
-    if (alreadyVisited) {
-      bootstrap();
-    } else {
-      setVisited(false);
-      setTimeout(bootstrap, 1500);
-    }
-    setStringKeyStorage('VISITED', 'true');
-  }
-
   useEffect(() => {
-    setFirstVisitState();
+    bootstrap();
     return () => {};
   }, []);
 

@@ -119,7 +119,7 @@ import {
 import {
   MypagePreferenceSettingScreen,
   MypagePreferenceSettingScreenProps,
-} from '../Screen/MyPage/PreferenceSetting/Mypage.preferenceSetting.screen';
+} from '../Screen/MypagePreferenceSetting/Mypage.preferenceSetting.screen';
 import {
   AlarmNotificationScreen,
   AlarmNotificationScreenProps,

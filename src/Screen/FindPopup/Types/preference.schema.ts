@@ -1,6 +1,6 @@
-import {PreferenceCategory} from './preferenceCategory.schema';
-import {PreferencePopupStore} from './preferencePopupStore';
-import {PreferenceCompanion} from './preferenceCompanion.schema';
+import {PreferenceCategory} from './PreferenceCategory.schema';
+import {PreferencePopupStore} from './PreferencePopupStore';
+import {PreferenceCompanion} from './PreferenceCompanion.schema';
 
 /**
  * 팝업 취향정보 스키마입니다.

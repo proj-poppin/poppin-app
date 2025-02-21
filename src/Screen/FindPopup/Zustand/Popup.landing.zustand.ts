@@ -7,10 +7,10 @@ import {OperationStatus} from 'src/Object/Type/operationStatus.type';
 import {RefObject} from 'react';
 import {FlatList} from 'react-native';
 import {axiosGetPopupsBySearchFiltering} from '../../../Axios/Popup/popup.get.axios';
-import {BlankPreference} from '../Types/preference.schema';
-import {PreferenceCompanion} from '../Types/preferenceCompanion.schema';
-import {PreferenceCategory} from '../Types/preferenceCategory.schema';
-import {PreferencePopupStore} from '../Types/preferencePopupStore';
+import {BlankPreference} from '../Types/Preference.schema';
+import {PreferenceCompanion} from '../Types/PreferenceCompanion.schema';
+import {PreferenceCategory} from '../Types/PreferenceCategory.schema';
+import {PreferencePopupStore} from '../Types/PreferencePopupStore';
 import {categoryKeys, popupStoreKeys} from 'src/Object/preference.enum';
 
 /**

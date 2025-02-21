@@ -5,7 +5,7 @@ import {
   BackMiddleButton,
   NextMiddleButton,
 } from 'src/Components/Common/back.middle.button';
-import {BlankPreference} from 'src/Screen/FindPopup/Types/preference.schema';
+import {BlankPreference} from 'src/Screen/FindPopup/Types/Preference.schema';
 import styled from 'styled-components/native';
 import {moderateScale} from '../../Util';
 import {categoryKeys, popupStoreKeys} from '../../Object/preference.enum';

@@ -27,7 +27,7 @@ import {
 import {
   BlankPreference,
   PreferenceSchema,
-} from 'src/Screen/FindPopup/Types/preference.schema';
+} from 'src/Screen/FindPopup/Types/Preference.schema';
 import {
   subscribeAllFirebaseTopics,
   unsubscribeAllFirebaseTopics,
@@ -46,9 +46,9 @@ import {
   UserRelationSchema,
 } from 'src/Schema/User/userRelation.schema';
 import {usePopupStore} from '../Popup/popup.zustand';
-import {PreferencePopupStore} from 'src/Screen/FindPopup/Types/preferencePopupStore';
-import {PreferenceCategory} from 'src/Screen/FindPopup/Types/preferenceCategory.schema';
-import {PreferenceCompanion} from 'src/Screen/FindPopup/Types/preferenceCompanion.schema';
+import {PreferencePopupStore} from 'src/Screen/FindPopup/Types/PreferencePopupStore';
+import {PreferenceCategory} from 'src/Screen/FindPopup/Types/PreferenceCategory.schema';
+import {PreferenceCompanion} from 'src/Screen/FindPopup/Types/PreferenceCompanion.schema';
 import {useAppStore} from '../App/app.zustand';
 import {axiosModifyPopupInfo} from '../../Axios/Popup/popup.post.axios';
 import {PopupSchema} from '../../Schema/Popup/popup.schema';

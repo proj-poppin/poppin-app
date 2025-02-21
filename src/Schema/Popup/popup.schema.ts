@@ -1,7 +1,7 @@
 import {
   BlankPreference,
   PreferenceSchema,
-} from 'src/Screen/FindPopup/Types/preference.schema';
+} from 'src/Screen/FindPopup/Types/Preference.schema';
 import {PopupReviewSchema} from 'src/Schema/Popup/popupReview.schema';
 import {
   BlankVisitorData,

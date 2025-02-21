@@ -10,6 +10,7 @@ import {moderateScale} from 'src/Util';
  * TODO: 컴포넌트화 시킵니다.
  * @author 현웅
  */
+
 export const AuthPreferenceProgressBar = () => {
   const deviceWidth = Math.floor(Dimensions.get('window').width);
   const {allResearchUploadSteps, researchUploadStep} =

@@ -74,7 +74,7 @@ import ReportScreen, {
 import {
   AuthPreferenceScreen,
   AuthPreferenceScreenProps,
-} from '../Screen/Auth/Preference/Auth.preference.screen';
+} from '../Screen/AuthPreferenceSetting/Auth.preference.screen';
 import {
   MypageReportOperatorScreen,
   MypageReportOperatorScreenProps,

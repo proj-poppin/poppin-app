@@ -7,7 +7,7 @@ import {
 import {usePopupStore} from '../Popup/popup.zustand';
 import {PopupSearchParams} from '../../Object/Type/filtering.type';
 import {PopupSortOrder} from '../../Object/Type/popupSortOrder.type';
-import {usePopupScreenStore} from '../../Screen/Popup/Landing/Popup.landing.zustand';
+import {usePopupScreenStore} from '../../Screen/FindPopup/Zustand/Popup.landing.zustand';
 import {OperationStatus} from '../../Object/Type/operationStatus.type';
 import {useUserStore} from '../User/user.zustand';
 import {ReportScreenProps} from 'src/Screen/MyPage/Report';

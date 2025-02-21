@@ -3,7 +3,7 @@ import WelcomeSvg from 'src/Resource/svg/signup-succeed-welcome-icon.svg';
 import {FullViewPage} from 'src/Component/Page';
 import {SectionContainer} from 'src/Unit/View';
 import {moderateScale} from 'src/Util';
-import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import styled from 'styled-components/native';
 import {themeColors} from 'src/Theme/theme';
 import {useUserStore} from 'src/Zustand/User/user.zustand';

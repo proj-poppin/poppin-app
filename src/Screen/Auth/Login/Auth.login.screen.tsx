@@ -9,7 +9,7 @@ import {moderateScale} from '../../../Util';
 import AppLogoIcon from 'src/Resource/svg/app-logo-p-icon.svg';
 import {SectionContainer} from '../../../Unit/View';
 import CommonTextFormField from '../../../Component/CommonTextFormField';
-import CommonCompleteButton from '../../Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import {AuthLoginProvider, useAuthLoginContext} from './Auth.login.provider';
 import {View} from 'react-native';
 

@@ -8,7 +8,7 @@ import {showBlackToast} from 'src/Util';
 import {axiosGetAppleAccountStatus} from '../../Axios/User/user.get.axios';
 import {useUserStore} from 'src/Zustand/User/user.zustand';
 import LoginAppleButtonIcon from 'src/Screen/Auth/Landing/Resource/login-apple-button-icon.svg';
-import CommonCompleteButton from '../../Screen/Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import {themeColors} from '../../Theme/theme';
 
 export function AppleLoginButton({

@@ -5,7 +5,7 @@ import {ScrollViewPage} from '../../../../Component/Page';
 import {SectionContainer} from '../../../../Unit/View';
 import CommonTextFormField from '../../../../Component/CommonTextFormField';
 import {useSignupContext} from '../Auth.signup.provider';
-import CommonCompleteButton from '../../../Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import styled from 'styled-components/native';
 import TermsAndPrivacyPolicyAgreement from '../../../../Component/PressableUnderlineText';
 import {moderateScale} from '../../../../Util';

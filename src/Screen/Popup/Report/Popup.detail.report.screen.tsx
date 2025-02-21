@@ -5,7 +5,7 @@ import {Screen} from '../../../Component/Screen/Screen.component';
 import {themeColors} from 'src/Theme/theme';
 import {moderateScale} from '../../../Util';
 import PurpleCheckSelectionRow from '../../../Component/Purple.Selection.Component';
-import CommonCompleteButton from '../Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import {PopupReportOptions} from '../../../Constant/popup.constant';
 import {ScreenHeader} from '../../../Component/View';
 import styled from 'styled-components/native';

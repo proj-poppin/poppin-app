@@ -18,7 +18,7 @@ import {BodyText} from '../../StyledComponents/Text';
 import styled from 'styled-components/native';
 import {themeColors} from '../../Theme/theme';
 import {FastImageContainer} from '../../Component/Image/FastImage.component';
-import CommonCompleteButton from '../Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 
 export const AlarmNotificationTabScreenProps = {};
 

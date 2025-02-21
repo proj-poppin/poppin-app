@@ -6,7 +6,7 @@ import {themeColors} from 'src/Theme/theme';
 import {usePopupDetailContext} from '../Provider/Popup.detail.provider';
 import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
 import shallow from 'zustand/shallow';
-import CommonCompleteButton from '../../Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import {FastImageContainer} from '../../../../Component/Image/FastImage.component';
 import {RadiusBlueButton} from '../../../../Component/Button/RadiusBlueButton';
 import {
@@ -23,16 +23,15 @@ const PopupDetailBottomButtonRowSection: React.FC<{
 }> = ({modalVisible, setModalVisible}) => {
   const [inProgress, setInProgress] = useState(false);
   const [visitorTooltipOpen, setVisitorTooltipOpen] = useState(false);
-  const {popupDetail, visitPopup,requestReopenPopup} = usePopupDetailContext();
-  const {isVisitedPopup, isWaitingPopup, waitingPopups} =
-    usePopupStore(
-      state => ({
-        isVisitedPopup: state.isVisitedPopup,
-        isWaitingPopup: state.isWaitingPopup,
-        waitingPopups: state.waitingPopups,
-      }),
-      shallow,
-    );
+  const {popupDetail, visitPopup, requestReopenPopup} = usePopupDetailContext();
+  const {isVisitedPopup, isWaitingPopup, waitingPopups} = usePopupStore(
+    state => ({
+      isVisitedPopup: state.isVisitedPopup,
+      isWaitingPopup: state.isWaitingPopup,
+      waitingPopups: state.waitingPopups,
+    }),
+    shallow,
+  );
 
   const waiting = isWaitingPopup(popupDetail.id);
   const requestWaitingPopup = async () => {

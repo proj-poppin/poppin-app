@@ -6,7 +6,7 @@ import {moderateScale} from 'src/Util';
 import EmptyCheckCircle from 'src/Resource/svg/empty-purple-circle-check.svg';
 import PurpleCheckCircle from 'src/Resource/svg/purple-circle-check.svg';
 import {useWithdrawContext} from './Mypage.withdraw.context';
-import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import {themeColors} from 'src/Theme/theme';
 import {MypageWithdrawModal} from './Mypage.withdraw.modal';
 

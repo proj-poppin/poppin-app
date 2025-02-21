@@ -8,8 +8,8 @@ import {ProgressBarStepComponentHeader} from '../../../Component/Image/ProgressB
 import {useUserStore} from '../../../Zustand/User/user.zustand';
 import shallow from 'zustand/shallow';
 import {moderateScale} from '../../../Util';
-import CommonCompleteButton from '../../Popup/Landing/common.complete.button';
-import CategorySelectButton from '../../Popup/Landing/category.select.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
+import CategorySelectButton from 'src/Components/Common/category.select.button';
 import {
   preferenceKeysForPopupCategory,
   preferenceKeysForPopupInterest,

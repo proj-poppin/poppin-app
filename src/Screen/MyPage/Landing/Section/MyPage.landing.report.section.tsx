@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import {moderateScale} from '../../../../Util';
 import CustomBottomSheet from '../../../../Component/BottomSheet/CustomBottomSheet';
 import MypageReportBottomSheetContainer from '../../Report/Mypage.report.bottomsheet.container';
-import CommonCompleteButton from '../../../Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import {useAppStore} from 'src/Zustand/App/app.zustand';
 import shallow from 'zustand/shallow';
 import {NavigationProp, useNavigation} from '@react-navigation/native';

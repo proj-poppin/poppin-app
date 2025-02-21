@@ -5,7 +5,7 @@ import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 import {Screen} from '../../../Component/Screen/Screen.component';
 import {themeColors} from 'src/Theme/theme';
 import {moderateScale} from '../../../Util';
-import CommonCompleteButton from '../Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import {ScreenHeader} from '../../../Component/View';
 import styled from 'styled-components/native';
 import ImageContainerRow from '../../../Component/ImageContainerRow';

@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {ScrollView, TouchableWithoutFeedback} from 'react-native';
-import CategorySelectButton from '../../Screen/Popup/Landing/category.select.button';
+import CategorySelectButton from 'src/Components/Common/category.select.button';
 import {
   BackMiddleButton,
   NextMiddleButton,
-} from '../../Screen/Popup/Landing/back.middle.button';
-import {BlankPreference} from 'src/Schema/Preference/preference.schema';
+} from 'src/Components/Common/back.middle.button';
+import {BlankPreference} from 'src/Screen/FindPopup/Types/preference.schema';
 import styled from 'styled-components/native';
 import {moderateScale} from '../../Util';
 import {categoryKeys, popupStoreKeys} from '../../Object/preference.enum';

@@ -13,7 +13,7 @@ import {
 import {
   PopupLandingScreen,
   PopupLandingScreenProps,
-} from '../Screen/Popup/Landing/Popup.landing.screen';
+} from '../Screen/FindPopup/Popup.landing.screen';
 import {
   PopupLikesLandingScreen,
   PopupLikesLandingScreenProps,

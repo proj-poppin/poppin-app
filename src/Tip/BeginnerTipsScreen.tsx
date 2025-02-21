@@ -10,7 +10,7 @@ import FastImage from 'react-native-fast-image';
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
 import {AppStackProps} from "../Navigator/App.stack.navigator";
 import TipOrderHeader from "./TipOrderHeader";
-import CommonCompleteButton from "../Screen/Popup/Landing/common.complete.button";
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import {ScreenHeader} from "../Component/View";
 
 export type BeginnerTipsScreenProps = {};

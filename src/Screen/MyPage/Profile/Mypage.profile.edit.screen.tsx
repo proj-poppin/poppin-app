@@ -8,7 +8,7 @@ import {
 } from './Mypage.profile.edit.context';
 import {MyProfileEditContainer} from './Mypage.profile.edit.container';
 import {ScreenHeader} from 'src/Component/View';
-import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 
 export interface MypageProfileEditScreenProps {}
 

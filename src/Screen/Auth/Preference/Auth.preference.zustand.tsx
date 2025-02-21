@@ -8,7 +8,7 @@ import {axiosSettingPreference} from 'src/Axios/User/user.post.axios';
 import {
   BlankPreference,
   PreferenceSchema,
-} from 'src/Schema/Preference/preference.schema';
+} from 'src/Screen/FindPopup/Types/preference.schema';
 import {usePopupStore} from 'src/Zustand/Popup/popup.zustand';
 import {useHomeLandingScreenStore} from 'src/Screen/Home/Landing/Home.landing.zustand';
 import {useUserStore} from 'src/Zustand/User/user.zustand';

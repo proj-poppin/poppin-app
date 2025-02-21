@@ -48,11 +48,13 @@ import {
 
 import {
   PopupDetailReportScreen,
-  PopupDetailReportScreenProps
+  PopupDetailReportScreenProps,
 } from 'src/Screen/Popup/Report/Popup.detail.report.screen';
 
-import '../Screen/Popup/Landing/Popup.landing.screen';
-import PopupDetailEditScreen, {PopupDetailEditScreenProps} from '../Screen/Popup/Report/Popup.detail.edit.screen';
+import '../Screen/FindPopup/Popup.landing.screen';
+import PopupDetailEditScreen, {
+  PopupDetailEditScreenProps,
+} from '../Screen/Popup/Report/Popup.detail.edit.screen';
 import PopupDetailReviewWriteScreen from '../Screen/Popup/Review/Popup.detail.review.write.screen';
 import {
   AuthLandingScreen,

@@ -7,7 +7,7 @@ import {HelperText} from '../../../../Component/MyPage/Report/ReportStepTwo';
 import CustomBottomSheetButton from 'src/Component/BottomSheet/CustomBottomSheetButton';
 import {ScrollViewPage} from 'src/Component/Page';
 import {useUserReportStore} from './Mypage.report.user.zustand';
-import CommonCompleteButton from '../../../Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import {
   NavigationProp,
   StackActions,

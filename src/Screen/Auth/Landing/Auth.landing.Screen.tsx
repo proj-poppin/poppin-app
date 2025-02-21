@@ -17,7 +17,7 @@ import {AppleLoginButton} from 'src/Component/Button/AppleLoginButton';
 import {KakaoLoginButton} from 'src/Component/Button/KakaoLoginButton';
 import {TouchableOpacity} from 'react-native';
 import LoginBasicLetterIcon from 'src/Screen/Auth/Landing/Resource/login-basic-letter-icon.svg';
-import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import {NaverLoginButton} from 'src/Component/Button/NaverLoginButton';
 import {GoogleLoginButton} from 'src/Component/Button/GoogleLoginButton';
 import LoadingScreen from 'src/Screen/Splash/LoadingScreen';

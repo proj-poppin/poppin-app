@@ -1,7 +1,7 @@
 import {
   BlankPreference,
   PreferenceSchema,
-} from 'src/Schema/Preference/preference.schema';
+} from 'src/Screen/FindPopup/Types/preference.schema';
 import {PopupReviewSchema} from 'src/Schema/Popup/popupReview.schema';
 import {
   BlankVisitorData,
@@ -112,7 +112,7 @@ export type PopupSchema = {
   preferences: PreferenceSchema;
 
   /** 차단한 팝업 여부 */
-  isBlocked : boolean;
+  isBlocked: boolean;
 };
 
 export const BlankPopup: PopupSchema = {

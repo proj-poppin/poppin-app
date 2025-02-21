@@ -5,7 +5,7 @@ import {moderateScale} from '../../../Util';
 import {useOperatorReportStore} from '../../../Screen/MyPage/Request/Operator/Mypage.report.operator.zustand';
 import {Alert} from 'react-native';
 import {RequiredMark} from './ReportStepTwo';
-import CommonCompleteButton from '../../../Screen/Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 
 export interface StepProps {
   onNext: () => void;

@@ -5,7 +5,7 @@ import GrayEyeIcon from 'src/Resource/svg/password-watch-gray-icon.svg';
 import BlueEyeIcon from 'src/Resource/svg/password-watch-blue-icon.svg';
 
 import {useUserStore} from 'src/Zustand/User/user.zustand';
-import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import {usePasswordChange} from './Mypage.password.change.context';
 import CheckIcon from 'src/Resource/svg/check-icon.svg';
 import CheckBlueIcon from 'src/Resource/svg/check-blue-icon.svg';

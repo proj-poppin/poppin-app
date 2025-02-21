@@ -7,7 +7,7 @@ import styled from 'styled-components/native';
 import CommonTextFormField from '../../../../Component/CommonTextFormField';
 import {useSignupContext} from '../Auth.signup.provider';
 import {useMutation} from '@tanstack/react-query';
-import CommonCompleteButton from '../../../Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 
 export function SignupAuthCodePage() {
   const {verifyAuthCode, onPressAuthCodeResendButton, goNextStep} =

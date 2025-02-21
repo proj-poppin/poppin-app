@@ -2,7 +2,7 @@
 import React, {createContext, useContext, useState} from 'react';
 import {Asset} from 'react-native-image-picker';
 import {PopupSchema} from 'src/Schema/Popup/popup.schema';
-import {usePopupScreenStore} from 'src/Screen/Popup/Landing/Popup.landing.zustand';
+import {usePopupScreenStore} from 'src/Screen/FindPopup/Zustand/Popup.landing.zustand';
 import {Alert} from 'react-native';
 import {axiosMypageReviewReport} from 'src/Axios/Mypage/mypage.post.axios';
 import {

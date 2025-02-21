@@ -5,7 +5,7 @@ import {moderateScale} from 'src/Util';
 import {ScreenHeader} from 'src/Component/View';
 import LinearGradient from 'react-native-linear-gradient';
 import {PopupSchema} from 'src/Schema/Popup/popup.schema';
-import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import VisitedReview from 'src/Resource/svg/visited-review.svg';
 import {useReviewWriteContext} from './Mypage.review.write.context';
 import {ReviewWriteSection} from 'src/Component/MyPage/Review/Mypage.review.write.section';

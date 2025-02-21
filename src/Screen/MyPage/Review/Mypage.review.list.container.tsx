@@ -10,7 +10,7 @@ import {ScreenHeader} from 'src/Component/View';
 import LinearGradient from 'react-native-linear-gradient';
 import CheckIcon from 'src/Resource/svg/check_circle.svg';
 import {BeforeReviewPopupCard} from 'src/Component/MyPage/Review/Mypage.before.review.popupCard';
-import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import {useReviewListContext} from './Mypage.review.list.context';
 
 interface ReviewListContainerProps {

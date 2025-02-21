@@ -7,10 +7,11 @@ import {OperationStatus} from 'src/Object/Type/operationStatus.type';
 import {RefObject} from 'react';
 import {FlatList} from 'react-native';
 import {axiosGetPopupsBySearchFiltering} from '../../../Axios/Popup/popup.get.axios';
-import {BlankPreference} from '../../../Schema/Preference/preference.schema';
-import {PreferenceCompanion} from '../../../Schema/Preference/preferenceCompanion.schema';
-import {PreferenceCategory} from '../../../Schema/Preference/preferenceCategory.schema';
-import {PreferencePopupStore} from '../../../Schema/Preference/preferencePopupStore';
+import {BlankPreference} from '../Types/preference.schema';
+import {PreferenceCompanion} from '../Types/preferenceCompanion.schema';
+import {PreferenceCategory} from '../Types/preferenceCategory.schema';
+import {PreferencePopupStore} from '../Types/preferencePopupStore';
+import {categoryKeys, popupStoreKeys} from 'src/Object/preference.enum';
 
 /**
  * 팝업 찾기 화면에 필요한 상태값들을 관리합니다.
@@ -40,12 +41,21 @@ type PopupScreenStoreProps = Record<OperationStatus, PopupStatusProps> & {
   isSetting: boolean;
   filteringThreeCategories: string;
   filteringFourteenCategories: string;
+  isSearchMode: boolean;
+  modalVisible: boolean;
 
   setSearchKeyword: (keyword: string) => void;
   setSelectedCategories: (categories: string) => void;
   setSelectedPopupStores: (types: string) => void;
   setSelectedOrderType: (orderType: PopupSortOrder) => void;
   setIsSetting: (isSetting: boolean) => void;
+  toggleSearchMode: (isActive: boolean) => void;
+  toggleModal: (isActive: boolean) => void;
+  applyFilters: (selectedCategories: {
+    selectedPopupTypes: string[];
+    selectedCategories: string[];
+  }) => void;
+  resetFilters: () => void;
 
   refreshAllTabs: () => void;
   getFilteredPopupStores: (
@@ -94,6 +104,56 @@ export const usePopupScreenStore = create<PopupScreenStoreProps>(
     preferenceCategory: BlankPreference.preferenceCategory,
     preferencePopupStore: BlankPreference.preferencePopupStore,
     preferenceCompanion: BlankPreference.preferenceCompanion,
+
+    isSearchMode: false,
+    modalVisible: false,
+
+    toggleSearchMode: isActive => set({isSearchMode: isActive}),
+
+    toggleModal: isActive => set({modalVisible: isActive}),
+
+    applyFilters: selectedCategories => {
+      const updatedCategories = categoryKeys.reduce((acc, key) => {
+        acc[key as keyof PreferenceCategory] =
+          selectedCategories.selectedCategories.includes(key);
+        return acc;
+      }, {} as PreferenceCategory);
+
+      const updatedPopupStores = popupStoreKeys.reduce((acc, key) => {
+        acc[key as keyof PreferencePopupStore] =
+          selectedCategories.selectedPopupTypes.includes(key);
+        return acc;
+      }, {} as PreferencePopupStore);
+
+      set(() => ({
+        preferenceCategory: updatedCategories,
+        preferencePopupStore: updatedPopupStores,
+        filteringFourteenCategories:
+          convertToCommaSeparatedString(updatedCategories),
+        filteringThreeCategories:
+          convertToCommaSeparatedString(updatedPopupStores),
+        isSetting: true,
+      }));
+
+      get().refreshAllTabs();
+    },
+
+    resetFilters: () => {
+      set({
+        preferenceCategory: BlankPreference.preferenceCategory,
+        preferencePopupStore: BlankPreference.preferencePopupStore,
+        filteringFourteenCategories: convertToCommaSeparatedString(
+          BlankPreference.preferenceCategory,
+        ),
+        filteringThreeCategories: convertToCommaSeparatedString(
+          BlankPreference.preferencePopupStore,
+        ),
+        modalVisible: false,
+        isSetting: false,
+      });
+
+      get().refreshAllTabs();
+    },
 
     // 필터 설정, 필터 적용 버튼 여부는 선택된 카테고리의 개수에 따라 결정합니다.
 

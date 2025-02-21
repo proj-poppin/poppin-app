@@ -11,8 +11,8 @@ import {useOperatorReportStore} from '../../../Screen/MyPage/Request/Operator/My
 import {StepProps} from './ReportStepOne';
 import CustomBottomSheetButton from '../../BottomSheet/CustomBottomSheetButton';
 import PostalCodeModal from '../../operatorRequest/PostalCodeModal';
-import CategorySelectButton from '../../../Screen/Popup/Landing/category.select.button';
-import {themeColors} from "../../../Theme/theme";
+import CategorySelectButton from 'src/Components/Common/category.select.button';
+import {themeColors} from '../../../Theme/theme';
 const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
   const {
     // State
@@ -214,7 +214,14 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
                 setShowCalendar(true);
                 setIsOpenDate(true);
               }}>
-              <DateButtonText style={{color: openDate ? themeColors().grey.black : themeColors().grey.main}}>{YYYYHHMMFormatDate(openDate)}</DateButtonText>
+              <DateButtonText
+                style={{
+                  color: openDate
+                    ? themeColors().grey.black
+                    : themeColors().grey.main,
+                }}>
+                {YYYYHHMMFormatDate(openDate)}
+              </DateButtonText>
             </DateButton>
             <DateSeparator>~</DateSeparator>
             <DateButton
@@ -222,7 +229,14 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
                 setShowCalendar(true);
                 setIsOpenDate(false);
               }}>
-              <DateButtonText style={{color: closeDate ? themeColors().grey.black : themeColors().grey.main}}>{YYYYHHMMFormatDate(closeDate)}</DateButtonText>
+              <DateButtonText
+                style={{
+                  color: closeDate
+                    ? themeColors().grey.black
+                    : themeColors().grey.main,
+                }}>
+                {YYYYHHMMFormatDate(closeDate)}
+              </DateButtonText>
             </DateButton>
           </DateContainer>
 
@@ -235,7 +249,14 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
                 setShowTimePicker(true);
                 setIsOpenTime(true);
               }}>
-              <TimeText style={{color: openTime ? themeColors().grey.black : themeColors().grey.main}}>{HHMMFormatTime(openTime)}</TimeText>
+              <TimeText
+                style={{
+                  color: openTime
+                    ? themeColors().grey.black
+                    : themeColors().grey.main,
+                }}>
+                {HHMMFormatTime(openTime)}
+              </TimeText>
             </TimeButton>
             <TimeSeparator>~</TimeSeparator>
             <TimeButton
@@ -243,7 +264,14 @@ const ReportStepTwo: React.FC<StepProps> = ({onNext, onBackPress}) => {
                 setShowTimePicker(true);
                 setIsOpenTime(false);
               }}>
-              <TimeText style={{color: closeTime ? themeColors().grey.black : themeColors().grey.main}}>{HHMMFormatTime(closeTime)}</TimeText>
+              <TimeText
+                style={{
+                  color: closeTime
+                    ? themeColors().grey.black
+                    : themeColors().grey.main,
+                }}>
+                {HHMMFormatTime(closeTime)}
+              </TimeText>
             </TimeButton>
           </TimeContainer>
 

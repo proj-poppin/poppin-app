@@ -8,7 +8,7 @@ import {ReviewSearchBar} from 'src/Component/MyPage/Review/Mypage.review.searchB
 import {BeforeReviewPopupCard} from 'src/Component/MyPage/Review/Mypage.before.review.popupCard';
 import {FlatList} from 'react-native';
 import {PopupSchema} from 'src/Schema/Popup/popup.schema';
-import CommonCompleteButton from 'src/Screen/Popup/Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import {useReviewWriteContext} from './Mypage.review.write.context';
 import {ReviewWriteSection} from 'src/Component/MyPage/Review/Mypage.review.write.section';
 import {ReivewTitleText} from './Mypage.review.visited.screen';

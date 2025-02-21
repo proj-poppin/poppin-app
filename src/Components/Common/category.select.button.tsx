@@ -2,7 +2,7 @@ import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {themeColors} from 'src/Theme/theme';
-import {getPreferenceTitle} from '../../../Object/preference.enum';
+import {getPreferenceTitle} from 'src/Object/preference.enum';
 
 interface CategorySelectButtonProps {
   preferenceKey: string;

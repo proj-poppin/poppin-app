@@ -3,7 +3,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppStackProps} from '../../../Navigator/App.stack.navigator';
 import {Screen} from '../../../Component/Screen/Screen.component';
 import {getGalleryImages, moderateScale} from '../../../Util';
-import CommonCompleteButton from '../Landing/common.complete.button';
+import CommonCompleteButton from 'src/Components/Common/common.complete.button';
 import {ScreenHeader} from '../../../Component/View';
 import styled from 'styled-components/native';
 import {PopupSchema} from "../../../Schema/Popup/popup.schema";

@@ -202,9 +202,9 @@ export function SplashScreenProvider({
      * 귀찮게 하나하나 클릭해서 해당 페이지까지 접근하는 일이 없도록 하기 위함
      * @author 도형
      */
-    if (loadDataResult.loadInitialData) {
-      screenProps.navigation.replace('AuthPreferenceScreen', {});
-    }
+    // if (loadDataResult.loadInitialData) {
+    //   screenProps.navigation.replace('AuthPreferenceScreen', {});
+    // }
 
     /** */
     async function setInAppMessagingVisible() {

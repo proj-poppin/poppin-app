@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React from 'react';
 import styled from 'styled-components/native';
 import {getDayOfWeek, moderateScale} from '../../../Util';
 import {SectionContainer} from '../../../Unit/View';
@@ -6,178 +6,43 @@ import CalendarLeftArrowGreyIcon from '../../../Resource/svg/calendar-left-arrow
 import CalendarRightArrowBlackIcon from '../../../Resource/svg/calendar-right-arrow-black-icon.svg';
 import DownArrowBlackIcon from '../../../Resource/svg/down-arrow-black-icon.svg';
 import {H1} from '../../../StyledComponents/Text';
-import {usePopupLikesLandingScreenStore} from './PopupLikes.landing.zustand';
 import {themeColors} from '../../../Theme/theme';
 import {
   Animated,
   Dimensions,
-  PanResponder,
   FlatList,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {usePopupStore} from '../../../Zustand/Popup/popup.zustand';
 import PopupStoreCard from '../../../Component/Popup/Landing/PopupStoreCard';
 import Star from '../../../Resource/svg/bottom-nav-bar-tab2-active.svg';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {AppStackProps} from 'src/Navigator/App.stack.navigator';
 import YearMonthPicker from 'src/Component/YearMonthPicker';
 import {BodyMediumText} from 'src/StyledComponents/Text/bodyMedium.component';
-import {useFocusEffect} from '@react-navigation/native';
+import {useCalendar} from '../Hooks/Use.calendar';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 const InterestedPopupCalendarSection = () => {
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // 1~12월
-
-  // YearMonthPicker 모달 상태
-  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
-
-  const navigation = useNavigation<NavigationProp<AppStackProps>>();
-
-  const {calendarCells, calendarYear, calendarMonth, moveMonth, setYearMonth} =
-    usePopupLikesLandingScreenStore();
-
-  const {interestedPopupStores} = usePopupStore();
-
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const translateY = useRef(new Animated.Value(SCREEN_HEIGHT * 0.7)).current;
-
-  // 화면에 다시 돌아올 때 오늘 날짜로 초기화
-  useFocusEffect(
-    React.useCallback(() => {
-      const today = new Date();
-      setYearMonth(today.getFullYear(), today.getMonth() + 1);
-    }, []),
-  );
-
-  // 캘린더 셀 높이를 반응형으로 조절
-  const cellHeight = translateY.interpolate({
-    inputRange: [0, SCREEN_HEIGHT * 0.7, SCREEN_HEIGHT],
-    outputRange: [moderateScale(30), moderateScale(50), moderateScale(60)],
-    extrapolate: 'clamp',
-  });
-
-  const POSITIONS = {
-    TOP: SCREEN_HEIGHT * 0.15, // 최상단
-    MIDDLE: SCREEN_HEIGHT * 0.7, // 중간
-    BOTTOM: SCREEN_HEIGHT * 0.9, // 최하단
-  };
-
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: (_, {moveY}) => {
-        translateY.setValue(Math.min(SCREEN_HEIGHT, Math.max(0, moveY)));
-      },
-      onPanResponderRelease: (_, {moveY}) => {
-        const currentPosition = moveY;
-
-        // 위치 기준점 재조정
-        const topThreshold = SCREEN_HEIGHT * 0.35; // MIDDLE과 TOP 사이의 중간점
-        const bottomThreshold = SCREEN_HEIGHT * 0.8; // MIDDLE과 BOTTOM 사이의 중간점
-
-        if (currentPosition < topThreshold) {
-          Animated.spring(translateY, {
-            toValue: POSITIONS.TOP,
-            useNativeDriver: false,
-            tension: 50,
-            friction: 12,
-          }).start();
-        } else if (currentPosition > bottomThreshold) {
-          Animated.spring(translateY, {
-            toValue: POSITIONS.BOTTOM,
-            useNativeDriver: false,
-            tension: 50,
-            friction: 12,
-          }).start();
-        } else {
-          Animated.spring(translateY, {
-            toValue: POSITIONS.MIDDLE,
-            useNativeDriver: false,
-            tension: 50,
-            friction: 12,
-          }).start();
-        }
-      },
-    }),
-  ).current;
-
-  const swipeResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => {
-        return true;
-      },
-      onMoveShouldSetPanResponder: () => {
-        return true;
-      },
-      onPanResponderRelease: (_, {dx}) => {
-        if (dx < -30) {
-          moveMonth('FORWARD');
-        } else if (dx > 30) {
-          moveMonth('BACKWARD');
-        }
-      },
-    }),
-  ).current;
-
-  const formattedMonth =
-    calendarMonth < 10 ? `0${calendarMonth}` : `${calendarMonth}`;
-
-  const handleDateClick = (dateString: string) => {
-    setSelectedDate(dateString);
-    // 날짜 클릭 시 바텀시트를 중간 위치로 이동
-    Animated.timing(translateY, {
-      toValue: SCREEN_HEIGHT * 0.7,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const filteredPopups = selectedDate
-    ? interestedPopupStores
-        ?.filter(popup => {
-          const openDate = popup.openDate.split('T')[0];
-          const closeDate = popup.closeDate.split('T')[0];
-          const selected = selectedDate || '';
-
-          return selected >= openDate && selected <= closeDate;
-        })
-        .map(popup => {
-          const openDate = popup.openDate.split('T')[0];
-          const closeDate = popup.closeDate.split('T')[0];
-
-          let dDayType = null;
-          if (selectedDate === openDate) dDayType = '오픈 D-day';
-          if (selectedDate === closeDate) dDayType = '마감 D-day';
-
-          return {...popup, dDayType}; // D-Day 정보 추가
-        })
-    : interestedPopupStores || []; // 기본적으로 현재 관심 설정해 둔 팝업 리스트를 보임
-
-  const handlePressCard = (id: string) => {
-    navigation.navigate('PopupDetailScreen', {popupId: id});
-  };
-
-  const showDatePicker = () => setDatePickerVisible(true);
-  const hideDatePicker = () => setDatePickerVisible(false);
-
-  // 날짜 변경 핸들러 (YearMonthPicker에서 선택한 값을 적용)
-  const handleConfirm = (year: number, month: number) => {
-    setSelectedYear(year);
-    setSelectedMonth(month);
-    setYearMonth(year, month); // 연도-월 업데이트
-    hideDatePicker();
-  };
-
-  // 오늘 날짜를 반환하는 함수
-  const getTodayDate = () => {
-    const today = new Date();
-    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(
-      2,
-      '0',
-    )}-${String(today.getDate()).padStart(2, '0')}`;
-  };
+  const {
+    calendarYear,
+    calendarMonth,
+    calendarCells,
+    moveMonth,
+    selectedDate,
+    handleDateClick,
+    swipeResponder,
+    filteredPopups,
+    showDatePicker,
+    hideDatePicker,
+    handleConfirm,
+    isDatePickerVisible,
+    translateY,
+    panResponder,
+    cellHeight,
+    getTodayDate,
+    handlePressCard,
+    formattedMonth,
+  } = useCalendar();
 
   return (
     <>
@@ -194,7 +59,7 @@ const InterestedPopupCalendarSection = () => {
           </TouchableOpacity>
           {/* 누르면 날짜 박스 보이기 */}
           <DateContainer onPress={showDatePicker}>
-            <CalendarHeaderText>{`${calendarYear}.${formattedMonth}`}</CalendarHeaderText>
+            <CalendarHeaderText>{`${calendarYear}.${calendarMonth}`}</CalendarHeaderText>
             <DownArrowBlackIcon
               width={moderateScale(18)}
               height={moderateScale(18)}
@@ -227,7 +92,7 @@ const InterestedPopupCalendarSection = () => {
           <CalendarBodyContainer>
             {calendarCells.map(cell => {
               const popupsCount =
-                interestedPopupStores?.filter(popup => {
+                filteredPopups?.filter(popup => {
                   const openDate = popup.openDate.split('T')[0];
                   const closeDate = popup.closeDate.split('T')[0];
                   return (

@@ -6,8 +6,8 @@ import SelectDropdown, {
 import SortingIcon from 'src/Resource/svg/sorting-black-icon.svg';
 import VButton from 'src/Resource/svg/down-arrow-black-icon.svg';
 import {moderateScale} from 'src/Util';
-import {EnumValueWithName} from '../../../Object/Type/enum.type';
-import {themeColors} from '../../../Theme/theme';
+import { EnumValueWithName } from 'src/Object/Type/enum.type';
+import { themeColors } from 'src/Theme/theme';
 
 export type CustomDropdownV2Props = {
   data: EnumValueWithName[];

@@ -17,7 +17,7 @@ import {
 import {
   PopupLikesLandingScreen,
   PopupLikesLandingScreenProps,
-} from '../Screen/PopupLikes/Landing/PopupLikes.landing.screen';
+} from '../Screen/PopupLikes/PopupLikes.landing.screen';
 
 import {
   MyPageLandingScreen,

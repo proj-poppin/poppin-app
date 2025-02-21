@@ -2,13 +2,13 @@ import React from 'react';
 import {StyleProp, StyleSheet} from 'react-native';
 import {moderateScale} from 'src/Util';
 import {CustomDropdownV2Dropdown} from './custom.dropdownV2.component';
-import {CustomDropdownProps} from '../../../Component/Dropdown/CustomDropdown.component';
-import {themeColors} from '../../../Theme/theme';
+import {CustomDropdownProps} from 'src/Component/Dropdown/CustomDropdown.component';
+import {themeColors} from '../../../../Theme/theme';
 
 /**
  * 테두리, 배경색이 존재하지 않는 Dropdown 컴포넌트입니다.
  */
-export function BlankDropdownV2({
+export function PopupLikesSortingDropdownV2({
   data,
   onSelect,
   props,
@@ -40,9 +40,8 @@ export function BlankDropdownV2({
         defaultButtonText: data[0].displayName,
         ...props,
       }}
-      isDownArrowBlackIcon={true}
-      isAddionalDefaultPopupText={true} // '인 팝업' 추가
-      buttonStyle={{width: '40%'}}
+      isIconPositionRight={true}
+      isSortingIcon={true}
     />
   );
 }

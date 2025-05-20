@@ -249,7 +249,10 @@ const PopupListScreen: React.FC<PopupListScreenProps> = ({operationStatus}) => {
   };
 
   // 검색 결과가 없을 때 NotList를 렌더링
-  if (!isLoading && searchedPopupStores.length === 0) {
+  if (
+    searchedPopupStores == null ||
+    (!isLoading && searchedPopupStores.length === 0)
+  ) {
     return (
       <SectionContainer fullPage style={{flex: 1}}>
         <NotList />

@@ -20,6 +20,8 @@ import {
 import {H2} from 'src/StyledComponents/Text';
 import {Screen} from 'src/Component/Screen/Screen.component';
 import {themeColors} from 'src/Theme/theme';
+import ServiceEndModal from 'src/Component/ServiceEndModal/ServiceEndModal';
+
 /**
  * 카카오톡 공유하기 링크를 통해 앱을 최초로 실행하면서 접근한 경우,
  * Splash Screen 을 먼저 거치지 않고 Linking.kakao.screen.tsx 로 이동하게 됩니다.
@@ -115,6 +117,7 @@ function LoadingDescription() {
 function ErrorDescription({bootstrap}: {bootstrap: () => Promise<void>}) {
   return (
     <ErrorState__Container>
+      <ServiceEndModal />
       <ErrorTextRow>
         <ErrorText>{'앱 정보를 가져오는 중 오류가 발생했습니다'}</ErrorText>
       </ErrorTextRow>
